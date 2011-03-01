@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace homeworldP1
 {
     /// <summary>
-    /// przestrzen w jakeij odbywac sie bedzie rozgrywka
+    /// przestrzen w jakiej odbywac sie bedzie rozgrywka
     /// </summary>
     public class GameSpace : DrawableGameComponent
     {
