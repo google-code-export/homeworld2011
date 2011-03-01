@@ -7,10 +7,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace homeworldP1
 {
-	/// <summary>
-	/// tryby pracy kamery
+    /// <summary>
+    /// tryby pracy kamery
     /// value
-	/// </summary>
+    /// </summary>
 	public enum cameraMode
 	{
 		Free, Linked, Radar
@@ -138,11 +138,11 @@ namespace homeworldP1
 				return Vector3.Zero;
 			}
 		}*/
-		
-		
-		/// <summary>
-		/// 
-		/// </summary>
+
+
+        /// <summary>
+        /// Calculates the matrices.
+        /// </summary>
 		public void calculateMatrices()
 		{
 			view = Matrix.CreateLookAt(position, target, Vector3.Up);
@@ -153,6 +153,9 @@ namespace homeworldP1
 				10000.0f);
 		}
 
+        /// <summary>
+        /// Calculates the position.
+        /// </summary>
         private void calculatePosition()
         {
             
@@ -160,7 +163,10 @@ namespace homeworldP1
             calculateMatrices();
         }
 
-        /// <summary>  </summary>
+        /// <summary>
+        /// Updates the specified gametime.
+        /// </summary>
+        /// <param name="gametime">The gametime.</param>
 		override public void Update(GameTime gametime)
 		{
             MouseState mState = Mouse.GetState();
