@@ -9,7 +9,7 @@ namespace homeworldP1
 {
     /// <summary>
     /// tryby pracy kamery
-    /// value
+    /// value kjkj
     /// </summary>
 	public enum cameraMode
 	{
