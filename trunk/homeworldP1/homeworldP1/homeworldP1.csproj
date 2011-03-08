@@ -126,10 +126,8 @@
     <Compile Include="Logi.Designer.cs">
       <DependentUpon>Logi.cs</DependentUpon>
     </Compile>
-    <Compile Include="movableObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
     <Compile Include="TestStarSphere.cs" />
   </ItemGroup>
   <ItemGroup>
