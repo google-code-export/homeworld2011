@@ -6,9 +6,9 @@ using System.IO;
 
 
 /************************************************************************************/
-/// Plague
+/// PlagueEngine
 /************************************************************************************/
-namespace Plague
+namespace PlagueEngine
 {
 
     /********************************************************************************/
@@ -122,6 +122,9 @@ namespace Plague
                 logWindow.TextBox.Text += ">> " + DateTime.Now.ToString(@"HH\:mm\:ss") + " | "
                                        + totalElapsedTime.ToString(@"hh\:mm\:ss")      + " >> "
                                        + text + System.Environment.NewLine;
+                
+                logWindow.TextBox.SelectionStart = logWindow.TextBox.TextLength;
+                logWindow.TextBox.ScrollToCaret();
             }
         }
         /****************************************************************************/

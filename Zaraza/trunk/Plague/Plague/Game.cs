@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using PlagueEngine.TimeControlSystem;
 
 
 /************************************************************************************/
-/// Plague
+/// PlagueEngine
 /************************************************************************************/
-namespace Plague
+namespace PlagueEngine
 {
+
     /********************************************************************************/
     /// Game
     /// <summary>
@@ -56,6 +58,14 @@ namespace Plague
         {
             // TODO: Add your initialization logic here
             base.Initialize();
+
+
+            /* Test Zegarów i Timerów
+            c1 = TimeControl.CreateClock(5.0);
+            t1 = TimeControl.CreateTimer(1, -1, AlarmCallback);
+            t2 = c1.CreateTimer(1, -1, AlarmCallback);                            
+            */
+            
             Diagnostics.PushLog("Initialization complete");
         }
         /****************************************************************************/
@@ -103,6 +113,7 @@ namespace Plague
         {
             // TODO: Add your update logic here
             Diagnostics.Update(gameTime.ElapsedGameTime);
+            TimeControl.Update(gameTime.ElapsedGameTime);            
             base.Update(gameTime);
         }
         /****************************************************************************/
@@ -151,6 +162,18 @@ namespace Plague
             }
         }
         /****************************************************************************/
+
+        
+        /* Test zegarów i timerów
+        uint t1;
+        uint t2;
+        Clock c1;
+        private void AlarmCallback(uint timer)
+        {
+            if (timer == t1) Diagnostics.PushLog("1: Alarm!!!");
+            if (timer == t2) Diagnostics.PushLog("2: Alarm!!!");
+        }
+        */
 
     }
     /********************************************************************************/

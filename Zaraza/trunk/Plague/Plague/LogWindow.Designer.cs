@@ -1,4 +1,4 @@
-﻿namespace Plague
+﻿namespace PlagueEngine
 {
     partial class LogWindow
     {
