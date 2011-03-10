@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using PlagueEngine.TimeControlSystem;
+using PlagueEngine.Rendering;
 
 
 /************************************************************************************/
@@ -23,7 +23,8 @@ namespace PlagueEngine
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private String title = String.Empty;
+        private String      title       = String.Empty;
+        private Renderer    renderer    = null;
         /****************************************************************************/
 
 
@@ -33,14 +34,16 @@ namespace PlagueEngine
         public Game(String title)
         {
             this.title   = title;
-            Window.Title = title;      
+            Window.Title = title;
 
-            Diagnostics.Game            = this;
-            Diagnostics.ShowDiagnostics = true;
-            Diagnostics.ForceGCOnUpdate = true;
-            Diagnostics.VSync           = false;
-            Diagnostics.ShowLogWindow   = true;            
-            Diagnostics.OpenLogFile("log");            
+            Diagnostics.Game                = this;
+            Diagnostics.ShowDiagnostics     = true;
+            Diagnostics.ForceGCOnUpdate     = true;
+            Diagnostics.LimitUpdateTimeStep = false;
+            Diagnostics.ShowLogWindow       = true;                        
+            Diagnostics.OpenLogFile("log");
+            
+            renderer = new Renderer(this,new RenderConfig(1024, 768, false, false, false));
         }
         /****************************************************************************/
 
@@ -58,14 +61,6 @@ namespace PlagueEngine
         {
             // TODO: Add your initialization logic here
             base.Initialize();
-
-
-            /* Test Zegarów i Timerów
-            c1 = TimeControl.CreateClock(5.0);
-            t1 = TimeControl.CreateTimer(1, -1, AlarmCallback);
-            t2 = c1.CreateTimer(1, -1, AlarmCallback);                            
-            */
-            
             Diagnostics.PushLog("Initialization complete");
         }
         /****************************************************************************/
@@ -80,7 +75,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void LoadContent()
         {
-            // TODO: use this.Content to load your game content here
+            // TODO: use this.Content to load your game content here            
             Diagnostics.PushLog("Loading content complete");
         }
         /****************************************************************************/
@@ -97,6 +92,7 @@ namespace PlagueEngine
         {
             // TODO: Unload any non ContentManager content here
             Diagnostics.PushLog("Unloading content complete");
+            Diagnostics.CloseLogFile();
         }
         /****************************************************************************/
 
@@ -141,7 +137,6 @@ namespace PlagueEngine
         {
             base.OnExiting(sender, args);
             Diagnostics.PushLog("Exiting");
-            Diagnostics.CloseLogFile();
         }
         /****************************************************************************/
 
@@ -162,19 +157,8 @@ namespace PlagueEngine
             }
         }
         /****************************************************************************/
-
+            
         
-        /* Test zegarów i timerów
-        uint t1;
-        uint t2;
-        Clock c1;
-        private void AlarmCallback(uint timer)
-        {
-            if (timer == t1) Diagnostics.PushLog("1: Alarm!!!");
-            if (timer == t2) Diagnostics.PushLog("2: Alarm!!!");
-        }
-        */
-
     }
     /********************************************************************************/
 

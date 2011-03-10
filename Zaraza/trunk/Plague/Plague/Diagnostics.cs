@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
+using PlagueEngine.TimeControlSystem;
 
 
 /************************************************************************************/
@@ -33,6 +33,8 @@ namespace PlagueEngine
         private static String       logFile             = String.Empty;
         private static LogWindow    logWindow           = null;
         private static bool         showLogWindow       = false;
+
+        private static uint         timerID             = 0;
         /****************************************************************************/
 
 
@@ -224,9 +226,9 @@ namespace PlagueEngine
 
 
         /****************************************************************************/
-        /// V Sync
+        /// Limit Update Time Step
         /****************************************************************************/
-        public static bool VSync
+        public static bool LimitUpdateTimeStep
         {
             set
             {
@@ -293,18 +295,62 @@ namespace PlagueEngine
 
 
         /****************************************************************************/
+        /// Diagnostic Snapshot
+        /****************************************************************************/
+        public static void DiagnosticSnapshot()
+        { 
+            Diagnostics.PushLog("FPS: " + fPS.ToString() + " | Allocated Managed Memory: "  
+                                + (GC.GetTotalMemory(false)/1024).ToString() + " kb");               
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Start Diagnostic Snapshot
+        /****************************************************************************/
+        public static void StartDiagnosticSnapshots(TimeSpan time)
+        {
+            if (timerID == 0) timerID = TimeControl.CreateTimer(time, -1, TimerCallback);
+            else TimeControl.ResetTimer(timerID,time,-1);            
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Stop Diagnostic Snapshot
+        /****************************************************************************/
+        public static void StopDiagnosticSnapshots()
+        {
+            TimeControl.ReleaseTimer(timerID);
+            timerID = 0;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Timer Callback
+        /****************************************************************************/
+        private static void TimerCallback()
+        {
+            Diagnostics.DiagnosticSnapshot();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// To String
         /****************************************************************************/
         public static String ToString()
         {
             return "FPS: "                          + fPS.ToString()                             + 
                    " | Run Time: "                  + totalElapsedTime.ToString(@"hh\:mm\:ss")   +
-                   " | Allocated Managed Memory: "  + (GC.GetTotalMemory(false)/1024).ToString() + " KB";
+                   " | Allocated Managed Memory: "  + (GC.GetTotalMemory(false)/1024).ToString() + " kb";
         }
         /****************************************************************************/
 
+
     }
     /********************************************************************************/
-
+    
 }
 /************************************************************************************/

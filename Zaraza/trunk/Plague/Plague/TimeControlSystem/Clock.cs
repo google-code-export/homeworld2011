@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 
@@ -186,7 +185,7 @@ namespace PlagueEngine.TimeControlSystem
         /// <param name="callback">Metoda która zostanie wywołana jako alarm</param>
         /// <returns>ID Timera.</returns>         
         /****************************************************************************/
-        public uint CreateTimer(TimeSpan alarm, int repeat, Timer.CallbackDelegate callback)
+        public uint CreateTimer(TimeSpan alarm, int repeat, Timer.CallbackDelegate1 callback)
         {
             Timer timer = new Timer(alarm, repeat, callback);
             Timers.Add(timer.ID, timer);
@@ -203,13 +202,23 @@ namespace PlagueEngine.TimeControlSystem
         /// <param name="alarm">Czas w sekundach, po ilu zostanie uruchomiony alarm.</param>
         /// <param name="repeat">Powtarzalność alarmu. -1 : nieskończoność, 0 : brak, > 0 : krotność.</param>
         /// <param name="callback">Metoda która zostanie wywołana jako alarm</param>
-        /// <returns>ID Timera.</returns>
+        /// <returns>ID Timera.</returns>         
         /****************************************************************************/
-        public uint CreateTimer(uint alarm, int repeat, Timer.CallbackDelegate callback)
+        public uint CreateTimer(TimeSpan alarm, int repeat, Timer.CallbackDelegate2 callback)
         {
-            Timer timer = new Timer(TimeSpan.FromSeconds(alarm), repeat, callback);
+            Timer timer = new Timer(alarm, repeat, callback);
             Timers.Add(timer.ID, timer);
             return timer.ID;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Reset Timer
+        /****************************************************************************/
+        public void ResetTimer(uint id, TimeSpan alarm, int repeat)
+        {
+            Timers[id].Reset(alarm, repeat);
         }
         /****************************************************************************/
 

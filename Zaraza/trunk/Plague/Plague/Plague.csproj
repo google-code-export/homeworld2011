@@ -120,6 +120,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Rendering\RenderConfig.cs" />
+    <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="TimeControlSystem\Clock.cs" />
     <Compile Include="TimeControlSystem\TimeControl.cs" />
     <Compile Include="TimeControlSystem\Timer.cs" />
