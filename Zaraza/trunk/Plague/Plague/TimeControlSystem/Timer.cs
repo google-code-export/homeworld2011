@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 
@@ -14,7 +13,7 @@ namespace PlagueEngine.TimeControlSystem
     /// Timer
     /********************************************************************************/
     /// <summary>
-    /// Timer pozwala ustawiac alarm po upływie danego czasu gry. Może działa w czasie
+    /// Timer pozwala ustawiac alarm po upływie danego czasu gry. Może działać w czasie
     /// względem systemu (gry), bądź względem czasu zegara w kontekście którego został
     /// utworzony.
     /// </summary>
@@ -24,8 +23,11 @@ namespace PlagueEngine.TimeControlSystem
         /****************************************************************************/
         /// Delegates
         /****************************************************************************/
-        public delegate void CallbackDelegate(uint id);
-        private CallbackDelegate callback;
+        public delegate void CallbackDelegate1(uint id);
+        public delegate void CallbackDelegate2();
+        
+        private CallbackDelegate1 callback1 = null;
+        private CallbackDelegate2 callback2 = null;
         /****************************************************************************/
 
         
@@ -44,12 +46,25 @@ namespace PlagueEngine.TimeControlSystem
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Timer(TimeSpan alarm, int repeat, CallbackDelegate callback)
+        public Timer(TimeSpan alarm, int repeat, CallbackDelegate1 callback)
         {
             this.id         = ++Timer.totalID;
             this.alarm      = alarm;
             this.repeat     = repeat;
-            this.callback   = callback;
+            this.callback1  = callback;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Constructor (2)
+        /****************************************************************************/
+        public Timer(TimeSpan alarm, int repeat, CallbackDelegate2 callback)
+        {
+            this.id         = ++Timer.totalID;
+            this.alarm      = alarm;
+            this.repeat     = repeat;
+            this.callback2  = callback;
         }
         /****************************************************************************/
 
@@ -68,7 +83,8 @@ namespace PlagueEngine.TimeControlSystem
                 if (repeat >  0) --repeat;
                 if (repeat == 0) wasted = true;
 
-                callback(id);
+                if      (callback1 != null) callback1(id);
+                else if (callback2 != null) callback2();
             }
         }
         /****************************************************************************/
@@ -96,6 +112,18 @@ namespace PlagueEngine.TimeControlSystem
             {
                 return id;
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Reset
+        /****************************************************************************/
+        public void Reset(TimeSpan alarm, int repeat)
+        {
+            this.elapsedTime    = TimeSpan.Zero;
+            this.alarm          = alarm;
+            this.repeat         = repeat;
         }
         /****************************************************************************/
 
