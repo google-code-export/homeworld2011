@@ -1,58 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 using PlagueEngine.LowLevelGameFlow;
-
+using PlagueEngine.Input;
 
 /************************************************************************************/
-/// PlagueEngine.Rendering.Components
+/// PlagueEngine.Input.Components
 /************************************************************************************/
-namespace PlagueEngine.Rendering.Components
+namespace PlagueEngine.Input.Components
 {
 
     /********************************************************************************/
-    /// Basic Mesh Component
+    /// KeyboardListenerComponent
     /********************************************************************************/
-    class BasicMeshComponent : GameObjectComponent
+    class KeyboardListenerComponent : GameObjectComponent
     {
         
         /****************************************************************************/
-        /// Delegates
-        /****************************************************************************/
-        public delegate void ReleaseMeDelegate(BasicMeshComponent component);
-        /****************************************************************************/
-
-
-        /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Model                 model     = null;
-        private ReleaseMeDelegate     releaseMe = null;
+        private Input input  = null;
+        private bool  active = true;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// BasicMeshComponent
+        /// Keyboard Listener Component
         /****************************************************************************/
-        public BasicMeshComponent(GameObjectInstance gameObject,Model model,ReleaseMeDelegate releaseMe) : base(gameObject)
+        public KeyboardListenerComponent(GameObjectInstance gameObject, Input input, bool active) : base(gameObject)
         {
-            this.model      = model;
-            this.releaseMe  = releaseMe;
+            this.input  = input;
+            this.active = active;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Model
+        /// Active
         /****************************************************************************/
-        public Model Model
+        public bool Active
         {
             get
             {
-                return model;
+                return active;
+            }
+
+            set
+            {
+                active = value;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Subscribe Keys
+        /****************************************************************************/
+        public void SubscibeKeys(OnKey onKey, params Keys[] keys)
+        {
+            foreach (Keys key in keys)
+            {
+                input.SubscribeKeyboardListener(this, key, onKey);
             }
         }
         /****************************************************************************/
@@ -63,7 +74,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            releaseMe(this);
+            input.ReleaseKeyboardListenerComponent(this);
         }
         /****************************************************************************/
 

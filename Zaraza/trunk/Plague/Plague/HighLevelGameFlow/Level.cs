@@ -24,7 +24,6 @@ namespace PlagueEngine.HighLevelGameFlow
         /// Fields
         /****************************************************************************/
         private Dictionary<uint, GameObjectInstance> gameObjects               = new Dictionary<uint,GameObjectInstance>();
-        private List<GameObjectInstance>             gameObjectsRequiredUpdate = new List<GameObjectInstance>();
         private GameObjectsFactory                   gameObjectsFactory        = null;
         /****************************************************************************/
 
@@ -36,7 +35,6 @@ namespace PlagueEngine.HighLevelGameFlow
         {
             this.gameObjectsFactory                      = gameObjectsFactory;
             gameObjectsFactory.GameObjects               = gameObjects;
-            gameObjectsFactory.GameObjectsRequiredUpdate = gameObjectsRequiredUpdate;
         }
         /****************************************************************************/
 
@@ -67,19 +65,6 @@ namespace PlagueEngine.HighLevelGameFlow
             }
 
             return levelData;
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Update
-        /****************************************************************************/
-        public void Update(TimeSpan deltaTime)
-        {
-            foreach (GameObjectInstance goi in gameObjectsRequiredUpdate)
-            {
-                goi.Update(deltaTime);
-            }
         }
         /****************************************************************************/
 
@@ -130,6 +115,7 @@ namespace PlagueEngine.HighLevelGameFlow
             fcdata.FoV = MathHelper.PiOver4;
             fcdata.ZNear = 1;
             fcdata.ZFar = 10000;
+            fcdata.ActiveKeyListener = true;
 
             gameObjectsFactory.Create(fcdata);
             
