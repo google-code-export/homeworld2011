@@ -1,59 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+
+using PlagueEngine.LowLevelGameFlow;
+using PlagueEngine.Rendering.Components;
 
 
 /************************************************************************************/
-/// PlagueEngine.Rendering
+/// Plague.LowLevelGameFlow.GameObjects
 /************************************************************************************/
-namespace PlagueEngine.Rendering
+namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// RenderConfig
-    /// <summary>
-    /// Klasa zawierajaca podstawowe ustawienia urządzenia renderującego. 
-    /// Przeznaczona do serializacji.
-    /// </summary>
+    /// StaticMesh
     /********************************************************************************/
-    public class RenderConfig
-    {   
+    class StaticMesh : GameObjectInstance
+    {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public int  Width;        
-        public int  Height;       
-        public bool FullScreen;   
-        public bool Multisampling;
-        public bool VSync;
+        BasicMeshComponent basicMeshComponent = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Constructor (1)
+        /// Constructor
         /****************************************************************************/
-        public RenderConfig()
+        public StaticMesh(uint id,String definition) : base(id,definition)
         {
-            Width           = 0;
-            Height          = 0;
-            FullScreen      = false;
-            Multisampling   = false;
-            VSync           = false;            
+        }
+        /****************************************************************************/
+        
+
+        /****************************************************************************/
+        /// Initialization
+        /****************************************************************************/
+        public void Init(BasicMeshComponent basicMeshComponent, Matrix world)
+        {
+            this.basicMeshComponent = basicMeshComponent;
+            this.World              = world;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Constructor (2)
+        /// Release Components
         /****************************************************************************/
-        public RenderConfig(int width,int height,bool fullScreen,bool multisampling,bool vSync) 
+        public override void ReleaseComponents()
         {
-            Width           = width;
-            Height          = height;
-            FullScreen      = fullScreen;
-            Multisampling   = multisampling;
-            VSync           = vSync;
+            basicMeshComponent.ReleaseMe();
         }
         /****************************************************************************/
 
