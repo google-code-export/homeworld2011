@@ -53,12 +53,13 @@ namespace PlagueEngine.Resources
             DetectProfiles();
             LoadDefaultProfile();
 
-            GameObjectDefinition god = new GameObjectDefinition();
-            god.Name = "Barrel";
-            god.Properties.Add("Model", "barrel");
-            gameObjectsDefinitions.Add(god.Name,god);
+            //GameObjectDefinition god = new GameObjectDefinition();
+            //god.Name = "Barrel";
+            //god.Properties.Add("Model", "barrel");
+            //gameObjectsDefinitions.Add(god.Name,god);
 
-            SaveGameObjectsDefinitions();
+            //SaveGameObjectsDefinitions();
+
             LoadGameObjectsDefinitions();
         }
         /****************************************************************************/

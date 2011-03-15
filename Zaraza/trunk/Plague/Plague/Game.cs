@@ -8,6 +8,7 @@ using PlagueEngine.Rendering;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.HighLevelGameFlow;
+using PlagueEngine.Input;
 
 
 
@@ -30,9 +31,13 @@ namespace PlagueEngine
         /// Fields
         /****************************************************************************/
         private String              title               = String.Empty;
+        
         private Renderer            renderer            = null;
         private ContentManager      contentManager      = null;
+        private Input.Input         input               = null;
         private GameObjectsFactory  gameObjectsFactory  = null;
+        
+        // TODO: Stworzyæ manager leveli, który automagicznie bêdzie wczytywa³ kolejne levele
         private Level               testLevel           = null;
 
         private readonly RenderConfig defaultRenderConfig = new RenderConfig(1024, 768, false, false, false);
@@ -55,10 +60,13 @@ namespace PlagueEngine
             Diagnostics.ShowLogWindow       = true;                        
             Diagnostics.OpenLogFile("log");
             
-            contentManager = new ContentManager(this,"Content");            
-            InitRenderer();
+            contentManager = new ContentManager(this,"Content");
+            input          = new Input.Input();
 
+            InitRenderer();
+            
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
+                                                        input.ComponentsFactory,                                        
                                                         contentManager.GameObjectsDefinitions);
         }
         /****************************************************************************/
@@ -75,14 +83,13 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here            
             base.Initialize();
             
             testLevel = new Level(gameObjectsFactory);
-            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel.lvl"));
+            testLevel.LoadLevel(contentManager.LoadLevel("TestLevel.lvl"));
             
-            testLevel.PutSomeObjects();
-            contentManager.SaveLevel("TestLevel.lvl",testLevel.SaveLevel());
+            //testLevel.PutSomeObjects();
+            //contentManager.SaveLevel("TestLevel.lvl",testLevel.SaveLevel());
 
             Diagnostics.PushLog("Initialization complete");
         }
@@ -98,7 +105,6 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void LoadContent()
         {
-            // TODO: use this.Content to load your game content here            
             Diagnostics.PushLog("Loading content complete");
         }
         /****************************************************************************/
@@ -113,7 +119,6 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
             Diagnostics.PushLog("Unloading content complete");
             Diagnostics.CloseLogFile();
         }
@@ -130,11 +135,11 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
             Diagnostics.Update(gameTime.ElapsedGameTime);
             TimeControl.Update(gameTime.ElapsedGameTime);
+            
+            input.Update();
 
-            testLevel.Update(gameTime.ElapsedGameTime);
             base.Update(gameTime);
         }
         /****************************************************************************/
@@ -149,7 +154,6 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Draw(GameTime gameTime)
         {
-            // TODO: Add your drawing code here      
             renderer.Draw();
             base.Draw(gameTime);           
         }

@@ -27,6 +27,7 @@ namespace PlagueEngine.Rendering
         private  GraphicsDevice              device              = null;
         internal ContentManager              contentManager      = null;
         private  RenderingComponentsFactory  componentsFactory   = null;
+
         internal List<BasicMeshComponent>    basicMeshComponents = new List<BasicMeshComponent>();
         private  CameraComponent             currentCamera       = null;
         /****************************************************************************/

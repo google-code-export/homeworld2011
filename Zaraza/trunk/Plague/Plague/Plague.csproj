@@ -115,6 +115,10 @@
   <ItemGroup>
     <Compile Include="HighLevelGameFlow\Level.cs" />
     <Compile Include="HighLevelGameFlow\LevelData.cs" />
+    <Compile Include="Input\Components\KeyboardListenerComponent.cs" />
+    <Compile Include="Input\ExtendedKeyState.cs" />
+    <Compile Include="Input\Input.cs" />
+    <Compile Include="Input\InputComponentsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectComponent.cs" />
     <Compile Include="Diagnostics.cs" />
     <Compile Include="LogWindow.cs">

@@ -1,69 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 
+using PlagueEngine.Input.Components;
 using PlagueEngine.LowLevelGameFlow;
 
-
 /************************************************************************************/
-/// PlagueEngine.Rendering.Components
+/// PlagueEngine.Input
 /************************************************************************************/
-namespace PlagueEngine.Rendering.Components
+namespace PlagueEngine.Input
 {
 
     /********************************************************************************/
-    /// Basic Mesh Component
+    /// InputComponentsFactory
     /********************************************************************************/
-    class BasicMeshComponent : GameObjectComponent
+    class InputComponentsFactory
     {
-        
-        /****************************************************************************/
-        /// Delegates
-        /****************************************************************************/
-        public delegate void ReleaseMeDelegate(BasicMeshComponent component);
-        /****************************************************************************/
-
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Model                 model     = null;
-        private ReleaseMeDelegate     releaseMe = null;
+        private Input input = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// BasicMeshComponent
+        /// Constructor
         /****************************************************************************/
-        public BasicMeshComponent(GameObjectInstance gameObject,Model model,ReleaseMeDelegate releaseMe) : base(gameObject)
+        public InputComponentsFactory(Input input)
         {
-            this.model      = model;
-            this.releaseMe  = releaseMe;
+            this.input = input;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Model
+        /// Create Keyboard Listener Component
         /****************************************************************************/
-        public Model Model
+        public KeyboardListenerComponent CreateKeyboardListenerComponent(GameObjectInstance gameObject, bool active)
         {
-            get
-            {
-                return model;
-            }
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Release Me
-        /****************************************************************************/
-        public override void ReleaseMe()
-        {
-            releaseMe(this);
+            return new KeyboardListenerComponent(gameObject, input, active);
         }
         /****************************************************************************/
 

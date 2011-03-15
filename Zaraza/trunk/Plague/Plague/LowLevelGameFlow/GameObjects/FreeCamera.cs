@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
+using PlagueEngine.Input.Components;
+using PlagueEngine.TimeControlSystem;
 
-using Microsoft.Xna.Framework.Input;
 
 /************************************************************************************/
 /// Plague.LowLevelGameFlow.GameObjects
@@ -24,9 +26,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private CameraComponent cameraComponent = null;
-        private double          movementSpeed   = 0;
-        private double          rotationSpeed   = 0;
+        private CameraComponent           cameraComponent           = null;
+        private KeyboardListenerComponent keyboardListenerComponent = null;
+        private double                    movementSpeed             = 0;
+        private double                    rotationSpeed             = 0;
+
+        // TODO: Zastanowić się, czy da się rozwiązać to lepiej z tym zegarem
+        private Clock                     clock                     = TimeControl.CreateClock();
         /****************************************************************************/
 
 
@@ -43,93 +49,84 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(CameraComponent cameraComponent, Matrix world, double movementSpeed, double rotationSpeed)
+        public void Init(CameraComponent            cameraComponent, 
+                         KeyboardListenerComponent  keyboardListenerComponent, 
+                         Matrix                     world, 
+                         double                     movementSpeed, 
+                         double                     rotationSpeed)
         {
-            this.cameraComponent = cameraComponent;
-            this.World           = world;
-            this.movementSpeed   = movementSpeed;
-            this.rotationSpeed   = rotationSpeed;
+            this.cameraComponent            = cameraComponent;
+            this.keyboardListenerComponent  = keyboardListenerComponent;
+            this.World                      = world;
+            this.movementSpeed              = movementSpeed;
+            this.rotationSpeed              = rotationSpeed;
+
+            this.keyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A, 
+                                                               Keys.D, Keys.Q, Keys.E, 
+                                                               Keys.PageUp, Keys.PageDown, 
+                                                               Keys.Up,     Keys.Down, 
+                                                               Keys.Right,  Keys.Left);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Update
+        /// On Key
         /****************************************************************************/
-        public override void Update(TimeSpan deltaTime)
-        { 
+        private void OnKey(Keys key, ExtendedKeyState state)
+        {
+            if (!state.IsDown()) return;
 
-            /************************************************************************/
-            // To jest brzydkie, i nie bedzie tak działać         
-            // TODO: Zamienić to na coś porządnego! Ot co!
-            KeyboardState currentState = Keyboard.GetState(PlayerIndex.One);
-            
-            double movement = movementSpeed * deltaTime.TotalMilliseconds;
-            double rotation = rotationSpeed * deltaTime.TotalMilliseconds;
+            switch (key)
+            { 
+                case Keys.W:
+                    cameraComponent.MoveForward((float)(movementSpeed * clock.DeltaTime.TotalMilliseconds));
+                    break;
 
-            if (currentState.IsKeyDown(Keys.W))
-            {
-                cameraComponent.MoveForward((float)movement);
+                case Keys.S:
+                    cameraComponent.MoveForward((float)(movementSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
+                    break;
+
+                case Keys.A:
+                    cameraComponent.MoveRight((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)));
+                    break;
+
+                case Keys.D:
+                    cameraComponent.MoveRight((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds) * -1));
+                    break;
+
+                case Keys.Q:
+                    cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)));
+                    break;
+
+                case Keys.E:
+                    cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds) * -1));
+                    break;
+
+                case Keys.PageUp:
+                    cameraComponent.RotateZ((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
+                    break;
+
+                case Keys.PageDown:
+                    cameraComponent.RotateZ((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
+                    break;
+
+                case Keys.Up:
+                    cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
+                    break;
+
+                case Keys.Down:
+                    cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
+                    break;
+
+                case Keys.Right:
+                    cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
+                    break;
+
+                case Keys.Left:
+                    cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
+                    break;
             }
-
-            if (currentState.IsKeyDown(Keys.S))
-            {
-                cameraComponent.MoveForward((float)(movement * -1));
-            }
-
-            if (currentState.IsKeyDown(Keys.A))
-            {
-                cameraComponent.MoveRight((float)(movement));
-            }
-
-            if (currentState.IsKeyDown(Keys.D))
-            {
-                cameraComponent.MoveRight((float)(movement * -1));
-            }
-
-            if (currentState.IsKeyDown(Keys.Q))
-            {
-                cameraComponent.MoveUp((float)(movement));
-            }
-
-            if (currentState.IsKeyDown(Keys.E))
-            {
-                cameraComponent.MoveUp((float)(movement * -1));
-            }
-
-
-
-            if (currentState.IsKeyDown(Keys.PageUp))
-            {
-                cameraComponent.RotateZ((float)rotation);
-            }
-
-            if (currentState.IsKeyDown(Keys.PageDown))
-            {
-                cameraComponent.RotateZ((float)rotation * -1);
-            }
-            
-            if (currentState.IsKeyDown(Keys.Up))
-            {
-                cameraComponent.RotateX((float)rotation);
-            }
-
-            if (currentState.IsKeyDown(Keys.Down))
-            {
-                cameraComponent.RotateX((float)rotation * -1);
-            }
-
-            if (currentState.IsKeyDown(Keys.Right))
-            {
-                cameraComponent.Yaw((float)rotation);
-            }
-
-            if (currentState.IsKeyDown(Keys.Left))
-            {
-                cameraComponent.Yaw((float)rotation * -1);
-            }
-            /************************************************************************/
-
         }
         /****************************************************************************/
 
@@ -142,11 +139,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             FreeCameraData data = new FreeCameraData();
             GetData(data);
 
-            data.MovementSpeed = this.movementSpeed;
-            data.RotationSpeed = this.rotationSpeed;
-            data.FoV           = this.cameraComponent.FoV;
-            data.ZNear         = this.cameraComponent.ZNear;
-            data.ZFar          = this.cameraComponent.ZFar;
+            data.MovementSpeed      = this.movementSpeed;
+            data.RotationSpeed      = this.rotationSpeed;
+            data.FoV                = this.cameraComponent.FoV;
+            data.ZNear              = this.cameraComponent.ZNear;
+            data.ZFar               = this.cameraComponent.ZFar;
+            data.ActiveKeyListener  = this.keyboardListenerComponent.Active;
 
             return data;
         }
@@ -158,7 +156,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            cameraComponent.ReleaseMe();                    
+            cameraComponent.ReleaseMe();
+            keyboardListenerComponent.ReleaseMe();        
         }
         /****************************************************************************/
 
@@ -172,11 +171,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class FreeCameraData : GameObjectInstanceData
     {
-        public double MovementSpeed = 0;
-        public double RotationSpeed = 0;
-        public float  FoV           = 0;
-        public float  ZNear         = 0;
-        public float  ZFar          = 0;
+        public double MovementSpeed     = 0;
+        public double RotationSpeed     = 0;
+        public float  FoV               = 0;
+        public float  ZNear             = 0;
+        public float  ZFar              = 0;
+        public bool   ActiveKeyListener = false;
     }
     /********************************************************************************/
 

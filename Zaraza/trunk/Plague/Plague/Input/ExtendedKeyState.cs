@@ -1,69 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-
-using PlagueEngine.LowLevelGameFlow;
 
 
 /************************************************************************************/
-/// PlagueEngine.Rendering.Components
+/// PlagueEngine.Input.Components
 /************************************************************************************/
-namespace PlagueEngine.Rendering.Components
+namespace PlagueEngine.Input.Components
 {
 
     /********************************************************************************/
-    /// Basic Mesh Component
+    /// Extended Key State
     /********************************************************************************/
-    class BasicMeshComponent : GameObjectComponent
+    struct ExtendedKeyState
     {
-        
-        /****************************************************************************/
-        /// Delegates
-        /****************************************************************************/
-        public delegate void ReleaseMeDelegate(BasicMeshComponent component);
-        /****************************************************************************/
-
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Model                 model     = null;
-        private ReleaseMeDelegate     releaseMe = null;
+        private readonly bool isDown;
+        private readonly bool changed;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// BasicMeshComponent
+        /// Constructor
         /****************************************************************************/
-        public BasicMeshComponent(GameObjectInstance gameObject,Model model,ReleaseMeDelegate releaseMe) : base(gameObject)
+        public ExtendedKeyState(bool isDown, bool changed)
         {
-            this.model      = model;
-            this.releaseMe  = releaseMe;
+            this.isDown  = isDown;
+            this.changed = changed;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Model
+        /// Is Down
         /****************************************************************************/
-        public Model Model
+        public bool IsDown()
         {
-            get
-            {
-                return model;
-            }
+            return isDown;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Release Me
+        /// Is Up
         /****************************************************************************/
-        public override void ReleaseMe()
+        public bool IsUp()
         {
-            releaseMe(this);
+            return !isDown;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Was Pressed
+        /****************************************************************************/
+        public bool WasPressed()
+        {
+            return (isDown && changed ? true : false);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Was Released
+        /****************************************************************************/
+        public bool WasReleased()
+        {
+            return (!isDown && changed ? true : false);
         }
         /****************************************************************************/
 

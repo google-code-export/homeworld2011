@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework;
 
 using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
+using PlagueEngine.Input;
+using PlagueEngine.Input.Components;
+
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 
@@ -25,9 +28,10 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Fields
         /****************************************************************************/
         private RenderingComponentsFactory               renderingComponentsFactory = null;
+        private InputComponentsFactory                   inputComponentsFactory     = null;
         private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;
+        
         private Dictionary<uint, GameObjectInstance>     gameObjects                = null;
-        private List<GameObjectInstance>                 gameObjectsRequiredUpdate  = null;
         /****************************************************************************/
 
 
@@ -35,9 +39,11 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Constructor
         /****************************************************************************/
         public GameObjectsFactory(RenderingComponentsFactory               renderingComponentsFactory,
+                                  InputComponentsFactory                   inputComponentsFactory,
                                   Dictionary<String, GameObjectDefinition> gameObjectsDefinitions)
         {
             this.renderingComponentsFactory = renderingComponentsFactory;
+            this.inputComponentsFactory     = inputComponentsFactory;
             this.gameObjectsDefinitions     = gameObjectsDefinitions;            
         }
         /****************************************************************************/
@@ -51,19 +57,6 @@ namespace PlagueEngine.LowLevelGameFlow
             set
             {
                 gameObjects = value;
-            }
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Game Objects Required Update
-        /****************************************************************************/
-        public List<GameObjectInstance> GameObjectsRequiredUpdate
-        {
-            set
-            {
-                gameObjectsRequiredUpdate = value;
             }
         }
         /****************************************************************************/
@@ -88,8 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (result == null) return null;
 
-            if (gameObjects != null)                gameObjects.Add(result.ID, result);
-            if (gameObjectsRequiredUpdate != null)  gameObjectsRequiredUpdate.Add(result);
+            if (gameObjects != null) gameObjects.Add(result.ID, result);
 
             return result;
         }
@@ -119,15 +111,19 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             FreeCamera result = new FreeCamera(data.ID, data.Definition);
 
-            FreeCameraData trueData = (FreeCameraData)data;
+            FreeCameraData fcdata = (FreeCameraData)data;
 
             result.Init( renderingComponentsFactory.CreateCameraComponent(result,
-                                                                          trueData.FoV,
-                                                                          trueData.ZNear,
-                                                                          trueData.ZFar),
-                         trueData.World,
-                         trueData.MovementSpeed,
-                         trueData.RotationSpeed);
+                                                                          fcdata.FoV,
+                                                                          fcdata.ZNear,
+                                                                          fcdata.ZFar),
+                         
+                         inputComponentsFactory.CreateKeyboardListenerComponent(result,
+                                                                                fcdata.ActiveKeyListener),
+                         
+                         fcdata.World,
+                         fcdata.MovementSpeed,
+                         fcdata.RotationSpeed);
 
             return result;
         }
