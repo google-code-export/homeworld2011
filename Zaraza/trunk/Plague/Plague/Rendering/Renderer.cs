@@ -4,6 +4,10 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using PlagueEngine.Resources;
+using PlagueEngine.Rendering.Components;
+
+
 /************************************************************************************/
 /// PlagueEngine.Rendering
 /************************************************************************************/
@@ -19,8 +23,18 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private GraphicsDeviceManager   graphics        = null;
-        
+        private  GraphicsDeviceManager       graphics            = null;
+        private  GraphicsDevice              device              = null;
+        internal ContentManager              contentManager      = null;
+        private  RenderingComponentsFactory  componentsFactory   = null;
+        internal List<BasicMeshComponent>    basicMeshComponents = new List<BasicMeshComponent>();
+        private  CameraComponent             currentCamera       = null;
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Constants
+        /****************************************************************************/
         private const SurfaceFormat     surfaceFormat   = SurfaceFormat.Color;
         private const DepthFormat       depthFormat     = DepthFormat.Depth24Stencil8;
         /****************************************************************************/
@@ -31,9 +45,10 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public Renderer(Game game,RenderConfig config)
         {
-            graphics = new GraphicsDeviceManager(game);
-            
-            CurrentConfiguration = config;            
+            graphics             = new GraphicsDeviceManager(game);
+            contentManager       = game.ContentManager;           
+            CurrentConfiguration = config;
+            componentsFactory    = new RenderingComponentsFactory(this);
         }
         /****************************************************************************/
 
@@ -46,7 +61,7 @@ namespace PlagueEngine.Rendering
             List<int[]> result  = new List<int[]>();
             int[] resolution    = null;
 
-            foreach (DisplayMode displayMode in graphics.GraphicsDevice.Adapter.SupportedDisplayModes)
+            foreach (DisplayMode displayMode in device.Adapter.SupportedDisplayModes)
             {
                 if (displayMode.Format == SurfaceFormat.Color)
                 {
@@ -89,8 +104,8 @@ namespace PlagueEngine.Rendering
         {
             get
             {
-                return new RenderConfig(graphics.GraphicsDevice.DisplayMode.Width,
-                                        graphics.GraphicsDevice.DisplayMode.Height,
+                return new RenderConfig(device.DisplayMode.Width,
+                                        device.DisplayMode.Height,
                                         graphics.IsFullScreen,
                                         graphics.PreferMultiSampling,
                                         graphics.SynchronizeWithVerticalRetrace);
@@ -107,19 +122,86 @@ namespace PlagueEngine.Rendering
                 graphics.IsFullScreen                   = value.FullScreen;
                 graphics.SynchronizeWithVerticalRetrace = value.VSync;
 
-                graphics.ApplyChanges();    
+                graphics.ApplyChanges();
+                device = graphics.GraphicsDevice;
+                if (currentCamera != null) currentCamera.Aspect = device.Viewport.AspectRatio;
 
                 Diagnostics.PushLog("Presentation Parameters Changed" +
-                                    ". Resolution: "    + graphics.GraphicsDevice.PresentationParameters.BackBufferWidth.ToString()    +
-                                    " x "               + graphics.GraphicsDevice.PresentationParameters.BackBufferHeight.ToString()   + 
-                                    " x "               + graphics.GraphicsDevice.PresentationParameters.BackBufferFormat.ToString()   + 
-                                    " x "               + graphics.GraphicsDevice.PresentationParameters.DepthStencilFormat.ToString() +
-                                    ". Multisampling: " + graphics.GraphicsDevice.PresentationParameters.MultiSampleCount.ToString()   +
-                                    ". Fullscreen: "    + graphics.GraphicsDevice.PresentationParameters.IsFullScreen.ToString()       +
+                                    ". Resolution: "    + device.PresentationParameters.BackBufferWidth.ToString()    +
+                                    " x "               + device.PresentationParameters.BackBufferHeight.ToString()   + 
+                                    " x "               + device.PresentationParameters.BackBufferFormat.ToString()   + 
+                                    " x "               + device.PresentationParameters.DepthStencilFormat.ToString() +
+                                    ". Multisampling: " + device.PresentationParameters.MultiSampleCount.ToString()   +
+                                    ". Fullscreen: "    + device.PresentationParameters.IsFullScreen.ToString()       +
                                     ". VSync: "         + graphics.SynchronizeWithVerticalRetrace.ToString());
             }
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Draw
+        /****************************************************************************/
+        public void Draw()
+        {
+            if (device.IsDisposed) device = graphics.GraphicsDevice;
+            device.Clear(Color.CornflowerBlue);
+
+            if (currentCamera == null) return;
+
+            foreach (BasicMeshComponent basicMeshComponent in basicMeshComponents)
+            { 
+                basicMeshComponent.Model.Draw(basicMeshComponent.GameObject.World,
+                                              currentCamera.View,
+                                              currentCamera.Projection);
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Components Factory
+        /****************************************************************************/
+        public RenderingComponentsFactory ComponentsFactory
+        {
+            get
+            {
+                return componentsFactory;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Graphics Device
+        /****************************************************************************/
+        public GraphicsDevice Device
+        {
+            get
+            {
+                return graphics.GraphicsDevice;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Current Camera
+        /****************************************************************************/
+        public CameraComponent CurrentCamera
+        {
+            get
+            {
+                return currentCamera;
+            }
+
+            set
+            {
+                currentCamera = value;
+            }
+        }
+        /****************************************************************************/
+
 
     }
     /********************************************************************************/

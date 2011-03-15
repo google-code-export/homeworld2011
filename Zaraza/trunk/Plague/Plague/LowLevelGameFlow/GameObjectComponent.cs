@@ -1,61 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 
 /************************************************************************************/
-/// PlagueEngine.Rendering
+/// PlagueEngine.LowLevelGameFlow
 /************************************************************************************/
-namespace PlagueEngine.Rendering
+namespace PlagueEngine.LowLevelGameFlow
 {
 
     /********************************************************************************/
-    /// RenderConfig
-    /// <summary>
-    /// Klasa zawierajaca podstawowe ustawienia urządzenia renderującego. 
-    /// Przeznaczona do serializacji.
-    /// </summary>
+    ///  Component
     /********************************************************************************/
-    public class RenderConfig
-    {   
+    abstract class GameObjectComponent
+    {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public int  Width;        
-        public int  Height;       
-        public bool FullScreen;   
-        public bool Multisampling;
-        public bool VSync;
+        protected GameObjectInstance gameObject = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Constructor (1)
+        /// Constructor
         /****************************************************************************/
-        public RenderConfig()
+        public GameObjectComponent(GameObjectInstance gameObject)
         {
-            Width           = 0;
-            Height          = 0;
-            FullScreen      = false;
-            Multisampling   = false;
-            VSync           = false;            
+            this.gameObject = gameObject;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Constructor (2)
+        /// Game Object
         /****************************************************************************/
-        public RenderConfig(int width,int height,bool fullScreen,bool multisampling,bool vSync) 
+        public GameObjectInstance GameObject
         {
-            Width           = width;
-            Height          = height;
-            FullScreen      = fullScreen;
-            Multisampling   = multisampling;
-            VSync           = vSync;
+            get
+            {
+                return gameObject;
+            }
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Release Me
+        /****************************************************************************/
+        public abstract void ReleaseMe();
+        /****************************************************************************/
+
 
     }
     /********************************************************************************/

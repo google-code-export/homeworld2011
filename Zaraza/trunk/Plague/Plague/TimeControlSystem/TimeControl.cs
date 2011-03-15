@@ -56,7 +56,7 @@ namespace PlagueEngine.TimeControlSystem
         /// Tworzy nowy timer.
         /// </summary>
         /// <param name="alarm">Czas w sekundach, po ilu zostanie uruchomiony alarm.</param>
-        /// <param name="repeat">Powtarzalność alarmu. -1 : nieskończoność, 0 : brak, > 0 : krotność.</param>
+        /// <param name="repeat">Powtarzalność alarmu. -1 = nieskończoność.</param>
         /// <param name="callback">Metoda która zostanie wywołana jako alarm</param>
         /// <returns>ID Timera.</returns>         
         /****************************************************************************/
@@ -75,7 +75,7 @@ namespace PlagueEngine.TimeControlSystem
         /// Tworzy nowy timer.
         /// </summary>
         /// <param name="alarm">Czas w sekundach, po ilu zostanie uruchomiony alarm.</param>
-        /// <param name="repeat">Powtarzalność alarmu. -1 : nieskończoność, 0 : brak, > 0 : krotność.</param>
+        /// <param name="repeat">Powtarzalność alarmu. -1 = nieskończoność.</param>
         /// <param name="callback">Metoda która zostanie wywołana jako alarm</param>
         /// <returns>ID Timera.</returns>         
         /****************************************************************************/

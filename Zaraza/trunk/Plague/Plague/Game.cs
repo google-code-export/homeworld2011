@@ -1,8 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+
 using PlagueEngine.TimeControlSystem;
+using PlagueEngine.Resources;
 using PlagueEngine.Rendering;
+using PlagueEngine.LowLevelGameFlow;
+using PlagueEngine.LowLevelGameFlow.GameObjects;
+using PlagueEngine.HighLevelGameFlow;
+
 
 
 /************************************************************************************/
@@ -23,8 +29,13 @@ namespace PlagueEngine
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private String      title       = String.Empty;
-        private Renderer    renderer    = null;
+        private String              title               = String.Empty;
+        private Renderer            renderer            = null;
+        private ContentManager      contentManager      = null;
+        private GameObjectsFactory  gameObjectsFactory  = null;
+        private Level               testLevel           = null;
+
+        private readonly RenderConfig defaultRenderConfig = new RenderConfig(1024, 768, false, false, false);
         /****************************************************************************/
 
 
@@ -33,8 +44,9 @@ namespace PlagueEngine
         /****************************************************************************/
         public Game(String title)
         {
-            this.title   = title;
-            Window.Title = title;
+            this.title          = title;
+            Window.Title        = title;
+            this.IsMouseVisible = true;
 
             Diagnostics.Game                = this;
             Diagnostics.ShowDiagnostics     = true;
@@ -43,7 +55,11 @@ namespace PlagueEngine
             Diagnostics.ShowLogWindow       = true;                        
             Diagnostics.OpenLogFile("log");
             
-            renderer = new Renderer(this,new RenderConfig(1024, 768, false, false, false));
+            contentManager = new ContentManager(this,"Content");            
+            InitRenderer();
+
+            gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
+                                                        contentManager.GameObjectsDefinitions);
         }
         /****************************************************************************/
 
@@ -59,12 +75,19 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // TODO: Add your initialization logic here            
             base.Initialize();
+            
+            testLevel = new Level(gameObjectsFactory);
+            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel.lvl"));
+            
+            testLevel.PutSomeObjects();
+            contentManager.SaveLevel("TestLevel.lvl",testLevel.SaveLevel());
+
             Diagnostics.PushLog("Initialization complete");
         }
         /****************************************************************************/
-
+        
 
         /****************************************************************************/
         /// Load Content
@@ -109,7 +132,9 @@ namespace PlagueEngine
         {
             // TODO: Add your update logic here
             Diagnostics.Update(gameTime.ElapsedGameTime);
-            TimeControl.Update(gameTime.ElapsedGameTime);            
+            TimeControl.Update(gameTime.ElapsedGameTime);
+
+            testLevel.Update(gameTime.ElapsedGameTime);
             base.Update(gameTime);
         }
         /****************************************************************************/
@@ -124,7 +149,8 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Draw(GameTime gameTime)
         {
-            // TODO: Add your drawing code here            
+            // TODO: Add your drawing code here      
+            renderer.Draw();
             base.Draw(gameTime);           
         }
         /****************************************************************************/
@@ -136,6 +162,9 @@ namespace PlagueEngine
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
+            
+            contentManager.SaveDefaultProfile();
+
             Diagnostics.PushLog("Exiting");
         }
         /****************************************************************************/
@@ -157,7 +186,39 @@ namespace PlagueEngine
             }
         }
         /****************************************************************************/
-            
+
+
+        /****************************************************************************/
+        /// Init Renderer
+        /****************************************************************************/
+        private void InitRenderer()
+        {
+            RenderConfig renderConfig = null;
+            try
+            {
+                renderConfig = contentManager.LoadConfiguration<RenderConfig>();
+            }
+            catch (System.IO.IOException)
+            {
+                renderConfig = defaultRenderConfig;
+                contentManager.SaveConfiguration(defaultRenderConfig);
+            }
+            renderer = new Renderer(this, renderConfig);       
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Content Manager
+        /****************************************************************************/
+        internal ContentManager ContentManager
+        {
+            get
+            {
+                return contentManager;
+            }
+        }
+        /****************************************************************************/
         
     }
     /********************************************************************************/
