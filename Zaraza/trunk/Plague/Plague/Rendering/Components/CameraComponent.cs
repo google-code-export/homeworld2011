@@ -169,6 +169,7 @@ namespace PlagueEngine.Rendering.Components
         public void RotateX(float angle)
         {
             gameObject.World *= Matrix.CreateRotationX(angle);
+            
         }
         /****************************************************************************/
 
@@ -311,6 +312,8 @@ namespace PlagueEngine.Rendering.Components
             if (renderer.CurrentCamera == this) renderer.CurrentCamera = null;
         }
         /****************************************************************************/
+
+
 
     }
     /********************************************************************************/

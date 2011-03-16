@@ -77,6 +77,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "FreeCamera":
                     result = CreateFreeCamera(data);
                     break;
+                case "LinkedCamera":
+                    result = CreateLinkedCamera(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -112,18 +115,46 @@ namespace PlagueEngine.LowLevelGameFlow
             FreeCamera result = new FreeCamera(data.ID, data.Definition);
 
             FreeCameraData fcdata = (FreeCameraData)data;
-
-            result.Init( renderingComponentsFactory.CreateCameraComponent(result,
+            
+            result.Init(renderingComponentsFactory.CreateCameraComponent(result,
                                                                           fcdata.FoV,
                                                                           fcdata.ZNear,
                                                                           fcdata.ZFar),
-                         
+
                          inputComponentsFactory.CreateKeyboardListenerComponent(result,
                                                                                 fcdata.ActiveKeyListener),
-                         
+
                          fcdata.World,
                          fcdata.MovementSpeed,
                          fcdata.RotationSpeed);
+
+            return result;
+        }
+        /****************************************************************************/
+
+        /****************************************************************************/
+        /// Create Linked Camera
+        /****************************************************************************/
+        private LinkedCamera CreateLinkedCamera(GameObjectInstanceData data)
+        {
+            
+            LinkedCamera result = new LinkedCamera(data.ID, data.Definition);
+
+            LinkedCameraData lcdata = (LinkedCameraData)data;
+
+            result.Init(renderingComponentsFactory.CreateCameraComponent(result,
+                                                                          lcdata.FoV,
+                                                                          lcdata.ZNear,
+                                                                          lcdata.ZFar),
+
+                         inputComponentsFactory.CreateKeyboardListenerComponent(result,
+                                                                                lcdata.ActiveKeyListener),
+
+
+                         lcdata.MovementSpeed,
+                         lcdata.RotationSpeed,
+                         lcdata.position,
+                         lcdata.target);
 
             return result;
         }
