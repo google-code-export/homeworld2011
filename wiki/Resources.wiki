@@ -1,0 +1,11 @@
+#summary Opis systemu zasobów.
+
+= Resources _(namespace: [PlagueEngine].[Resources])_ =
+
+== Opis ==
+
+System pozwalający na wczytywanie zasobów, zapisywanie/wczytywanie definicji obiektów, zapisywanie/wczytywanie stanu levelu, zapisywanie/wczytywanie konfiguracji innych systemów, oraz zarządzanie profilami graczy.
+
+== Spis klas ==
+
+ * ContentManager
