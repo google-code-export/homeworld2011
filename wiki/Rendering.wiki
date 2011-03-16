@@ -10,7 +10,7 @@ Rendering jest systemem umożliwiającym renderowanie obiektów.
 
  * [Renderer]
  * [RenderConfig]
- * [RenderinComponentsFactory]
+ * [RenderingComponentsFactory]
 
 == Spis komponentów ==
 
