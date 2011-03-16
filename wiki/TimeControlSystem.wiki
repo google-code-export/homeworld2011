@@ -1,6 +1,6 @@
 #summary Opis systemu TimeControl.
 
-= TimeControlSystem _(namespace: [PlagueEngine].[TimeControlSystem])_ =
+= !TimeControlSystem _(namespace: [PlagueEngine].[TimeControlSystem])_ =
 ----
 == Opis == 
 
@@ -8,6 +8,6 @@ System pozwalający na tworzenie niezależnych, bądź zależnych zegarów oraz 
 ----
 == Spis klas ==
 
- * [TimeControl]
- * [Clock]
- * [Timer]
+ * !TimeControl
+ * !Clock
+ * !Timer
