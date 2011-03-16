@@ -1,4 +1,4 @@
 #summary Opis systemu narzędzi.
 
 = Tools _(namespace: [PlagueEngine].[Tools])_ =
-System narzędzi do tworzenia leveli i definicji obiektów. Z założenia ma być uruchamiany jako "developer mode", który pozwala na dokładanie instancji obiektów do  gry w czasie jej działania. Dostępny tylko w trybie okienkowym.
+System narzędzi do tworzenia leveli i definicji obiektów. Dodatkowo ma pozwalać na uruchomienie tzw. "developer mode", który umozliwia na dokładanie instancji obiektów do  gry w czasie jej działania. Dostępny tylko w trybie okienkowym.
