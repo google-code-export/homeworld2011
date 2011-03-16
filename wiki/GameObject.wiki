@@ -4,14 +4,14 @@
 Obiektem gry jest każdy obiekt będący elementem levelu. Składa się z odpowiednio dobranych komponentów, w zależności od przeznaczenia obiektu. Każdy obiekt posiada unikalne id. 
 
 Na pełen opis obiektu gry składają się:
- # komponenty stanowiące o funkcjonalności obiektu
+ # [GameObjectComponent komponenty] stanowiące o funkcjonalności obiektu
  # hard-kodowana logika "zachowania" obiektu
 
 Możemy wyszczególnić rodziny obiektów o wspólnych parametrach. Mówimy wtedy o definicji obiektu. 
 ----
 == !GameObjectInstance _(namespace: [PlagueEngine].[LowLevelGameFlow])_==
 
-Klasa, której obiekt reprezentuje pojedynczą unikalną instancję obiektu gry. Zawiera ID, nazwę definicji, z której obiekt korzysta, oraz macierz świata obiektu. Obiekty tej klasy są tworzone jedynie przy pomocy fabryki GameObjectsFactory. Każda klasa obiektu gry dziedziczy po tej klasie. Co więcej klasa !GameObjectInstane jest abstrakcyjna.
+Klasa, której obiekt reprezentuje pojedynczą unikalną instancję obiektu gry. Zawiera ID, nazwę definicji, z której obiekt korzysta, oraz macierz świata obiektu. Obiekty tej klasy są tworzone jedynie przy pomocy fabryki !GameObjectsFactory. Każda klasa obiektu gry dziedziczy po tej klasie. Co więcej klasa !GameObjectInstane jest abstrakcyjna.
 
 
 === Zawartość ===
@@ -64,14 +64,14 @@ Zasada działania opiera się o statyczne pola lastID i freeIDs. Za każdym raze
    Metoda zwracająca obiekt posiadająca dane wystarczające do odtworzenia obiektu.
 
  * `public void GetData(GameObjectInstanceData data)`
-   Uzupełnia obiekt danymi potrzebnymi do odtworzenia obiektu. Do wykorzystania w pochodnych klasy GameObjectInstance.
+   Uzupełnia obiekt danymi potrzebnymi do odtworzenia obiektu. Do wykorzystania w pochodnych klasy !GameObjectInstance.
 
 ==== Usuwanie obiektu ====
  * `public abstract void ReleaseComponents();`
-   Abstrakcyjna metoda, którą klasa pochodna powinna uzupełnić o metody zwalniające komponenty obiektu.
+   Abstrakcyjna metoda, którą klasa pochodna powinna uzupełnić o metody zwalniające [GameObjectComponent komponenty] obiektu.
 
  * `public void Dispose()`
-   Z interfejsu IDisposable, oznacza obiekt jako przeznaczony do usunięcia. Wywołuje ReleaseID i ReleaseComponents.
+   Z interfejsu `IDisposable`, oznacza obiekt jako przeznaczony do usunięcia. Wywołuje `ReleaseID` i `ReleaseComponents`.
 
 ----
 == !GameObjectInstanceData _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
