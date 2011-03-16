@@ -107,17 +107,18 @@ namespace PlagueEngine.HighLevelGameFlow
                 gameObjectsFactory.Create(data);
             }
 
-            FreeCameraData fcdata = new FreeCameraData();
-            fcdata.Type = typeof(FreeCamera);
-            fcdata.World = Matrix.CreateLookAt(new Vector3(-200, 300, -200), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
-            fcdata.MovementSpeed = 1;
-            fcdata.RotationSpeed = MathHelper.PiOver4/1000;
-            fcdata.FoV = MathHelper.PiOver4;
-            fcdata.ZNear = 1;
-            fcdata.ZFar = 10000;
-            fcdata.ActiveKeyListener = true;
+            LinkedCameraData lcdata = new LinkedCameraData();
+            lcdata.Type = typeof(LinkedCamera);
+            lcdata.position = new Vector3(-200, 300, -200);
+            lcdata.target = new Vector3(0, 0, 0);
+            lcdata.MovementSpeed = 0.5;
+            lcdata.RotationSpeed = MathHelper.PiOver4 / 500;
+            lcdata.FoV = MathHelper.PiOver4;
+            lcdata.ZNear = 1;
+            lcdata.ZFar = 10000;
+            lcdata.ActiveKeyListener = true;
 
-            gameObjectsFactory.Create(fcdata);
+            gameObjectsFactory.Create(lcdata);
             
         }
         /****************************************************************************/
