@@ -1,0 +1,10 @@
+#summary Opis systemu HighLevelGameFlow.
+
+= HighLevelGameFlow _(namespace: [PlagueEngine].[HighLevelGameFlow])_ =
+----
+== Opis ==
+System zarządzania przebiegiem gry, zarządza kolejnością wczytywania leveli, ustawia zadania kluczowe do wykonania misji.
+----
+== Spis klas ==
+ * Level
+ * !LevelData
