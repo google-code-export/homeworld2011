@@ -47,7 +47,31 @@ Zasada działania opiera się o statyczne pola lastID i freeIDs. Za każdym raze
  * `private static void ReleaseID(uint id)`
    Zwalnia ID z puli zajętych.
 
+==== Inicjalizator ====
+
+ * `public bool Init(uint id,String definition)`
+   Jeżeli parametr ID jest równy 0, to ID zostanie wygenerowane automatycznie. W przeciwnym razie nastąpi próba przyznania podanego ID. Jeżeli dane ID jest już w użyciu, metoda zwróci false. Drugi parametr jest nazwą definicji z jakiej korzysta obiekt. Obiekt nie musi korzystać z definicji.
+
+==== Właściwości ====
+ * `public uint ID`
+   Zwraca ID obiektu.
+ 
+ * `public String Definition`
+   Zwraca nazwę definicji obiektu.
+
+==== Zwracanie danych ====
+ * `public virtual GameObjectInstanceData GetData()`
+   Metoda zwracająca obiekt posiadająca dane wystarczające do odtworzenia obiektu.
+
+ * `public void GetData(GameObjectInstanceData data)`
+   Uzupełnia obiekt danymi potrzebnymi do odtworzenia obiektu. Do wykorzystania w pochodnych klasy GameObjectInstance.
+
+==== Usuwanie obiektu ====
+ * `public abstract void ReleaseComponents();`
+   Abstrakcyjna metoda, którą klasa pochodna powinna uzupełnić o metody zwalniające komponenty obiektu.
+
+ * `public void Dispose()`
+   Z interfejsu IDisposable, oznacza obiekt jako przeznaczony do usunięcia. Wywołuje ReleaseID i ReleaseComponents.
 
 ----
 == !GameObjectInstanceData _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
-
