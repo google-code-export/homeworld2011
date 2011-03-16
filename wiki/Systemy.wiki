@@ -13,6 +13,4 @@
    * [LowLevelGameFlow]
    * [HighLevelGameFlow]
    * [Tools]
-  * Podstawowe elementy
-   * [GameObject]
-   * [GameObjectComponent]
+  * [GameObject]
