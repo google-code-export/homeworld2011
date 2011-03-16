@@ -9,7 +9,7 @@ Na pełen opis obiektu gry składają się:
 
 Możemy wyszczególnić rodziny obiektów o wspólnych parametrach. Mówimy wtedy o definicji obiektu. 
 ----
-== !GameObjectInstance _(namespace: [PlagueEngine].[LowLevelGameFlow])_==
+== !GameObjectInstance : IDisposable _(namespace: [PlagueEngine].[LowLevelGameFlow])_==
 
 Klasa, której obiekt reprezentuje pojedynczą unikalną instancję obiektu gry. Zawiera ID, nazwę definicji, z której obiekt korzysta, oraz macierz świata obiektu. Obiekty tej klasy są tworzone jedynie przy pomocy fabryki !GameObjectsFactory. Każda klasa obiektu gry dziedziczy po tej klasie. Co więcej klasa !GameObjectInstane jest abstrakcyjna.
 
@@ -72,6 +72,30 @@ Zasada działania opiera się o statyczne pola lastID i freeIDs. Za każdym raze
 
  * `public void Dispose()`
    Z interfejsu `IDisposable`, oznacza obiekt jako przeznaczony do usunięcia. Wywołuje `ReleaseID` i `ReleaseComponents`.
-
 ----
 == !GameObjectInstanceData _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
+
+Klasa zawierająca dane potrzebne do odtworzenia danego obiektu gry. Przeznaczona do binarnej serializacji. Każda klasa pochodna po !GameObjectInstance powinna również deklarować własną klasę dziedziczącą po !GameObejctInstanceData, uzupełnioną o specyficzne dla niej dane. 
+
+----
+== !GameObjectDefinition : IXmlSerializable _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
+
+Jeżeli istnieje możliwość wyszczególnienia instancji obiektów gry danej klasy, posiadających wspólne wartości pewnych parametrów, to możemy stworzyć definicje obiektu gry przechowującą wartości tych parametrów. Do tego właśnie służy klasa !GameObjectDefinition. Zawiera ona nazwę definicji oraz słownik parametrów, na zasadzie: klucz - nawa parametru : wartość - wartość parametru. Gdzie wartość może być dowolnego typu, który oferuje serializacje xml. Definicje obiektów zapisywane są w postaci pliku xml. Nie ma potrzeby dziedziczenia po tej klasie. 
+
+=== Zawartość ===
+==== Pola ====
+ * `public String Name = String.Empty;`
+   Nazwa definicji.
+ * `public Dictionary<String, object> Properties = new Dictionary<String, object>();`
+   Słownik przechowujący właściwości definicji obiektu.
+
+==== Metody z interfejsu IXmlSerializable ====
+ * `public System.Xml.Schema.XmlSchema GetSchema()`
+   Zgodnie z dokumentacją msdn, zwraca `null` xD.
+
+ * `public void ReadXml(System.Xml.XmlReader reader)`
+   Deserializuje obiekt.
+
+ * `public void WriteXml(System.Xml.XmlWriter writer)`
+   Serializuje obiekt.
+----
