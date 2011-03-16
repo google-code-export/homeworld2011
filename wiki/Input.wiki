@@ -1,0 +1,14 @@
+#summary Opis systemu wejścia.
+
+= Input _(namespace: [PlagueEngine].[Input])_ =
+----
+== Opis ==
+System wejścia, obsługa klawiatury, myszy. Mapowanie klawiszy. 
+----
+== Spis klas ==
+ * Input
+ * !ExtendedKeyState
+ * !InputComponentsFactory
+----
+== Spis komponentów ==
+ * !KeyboardListenerComponent
