@@ -12,23 +12,6 @@ Architektura silnika jest oparta o system komponentów. Każdy podsystem niższe
 
 http://z1.przeklej.pl/prze282/c2970507000a3f2a4d80ecc8/gea3.png
 
-== Systemy ==
-
-=== Lista systemów ===
-
- * Podrzędne:
-  * [Rendering]
-  * [Audio]
-  * [Physics]
-  * [Resources]
-  * [Time Control]
-  * [GUI]
-  * [Input]
-  * [Events]
- * [LowLevelGameFlow]
- * [HighLevelGameFlow]
- * [Tools]
-
 === Realizacja ===
 
 || *Nazwa Systemu*     || *Obecny stan* ||
