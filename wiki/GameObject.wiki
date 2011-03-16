@@ -1,0 +1,53 @@
+#summary Opis korzystania i tworzenia obiektów gry.
+
+= Obiekt gry _(GameObject)_ =
+Obiektem gry jest każdy obiekt będący elementem levelu. Składa się z odpowiednio dobranych komponentów, w zależności od przeznaczenia obiektu. Każdy obiekt posiada unikalne id. 
+
+Na pełen opis obiektu gry składają się:
+ # komponenty stanowiące o funkcjonalności obiektu
+ # hard-kodowana logika "zachowania" obiektu
+
+Możemy wyszczególnić rodziny obiektów o wspólnych parametrach. Mówimy wtedy o definicji obiektu. 
+----
+== !GameObjectInstance _(namespace: [PlagueEngine].[LowLevelGameFlow])_==
+
+Klasa, której obiekt reprezentuje pojedynczą unikalną instancję obiektu gry. Zawiera ID, nazwę definicji, z której obiekt korzysta, oraz macierz świata obiektu. Obiekty tej klasy są tworzone jedynie przy pomocy fabryki GameObjectsFactory. Każda klasa obiektu gry dziedziczy po tej klasie. Co więcej klasa !GameObjectInstane jest abstrakcyjna.
+
+
+=== Zawartość ===
+==== Pola ====
+
+ * `internal Matrix World;`
+    Macierz świata obiektu. Przetrzymuje położenie, rotacje i skalę obiektu.
+
+ * `private uint id = 0;` 
+   Unikalny identyfikator obiektu.
+
+ * `private String definition = String.Empty;`
+   Nazwa definicji rodziny obiektów, do której należy dana instancja.
+
+ * `private bool isDisposed = false;` 
+   Flaga określająca czy obiekt został przeznaczony do usunięcia.
+
+==== System przyznawania ID ===
+Zasada działania opiera się o statyczne pola lastID i freeIDs. Za każdym razem gdy tworzony jest nowy obiekt, wartość lastID jest inkrementowana, a następnie przyznawana obiektowi jako jego ID. W przypadku gdy obiekt jest usuwany, jego ID jest dodawane do listy freeIDs. W momencie gdy dodajemy nowy obiekt i istnieje jakieś ID na liście, to zamiast inkrementować lastID, wyciągamy je z listy freeIDs.
+
+ * `private static uint lastID = 0;`
+   Ostatnie przyznane ID obiektu. Statyczne pole pomocnicze, pozwalające w łatwy sposób rozdawać unikalne ID kolejny obiektom.
+ 
+ * `private static List<uint> freeIDs = new List<uint>();`
+   Statyczna lista wolnych ID, mniejszych niż ostatnio przyznane ID.
+
+ * `private static uint GenerateID()` 
+   Generuje nowe ID, według opisanego wyżej schematu.
+
+ * `private static bool PickID(uint id)`
+   Pozwala na przyznanie danego przez nas ID bez naruszenia ogólnego schematu ich generowania. Zwraca informację o tym czy dane ID może zostać wykorzystane.
+
+ * `private static void ReleaseID(uint id)`
+   Zwalnia ID z puli zajętych.
+
+
+----
+== !GameObjectInstanceData _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
+
