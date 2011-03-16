@@ -1,0 +1,101 @@
+#summary Tworzenie własnego obiektu gry w trzech prostych krokach.
+
+= Tworzenie własnego obiektu gry =
+
+== Krok 1. == 
+
+ * Tworzymy własną klasę dziedziczącą po [GameObject GameObejctInstance].
+{{{
+class MyGameObject : GameObjectInstance
+{
+
+}
+}}}
+
+ * Dokładamy komponenty i zmienne z których będziemy korzystać.
+{{{
+class MyGameObject: GameObjectInstance
+{
+   private SomeComponent component = null;
+   private int turbo = 0;
+}
+}}}
+
+ * Tworzymy metodę `Init` inicjalizującą zmienne i komponenty naszej klasy.
+{{{
+public void Init(SomeComponent component,int turbo)
+{
+   this.component = component;
+   this.turbo = turbo;
+}
+}}}
+
+ * Nadpisujemy metodę `ReleaseComponents`
+{{{
+public override void ReleaseComponents()
+{
+   component.ReleaseMe();
+}
+}}}
+
+== Krok 2. == 
+ * Najlepiej w tym samym pliku tworzymy klasę zwierającą parametry naszej klasy obiektu gry, niezbędne do jej utworzenia/odtworzenia.
+{{{
+[Serializable]
+public class MyGameOebjctData : GameObjectInstanceData
+{
+    public int Turbo = 0;
+}
+}}}
+
+ * Nadpisujemy metodę `GetData` w naszej klasie.
+{{{
+public override GameObjectInstanceData GetData()
+{
+    MyGameObjectData data = new MyGameObjectData();
+    GetData(data);
+    data.Turbo = turbo;
+    return data;
+}
+}}}
+
+== Krok 3. == 
+ * W klasie !GameObjectsFactory dopisujemy metodę odpowiedzialną za tworzenie obiektów naszej klasy obiektów gry. Tutaj również możemy pobierać dane z definicji obiektu. Metoda powinna zostać stworzona według następującego schematu:
+{{{
+private MyGameObject CreateMyGameObject(GameObjectInstanceData data)
+{
+    MyGameObject result = new MyGameObject(); // Tworzymy obiekt naszej klasy
+
+    if (!DefaultObjectInit(result, data)) return result = null; // Sprawdzamy czy jest możliwe utworzenie obeiktu o zadanym id.
+
+    MyGameObjectData mydata = (MyGameObjectData)data; // rzutujemy otrzymaną strukturę z danymi obiektu na naszą.
+    
+    result.Init(SomeComponentsFactory.CreateSomeComponent(result),mydata.Turbo);
+
+    return result;
+}
+}}}
+
+ * Nadal będąc w klasie `!GameObjectsFactory` dopisujemy obsługę swojej metody do `switch`'a znajdującego się w metodzie `Create`.
+{{{
+public GameObjectInstance Create(GameObjectInstanceData data)
+{
+    GameObjectInstance result = null;
+            
+    switch (data.Type.Name)
+    {
+    case "MyGameObject":                      // Dopisana obsługa
+        result = CreateMyGameObject(data);    // naszej klasy obiektu gry
+        break;                                //
+    }
+
+    if (result == null) return null;
+
+    if (gameObjects != null) gameObjects.Add(result.ID, result);
+
+    return result;
+}
+}}}
+
+== Podsumowanie ==
+Wykonując powyższe kroki jesteśmy w stanie stworzyć dowolny obiekt gry, który już może zostać utworzony i możemy testować jego działanie w kontekście gry. Obiekt może być już zapisywany/odczytywany bez dopisywania żadnego dodatkowego kodu :)
