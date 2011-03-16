@@ -9,5 +9,5 @@ System pozwalający na tworzenie niezależnych, bądź zależnych zegarów oraz 
 == Spis klas ==
 
  * !TimeControl
- * !Clock
- * !Timer
+ * Clock
+ * Timer
