@@ -70,7 +70,7 @@ private MyGameObject CreateMyGameObject(GameObjectInstanceData data)
 
     MyGameObjectData mydata = (MyGameObjectData)data; // rzutujemy otrzymaną strukturę z danymi obiektu na naszą.
     
-    result.Init(SomeComponentsFactory.CreateSomeComponent(result),mydata.Turbo);
+    result.Init(SomeComponentsFactory.CreateSomeComponent(result),mydata.Turbo); // Wywołujemy metodą inicjalizującą nasz obiekt
 
     return result;
 }
