@@ -8,6 +8,9 @@ Na pełen opis obiektu gry składają się:
  # hard-kodowana logika "zachowania" obiektu
 
 Możemy wyszczególnić rodziny obiektów o wspólnych parametrach. Mówimy wtedy o definicji obiektu. 
+
+[3Kroki Tworzenie własnego obiektu gry w trzech prostych krokach.]
+
 ----
 == Lista dostępnych obiektów gry ==
  * StaticMesh
