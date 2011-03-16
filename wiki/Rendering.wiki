@@ -1,0 +1,18 @@
+#summary Opis systemu renderingu
+
+= Rendering _(namespace: [PlagueEngine].[Rendering])_ =
+
+== Opis ==
+
+Rendering jest systemem umożliwiającym renderowanie obiektów.
+
+== Spis klas ==
+
+ * [Renderer]
+ * [RenderConfig]
+ * [RenderinComponentsFactory]
+
+== Spis komponentów ==
+
+ * [BasicMeshComponent]
+ * [CameraComponent]
