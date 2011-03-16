@@ -25,9 +25,7 @@ namespace PlagueEngine.LowLevelGameFlow
         private  uint   id         = 0;        
         private  String definition = String.Empty;
         private  bool   isDisposed = false;
-
-        protected bool requireUpdate = false;
-
+                
         private static uint       lastID    = 0;
         private static List<uint> freeIDs   = new List<uint>();
         /****************************************************************************/
@@ -139,7 +137,6 @@ namespace PlagueEngine.LowLevelGameFlow
             data.Type          = this.GetType();
             data.World         = this.World;
             data.Definition    = this.definition;
-            data.RequireUpdate = this.requireUpdate;
             
             return data;
         }
@@ -155,7 +152,6 @@ namespace PlagueEngine.LowLevelGameFlow
             data.Type          = this.GetType();
             data.World         = this.World;
             data.Definition    = this.definition;
-            data.RequireUpdate = this.requireUpdate;
         }
         /****************************************************************************/
 
@@ -173,19 +169,6 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         
         
-        /****************************************************************************/
-        /// Require Update
-        /****************************************************************************/
-        public bool RequireUpdate
-        {
-            get
-            {
-                return requireUpdate;
-            }
-        }
-        /****************************************************************************/
-
-
         /****************************************************************************/
         /// Update
         /****************************************************************************/
@@ -228,7 +211,6 @@ namespace PlagueEngine.LowLevelGameFlow
         public Type     Type            = null;
         public String   Definition      = String.Empty;
         public Matrix   World           = Matrix.Identity;
-        public bool     RequireUpdate   = false;
     }
     /********************************************************************************/
 

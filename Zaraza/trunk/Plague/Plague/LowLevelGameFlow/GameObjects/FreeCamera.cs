@@ -41,7 +41,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public FreeCamera(uint id, String definition) : base(id, definition)
         {
-            requireUpdate = true;
         }
         /****************************************************************************/
 
