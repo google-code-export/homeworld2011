@@ -168,8 +168,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void RotateX(float angle)
         {
-            gameObject.World *= Matrix.CreateRotationX(angle);
-            
+            gameObject.World *= Matrix.CreateRotationX(angle);            
         }
         /****************************************************************************/
 

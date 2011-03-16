@@ -96,7 +96,9 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         private StaticMesh CreateStaticMesh(GameObjectInstanceData data)
         {
-            StaticMesh result = new StaticMesh(data.ID,data.Definition);
+            StaticMesh result = new StaticMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;            
 
             result.Init( renderingComponentsFactory.CreateBasicMeshComponent ( result, 
                                                                                (String)gameObjectsDefinitions[data.Definition].Properties["Model"]), 
@@ -112,7 +114,9 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         private FreeCamera CreateFreeCamera(GameObjectInstanceData data)
         {
-            FreeCamera result = new FreeCamera(data.ID, data.Definition);
+            FreeCamera result = new FreeCamera();
+
+            if (!DefaultObjectInit(result, data)) return result = null; 
 
             FreeCameraData fcdata = (FreeCameraData)data;
             
@@ -132,13 +136,15 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
         /****************************************************************************/
         /// Create Linked Camera
         /****************************************************************************/
         private LinkedCamera CreateLinkedCamera(GameObjectInstanceData data)
-        {
-            
-            LinkedCamera result = new LinkedCamera(data.ID, data.Definition);
+        {            
+            LinkedCamera result = new LinkedCamera();
+         
+            if (!DefaultObjectInit(result, data)) return result = null; 
 
             LinkedCameraData lcdata = (LinkedCameraData)data;
 
@@ -159,6 +165,23 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
+
+        
+        /****************************************************************************/
+        /// Default Object Init
+        /****************************************************************************/
+        private bool DefaultObjectInit(GameObjectInstance gameObject, GameObjectInstanceData data)
+        {
+            if (!gameObject.Init(data.ID, data.Definition))
+            {
+                Diagnostics.PushLog("Creating Object " + data.Type + ", id: " + data.ID +
+                                    ", definition: " + data.Definition + ", failed.");
+                return false;
+            }
+            return true;
+        }
+        /****************************************************************************/
+
 
     }
     /********************************************************************************/    

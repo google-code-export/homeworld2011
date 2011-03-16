@@ -11,11 +11,21 @@ using PlagueEngine.Input.Components;
 using PlagueEngine.TimeControlSystem;
 
 
+/************************************************************************************/
+/// PlagueEngine.LowLevelGameFlow.GameObjects
+/************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
+
+    /********************************************************************************/
+    /// LinkedCamera
+    /********************************************************************************/
     class LinkedCamera : GameObjectInstance
     {
 
+        /****************************************************************************/
+        /// Fields
+        /****************************************************************************/
         private CameraComponent cameraComponent= null;
         private KeyboardListenerComponent keyboardListenerComponent = null;
         private double movementSpeed = 0;
@@ -25,13 +35,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Vector3 target = Vector3.Zero;
 
         private Clock clock = TimeControl.CreateClock();
+        /****************************************************************************/
 
 
-        public LinkedCamera(uint id, String definition) : base(id,definition)
-        {
-        }
-
-        
+        /****************************************************************************/
+        /// Initialization
+        /****************************************************************************/
         public void Init(CameraComponent cameraComponent,
                          KeyboardListenerComponent keyboardListenerComponent,
                          double movementSpeed,
@@ -53,10 +62,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                    Keys.D, Keys.Q, Keys.E);
 
         }
+        /****************************************************************************/
 
 
-
-
+        /****************************************************************************/
+        /// On Key
+        /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
             if (!state.IsDown()) return;
@@ -119,17 +130,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             }
         }
+        /****************************************************************************/
 
 
-
+        /****************************************************************************/
+        /// Release Components
+        /****************************************************************************/
         public override void ReleaseComponents()
         {
             cameraComponent.ReleaseMe();
             keyboardListenerComponent.ReleaseMe();
         }
+        /****************************************************************************/
 
 
-
+        /****************************************************************************/
+        /// Get Data
+        /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
             LinkedCameraData data = new LinkedCameraData();
@@ -146,10 +163,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             return data;
         }
-
+        /****************************************************************************/
 
     }
+    /********************************************************************************/
 
+
+    /********************************************************************************/
+    /// LinkedCameraData
+    /********************************************************************************/
     [Serializable]
     public class LinkedCameraData : GameObjectInstanceData
     {
@@ -162,4 +184,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Vector3 position;
         public Vector3 target;
     }
+    /********************************************************************************/
+
 }
+/************************************************************************************/
