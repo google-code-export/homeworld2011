@@ -1,0 +1,13 @@
+#summary Opis systemu TimeControl.
+
+= TimeControlSystem _(namespace: [PlagueEngine].[TimeControlSystem])_ =
+----
+== Opis == 
+
+System pozwalający na tworzenie niezależnych, bądź zależnych zegarów oraz timerów.
+----
+== Spis klas ==
+
+ * TimeControl
+ * Clock
+ * Timer
