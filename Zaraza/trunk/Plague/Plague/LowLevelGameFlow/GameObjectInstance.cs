@@ -32,18 +32,19 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
         /****************************************************************************/
-        /// Constructor
+        /// Init
         /****************************************************************************/
-        public GameObjectInstance(uint id,String definition)
+        public bool Init(uint id,String definition)
         {
             if (id == 0) this.id = GenerateID();
             else
             {
                 if (PickID(id)) this.id = id;
-                else throw new Exception("Objects ID confilct!");
+                return false;
             }
 
             this.definition = definition;
+            return true;
         }
         /****************************************************************************/
 
