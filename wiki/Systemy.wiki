@@ -1,6 +1,6 @@
 #summary Lista systemów
 
-=== [PlagueEngine Silnik] ===
+== [PlagueEngine Silnik] ==
 
 === Systemy ===
 
