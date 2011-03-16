@@ -99,3 +99,5 @@ Jeżeli istnieje możliwość wyszczególnienia instancji obiektów gry danej kl
  * `public void WriteXml(System.Xml.XmlWriter writer)`
    Serializuje obiekt.
 ----
+== !GameObjectsFactory _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
+Fabryka obiektów gry. Jedna z najważniejszych klas. Podstawową funkcjonalnością jest tworzenie obiektów gry na podstawie podanego !GameObjectInstanceData. Zawiera referencje do fabryk komponentów, referencje do słownika z definicjami obiektów, oraz referencje do kontenera z obiektami gry, po to aby móc tworzyć obiekty posiadające odwołanie do innych obiektów.
