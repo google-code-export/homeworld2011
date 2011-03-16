@@ -31,18 +31,18 @@ http://z1.przeklej.pl/prze282/c2970507000a3f2a4d80ecc8/gea3.png
 
 === Realizacja ===
 
-|| *Nazwa Systemu*   || *Obecny stan* ||
-|| Rendering         || <font color="orange">tylko podstawy</font> ||
-|| Audio             || <font color="red">*brak*</font> ||
-|| Physics           || <font color="red">*brak*</font> ||
-|| Resources         || <font color="blue">w trakcie</font> ||
-|| Time Control      || <font color="green">*Ukończony?*</font> ||
-|| GUI               || <font color="red">*brak*</font> ||
-|| Input             || <font color="orange">tylko podstawy</font> ||
-|| Events            || <font color="red">*brak*</font> ||
-|| LowLevelGameFlow  || <font color="orange">tylko podstawy</font> ||
-|| HighLevelGameFlow || <font color="orange">tylko podstawy</font> ||
-|| Tools             || <font color="red">*brak*</font> ||
+|| *Nazwa Systemu*     || *Obecny stan* ||
+|| [Rendering]         || <font color="orange">tylko podstawy</font> ||
+|| [Audio]             || <font color="red">*brak*</font> ||
+|| [Physics]           || <font color="red">*brak*</font> ||
+|| [Resources]         || <font color="blue">w trakcie</font> ||
+|| [Time Control]      || <font color="green">*Ukończony?*</font> ||
+|| [GUI]               || <font color="red">*brak*</font> ||
+|| [Input]             || <font color="orange">tylko podstawy</font> ||
+|| [Events]            || <font color="red">*brak*</font> ||
+|| [LowLevelGameFlow]  || <font color="orange">tylko podstawy</font> ||
+|| [HighLevelGameFlow] || <font color="orange">tylko podstawy</font> ||
+|| [Tools]             || <font color="red">*brak*</font> ||
 
 == Zewnętrzne biblioteki/frameworki ==
 
