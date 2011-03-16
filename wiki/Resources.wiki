@@ -8,4 +8,4 @@ System pozwalający na wczytywanie zasobów, zapisywanie/wczytywanie definicji o
 ----
 == Spis klas ==
 
- * ContentManager
+ * [ContentManager]
