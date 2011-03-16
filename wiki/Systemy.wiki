@@ -6,7 +6,7 @@
    * [Audio]
    * [Physics]
    * [Resources]
-   * [Time Control]
+   * [TimeControl]
    * [GUI]
    * [Input]
    * [Events]
