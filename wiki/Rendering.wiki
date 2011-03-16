@@ -8,11 +8,11 @@ Rendering jest systemem umożliwiającym renderowanie obiektów.
 ----
 == Spis klas ==
 
- * [Renderer]
- * [RenderConfig]
- * [RenderingComponentsFactory]
+ * Renderer
+ * !RenderConfig
+ * !RenderingComponentsFactory
 ----
 == Spis komponentów ==
 
- * [BasicMeshComponent]
- * [CameraComponent]
+ * !BasicMeshComponent
+ * !CameraComponent
