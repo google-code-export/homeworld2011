@@ -14,3 +14,4 @@ System zarządzający "nisko" poziomowym przebiegiem gry. Składa się głównie
 == Spis obiektów ==
  * !StaticMesh
  * !FreeCamera
+ * !LinkedCamera
