@@ -1,22 +1,18 @@
 #summary Lista systemów
 
-== [PlagueEngine Silnik] ==
-
-=== Systemy ===
-
- * [Rendering]
- * [Audio]
- * [Physics]
- * [Resources]
- * [Time Control]
- * [GUI]
- * [Input]
- * [Events]
- * [LowLevelGameFlow]
- * [HighLevelGameFlow]
- * [Tools]
-
-=== Podstawowe elementy ===
-
- * [GameObject]
- * [GameObjectComponent]
+ * [PlagueEngine Silnik] 
+  * Systemy
+   * [Rendering]
+   * [Audio]
+   * [Physics]
+   * [Resources]
+   * [Time Control]
+   * [GUI]
+   * [Input]
+   * [Events]
+   * [LowLevelGameFlow]
+   * [HighLevelGameFlow]
+   * [Tools]
+  * Podstawowe elementy
+   * [GameObject]
+   * [GameObjectComponent]
