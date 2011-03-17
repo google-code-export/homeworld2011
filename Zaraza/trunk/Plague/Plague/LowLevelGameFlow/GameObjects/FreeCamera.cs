@@ -22,7 +22,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     class FreeCamera : GameObjectInstance
     {
-
+        
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
@@ -66,6 +66,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnKey(Keys key, ExtendedKeyState state)
         {
             if (!state.IsDown()) return;
+
 
             switch (key)
             { 
@@ -116,6 +117,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case Keys.Left:
                     cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
                     break;
+
             }
         }
         /****************************************************************************/
