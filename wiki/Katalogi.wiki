@@ -1,0 +1,19 @@
+#summary Struktura katalogów.
+
+= Struktura katalogów =
+
+
+ * <font color="brown">\</font>
+  * Plague.exe
+  * <font color="brown">Content</font>
+   * <font color="grey">_zasoby XNA_</font>
+  * <font color="brown">Data</font>
+   * !ObjectsDefinitions.xml
+   * <font color="brown">Levels</font>
+    * <font color="grey">_levele w postaci plików .lvl_</font>
+  * <font color="brown">Profiles</font>
+   * <font color="brown">Default</font>
+    * !PlagueEngine.Rendering.!RenderConfig.xml
+   * <font color="grey">_katalogi z nazwami profili_</font>
+  * <font color="brown">log</font>
+   * <font color="grey">_logi w postaci plików .txt_</font>
