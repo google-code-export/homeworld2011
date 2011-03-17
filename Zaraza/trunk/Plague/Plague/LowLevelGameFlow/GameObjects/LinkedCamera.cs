@@ -28,6 +28,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private CameraComponent cameraComponent= null;
         private KeyboardListenerComponent keyboardListenerComponent = null;
+        private MouseListenerComponent mouselistenerComponent = null;
+
         private double movementSpeed = 0;
         private double rotationSpeed = 0;
 
@@ -43,6 +45,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(CameraComponent cameraComponent,
                          KeyboardListenerComponent keyboardListenerComponent,
+                         MouseListenerComponent mouseListenerComponent,
                          double movementSpeed,
                          double rotationSpeed,
                          Vector3 position,
@@ -50,7 +53,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             this.cameraComponent            = cameraComponent;
             this.keyboardListenerComponent  = keyboardListenerComponent;
-        
+            this.mouselistenerComponent     = mouseListenerComponent;
+
             this.movementSpeed              = movementSpeed;
             this.rotationSpeed              = rotationSpeed;
 
@@ -61,13 +65,33 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.keyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,
                                                    Keys.D, Keys.Q, Keys.E);
 
+
+            this.mouselistenerComponent.subscribeKeys(onMouseKey, MouseKeyAction.LeftClick);
+
         }
         /****************************************************************************/
-
+    
+        private void onMouseKey(MouseKeyAction mouseKeyAction,ExtendedMouseKeyState mouseKeyState)
+        {
+            Vector3 up = Vector3.Up;
+            switch (mouseKeyAction)
+            {
+                case MouseKeyAction.LeftClick:
+                    if (mouseKeyState.IsDown())
+                    {
+                        position.X += 10;
+                        cameraComponent.LookAt(ref position, ref target, ref up);
+                    }
+                    break;
+            }
+        }
 
         /****************************************************************************/
         /// On Key
         /****************************************************************************/
+            
+        
+
         private void OnKey(Keys key, ExtendedKeyState state)
         {
             if (!state.IsDown()) return;
@@ -87,28 +111,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             position += direction * (float)(movementSpeed * clock.DeltaTime.TotalMilliseconds);
                             target += direction * (float)(movementSpeed * clock.DeltaTime.TotalMilliseconds);
                             
-                            cameraComponent.LookAt(ref position,ref target,ref Up);
+                            
                             break;
 
                 case Keys.S:
                             position -= direction * (float)(movementSpeed * clock.DeltaTime.TotalMilliseconds);
                             target -= direction * (float)(movementSpeed * clock.DeltaTime.TotalMilliseconds);
                             
-                            cameraComponent.LookAt(ref position,ref target,ref Up);
+                            
                             break;
 
                 case Keys.A:
                             position += perpendicular * (float)(movementSpeed * clock.DeltaTime.TotalMilliseconds);
                             target += perpendicular * (float)(movementSpeed * clock.DeltaTime.TotalMilliseconds);
                             
-                            cameraComponent.LookAt(ref position,ref target,ref Up);
+                            
                             break;
 
                 case Keys.D:
                             position -= perpendicular * (float)(movementSpeed * clock.DeltaTime.TotalMilliseconds);
                             target -= perpendicular * (float)(movementSpeed * clock.DeltaTime.TotalMilliseconds);
                             
-                            cameraComponent.LookAt(ref position,ref target,ref Up);
+                            
                             break;
 
                 case Keys.Q:
@@ -116,7 +140,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     position = Vector3.Transform(position, Matrix.CreateRotationY((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds)));
                     position += target;
                     
-                    cameraComponent.LookAt(ref position,ref target,ref Up);
+                    
                     break;
 
                 case Keys.E:
@@ -124,11 +148,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     position = Vector3.Transform(position, Matrix.CreateRotationY((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds)*-1));
                     position += target;
                     
-                    cameraComponent.LookAt(ref position,ref target,ref Up);
+                    
                     break;
 
 
             }
+            cameraComponent.LookAt(ref position, ref target, ref Up);
         }
         /****************************************************************************/
 
@@ -140,6 +165,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             cameraComponent.ReleaseMe();
             keyboardListenerComponent.ReleaseMe();
+            mouselistenerComponent.ReleaseMe();
         }
         /****************************************************************************/
 
@@ -158,6 +184,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ZNear = this.cameraComponent.ZNear;
             data.ZFar = this.cameraComponent.ZFar;
             data.ActiveKeyListener = this.keyboardListenerComponent.Active;
+            data.ActiveMouseListener = this.mouselistenerComponent.Active;
             data.position = this.position;
             data.target = this.target;
 
@@ -181,6 +208,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float ZNear = 0;
         public float ZFar = 0;
         public bool ActiveKeyListener = false;
+        public bool ActiveMouseListener = false;
         public Vector3 position;
         public Vector3 target;
     }
