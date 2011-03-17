@@ -99,3 +99,30 @@ public GameObjectInstance Create(GameObjectInstanceData data)
 
 == Podsumowanie ==
 Wykonując powyższe kroki jesteśmy w stanie stworzyć dowolny obiekt gry, który już może zostać utworzony i możemy testować jego działanie w kontekście gry. Obiekt może być już zapisywany/odczytywany bez dopisywania żadnego dodatkowego kodu :)
+
+----
+
+== Aneks: dodawanie definicji obiektu ==
+ * Obiekt klasy `ContentManager` zawiera kontener z definicjami obiektów. Aby dodać własną definicje należałoby się do niego dostać.
+{{{
+GameObjectDefinition god = new GameObjectDefinition(); // Tworzymy nowy obiekt definicji
+god.Name = "MyDefinition"; // Nadajemy nazwę definicji
+god.Properties.Add("Turbo", 5); // Dodajemy parametry definicji
+gameObjectsDefinitions.Add(god.Name,god); // Dodajemy definicje do zbioru definicji
+}}}
+
+ * Korzystanie z definicji podczas tworzenia obiektu w `GameObjectsFactory`
+{{{
+private MyGameObject CreateMyGameObject(GameObjectInstanceData data)
+{
+    MyGameObject result = new MyGameObject(); // Tworzymy obiekt naszej klasy
+
+    if (!DefaultObjectInit(result, data)) return result = null; // Sprawdzamy czy jest możliwe utworzenie obeiktu o zadanym id.
+
+    MyGameObjectData mydata = (MyGameObjectData)data; // rzutujemy otrzymaną strukturę z danymi obiektu na naszą.
+    
+    result.Init(SomeComponentsFactory.CreateSomeComponent(result),(int)gameObjectsDefinitions[data.Definition].Properties["Turbo"]); // Wywołujemy metodą inicjalizującą nasz obiekt, parametr Turbo pobieramy z definicji
+
+    return result;
+}
+}}}
