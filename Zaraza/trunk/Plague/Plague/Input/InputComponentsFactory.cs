@@ -44,6 +44,10 @@ namespace PlagueEngine.Input
         }
         /****************************************************************************/
 
+        public MouseListenerComponent CreateMouseListenerComponent(GameObjectInstance gameObject, bool active)
+        {
+            return new MouseListenerComponent(gameObject, input, active);
+        }
     }
     /********************************************************************************/
 
