@@ -118,7 +118,10 @@
     <Compile Include="HighLevelGameFlow\Level.cs" />
     <Compile Include="HighLevelGameFlow\LevelData.cs" />
     <Compile Include="Input\Components\KeyboardListenerComponent.cs" />
-    <Compile Include="Input\ExtendedKeyState.cs" />
+    <Compile Include="Input\Components\MouseListenerComponent.cs" />
+    <Compile Include="Input\Components\ExtendedKeyState.cs" />
+    <Compile Include="Input\Components\ExtendedMouseKeyState.cs" />
+    <Compile Include="Input\Components\ExtendedMouseMovementState.cs" />
     <Compile Include="Input\Input.cs" />
     <Compile Include="Input\InputComponentsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectComponent.cs" />
