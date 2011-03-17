@@ -76,7 +76,7 @@ private MyGameObject CreateMyGameObject(GameObjectInstanceData data)
 }
 }}}
 
- * Nadal będąc w klasie `!GameObjectsFactory` dopisujemy obsługę swojej metody do `switch`'a znajdującego się w metodzie `Create`.
+ * Nadal będąc w klasie `GameObjectsFactory` dopisujemy obsługę swojej metody do `switch`'a znajdującego się w metodzie `Create`.
 {{{
 public GameObjectInstance Create(GameObjectInstanceData data)
 {
