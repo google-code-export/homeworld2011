@@ -14,5 +14,4 @@
    * [HighLevelGameFlow]
    * [Tools]
   * [GameObject]
-
- * [Katalogi Struktura katalgów]
+  * [Katalogi Struktura katalogów]
