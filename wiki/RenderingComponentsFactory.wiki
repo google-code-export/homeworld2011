@@ -1,0 +1,26 @@
+#summary Opis klasy tworzącej komponenty systemu renderingu.
+
+= RenderingComponentsFactory _(namespace: [PlagueEngine].[Rendering])_ =
+----
+
+== Opis ==
+
+Klasa przeznaczona do tworzeni komponentów systemu renderingu.
+----
+
+== Metody tworzące komponenty ==
+ * `GameObjectInstance gameObject` - parametr występujący w każdej metodzie, określa obiekt gry pod który komponent jest podpinany.
+
+=== BasicMeshComponent ===
+{{{
+public BasicMeshComponent CreateBasicMeshComponent(GameObjectInstance gameObject, String asset)
+}}}
+ * `String asset` - nazwa assetu bedącego modelem, którego chcemy używać
+
+=== CameraComponent ===
+{{{
+public CameraComponent CreateCameraComponent(GameObjectInstance gameObject, float fov, float zNear, float zFar)
+}}}
+ * `float fov` - pole widzenia kamery podane w radianach
+ * `float zNear` -  odległość bliskiej płaszczyzny przycinania od kamery
+ * `float zFar` - odległość dalekiej płaszczyzny przycinania od kamery
