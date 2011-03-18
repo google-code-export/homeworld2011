@@ -80,7 +80,7 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         /// Subscribe Keys
         /****************************************************************************/
-        public void subscribeKeys(OnMouseKey onMouseKey,params MouseKeyAction[] mouseKeyAction)
+        public void SubscribeKeys(OnMouseKey onMouseKey,params MouseKeyAction[] mouseKeyAction)
         {
             foreach (MouseKeyAction mouseKey in mouseKeyAction)
             {
@@ -93,12 +93,32 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         /// Subscribe Mouse Move
         /****************************************************************************/
-        public void subscribeMouseMove(OnMouseMove onMouseMove, params MouseMoveAction[] mouseMoveAction)
+        public void SubscribeMouseMove(OnMouseMove onMouseMove, params MouseMoveAction[] mouseMoveAction)
         {
             foreach(MouseMoveAction mouseAction in mouseMoveAction)
             {
                 input.SubscribeMouseMoveListener(this,mouseAction,onMouseMove);
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Lock Cursor
+        /****************************************************************************/
+        public void LockCursor()
+        {
+            input.LockCursor();    
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Unlock Cursor
+        /****************************************************************************/
+        public void UnlockCursor()
+        {
+            input.UnlockCursor();
         }
         /****************************************************************************/
 

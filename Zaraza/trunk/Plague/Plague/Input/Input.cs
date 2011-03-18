@@ -123,17 +123,20 @@ namespace PlagueEngine.Input
         private Dictionary<MouseKeyAction,List<MouseKeyListener>>   mouseKeyListeners  = new Dictionary<MouseKeyAction,List<MouseKeyListener>>();
         private Dictionary<MouseMoveAction,List<MouseMoveListener>> mouseMoveListeners = new Dictionary<MouseMoveAction,List<MouseMoveListener>>();
 
+        private Game                   game;
         private InputComponentsFactory componentsFactory;
         private KeyboardState          oldKeyboardState;
         private MouseState             oldMouseState;
+        private int                    cursorLock;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Input()
+        public Input(Game game)
         {
+            this.game         = game;
             componentsFactory = new InputComponentsFactory(this);
         }
         /****************************************************************************/
@@ -313,19 +316,20 @@ namespace PlagueEngine.Input
 
                     case MouseKeyAction.LeftClick:
                         down=(state.LeftButton == ButtonState.Pressed ? true : false);
-                        changed=(down==(oldMouseState.LeftButton==ButtonState.Pressed) ? true : false);
+                        changed=(down==(oldMouseState.LeftButton != state.LeftButton) ? true : false);
                         break;
 
                     case MouseKeyAction.RightClick:
                         down=(state.RightButton == ButtonState.Pressed ? true : false);
-                        changed=(down==(oldMouseState.RightButton==ButtonState.Pressed) ? true : false);
+                        changed = (down == (oldMouseState.RightButton != state.RightButton) ? true : false);
                         break;
 
                     case MouseKeyAction.MiddleClick:
                         down=(state.MiddleButton == ButtonState.Pressed ? true : false);
-                        changed=(down==(oldMouseState.MiddleButton==ButtonState.Pressed) ? true : false);
+                        changed=(oldMouseState.MiddleButton != state.MiddleButton? true : false);
                         break;
                 }
+
 
                 mouseKeyState=new ExtendedMouseKeyState(down,changed);
                 foreach(MouseKeyListener mouseKeyListener in mouseKeyListeners[mouseKeyAction] )
@@ -334,7 +338,8 @@ namespace PlagueEngine.Input
                 }
             }
 
-            oldMouseState=state;
+            if (cursorLock > 0) Mouse.SetPosition(oldMouseState.X, oldMouseState.Y);
+            else oldMouseState = state;
         }
         /****************************************************************************/
 
@@ -382,6 +387,33 @@ namespace PlagueEngine.Input
             }
 
             oldKeyboardState = state;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Lock Cursor
+        /****************************************************************************/
+        public void LockCursor()
+        {
+            if (cursorLock == 0)
+            {
+                oldMouseState = Mouse.GetState();
+                game.IsMouseVisible = false;
+            }
+
+            ++cursorLock;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Unlock Cursor
+        /****************************************************************************/
+        public void UnlockCursor()
+        {
+            if (cursorLock != 0) --cursorLock;             
+            if (cursorLock == 0) game.IsMouseVisible = true;
         }
         /****************************************************************************/
 

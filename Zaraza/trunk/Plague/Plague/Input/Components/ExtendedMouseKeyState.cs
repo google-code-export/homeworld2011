@@ -29,7 +29,7 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         public ExtendedMouseKeyState(bool isDown, bool changed)
         {
-            this.isDown = isDown;
+            this.isDown  = isDown;
             this.changed = changed;
         }
         /****************************************************************************/
