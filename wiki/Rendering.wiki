@@ -14,5 +14,5 @@ Rendering jest systemem umożliwiającym renderowanie obiektów.
 ----
 == Spis komponentów ==
 
- * !BasicMeshComponent
- * !CameraComponent
+ * BasicMeshComponent
+ * CameraComponent
