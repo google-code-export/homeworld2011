@@ -2,9 +2,12 @@
 
 = !BasicMeshComponent = 
 ==_(namespace: [PlagueEngine].[Rendering].[Components])_==
+----
 
+== Opis ==
 Podstawowy komponent modułu renderingu. Pozwala reprezentować obiekt gry za pomocą siatki. Obecna wersja tego komponentu jest raczej testowa, ponieważ korzysta z domyślnej klasy Model z XNA.
 
+----
 == Metoda tworząca komponent == 
 
 {{{
