@@ -1,7 +1,7 @@
 #summary Opis komponentu BasicMeshComponent.
 
 = !BasicMeshComponent = 
-==_(namespace: [PlagueEngine].[Rendering].[Components])_==
+==_(namespace: [PlagueEngine].[Rendering].Components)_==
 ----
 
 == Opis ==
