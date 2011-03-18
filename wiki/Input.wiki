@@ -7,8 +7,19 @@ System wejścia, obsługa klawiatury, myszy. Mapowanie klawiszy.
 ----
 == Spis klas ==
  * Input
- * !ExtendedKeyState
+ * Components.!ExtendedKeyState
+ * Components.!ExtendedMouseKeyState
+ * Components.!ExtendedMouseMoveState
  * !InputComponentsFactory
 ----
+== Dodatkowe typy ==
+ * `enum MouseKeyAction  {LeftClick,RightClick,MiddleClick}`
+ * `enum MouseMoveAction {Move,Scroll}`
+ * `delegate void OnKey(Keys key, ExtendedKeyState state);`
+ * `delegate void OnMouseKey (MouseKeyAction  mouseKeyAction, ExtendedMouseKeyState mouseKeyState);`
+ * `delegate void OnMouseMove(MouseMoveAction MouseMoveAction, ExtendedMouseMovementState mouseMovementState);`
+
+----
 == Spis komponentów ==
- * !KeyboardListenerComponent
+ * KeyboardListenerComponent
+ * MouseListenerComponent
