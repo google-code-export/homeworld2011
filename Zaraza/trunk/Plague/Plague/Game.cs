@@ -60,7 +60,7 @@ namespace PlagueEngine
             Diagnostics.OpenLogFile("log");
             
             contentManager = new ContentManager(this,"Content");
-            input          = new Input.Input();
+            input          = new Input.Input(this);
 
             InitRenderer();
             
@@ -85,10 +85,10 @@ namespace PlagueEngine
             base.Initialize();
             
             testLevel = new Level(gameObjectsFactory);
-            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel.lvl"));
+            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
             
             testLevel.PutSomeObjects();
-            contentManager.SaveLevel("TestLevel.lvl",testLevel.SaveLevel());
+            contentManager.SaveLevel("TestLevel2.lvl",testLevel.SaveLevel());
 
             Diagnostics.PushLog("Initialization complete");
         }

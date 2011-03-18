@@ -66,12 +66,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                    Keys.D, Keys.Q, Keys.E);
 
 
-            this.mouselistenerComponent.subscribeKeys(onMouseKey, MouseKeyAction.LeftClick);
+            this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.LeftClick);
 
         }
         /****************************************************************************/
-    
-        private void onMouseKey(MouseKeyAction mouseKeyAction,ExtendedMouseKeyState mouseKeyState)
+
+
+        /****************************************************************************/
+        /// On Mouse Key
+        /****************************************************************************/
+        private void OnMouseKey(MouseKeyAction mouseKeyAction,ExtendedMouseKeyState mouseKeyState)
         {
             Vector3 up = Vector3.Up;
             switch (mouseKeyAction)
@@ -85,13 +89,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     break;
             }
         }
+        /****************************************************************************/
+
 
         /****************************************************************************/
         /// On Key
         /****************************************************************************/
-            
-        
-
         private void OnKey(Keys key, ExtendedKeyState state)
         {
             if (!state.IsDown()) return;

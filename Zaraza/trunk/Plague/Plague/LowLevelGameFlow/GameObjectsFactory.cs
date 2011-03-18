@@ -121,12 +121,15 @@ namespace PlagueEngine.LowLevelGameFlow
             FreeCameraData fcdata = (FreeCameraData)data;
             
             result.Init(renderingComponentsFactory.CreateCameraComponent(result,
-                                                                          fcdata.FoV,
-                                                                          fcdata.ZNear,
-                                                                          fcdata.ZFar),
+                                                                         fcdata.FoV,
+                                                                         fcdata.ZNear,
+                                                                         fcdata.ZFar),
 
                          inputComponentsFactory.CreateKeyboardListenerComponent(result,
                                                                                 fcdata.ActiveKeyListener),
+
+                         inputComponentsFactory.CreateMouseListenerComponent(result,
+                                                                             fcdata.ActiveMouseListener),
 
                          fcdata.World,
                          fcdata.MovementSpeed,
