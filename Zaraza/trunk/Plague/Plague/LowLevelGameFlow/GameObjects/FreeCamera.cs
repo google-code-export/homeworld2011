@@ -62,7 +62,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                                Keys.Up,     Keys.Down, 
                                                                Keys.Right,  Keys.Left);
 
-            this.mouseListenerComponent.SubscribeKeys     (OnMouseKey,  MouseKeyAction.MiddleClick);
+            this.mouseListenerComponent.SubscribeKeys     (OnMouseKey,  MouseKeyAction.RightClick);
             this.mouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
         }
         /****************************************************************************/
@@ -102,29 +102,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds) * -1));
                     break;
 
-                case Keys.PageUp:
-                    cameraComponent.RotateZ((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
-                    break;
+                //case Keys.PageUp:
+                //    cameraComponent.RotateZ((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
+                //    break;
 
-                case Keys.PageDown:
-                    cameraComponent.RotateZ((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
-                    break;
+                //case Keys.PageDown:
+                //    cameraComponent.RotateZ((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
+                //    break;
 
-                case Keys.Up:
-                    cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
-                    break;
+                //case Keys.Up:
+                //    cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
+                //    break;
 
-                case Keys.Down:
-                    cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
-                    break;
+                //case Keys.Down:
+                //    cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
+                //    break;
 
-                case Keys.Right:
-                    cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
-                    break;
+                //case Keys.Right:
+                //    cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
+                //    break;
 
-                case Keys.Left:
-                    cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
-                    break;
+                //case Keys.Left:
+                //    cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
+                //    break;
 
             }
         }

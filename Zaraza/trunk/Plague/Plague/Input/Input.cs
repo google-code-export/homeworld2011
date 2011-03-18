@@ -315,18 +315,18 @@ namespace PlagueEngine.Input
                 {
 
                     case MouseKeyAction.LeftClick:
-                        down=(state.LeftButton == ButtonState.Pressed ? true : false);
-                        changed=(down==(oldMouseState.LeftButton != state.LeftButton) ? true : false);
+                        down    = (state.LeftButton == ButtonState.Pressed ? true : false);
+                        changed = (oldMouseState.LeftButton != state.LeftButton ? true : false);
                         break;
 
                     case MouseKeyAction.RightClick:
-                        down=(state.RightButton == ButtonState.Pressed ? true : false);
-                        changed = (down == (oldMouseState.RightButton != state.RightButton) ? true : false);
+                        down    = (state.RightButton == ButtonState.Pressed ? true : false);
+                        changed = (oldMouseState.RightButton != state.RightButton ? true : false);
                         break;
 
                     case MouseKeyAction.MiddleClick:
-                        down=(state.MiddleButton == ButtonState.Pressed ? true : false);
-                        changed=(oldMouseState.MiddleButton != state.MiddleButton? true : false);
+                        down    = (state.MiddleButton == ButtonState.Pressed ? true : false);
+                        changed = (oldMouseState.MiddleButton != state.MiddleButton? true : false);
                         break;
                 }
 
