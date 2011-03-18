@@ -8,7 +8,7 @@
 Podstawowy komponent modułu renderingu. Pozwala reprezentować obiekt gry za pomocą siatki. Obecna wersja tego komponentu jest raczej testowa, ponieważ korzysta z domyślnej klasy Model z XNA.
 
 ----
-== Metoda tworząca komponent == 
+== Metoda tworząca komponent _(RenderingComponentsFactory)_== 
 
 {{{
 public BasicMeshComponent CreateBasicMeshComponent(GameObjectInstance gameObject, String asset)
