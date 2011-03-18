@@ -50,6 +50,28 @@ namespace PlagueEngine.Rendering.Components
         }
         /****************************************************************************/
 
+        /****************************************************************************/
+        /// Scren Width
+        /****************************************************************************/
+        public int ScreenWidth()
+        {
+            return renderer.Device.Viewport.Width;
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Scren Height
+        /****************************************************************************/
+        public int ScreenHeight()
+        {
+            return renderer.Device.Viewport.Height;
+        }
+        /****************************************************************************/
+
+
 
         /****************************************************************************/
         /// View
@@ -287,6 +309,11 @@ namespace PlagueEngine.Rendering.Components
         /// Look At
         /****************************************************************************/
         public void LookAt(ref Vector3 position, ref Vector3 target, ref Vector3 up)
+        {
+            gameObject.World = Matrix.CreateLookAt(position, target, up);
+        }
+
+        public void LookAt(Vector3 position,Vector3 target,Vector3 up)
         {
             gameObject.World = Matrix.CreateLookAt(position, target, up);
         }

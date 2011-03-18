@@ -163,6 +163,7 @@ namespace PlagueEngine.LowLevelGameFlow
                          inputComponentsFactory.CreateMouseListenerComponent(result,lcdata.ActiveKeyListener),
                          lcdata.MovementSpeed,
                          lcdata.RotationSpeed,
+                         lcdata.ZoomSpeed,
                          lcdata.position,
                          lcdata.target);
 
