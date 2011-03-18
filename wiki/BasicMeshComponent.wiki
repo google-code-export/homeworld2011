@@ -1,0 +1,14 @@
+#summary Opis komponentu BasicMeshComponent.
+
+= BasicMeshComponent =
+
+Podstawowy komponent modułu renderingu. Pozwala reprezentować obiekt gry za pomocą siatki. Obecna wersja tego komponentu jest raczej testowa, ponieważ korzysta z domyślnej klasy Model z XNA.
+
+== Metoda tworząca komponent == 
+
+{{{
+public BasicMeshComponent CreateBasicMeshComponent(GameObjectInstance gameObject, String asset)
+}}}
+
+ * `GameObjectInstance gameObject` - obiekt gry pod który komponent jest podpinany.
+ * `String asset` - nazwa assetu bedącego modelem, którego chcemy używać
