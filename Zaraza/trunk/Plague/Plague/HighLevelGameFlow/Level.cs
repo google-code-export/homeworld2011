@@ -119,7 +119,7 @@ namespace PlagueEngine.HighLevelGameFlow
             lcdata.ActiveKeyListener = true;
 
             gameObjectsFactory.Create(lcdata);
-            
+
         }
         /****************************************************************************/
 

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using PlagueEngine.Input.Components;
 
 
-// TODO: Rozwinąć input o obsługę myszy (odpowiednie komponenty) i mapowanie klawiszy
+// TODO: Rozwinąć input o mapowanie klawiszy
 
 
 /************************************************************************************/
@@ -21,8 +21,8 @@ namespace PlagueEngine.Input
     /********************************************************************************/
     delegate void OnKey(Keys key, ExtendedKeyState state);
 
-    delegate void onMouseKey(MouseKeyAction mouseKeyAction,ExtendedMouseKeyState mouseKeyState);
-    delegate void onMouseMove(MouseMoveAction mouseMoveAction,ExtendedMouseMovementState mouseMovementState);
+    delegate void OnMouseKey (MouseKeyAction  mouseKeyAction, ExtendedMouseKeyState      mouseKeyState);
+    delegate void OnMouseMove(MouseMoveAction mouseMoveAction,ExtendedMouseMovementState mouseMovementState);
     /********************************************************************************/
 
 
@@ -37,15 +37,12 @@ namespace PlagueEngine.Input
         /****************************************************************************/
         class KeyboardListener
         {
-            
-            
+                        
             /************************************************************************/
             /// Fields
             /************************************************************************/
             public KeyboardListenerComponent listener;
             public OnKey                     onKey;
-
-            
             /************************************************************************/
 
 
@@ -56,46 +53,75 @@ namespace PlagueEngine.Input
             {
                 this.listener = listener;
                 this.onKey    = onKey;
-                
-                
             }
             /************************************************************************/
 
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Mouse Move Listener
+        /****************************************************************************/
         class MouseMoveListener
         {
-            public MouseListenerComponent mouseListenerComponent;
-            public onMouseMove onMouseMove;
 
-            public MouseMoveListener(MouseListenerComponent mouseListenerComponent,onMouseMove onMouseMove)
+            /************************************************************************/
+            /// Fields
+            /************************************************************************/
+            public MouseListenerComponent mouseListenerComponent;
+            public OnMouseMove onMouseMove;
+            /************************************************************************/
+
+
+            /************************************************************************/
+            /// Constructor
+            /************************************************************************/
+            public MouseMoveListener(MouseListenerComponent mouseListenerComponent,OnMouseMove onMouseMove)
             {
                 this.mouseListenerComponent=mouseListenerComponent;
                 this.onMouseMove=onMouseMove;
             }
-        }
+            /************************************************************************/
 
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Mouse Key Listener
+        /****************************************************************************/
         class MouseKeyListener
         {
-            public MouseListenerComponent mouseListenerComponent;
-            public onMouseKey onMouseKey;
 
-            public MouseKeyListener(MouseListenerComponent mouseListenerComponent,onMouseKey onMouseKey)
+            /************************************************************************/
+            /// Fields
+            /************************************************************************/
+            public MouseListenerComponent mouseListenerComponent;
+            public OnMouseKey onMouseKey;
+            /************************************************************************/
+
+
+            /************************************************************************/
+            /// Constructor
+            /************************************************************************/
+            public MouseKeyListener(MouseListenerComponent mouseListenerComponent,OnMouseKey onMouseKey)
             {
                 this.mouseListenerComponent=mouseListenerComponent;
                 this.onMouseKey=onMouseKey;
             }
-        }
+            /************************************************************************/
 
+        }
+        /****************************************************************************/
 
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Dictionary<Keys, List<KeyboardListener>> keyListeners = new Dictionary<Keys,List<KeyboardListener>>();
-        private Dictionary<MouseKeyAction,List<MouseKeyListener>> mouseKeyListeners = new Dictionary<MouseKeyAction,List<MouseKeyListener>>();
+        private Dictionary<Keys, List<KeyboardListener>>            keyListeners       = new Dictionary<Keys,List<KeyboardListener>>();
+        private Dictionary<MouseKeyAction,List<MouseKeyListener>>   mouseKeyListeners  = new Dictionary<MouseKeyAction,List<MouseKeyListener>>();
         private Dictionary<MouseMoveAction,List<MouseMoveListener>> mouseMoveListeners = new Dictionary<MouseMoveAction,List<MouseMoveListener>>();
-
 
         private InputComponentsFactory componentsFactory;
         private KeyboardState          oldKeyboardState;
@@ -113,8 +139,12 @@ namespace PlagueEngine.Input
         /****************************************************************************/
 
 
-
-        public void SubscribeMouseMoveListener(MouseListenerComponent listener, MouseMoveAction mouseMoveAction, onMouseMove onMouseMove)
+        /****************************************************************************/
+        /// Subscribe Mouse Move Listener
+        /****************************************************************************/
+        public void SubscribeMouseMoveListener(MouseListenerComponent listener, 
+                                               MouseMoveAction        mouseMoveAction, 
+                                               OnMouseMove            onMouseMove)
         {
             if(mouseMoveListeners.Keys.Contains(mouseMoveAction))
             {
@@ -127,24 +157,29 @@ namespace PlagueEngine.Input
                 list.Add(new MouseMoveListener(listener,onMouseMove));
                 mouseMoveListeners.Add(mouseMoveAction,list);
             }
-
         }
+        /****************************************************************************/
 
-        public void SubscribeMouseKeyListener(MouseListenerComponent listener, MouseKeyAction MouseKeyAction, onMouseKey onMouseKey)
+
+        /****************************************************************************/
+        /// Subscribe Mouse Key Listener
+        /****************************************************************************/
+        public void SubscribeMouseKeyListener(MouseListenerComponent listener, 
+                                              MouseKeyAction         mouseKeyAction, 
+                                              OnMouseKey             onMouseKey)
         {
-            if(mouseKeyListeners.Keys.Contains(MouseKeyAction))
+            if(mouseKeyListeners.Keys.Contains(mouseKeyAction))
             {
-                mouseKeyListeners[MouseKeyAction].Add(new MouseKeyListener(listener,onMouseKey));
+                mouseKeyListeners[mouseKeyAction].Add(new MouseKeyListener(listener,onMouseKey));
             }
             else
             {
-
                 List<MouseKeyListener> list = new List<MouseKeyListener>();
                 list.Add(new MouseKeyListener(listener,onMouseKey));
-                mouseKeyListeners.Add(MouseKeyAction,list);
+                mouseKeyListeners.Add(mouseKeyAction,list);
             }
-
         }
+        /****************************************************************************/
 
 
         /****************************************************************************/
@@ -192,14 +227,14 @@ namespace PlagueEngine.Input
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Release Mouse Listener Component
+        /****************************************************************************/
         public void ReleaseMouseListenerComponent(MouseListenerComponent component)
         {
-
-            List<MouseKeyListener> keyListenersToDelete = new List<MouseKeyListener>();
+            List<MouseKeyListener>  keyListenersToDelete  = new List<MouseKeyListener>();
             List<MouseMoveListener> moveListenersToDelete = new List<MouseMoveListener>();
-
-
-
 
             foreach (List<MouseKeyListener> list in mouseKeyListeners.Values)
             {                
@@ -231,9 +266,9 @@ namespace PlagueEngine.Input
                 
                 moveListenersToDelete.Clear();
             }
-
-
         }
+        /****************************************************************************/
+
 
         /****************************************************************************/
         /// Update
@@ -245,11 +280,16 @@ namespace PlagueEngine.Input
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Check Mouse 
+        /****************************************************************************/
         private void CheckMouse()
         {
-            MouseState state= Mouse.GetState();
-            ExtendedMouseKeyState mouseKeyState;
-            ExtendedMouseMovementState mouseMoveState;
+            MouseState state = Mouse.GetState();
+
+            ExtendedMouseKeyState       mouseKeyState;
+            ExtendedMouseMovementState  mouseMoveState;
 
             foreach(MouseMoveAction mouseMoveAction in mouseMoveListeners.Keys)
             {
@@ -262,8 +302,7 @@ namespace PlagueEngine.Input
                     if(mouseMoveListener.mouseListenerComponent.Active) mouseMoveListener.onMouseMove(mouseMoveAction,mouseMoveState);
                 }
             }
-
-
+            
             foreach(MouseKeyAction mouseKeyAction in mouseKeyListeners.Keys)
             {
                 bool down=false;
@@ -295,17 +334,16 @@ namespace PlagueEngine.Input
                 }
             }
 
-
-
             oldMouseState=state;
         }
+        /****************************************************************************/
+
+
         /****************************************************************************/
         /// Check Keyboard
         /****************************************************************************/
         private void CheckKeyboard()
         {
-
-            //TODO: Key-mapping ;>
 
             KeyboardState    state = Keyboard.GetState();
             
