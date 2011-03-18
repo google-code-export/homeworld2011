@@ -4,16 +4,14 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-
-/************************************************************************************/
+/****************************************************************************/
 /// PlagueEngine.Input.Components
-/************************************************************************************/
+/****************************************************************************/
 namespace PlagueEngine.Input.Components
 {
-
-    /********************************************************************************/
-    /// Extended Mouse Movement State
-    /********************************************************************************/
+    /****************************************************************************/
+    /// Extended MouseMovement State
+    /****************************************************************************/
     struct ExtendedMouseMovementState
     {
 
@@ -22,23 +20,26 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         private Vector3 position;
         private Vector3 oldPosition;
-        private Vector3 difference;     //o ile zmienilo sie polozenie w x,y,z
-        private bool    moved;          //zmiana w x,y,z
-        private bool    scrolled;       //zmiana w z, tj bylo scrollniecie:D
+        private Vector3 difference;//o ile zmienilo sie polozenie w x,y,z
+        private bool moved; //zmiana w x,y,z
+        private bool scrolled;//zmiana w z, tj bylo scrollniecie:D
+        private float scrollDifference;//zmiana wartosci scrolla
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Extended Mouse Movement State
+        /// Constructor
         /****************************************************************************/
         public ExtendedMouseMovementState(int x,int y,int z,int oldX,int oldY,int oldZ)
         {
-            moved    = false;
+            moved = false;
             scrolled = false;
 
-            position    = new Vector3(x, y, z);
+            scrollDifference = oldZ - z;
+
+            position = new Vector3(x, y, z);
             oldPosition = new Vector3(oldX, oldY, oldZ);
-            difference  = position - oldPosition;
+            difference = position - oldPosition;
             
             if (difference.Length()!=0)
             {
@@ -48,9 +49,23 @@ namespace PlagueEngine.Input.Components
             if (z != oldZ)
             {
                 scrolled = true;
-            }            
+            }
+            
         }
         /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// ScrollDifference
+        /****************************************************************************/
+        public float ScrollDifference
+        {
+            get { return scrollDifference; }
+        }
+        /****************************************************************************/
+
 
 
         /****************************************************************************/
@@ -63,6 +78,7 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
 
 
+
         /****************************************************************************/
         /// Position
         /****************************************************************************/
@@ -71,6 +87,8 @@ namespace PlagueEngine.Input.Components
             get { return position; }
         }
         /****************************************************************************/
+
+
 
 
         /****************************************************************************/
@@ -83,6 +101,7 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
 
 
+
         /****************************************************************************/
         /// Difference
         /****************************************************************************/
@@ -91,6 +110,7 @@ namespace PlagueEngine.Input.Components
             get { return difference; }
         }
         /****************************************************************************/
+
 
 
         /****************************************************************************/
@@ -102,8 +122,10 @@ namespace PlagueEngine.Input.Components
         }
         /****************************************************************************/
 
+
     }
-    /********************************************************************************/
+    /****************************************************************************/
+
 
 }
-/************************************************************************************/
+/****************************************************************************/

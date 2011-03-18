@@ -30,9 +30,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private KeyboardListenerComponent keyboardListenerComponent = null;
         private MouseListenerComponent mouselistenerComponent = null;
 
-        private double movementSpeed = 0;
-        private double rotationSpeed = 0;
-
+        private float movementSpeed = 0;
+        private float rotationSpeed = 0;
+        private float zoomSpeed = 0;
+ 
         private Vector3 position = Vector3.Zero;
         private Vector3 target = Vector3.Zero;
 
@@ -46,8 +47,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(CameraComponent cameraComponent,
                          KeyboardListenerComponent keyboardListenerComponent,
                          MouseListenerComponent mouseListenerComponent,
-                         double movementSpeed,
-                         double rotationSpeed,
+                         float movementSpeed,
+                         float rotationSpeed,
+                         float zoomSpeed,
                          Vector3 position,
                          Vector3 target)
         {
@@ -66,31 +68,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                    Keys.D, Keys.Q, Keys.E);
 
 
-            this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.LeftClick);
+            
 
         }
         /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// On Mouse Key
-        /****************************************************************************/
-        private void OnMouseKey(MouseKeyAction mouseKeyAction,ExtendedMouseKeyState mouseKeyState)
-        {
-            Vector3 up = Vector3.Up;
-            switch (mouseKeyAction)
-            {
-                case MouseKeyAction.LeftClick:
-                    if (mouseKeyState.IsDown())
-                    {
-                        position.X += 10;
-                        cameraComponent.LookAt(ref position, ref target, ref up);
-                    }
-                    break;
-            }
-        }
-        /****************************************************************************/
-
+    
 
         /****************************************************************************/
         /// On Key
@@ -183,6 +165,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.MovementSpeed = this.movementSpeed;
             data.RotationSpeed = this.rotationSpeed;
+            data.ZoomSpeed = this.zoomSpeed;
             data.FoV = this.cameraComponent.FoV;
             data.ZNear = this.cameraComponent.ZNear;
             data.ZFar = this.cameraComponent.ZFar;
@@ -205,8 +188,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class LinkedCameraData : GameObjectInstanceData
     {
-        public double MovementSpeed = 0;
-        public double RotationSpeed = 0;
+        public float MovementSpeed = 0;
+        public float RotationSpeed = 0;
+        public float ZoomSpeed = 0;
         public float FoV = 0;
         public float ZNear = 0;
         public float ZFar = 0;

@@ -29,9 +29,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private CameraComponent           cameraComponent           = null;
         private KeyboardListenerComponent keyboardListenerComponent = null;
         private MouseListenerComponent    mouseListenerComponent    = null;
-        
-        private double                    movementSpeed             = 0;
-        private double                    rotationSpeed             = 0;
+
+        private float                     movementSpeed             = 0;
+        private float                     rotationSpeed             = 0;
         private bool                      rotation                  = false;
 
         // TODO: Zastanowić się, czy da się rozwiązać to lepiej z tym zegarem
@@ -46,8 +46,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          KeyboardListenerComponent  keyboardListenerComponent,
                          MouseListenerComponent     mouseListenerComponent,
                          Matrix                     world, 
-                         double                     movementSpeed, 
-                         double                     rotationSpeed)
+                         float                      movementSpeed,
+                         float                      rotationSpeed)
         {
             this.cameraComponent            = cameraComponent;
             this.keyboardListenerComponent  = keyboardListenerComponent;
@@ -205,8 +205,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class FreeCameraData : GameObjectInstanceData
     {
-        public double MovementSpeed       = 0;
-        public double RotationSpeed       = 0;
+        public float  MovementSpeed       = 0;
+        public float  RotationSpeed       = 0;
         public float  FoV                 = 0;
         public float  ZNear               = 0;
         public float  ZFar                = 0;
