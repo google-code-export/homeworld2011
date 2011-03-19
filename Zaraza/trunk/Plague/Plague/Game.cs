@@ -36,7 +36,7 @@ namespace PlagueEngine
         // TODO: Stworzyæ manager leveli, który automagicznie bêdzie wczytywa³ kolejne levele
         private Level               testLevel           = null;
 
-        private readonly RenderConfig defaultRenderConfig = new RenderConfig(1024, 768, false, false, false);
+        private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
         /****************************************************************************/
 
 
