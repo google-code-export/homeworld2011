@@ -98,7 +98,7 @@ namespace PlagueEngine.HighLevelGameFlow
             GameObjectInstanceData data = new GameObjectInstanceData();
 
             data.Type = (typeof(StaticMesh));
-            data.Definition = "Barrel";
+            data.Definition = "p1_wedge";
             data.World = Matrix.Identity;
 
             
