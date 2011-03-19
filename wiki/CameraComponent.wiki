@@ -1,0 +1,82 @@
+#summary Opis komponentu CameraComponent.
+
+= !CameraComponent = 
+==_(namespace: [PlagueEngine].[Rendering].Components)_==
+----
+
+== Opis ==
+Komponent reprezentujący funkcjonalność kamery. Traktuje macierz świata obiektu pod który jest podpięty, jako macierz widoku kamery.
+
+----
+== Metoda tworząca komponent _(RenderingComponentsFactory)_== 
+{{{
+public CameraComponent CreateCameraComponent(GameObjectInstance gameObject, float fov, float zNear, float zFar)
+}}}
+ * `GameObjectInstance gameObject` - obiekt gry pod który komponent jest podpinany.
+ * `float fov` - pole widzenia kamery podane w radianach
+ * `float zNear` -  odległość bliskiej płaszczyzny przycinania od kamery
+ * `float zFar` - odległość dalekiej płaszczyzny przycinania od kamery
+
+----
+== Właściwości ==
+ * `Matrix View` 
+  zwraca macierz widoku
+
+ * `Matrix Projection` 
+  zwraca macierz projekcji
+
+ * `float FoV` 
+  ustawia/zwraca pole widzenia
+
+ * `float Aspect` 
+  ustawia/zwraca proporcje obrazu
+
+ * `float ZNear` 
+  ustawia/zwraca bliską płaszczyznę przycinania
+
+ * `float ZFar` 
+  ustawia/zwraca daleką płaszczyznę przycinania
+----
+== Metody ==
+
+ * `void Pitch(float angle)`   
+  obraca kamerę wokół lokalnej osi X o podany kąt (w radianach)
+
+ * `void Yaw(float angle)`     
+  obraca kamerę wokół lokalnej osi Y o podany kąt (w radianach)
+
+ * `void Roll(float angle)`    
+  obraca kamerę wokół lokalnej osi Z o podany kąt (w radianach)
+
+ * `void RotateX(float angle)` 
+  obraca kamerę wokół globalnej osi X o podany kąt (w radianach)
+
+ * `void RotateY(float angle)` 
+  obraca kamerę wokół globalnej osi Y o podany kąt (w radianach)
+
+ * `void RotateZ(float angle)` 
+  obraca kamerę wokół globalnej osi Z o podany kąt (w radianach)
+
+ * void MoveRight(float step)`
+  przesuwa kamerę po lokalnej osi X
+
+ * `void MoveUp(float step)`
+  przesuwa kamerę po lokalnej osi Y
+
+ * `void MoveForeward(float step)`
+  przesuwa kamerę po lokalnej osi Z
+
+ * `void MoveX(float step)`
+  przesuwa kamerę po globalnej osi X
+
+ * `void MoveY(float step)`
+  przesuwa kamerę po globalnej osi Y
+
+ * `void MoveZ(float step)`
+  przesuwa kamerę po globalnej osi Z
+
+ * `void LookAt(ref Vector3 position, ref Vector3 target, ref Vector3 up)`
+  ustawia kamerę według standardu !LookAt
+
+ * `void SetAsCurrent()`
+  ustawia tą kamerą jako obecnie używaną do renderowania obrazu
