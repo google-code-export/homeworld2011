@@ -113,7 +113,7 @@ namespace PlagueEngine.HighLevelGameFlow
             lcdata.target = new Vector3(0, 0, 0);
             lcdata.MovementSpeed = 0.5f;
             lcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-            lcdata.ZoomSpeed = 0.1f;
+            lcdata.ZoomSpeed = 0.5f;
             lcdata.FoV = MathHelper.PiOver4;
             lcdata.ZNear = 1;
             lcdata.ZFar = 10000;
@@ -132,7 +132,7 @@ namespace PlagueEngine.HighLevelGameFlow
             //fcdata.ActiveKeyListener = true;
             //fcdata.ActiveMouseListener = true;
             //gameObjectsFactory.Create(fcdata);
-
+            
         }
         /****************************************************************************/
 

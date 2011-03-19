@@ -175,11 +175,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         if (shiftDown)
                         {
-                            position.Y += zoomSpeed * time * direction.Y *mouseMoveState.ScrollDifference ;
+                            position.Y += zoomSpeed * direction.Y *mouseMoveState.ScrollDifference ;
                         }
                         else
                         {
-                            position += zoomSpeed * time * direction * mouseMoveState.ScrollDifference;
+                            position += zoomSpeed * direction * mouseMoveState.ScrollDifference;
                         }
 
                     }
