@@ -141,7 +141,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void setTarget(GameObjectInstance target)
         {
             this.tracedObject = target;
-            this.tracking = true;
+            
         }
         /****************************************************************************/
 
@@ -151,7 +151,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /************************************************************************************/
         public void startTracing()
         {
-            if (tracedObject != null)
+            this.tracking = true;
+
+            if (tracedObject != null && timerID==0 )
             {
                 timerID = TimeControl.CreateTimer(clock.DeltaTime, -1, traceTarget);
             }
@@ -166,13 +168,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /************************************************************************************/
         public void stopTracking()
         {
-            Vector3 targetPosition = Vector3.Transform(Vector3.Zero, Matrix.Invert(tracedObject.World));
-            Vector3 diff = targetPosition - target;
+            
             tracking = false;
+            
             TimeControl.ReleaseTimer(timerID);
-            tracedObject = null;
+            timerID = 0;
+            
         }
         /****************************************************************************/
+
+
+
+
+        /************************************************************************************/
+        /// Stop Tracing 
+        /************************************************************************************/
+        public void RealeseTarget()
+        {
+
+            tracedObject = null;
+
+        }
+        /****************************************************************************/
+
 
 
 
@@ -184,8 +202,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (tracedObject == null)
             {
                 tracking = false;
-                return;
+                
             }
+
+      
+
 
             Vector3 targetPosition = Vector3.Transform(Vector3.Zero, Matrix.Invert(tracedObject.World));
 
@@ -198,8 +219,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 else
                 {
                     Vector3 distanceVec = targetPosition - target;
-                    target += distanceVec / 10.0f;
-                    position += distanceVec / 10.0f;
+                    target += distanceVec / 50.0f;
+                    position += distanceVec / 50.0f;
                 }
             }
    
@@ -267,7 +288,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case MouseMoveAction.Move:
 
-                    
+                    if (mouseMoveState.Moved) stopTracking();
                     
                     
                     direction.Y = 0;
@@ -276,6 +297,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         position += perpendicular * movementSpeed * time;
                         target += perpendicular * movementSpeed * time;
+                        
                     }
 
                     if (isMouseInRegion(mouseRegions.right, mouseMoveState))
@@ -338,28 +360,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             position += direction * time * movementSpeed ;
                             target += direction * time * movementSpeed ;
 
-                            
+                            stopTracking();
                             break;
 
                 case Keys.S:
                             position -= direction * time * movementSpeed ;
                             target -= direction * time * movementSpeed ;
-                            
-                            
+
+                            stopTracking();
                             break;
 
                 case Keys.A:
                             position += perpendicular * time * movementSpeed ;
                             target += perpendicular * time * movementSpeed ;
-                            
-                            
+
+                            stopTracking();
                             break;
 
                 case Keys.D:
                             position -= perpendicular * time * movementSpeed ;
                             target -= perpendicular * time * movementSpeed ;
-                            
-                            
+
+                            stopTracking();
                             break;
 
                 case Keys.Q:
@@ -378,18 +400,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     
                     break;
                 case Keys.F1:
-                    if (tracking)
-                    {
+                    
+                    
                         startTracing();
-                    }
+                    
 
                     break;
                 
                 case Keys.F2:
-                    if (tracking)
-                    {
+                    
                         stopTracking();
-                    }
+                    
                     break;
 
 

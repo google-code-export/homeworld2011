@@ -39,9 +39,10 @@ namespace PlagueEngine.Input.Components
 
             position = new Vector3(x, y, z);
             oldPosition = new Vector3(oldX, oldY, oldZ);
+
             difference = position - oldPosition;
-            
-            if (difference.Length()!=0)
+
+            if (x!=oldX || y!=oldY)
             {
                 moved = true;
             }
