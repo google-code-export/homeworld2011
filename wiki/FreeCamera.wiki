@@ -1,0 +1,17 @@
+#summary Opis klasy FreeCamera.
+
+= !FreeCamera=
+== _(namespace: [PlagueEngine].[LowLevelGameFlow].[GameObjects])_ ==
+----
+
+== Opis == 
+
+Swobodna kamera. Nie posiada żadnych ograniczeń ruchu.
+
+----
+
+== Komponenty ==
+
+ * CameraComponent
+ * KeyboardListenerComponent
+ * MouseListenerComponent
