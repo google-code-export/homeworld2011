@@ -12,7 +12,8 @@ Możemy wyszczególnić rodziny obiektów o wspólnych parametrach. Mówimy wted
 [3Kroki Tworzenie własnego obiektu gry w trzech prostych krokach.]
 
 ----
-== !GameObjectInstance : IDisposable _(namespace: [PlagueEngine].[LowLevelGameFlow])_==
+== !GameObjectInstance : IDisposable ==
+===_(namespace: [PlagueEngine].[LowLevelGameFlow])_===
 
 Klasa, której obiekt reprezentuje pojedynczą unikalną instancję obiektu gry. Zawiera ID, nazwę definicji, z której obiekt korzysta, oraz macierz świata obiektu. Obiekty tej klasy są tworzone jedynie przy pomocy fabryki !GameObjectsFactory. Każda klasa obiektu gry dziedziczy po tej klasie. Co więcej klasa !GameObjectInstane jest abstrakcyjna.
 
@@ -76,12 +77,14 @@ Zasada działania opiera się o statyczne pola lastID i freeIDs. Za każdym raze
  * `public void Dispose()`
    Z interfejsu `IDisposable`, oznacza obiekt jako przeznaczony do usunięcia. Wywołuje `ReleaseID` i `ReleaseComponents`.
 ----
-== !GameObjectInstanceData _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
+== !GameObjectInstanceData ==
+=== _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ===
 
 Klasa zawierająca dane potrzebne do odtworzenia danego obiektu gry. Przeznaczona do binarnej serializacji. Każda klasa pochodna po !GameObjectInstance powinna również deklarować własną klasę dziedziczącą po !GameObejctInstanceData, uzupełnioną o specyficzne dla niej dane. 
 
 ----
-== !GameObjectDefinition : IXmlSerializable _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
+== !GameObjectDefinition : IXmlSerializable ==
+=== _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ===
 
 Jeżeli istnieje możliwość wyszczególnienia instancji obiektów gry danej klasy, posiadających wspólne wartości pewnych parametrów, to możemy stworzyć definicje obiektu gry przechowującą wartości tych parametrów. Do tego właśnie służy klasa !GameObjectDefinition. Zawiera ona nazwę definicji oraz słownik parametrów, na zasadzie: klucz - nawa parametru : wartość - wartość parametru. Gdzie wartość może być dowolnego typu, który oferuje serializacje xml. Definicje obiektów zapisywane są w postaci pliku xml. Nie ma potrzeby dziedziczenia po tej klasie. 
 
@@ -102,5 +105,6 @@ Jeżeli istnieje możliwość wyszczególnienia instancji obiektów gry danej kl
  * `public void WriteXml(System.Xml.XmlWriter writer)`
    Serializuje obiekt.
 ----
-== !GameObjectsFactory _(namespace: [PlagueEngine].[LowLevelGameFlow])_ ==
+== !GameObjectsFactory ==
+===_(namespace: [PlagueEngine].[LowLevelGameFlow])_ ===
 Fabryka obiektów gry. Jedna z najważniejszych klas. Podstawową funkcjonalnością jest tworzenie obiektów gry na podstawie podanego !GameObjectInstanceData. Zawiera referencje do fabryk komponentów, referencje do słownika z definicjami obiektów, oraz referencje do kontenera z obiektami gry, po to aby móc tworzyć obiekty posiadające odwołanie do innych obiektów.
