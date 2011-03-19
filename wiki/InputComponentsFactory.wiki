@@ -1,6 +1,6 @@
 #summary Opis klasy tworzącej komponenty systemu wejścia.
 
-= InputComponentsFactory_(namespace: [PlagueEngine].[Input])_ =
+= !InputComponentsFactory_(namespace: [PlagueEngine].[Input])_ =
 ----
 
 == Opis ==
