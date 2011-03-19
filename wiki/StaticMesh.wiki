@@ -1,0 +1,34 @@
+#summary Opis klasy StaticMesh.
+
+= !StaticMesh =
+== _(namespace: [PlagueEngine].[LowLevelGameFlow].[GameObjects])_ ==
+----
+
+== Opis == 
+
+Obiekt sceny reprezentowany przez nieanimowaną siatkę, który nie zmienia swojego położenia podczas trwania rozgrywki.
+----
+
+== Komponenty ==
+
+ * BasicMeshComponent
+
+----
+
+== Definicje ==
+
+<table border="1">
+<tr>
+<td> *Nazwa właściwości* </td>
+<td> *Typ właściwości* </td>
+<td> *Wartość właściwości* </td>
+</tr>
+<tr>
+<td colspan="3" align="center"> Barrel </td>
+</tr>
+<tr>
+<td> Model </td>
+<td> String </td>
+<td> barrel </td>
+</tr>
+</table>
