@@ -6,12 +6,12 @@
 System zarządzający "nisko" poziomowym przebiegiem gry. Składa się głównie z [GameObject obiektów gry]. 
 ----
 == Spis klas ==
- * !GameObjectInstance
- * !GameObjectDefinition
- * !GameObjectComponent
- * !GameObjectFactory
+ * GameObjectInstance
+ * GameObjectDefinition
+ * GameObjectComponent
+ * GameObjectFactory
 ----
 == Spis obiektów ==
- * !StaticMesh
- * !FreeCamera
- * !LinkedCamera
+ * StaticMesh
+ * FreeCamera
+ * LinkedCamera
