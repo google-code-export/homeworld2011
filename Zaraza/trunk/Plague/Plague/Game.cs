@@ -19,9 +19,6 @@ namespace PlagueEngine
 
     /********************************************************************************/
     /// Game
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
     /********************************************************************************/
     public class Game : Microsoft.Xna.Framework.Game
     {
