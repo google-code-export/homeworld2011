@@ -1,0 +1,39 @@
+#summary Opis klasy LinkedCamera.
+
+= !LinkedCamera=
+== _(namespace: [PlagueEngine].[LowLevelGameFlow].[GameObjects])_ ==
+----
+
+== Opis == 
+
+Kamera poruszająca się horyzontalnie oraz posiadająca możliwość przybliżania. Poruszanie możliwe za pomocą myszy, jeśli kursor znajduję sie w jednym z czterech regionów viewportu.
+
+----
+
+== Komponenty ==
+
+ * CameraComponent
+ * KeyboardListenerComponent
+ * MouseListenerComponent
+
+----
+
+==  Struktury ==
+
+=== region ===
+====opis====
+Struktura przedstawiająca obszar viewportu.
+
+
+====konstruktor====
+ * `public region(int X, int Y, int Width, int Height)`
+
+====pola====
+ * `int x,y,width,height`
+Dane opisujące obszar : połozenie górnego lewego narożnika oraz jego wysokość i szerokość.
+
+===regions===
+====opis====
+Struktura przedstawiająca obszary ekranu. Jeśli kursor myszy będzie znajdował się w danym regionie, nastąpi przesunięcie kamery w odpowiednia stronę.
+====pola====
+ * `public region left, right, top, bottom`
