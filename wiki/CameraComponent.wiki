@@ -84,5 +84,8 @@ public CameraComponent CreateCameraComponent(GameObjectInstance gameObject, floa
  * `void LookAt(ref Vector3 position, ref Vector3 target, ref Vector3 up)`
   ustawia kamerę według standardu !LookAt
 
+ * `void LookAt(Vector3 position, Vector3 target, Vector3 up)`
+  ustawia kamerę według standardu !LookAt
+
  * `void SetAsCurrent()`
   ustawia tą kamerą jako obecnie używaną do renderowania obrazu
