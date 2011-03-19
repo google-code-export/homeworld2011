@@ -1,0 +1,47 @@
+#summary MouseListenerComponent.
+
+= !MouseListenerComponent= 
+==_(namespace: [PlagueEngine].[Input].Components)_==
+----
+== Opis ==
+
+Komponent umożliwiający obiektowi nasłuchiwanie stanu myszy: poruszania oraz przyciskow.
+
+----
+== Metoda tworząca komponent _(InputComponentsFactory)_== 
+{{{
+public MouseListenerComponent CreateMouseListenerComponent(GameObjectInstance gameObject, bool active)
+}}}
+ * `GameObjectInstance gameObject` - obiekt gry pod który komponent jest podpinany.
+ * `bool active` - czy komponent jest aktualnie aktywnym słuchaczem
+
+----
+== Właściwości ==
+ * `bool Active`
+  Ustawia/zwraca informacje o tym czy ten obiekt jest aktualnie aktywnym słuchaczem. Obiekt aby mógł odbierać sygnał o stanie wybranych klawiszy musi być aktywny. Jeżeli nie jest aktywny, to nadal figuruje na liście słuchaczy danego klawisza, ale nie odbiera sygnału.
+
+----
+== Metody ==
+{{{
+public void SubscribeKeys(OnMouseKey onMouseKey,params MouseKeyAction[] mouseKeyAction)
+}}} 
+Podpina obiekt jako słuchacz podanych klawiszy.
+ * `OnMouseKey onMouseKey` 
+  metoda wywoływana jako reakcja na sygnał
+ * `params MouseKeyAction[] mouseKeyAction` 
+  klawisze, które nasłuchujemy i odbieramy podaną metodą
+
+
+{{{
+public void SubscribeMouseMove(OnMouseMove onMouseMove, params MouseMoveAction[] mouseMoveAction)
+}}} 
+
+Podpina obiekt pod nasluchiwanie stanu scrolla oraz położenie myszy.
+
+ * `OnMouseMove OnMouseMove ` 
+  metoda wywoływana jako reakcja na sygnał
+ * `params MouseMoveAction[] mouseMoveAction` 
+  stany, które nasłuchujemy (Scroll lub Move)
+
+ 
+        
