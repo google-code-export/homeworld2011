@@ -145,6 +145,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        /************************************************************************************/
+        /// Start Tracing
+        /************************************************************************************/
         public void startTracing()
         {
             if (tracedObject != null)
@@ -152,7 +156,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 timerID = TimeControl.CreateTimer(clock.DeltaTime, -1, traceTarget);
             }
         }
+        /****************************************************************************/
 
+
+
+
+        /************************************************************************************/
+        /// Stop Tracing 
+        /************************************************************************************/
         public void stopTracking()
         {
             Vector3 targetPosition = Vector3.Transform(Vector3.Zero, Matrix.Invert(tracedObject.World));
@@ -161,6 +172,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             TimeControl.ReleaseTimer(timerID);
             tracedObject = null;
         }
+        /****************************************************************************/
+
 
 
         /************************************************************************************/
