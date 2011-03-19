@@ -36,7 +36,7 @@ Podpina obiekt jako słuchacz podanych klawiszy.
 public void SubscribeMouseMove(OnMouseMove onMouseMove, params MouseMoveAction[] mouseMoveAction)
 }}} 
 
-Podpina obiekt pod nasluchiwanie stanu scrolla oraz położenie myszy.
+Podpina obiekt pod nasluchiwanie stanu scrolla i/lub położenie myszy.
 
  * `OnMouseMove OnMouseMove ` 
   metoda wywoływana jako reakcja na sygnał
