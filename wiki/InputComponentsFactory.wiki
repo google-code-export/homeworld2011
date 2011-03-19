@@ -1,0 +1,17 @@
+#summary Opis klasy tworzącej komponenty systemu wejścia.
+
+= InputComponentsFactory_(namespace: [PlagueEngine].[Input])_ =
+----
+
+== Opis ==
+
+Klasa przeznaczona do tworzenia komponentów systemu wejścia.
+----
+
+== Metody tworzące komponenty ==
+ * `GameObjectInstance gameObject` - parametr występujący w każdej metodzie, określa obiekt gry pod który komponent jest podpinany.
+=== KeyboardListenerComponent ===
+{{{
+public KeyboardListenerComponent CreateKeyboardListenerComponent(GameObjectInstance gameObject, bool active)
+}}}
+ * `bool active` - czy komponent jest aktualnie aktywnym słuchaczem
