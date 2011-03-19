@@ -10,7 +10,7 @@ System wejścia, obsługa klawiatury, myszy. Mapowanie klawiszy.
  * Components.!ExtendedKeyState
  * Components.!ExtendedMouseKeyState
  * Components.!ExtendedMouseMoveState
- * !InputComponentsFactory
+ * InputComponentsFactory
 ----
 == Dodatkowe typy ==
  * `enum MouseKeyAction  {LeftClick,RightClick,MiddleClick}`
