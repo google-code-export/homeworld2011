@@ -6,8 +6,8 @@
 System zarządzający "nisko" poziomowym przebiegiem gry. Składa się głównie z [GameObject obiektów gry]. 
 ----
 == Spis klas ==
- * GameObjectInstance
- * GameObjectDefinition
+ * [GameObject#GameObjectInstance_:_IDisposable_(namespace:_PlagueEngine.LowLevelGameFlow) GameObjectInstance]
+ * [GameObject#GameObjectDefinition_:_IXmlSerializable_(namespace:_PlagueEngine.LowLevelGameFlow) GameObjectDefinition]
  * GameObjectComponent
  * GameObjectsFactory
 ----
