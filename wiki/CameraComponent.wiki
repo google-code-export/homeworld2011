@@ -19,6 +19,12 @@ public CameraComponent CreateCameraComponent(GameObjectInstance gameObject, floa
 
 ----
 == Właściwości ==
+ * `int ScreenHeight` 
+  zwraca wysokość viewportu
+
+ * `int ScreenWidth` 
+  zwraca szerokość viewportu
+
  * `Matrix View` 
   zwraca macierz widoku
 
