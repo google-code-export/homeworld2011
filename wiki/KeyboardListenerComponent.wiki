@@ -1,0 +1,32 @@
+#summary Opis komponentu KeyboardListenerComponent.
+
+= !KeyboardListenerComponent= 
+==_(namespace: [PlagueEngine].[Input].Components)_==
+----
+== Opis ==
+
+Komponent umożliwiający obiektowi nasłuchiwanie wybranych klawiszy klawiatury.
+
+----
+== Metoda tworząca komponent _(InputComponentsFactory)_== 
+{{{
+public KeyboardListenerComponent CreateKeyboardListenerComponent(GameObjectInstance gameObject, bool active)
+}}}
+ * `GameObjectInstance gameObject` - obiekt gry pod który komponent jest podpinany.
+ * `bool active` - czy komponent jest aktualnie aktywnym słuchaczem
+
+----
+== Właściwości ==
+ * `bool Active`
+  Ustawia/zwraca informacje o tym czy ten obiekt jest aktualnie aktywnym słuchaczem. Obiekt aby mógł odbierać sygnał o stanie wybranych klawiszy musi być aktywny. Jeżeli nie jest aktywny, to nadal figuruje na liście słuchaczy danego klawisza, ale nie odbiera sygnału.
+
+----
+== Metody ==
+{{{
+void SubscibeKeys(OnKey onKey, params Keys[] keys)
+}}} 
+Podpina obiekt jako słuchacz podanych klawiszy.
+ * `OnKey onKey` 
+  metoda wywoływana jako reakcja na sygnał
+ * `params Keys[] keys` 
+  klawisze, które nasłuchujemy i odbieramy podaną metodą
