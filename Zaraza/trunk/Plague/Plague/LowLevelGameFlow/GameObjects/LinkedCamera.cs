@@ -72,6 +72,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private bool shiftDown = false;
         private regions mouseRegions;
+
+        private GameObjectInstance tracedObject = null;
+        private uint timerID;
+        private bool tracking = false;
         /****************************************************************************/
 
 
@@ -100,7 +104,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.World = Matrix.CreateLookAt(this.position, this.target, Vector3.Up);
 
             this.keyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,
-                                                   Keys.D, Keys.Q, Keys.E, Keys.LeftShift);
+                                                   Keys.D, Keys.Q, Keys.E, Keys.LeftShift,Keys.F1,Keys.F2);
 
             this.mouselistenerComponent.SubscribeMouseMove(onMouseMove,MouseMoveAction.Move,MouseMoveAction.Scroll);
 
@@ -113,10 +117,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mouseRegions.right = new region((int)(screenWidth * 0.95), 0, (int)(screenWidth * 0.05), screenHeight);
             mouseRegions.top = new region(0, 0, screenWidth, (int)(screenHeight * 0.05));
             mouseRegions.bottom = new region(0, (int)(screenHeight * 0.95), screenWidth, (int)(screenHeight * 0.05));
+
        
         }
         /****************************************************************************/
-
 
 
         /****************************************************************************/
@@ -126,8 +130,69 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             get { return mouseRegions; }
             set { this.mouseRegions = value; }
+            
         }
         /****************************************************************************/
+
+
+        /************************************************************************************/
+        /// Track Target
+        /************************************************************************************/
+        public void setTarget(GameObjectInstance target)
+        {
+            this.tracedObject = target;
+            this.tracking = true;
+        }
+        /****************************************************************************/
+
+        public void startTracing()
+        {
+            if (tracedObject != null)
+            {
+                timerID = TimeControl.CreateTimer(clock.DeltaTime, -1, traceTarget);
+            }
+        }
+
+        public void stopTracking()
+        {
+            Vector3 targetPosition = Vector3.Transform(Vector3.Zero, Matrix.Invert(tracedObject.World));
+            Vector3 diff = targetPosition - target;
+            tracking = false;
+            TimeControl.ReleaseTimer(timerID);
+            tracedObject = null;
+        }
+
+
+        /************************************************************************************/
+        /// Trace Target
+        /************************************************************************************/
+        private void traceTarget()
+        {
+            if (tracedObject == null)
+            {
+                tracking = false;
+                return;
+            }
+
+            Vector3 targetPosition = Vector3.Transform(Vector3.Zero, Matrix.Invert(tracedObject.World));
+
+            if (targetPosition != target)
+            {
+                if (Vector3.Distance(target, targetPosition) < 0.01f)
+                {
+                    target = targetPosition;
+                }
+                else
+                {
+                    Vector3 distanceVec = targetPosition - target;
+                    target += distanceVec / 10.0f;
+                    position += distanceVec / 10.0f;
+                }
+            }
+   
+        }
+        /****************************************************************************/
+
 
 
         /************************************************************************************/
@@ -140,7 +205,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 return true;
             }
-
+            
             return false;
         }
 
@@ -189,6 +254,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case MouseMoveAction.Move:
 
+                    
+                    
+                    
                     direction.Y = 0;
                     perpendicular.Y = 0;
                     if (isMouseInRegion(mouseRegions.left, mouseMoveState))
@@ -244,6 +312,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Vector3 direction = Vector3.Normalize(target - position);
             direction.Y = 0;
 
+            
             Vector3 perpendicular = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f)));
             perpendicular = Vector3.Normalize(perpendicular);
             perpendicular.Y = 0;
@@ -255,7 +324,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case Keys.W:
                             position += direction * time * movementSpeed ;
                             target += direction * time * movementSpeed ;
-                            
+
                             
                             break;
 
@@ -295,12 +364,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     
                     
                     break;
-                
-            
+                case Keys.F1:
+                    if (tracking)
+                    {
+                        startTracing();
+                    }
 
+                    break;
+                
+                case Keys.F2:
+                    if (tracking)
+                    {
+                        stopTracking();
+                    }
+                    break;
 
 
             }
+
+        
             cameraComponent.LookAt(position,target, Vector3.Up);
         }
         /****************************************************************************/

@@ -101,11 +101,10 @@ namespace PlagueEngine.HighLevelGameFlow
             data.Definition = "Barrel";
             data.World = Matrix.Identity;
 
-            for (int i = 0; i < 10; i++)
-            {
+            
                 data.World *= Matrix.CreateTranslation(100, 0, 0);
-                gameObjectsFactory.Create(data);
-            }
+                GameObjectInstance beczka = gameObjectsFactory.Create(data);
+                
 
             LinkedCameraData lcdata = new LinkedCameraData();
             lcdata.Type = typeof(LinkedCamera);
@@ -119,7 +118,10 @@ namespace PlagueEngine.HighLevelGameFlow
             lcdata.ZFar = 10000;
             lcdata.ActiveKeyListener = true;
             lcdata.ActiveMouseListener = true;
-            gameObjectsFactory.Create(lcdata);
+            
+            LinkedCamera camera= (LinkedCamera)(gameObjectsFactory.Create(lcdata));
+            camera.setTarget(beczka);
+
 
             //FreeCameraData fcdata = new FreeCameraData();
             //fcdata.Type = typeof(FreeCamera);
