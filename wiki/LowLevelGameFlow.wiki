@@ -9,7 +9,7 @@ System zarządzający "nisko" poziomowym przebiegiem gry. Składa się głównie
  * GameObjectInstance
  * GameObjectDefinition
  * GameObjectComponent
- * GameObjectFactory
+ * GameObjectsFactory
 ----
 == Spis obiektów ==
  * StaticMesh
