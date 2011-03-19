@@ -75,7 +75,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (!state.IsDown()) return;
 
-
             switch (key)
             { 
                 case Keys.W:
@@ -101,31 +100,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case Keys.E:
                     cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds) * -1));
                     break;
-
-                //case Keys.PageUp:
-                //    cameraComponent.RotateZ((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
-                //    break;
-
-                //case Keys.PageDown:
-                //    cameraComponent.RotateZ((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
-                //    break;
-
-                //case Keys.Up:
-                //    cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
-                //    break;
-
-                //case Keys.Down:
-                //    cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
-                //    break;
-
-                //case Keys.Right:
-                //    cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds));
-                //    break;
-
-                //case Keys.Left:
-                //    cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * -1);
-                //    break;
-
             }
         }
         /****************************************************************************/
@@ -157,8 +131,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (rotation && mouseMovementState.Moved)
             {
-                cameraComponent.Yaw((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * mouseMovementState.Difference.X);
-                cameraComponent.RotateX((float)(rotationSpeed * clock.DeltaTime.TotalMilliseconds) * mouseMovementState.Difference.Y);
+                cameraComponent.Yaw     (rotationSpeed * mouseMovementState.Difference.X);
+                cameraComponent.RotateX (rotationSpeed * mouseMovementState.Difference.Y);
             }
         }
         /****************************************************************************/
