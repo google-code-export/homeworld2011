@@ -54,9 +54,9 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Scren Width
         /****************************************************************************/
-        public int ScreenWidth()
+        public int ScreenWidth
         {
-            return renderer.Device.Viewport.Width;
+            get {return renderer.Device.Viewport.Width;}
         }
         /****************************************************************************/
 
@@ -66,9 +66,9 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Scren Height
         /****************************************************************************/
-        public int ScreenHeight()
+        public int ScreenHeight
         {
-            return renderer.Device.Viewport.Height;
+            get { return renderer.Device.Viewport.Height; }
         }
         /****************************************************************************/
 

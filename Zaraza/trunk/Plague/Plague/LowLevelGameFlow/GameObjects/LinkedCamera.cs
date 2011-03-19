@@ -105,8 +105,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.mouselistenerComponent.SubscribeMouseMove(onMouseMove,MouseMoveAction.Move,MouseMoveAction.Scroll);
 
 
-            int screenWidth = cameraComponent.ScreenWidth();
-            int screenHeight = cameraComponent.ScreenHeight();
+            int screenWidth = cameraComponent.ScreenWidth;
+            int screenHeight = cameraComponent.ScreenHeight;
 
             ///domyslne miejsca na ekranie do przesuwania mysza kamery
             mouseRegions.left = new region(0, 0, (int)(screenWidth * 0.05), screenHeight);
