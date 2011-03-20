@@ -450,8 +450,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ZFar = this.cameraComponent.ZFar;
             data.ActiveKeyListener = this.keyboardListenerComponent.Active;
             data.ActiveMouseListener = this.mouselistenerComponent.Active;
-            data.position = this.position;
-            data.target = this.target;
+            data.Position = this.position;
+            data.Target = this.target;
 
             return data;
         }
@@ -475,8 +475,72 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float ZFar = 0;
         public bool ActiveKeyListener = false;
         public bool ActiveMouseListener = false;
-        public Vector3 position;
-        public Vector3 target;
+        public Vector3 Position;
+        public Vector3 Target;
+
+        public float movementSpeed
+        {
+            set { this.MovementSpeed = value; }
+            get { return MovementSpeed; }
+        }
+
+        public float rotationSpeed
+        {
+            set { this.RotationSpeed = value; }
+            get { return RotationSpeed; }
+        }
+        public float zoomSpeed
+        {
+            set { this.ZoomSpeed = value; }
+            get { return ZoomSpeed; }
+        }
+        public float FOV
+        {
+            set { this.FoV = value; }
+            get { return FoV; }
+        }
+        public float zNear
+        {
+            set { this.ZNear = value; }
+            get { return ZNear; }
+        }
+        public float zFar
+        {
+            set { this.ZFar = value; }
+            get { return ZFar; }
+        }
+        public bool activeKeyListener
+        {
+            set { this.ActiveKeyListener = value; }
+            get { return ActiveKeyListener; }
+        }
+        public bool activeMouseListener
+        {
+            set { this.ActiveMouseListener = value; }
+            get { return ActiveMouseListener; }
+        }
+
+
+        new public Vector3  position
+        {
+            get { return this.Position; }
+            set 
+            {
+                this.Position = value;
+                World = Matrix.CreateLookAt(value, target, Vector3.Up); 
+            }
+
+        }
+
+        public Vector3 target
+        {
+            set 
+            { 
+                this.Target = value;
+                this.World = Matrix.CreateLookAt(position, value, Vector3.Up);
+            }
+            get { return this.Target; }
+        }
     }
     /********************************************************************************/
 

@@ -7,20 +7,46 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+
+
+using PlagueEngine.LowLevelGameFlow.GameObjects;
+using PlagueEngine.LowLevelGameFlow;
+
 namespace PlagueEngine.Tools
 {
-    public partial class GameObjectEditorWindow : Form
+    partial class GameObjectEditorWindow : Form
     {
 
-        private GameObjectEditor gameObjectEditor = null;
+
+
+        public class gameObjectsClassName
+        {
+            public string className;
+            public Type ClassType;
+            public Type dataClassType;
+        }
 
 
 
 
-        public GameObjectEditorWindow(GameObjectEditor gameObjectEditor)
+        private List<gameObjectsClassName> gameObjectClassNames = new List<gameObjectsClassName>();
+
+        private GameObjectsFactory factory = null;
+        private gameObjectsClassName currentClassName = null;
+        private GameObjectInstanceData currentObject = null;
+
+
+        public GameObjectEditorWindow(GameObjectsFactory factory)
         {
             InitializeComponent();
-            this.gameObjectEditor = gameObjectEditor;
+            FillClassNames();
+            this.factory = factory;
+            foreach (var gameObject in gameObjectClassNames)
+            {
+                addGameObjectName(gameObject.className);
+            }
+
+
             this.Visible = true;
         }
 
@@ -32,17 +58,61 @@ namespace PlagueEngine.Tools
 
         private void FillNames(object sender, EventArgs e)
         {
-            string objectName = gameObjectsName.Items[gameObjectsName.SelectedIndex].ToString();
-            List<string> fieldNames = gameObjectEditor.getClassFieldsName(objectName);
+            string objectname = gameObjectsName.Items[gameObjectsName.SelectedIndex].ToString();
 
-            GridNamesValues.Rows.Clear();
-
-            for (int i = 0; i < fieldNames.Count; i++)
-            {
-                GridNamesValues.Rows.Add();
-                GridNamesValues.Rows[i].Cells[0].Value = fieldNames[i];
-            }
+            currentClassName = getClass(objectname);
+            currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassName.dataClassType));
+            
+            propertyGrid1.SelectedObject = currentObject;
         }
+
+
+        public void FillClassNames()
+        {
+
+            gameObjectsClassName linkedCamera = new gameObjectsClassName();
+            linkedCamera.className = "LinkedCamera";
+            linkedCamera.ClassType = typeof(LinkedCamera);
+            linkedCamera.dataClassType = typeof(LinkedCameraData);
+            gameObjectClassNames.Add(linkedCamera);
+
+            gameObjectsClassName freeCamera = new gameObjectsClassName();
+            freeCamera.className = "FreeCamera";
+            freeCamera.ClassType = typeof(FreeCamera);
+            freeCamera.dataClassType = typeof(FreeCameraData);
+            gameObjectClassNames.Add(freeCamera);
+
+            gameObjectsClassName staticMesh = new gameObjectsClassName();
+            staticMesh.className = "StaticMesh";
+            staticMesh.ClassType = typeof(StaticMesh);
+            staticMesh.dataClassType = typeof(StaticMeshData);
+            gameObjectClassNames.Add(staticMesh);
+        }
+
+
+        public gameObjectsClassName getClass(string name)
+        {
+
+
+            foreach (var gameobject in gameObjectClassNames)
+            {
+                if (name == gameobject.className)
+                {
+                    return gameobject;
+                }
+            }
+            return null;
+        }
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            currentObject.Type = currentClassName.ClassType;
+
+            factory.Create(currentObject);
+        }
+
+    
 
 
 
