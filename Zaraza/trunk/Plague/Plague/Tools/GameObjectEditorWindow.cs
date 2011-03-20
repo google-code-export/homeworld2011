@@ -13,30 +13,52 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Resources;
 
+
+
+/********************************************************************************/
+/// PlagueEngine.Tools
+/********************************************************************************/
 namespace PlagueEngine.Tools
 {
+
+    /********************************************************************************/
+    /// Game Object Editor Window
+    /********************************************************************************/
     partial class GameObjectEditorWindow : Form
     {
 
 
 
+        /********************************************************************************/
+        /// game Objects Class Name
+        /********************************************************************************/
         public class gameObjectsClassName
         {
             public string className;
             public Type ClassType;
             public Type dataClassType;
         }
+        /********************************************************************************/
 
 
 
 
+        /********************************************************************************/
+        /// Fields
+        /********************************************************************************/
         private List<gameObjectsClassName> gameObjectClassNames = new List<gameObjectsClassName>();
         private ContentManager contentManager = null;
         private GameObjectsFactory factory = null;
         private gameObjectsClassName currentClassName = null;
         private GameObjectInstanceData currentObject = null;
+        /********************************************************************************/
 
 
+
+
+        /********************************************************************************/
+        /// Constructor
+        /********************************************************************************/
         public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager)
         {
             InitializeComponent();
@@ -56,9 +78,14 @@ namespace PlagueEngine.Tools
             }
             this.Visible = true;
         }
+        /********************************************************************************/
 
- 
 
+
+
+        /********************************************************************************/
+        /// Fill Names
+        /********************************************************************************/
         private void FillNames(object sender, EventArgs e)
         {
             if (gameObjectsName.SelectedIndex != -1)
@@ -71,8 +98,13 @@ namespace PlagueEngine.Tools
                 propertyGrid1.SelectedObject = currentObject;
             }
         }
+        /********************************************************************************/
 
 
+
+        /********************************************************************************/
+        /// Fill Class Names
+        /********************************************************************************/
         public void FillClassNames()
         {
 
@@ -94,8 +126,14 @@ namespace PlagueEngine.Tools
             staticMesh.dataClassType = typeof(StaticMeshData);
             gameObjectClassNames.Add(staticMesh);
         }
+        /********************************************************************************/
 
 
+
+
+        /********************************************************************************/
+        /// get Class
+        /********************************************************************************/
         public gameObjectsClassName getClass(string name)
         {
 
@@ -109,8 +147,14 @@ namespace PlagueEngine.Tools
             }
             return null;
         }
+        /********************************************************************************/
 
 
+
+
+        /********************************************************************************/
+        /// button1_Click //klikniecie create
+        /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {
             currentObject.Type = currentClassName.ClassType;
@@ -121,7 +165,13 @@ namespace PlagueEngine.Tools
             gameObjectsName.SelectedIndex = -1;
             gameObjectsName.SelectedIndex = -1;
         }
+        /********************************************************************************/
 
+
+
+        /********************************************************************************/
+        /// ComboboxDefinitions_SelectedIndexChanged //wybranie definicji z comboboxa
+        /********************************************************************************/
         private void ComboboxDefinitions_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ComboboxDefinitions.SelectedIndex != -1)
@@ -130,12 +180,15 @@ namespace PlagueEngine.Tools
                 propertyGrid1.Refresh();
             }
         }
-
+        /********************************************************************************/
     
 
 
 
 
     }
-}
+    /********************************************************************************/
 
+
+}
+/********************************************************************************/

@@ -192,13 +192,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             set { this.MovementSpeed = value; }
             get { return MovementSpeed; }
         }
-
         public float rotationSpeed
         {
             set { this.RotationSpeed = value; }
             get { return RotationSpeed; }
         }
-
         public float FOV
         {
             set { this.FoV = value; }
