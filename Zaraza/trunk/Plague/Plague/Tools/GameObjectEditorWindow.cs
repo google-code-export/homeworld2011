@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
+using PlagueEngine.Resources;
 
 namespace PlagueEngine.Tools
 {
@@ -30,40 +31,45 @@ namespace PlagueEngine.Tools
 
 
         private List<gameObjectsClassName> gameObjectClassNames = new List<gameObjectsClassName>();
-
+        private ContentManager contentManager = null;
         private GameObjectsFactory factory = null;
         private gameObjectsClassName currentClassName = null;
         private GameObjectInstanceData currentObject = null;
 
 
-        public GameObjectEditorWindow(GameObjectsFactory factory)
+        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager)
         {
             InitializeComponent();
             FillClassNames();
             this.factory = factory;
+            this.contentManager = contentManager;
+
+
             foreach (var gameObject in gameObjectClassNames)
             {
-                addGameObjectName(gameObject.className);
+                gameObjectsName.Items.Add(gameObject.className);
             }
 
-
+            foreach(var definition in contentManager.GameObjectsDefinitions.Keys)
+            {
+                ComboboxDefinitions.Items.Add(definition);
+            }
             this.Visible = true;
         }
 
-        public void addGameObjectName(string name)
-        {
-            gameObjectsName.Items.Add(name);
-        }
-
+ 
 
         private void FillNames(object sender, EventArgs e)
         {
-            string objectname = gameObjectsName.Items[gameObjectsName.SelectedIndex].ToString();
+            if (gameObjectsName.SelectedIndex != -1)
+            {
+                string objectname = gameObjectsName.Items[gameObjectsName.SelectedIndex].ToString();
 
-            currentClassName = getClass(objectname);
-            currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassName.dataClassType));
-            
-            propertyGrid1.SelectedObject = currentObject;
+                currentClassName = getClass(objectname);
+                currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassName.dataClassType));
+
+                propertyGrid1.SelectedObject = currentObject;
+            }
         }
 
 
@@ -110,6 +116,19 @@ namespace PlagueEngine.Tools
             currentObject.Type = currentClassName.ClassType;
 
             factory.Create(currentObject);
+            ComboboxDefinitions.SelectedIndex = -1;//2x, tak musi byc
+            ComboboxDefinitions.SelectedIndex = -1;
+            gameObjectsName.SelectedIndex = -1;
+            gameObjectsName.SelectedIndex = -1;
+        }
+
+        private void ComboboxDefinitions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ComboboxDefinitions.SelectedIndex != -1)
+            {
+                currentObject.definition = ComboboxDefinitions.Items[ComboboxDefinitions.SelectedIndex].ToString();
+                propertyGrid1.Refresh();
+            }
         }
 
     

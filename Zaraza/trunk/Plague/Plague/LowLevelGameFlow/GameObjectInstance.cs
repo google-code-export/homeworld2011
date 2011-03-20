@@ -212,8 +212,8 @@ namespace PlagueEngine.LowLevelGameFlow
 
         public Vector3 position
         {
-            get { return  Vector3.Transform(Vector3.Zero, Matrix.Invert(this.World)); }
-            set { World =  Matrix.CreateTranslation(value); }
+            get { return  Vector3.Transform(Vector3.Zero, this.World); }
+            set { World = Matrix.CreateWorld(value, Vector3.Forward, Vector3.Up); }
 
         }
     }
