@@ -22,9 +22,12 @@ namespace PlagueEngine.TimeControlSystem
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private static Dictionary<uint,Timer> Timers       = new Dictionary<uint,Timer>();
-        private static List<Timer>            WastedTimers = new List<Timer>();
-        private static List<Clock>            Clocks       = new List<Clock>();
+        private static Dictionary<uint,Timer>           Timers                    = new Dictionary<uint,Timer>();
+        private static List<Timer>                      WastedTimers              = new List<Timer>();
+        private static List<Clock>                      Clocks                    = new List<Clock>();
+        private static List<FrameCounter>               WastedFrameCounters       = new List<FrameCounter>();  
+        private static Dictionary<uint, FrameCounter>   FrameCounters             = new Dictionary<uint, FrameCounter>();
+        
         /****************************************************************************/
 
 
@@ -44,10 +47,57 @@ namespace PlagueEngine.TimeControlSystem
                 clock.Update(deltaTime);
             }
 
+            foreach (FrameCounter frameCounter in FrameCounters.Values)
+            {
+                if (frameCounter.Wasted) WastedFrameCounters.Add(frameCounter);
+                else frameCounter.Update();
+            }
+
             foreach (Timer timer in WastedTimers) Timers.Remove(timer.ID);
             WastedTimers.Clear();
+
+            foreach (FrameCounter frameCounter in WastedFrameCounters) FrameCounters.Remove(frameCounter.ID);
+            WastedFrameCounters.Clear();
         }
         /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Create Frame Counter
+        /// <summary>
+        /// Tworzy nowy licznik klatek.
+        /// </summary>
+        /// <param name="framesToAlarm">Ilosc klatek co ile zostanie wywołany alarm</param>
+        /// <param name="repeats">Powtarzalność alarmu. -1 = nieskończoność.</param>
+        /// <param name="callback">Metoda która zostanie wywołana jako alarm</param>
+        /// <returns>ID FrameCounter'a.</returns>         
+        /****************************************************************************/
+        public static uint CreateFrameCounter( int framesToAlarm, int repeats, FrameCounter.CallbackDelegate callback)
+        {
+            FrameCounter frameCounter = new FrameCounter(framesToAlarm, repeats, callback);
+            FrameCounters.Add(frameCounter.ID, frameCounter);
+            return frameCounter.ID;
+
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Create Frame Counter
+        /****************************************************************************/
+        public static void ReleaseFrameCounter(uint id)
+        {
+            FrameCounters.Remove(id);
+        }
+        /****************************************************************************/
+
+
+
+
 
 
         /****************************************************************************/
@@ -67,6 +117,7 @@ namespace PlagueEngine.TimeControlSystem
             return timer.ID;            
         }
         /****************************************************************************/
+
 
 
         /****************************************************************************/

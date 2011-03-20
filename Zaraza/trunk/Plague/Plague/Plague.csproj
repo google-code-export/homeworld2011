@@ -148,6 +148,7 @@
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Resources\ContentManager.cs" />
     <Compile Include="TimeControlSystem\Clock.cs" />
+    <Compile Include="TimeControlSystem\FrameCounter.cs" />
     <Compile Include="TimeControlSystem\TimeControl.cs" />
     <Compile Include="TimeControlSystem\Timer.cs" />
   </ItemGroup>
