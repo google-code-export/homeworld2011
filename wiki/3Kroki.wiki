@@ -39,12 +39,18 @@ public override void ReleaseComponents()
 }}}
 
 == Krok 2. == 
- * Najlepiej w tym samym pliku tworzymy klasę zwierającą parametry naszej klasy obiektu gry, niezbędne do jej utworzenia/odtworzenia.
+ * Najlepiej w tym samym pliku tworzymy klasę zwierającą parametry naszej klasy obiektu gry, niezbędne do jej utworzenia/odtworzenia. Aby parametr był edytowalny w edytorze gameObjectow musimy dodatkowo utworzyc tzw 'property' dla parametru (inaczej mówiąc - settery i gettery).
 {{{
 [Serializable]
 public class MyGameOebjctData : GameObjectInstanceData
 {
     public int Turbo = 0;
+
+    public int turbo
+    {
+      get {return this.Turbo;}
+      set {this.Turbo=value;}
+    }
 }
 }}}
 
@@ -125,4 +131,20 @@ private MyGameObject CreateMyGameObject(GameObjectInstanceData data)
 
     return result;
 }
+}}}
+
+----
+
+== Aneks: dodawanie klas gameObjectow do gameObjectEditora ==
+
+  * Aby mozna dodawac obiekty napisanego przez siebie gameObjectu nalezy w GameObjectEditorWindow (folder Tools, klikamy na plik GameObjectEditorWindow.cs prawym i wybieramy "view code") w metodzie 'FillClassNames' dodac kod:
+
+{{{
+
+            gameObjectsClassName obojetnieCo= new gameObjectsClassName();
+            obojetnieCo.className = "NazwaKlasyGameObjectu";
+            obojetnieCo.ClassType = typeof(NazwaKlasyGameObjectu);
+            obojetnieCo.dataClassType = typeof(NazwaKlasyDatyGameObjectu);
+            gameObjectClassNames.Add(obojetnieCo);
+
 }}}
