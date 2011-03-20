@@ -9,7 +9,7 @@ using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input;
-
+using PlagueEngine.Tools;
 
 /************************************************************************************/
 /// PlagueEngine
@@ -86,6 +86,13 @@ namespace PlagueEngine
             
             testLevel.PutSomeObjects();
             contentManager.SaveLevel("TestLevel2.lvl",testLevel.SaveLevel());
+
+
+
+
+            GameObjectEditor gameObjectEditor = new GameObjectEditor();
+
+
 
             Diagnostics.PushLog("Initialization complete");
         }
