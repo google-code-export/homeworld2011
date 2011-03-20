@@ -410,7 +410,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case Keys.F2:
                     
                         stopTracking();
-                    
+                       
+
                     break;
 
 
