@@ -74,7 +74,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private regions mouseRegions;
 
         private GameObjectInstance tracedObject = null;
-        private uint timerID;
+        private uint frameCounterID = 0;
         private bool tracking = false;
         /****************************************************************************/
 
@@ -153,9 +153,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             this.tracking = true;
 
-            if (tracedObject != null && timerID==0 )
+            if (tracedObject != null && frameCounterID==0 )
             {
-                timerID = TimeControl.CreateTimer(clock.DeltaTime, -1, traceTarget);
+                frameCounterID = TimeControl.CreateFrameCounter(1, -1, traceTarget);
             }
         }
         /****************************************************************************/
@@ -171,8 +171,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             
             tracking = false;
             
-            TimeControl.ReleaseTimer(timerID);
-            timerID = 0;
+            TimeControl.ReleaseFrameCounter(frameCounterID);
+            frameCounterID = 0;
             
         }
         /****************************************************************************/
