@@ -137,7 +137,7 @@ private MyGameObject CreateMyGameObject(GameObjectInstanceData data)
 
 == Aneks: dodawanie klas gameObjectow do gameObjectEditora ==
 
-  * Aby mozna dodawac obiekty napisanego przez siebie gameObjectu nalezy w GameObjectEditorWindow (folder Tools, klikamy na plik GameObjectEditorWindow.cs prawym i wybieramy "view code") w metodzie 'FillClassNames' dodac kod:
+  * Aby mozna dodawac obiekty napisanego przez siebie gameObjectu z poziomu edytora nalezy w GameObjectEditorWindow (folder Tools, klikamy na plik GameObjectEditorWindow prawym i wybieramy "view code") w metodzie FillClassNames dodac kod:
 
 {{{
 
