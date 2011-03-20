@@ -186,7 +186,47 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float  ZFar                = 0;
         public bool   ActiveKeyListener   = false;
         public bool   ActiveMouseListener = false;
+
+        public float movementSpeed
+        {
+            set { this.MovementSpeed = value; }
+            get { return MovementSpeed; }
+        }
+
+        public float rotationSpeed
+        {
+            set { this.RotationSpeed = value; }
+            get { return RotationSpeed; }
+        }
+
+        public float FOV
+        {
+            set { this.FoV = value; }
+            get { return FoV; }
+        }
+        public float zNear
+        {
+            set { this.ZNear = value; }
+            get { return ZNear; }
+        }
+        public float zFar
+        {
+            set { this.ZFar = value; }
+            get { return ZFar; }
+        }
+        public bool activeKeyListener
+        {
+            set { this.ActiveKeyListener = value; }
+            get { return ActiveKeyListener; }
+        }
+        public bool activeMouseListener
+        {
+            set { this.ActiveMouseListener = value; }
+            get { return ActiveMouseListener; }
+        }
+
     }
+
     /********************************************************************************/
 
 }

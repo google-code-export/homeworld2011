@@ -151,7 +151,6 @@
     <Compile Include="TimeControlSystem\FrameCounter.cs" />
     <Compile Include="TimeControlSystem\TimeControl.cs" />
     <Compile Include="TimeControlSystem\Timer.cs" />
-    <Compile Include="Tools\GameObjectEditor.cs" />
     <Compile Include="Tools\GameObjectEditorWindow.cs">
       <SubType>Form</SubType>
     </Compile>

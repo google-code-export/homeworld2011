@@ -90,7 +90,7 @@ namespace PlagueEngine
 
 
 
-            GameObjectEditor gameObjectEditor = new GameObjectEditor();
+            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory);
 
 
 

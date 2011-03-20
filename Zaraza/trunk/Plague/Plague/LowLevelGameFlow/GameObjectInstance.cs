@@ -203,6 +203,19 @@ namespace PlagueEngine.LowLevelGameFlow
         public Type     Type            = null;
         public String   Definition      = String.Empty;
         public Matrix   World           = Matrix.Identity;
+
+        public String definition
+        {
+            get { return this.Definition; }
+            set { this.Definition = value; }
+        }
+
+        public Vector3 position
+        {
+            get { return  Vector3.Transform(Vector3.Zero, Matrix.Invert(this.World)); }
+            set { World =  Matrix.CreateTranslation(value); }
+
+        }
     }
     /********************************************************************************/
 
