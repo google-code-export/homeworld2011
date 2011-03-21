@@ -74,7 +74,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnKey(Keys key, ExtendedKeyState state)
         {
             if (!state.IsDown()) return;
-
+            
             switch (key)
             { 
                 case Keys.W:

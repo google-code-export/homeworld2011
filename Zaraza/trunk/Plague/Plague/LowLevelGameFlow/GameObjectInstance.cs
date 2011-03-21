@@ -210,11 +210,11 @@ namespace PlagueEngine.LowLevelGameFlow
             set { this.Definition = value; }
         }
 
+        // TODO: macierz świata to nie tylko pozycja, to też rotacja i skala
         public Vector3 position
         {
             get { return  Vector3.Transform(Vector3.Zero, this.World); }
             set { World = Matrix.CreateWorld(value, Vector3.Forward, Vector3.Up); }
-
         }
     }
     /********************************************************************************/

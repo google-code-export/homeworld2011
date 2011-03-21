@@ -47,11 +47,9 @@ namespace PlagueEngine.Rendering
                                                            String asset)
         {
             BasicMeshComponent result = new BasicMeshComponent( gameObject,
-                                                                content.Load<Model>(asset),
-                                                                RemoveBasicMeshComponent);            
-
-            renderer.basicMeshComponents.Add(result);
-            
+                                                                renderer,
+                                                                content.Load<Model>(asset));
+          
             return result;
         }
         /****************************************************************************/
@@ -75,11 +73,37 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
-        /// Remove BasicMeshComponent
+        /// Create TerrainComponent
         /****************************************************************************/
-        public void RemoveBasicMeshComponent(BasicMeshComponent component)
+        public TerrainComponent CreateTerrainComponent( GameObjectInstance gameObject,
+                                                        String heightMap,      
+                                                        String basetexture,
+                                                        String rtexture,
+                                                        String gtexture,
+                                                        String btexture,
+                                                        String weightMap,                                    
+                                                        int width,
+                                                        int length,
+                                                        float height,
+                                                        float cellSize,
+                                                        float textureTiling)
         {
-            renderer.basicMeshComponents.Remove(component);
+            TerrainComponent result = new TerrainComponent( gameObject,
+                                                            renderer,
+                                                            content.Load<Texture2D>(heightMap),
+                                                            content.Load<Texture2D>(basetexture),
+                                                            content.Load<Texture2D>(rtexture),
+                                                            content.Load<Texture2D>(gtexture),
+                                                            content.Load<Texture2D>(btexture),
+                                                            content.Load<Texture2D>(weightMap),
+                                                            width,
+                                                            length,
+                                                            height,
+                                                            cellSize,
+                                                            textureTiling,
+                                                            content.Load<Effect>("TerrainEffect"));
+            result.ComputeMesh();          
+            return result;                                                                                      
         }
         /****************************************************************************/
 

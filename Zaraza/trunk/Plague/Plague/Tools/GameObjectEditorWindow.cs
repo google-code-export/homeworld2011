@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-
-
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Resources;
@@ -125,6 +123,12 @@ namespace PlagueEngine.Tools
             staticMesh.ClassType = typeof(StaticMesh);
             staticMesh.dataClassType = typeof(StaticMeshData);
             gameObjectClassNames.Add(staticMesh);
+
+            gameObjectsClassName terrain = new gameObjectsClassName();
+            terrain.className = "Terrain";
+            terrain.ClassType = typeof(Terrain);
+            terrain.dataClassType = typeof(TerrainData);
+            gameObjectClassNames.Add(terrain);
         }
         /********************************************************************************/
 

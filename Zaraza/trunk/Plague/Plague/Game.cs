@@ -11,6 +11,7 @@ using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input;
 using PlagueEngine.Tools;
 
+
 /************************************************************************************/
 /// PlagueEngine
 /************************************************************************************/
@@ -83,17 +84,12 @@ namespace PlagueEngine
             
             testLevel = new Level(gameObjectsFactory);
             //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
-            
+
             testLevel.PutSomeObjects();
-            contentManager.SaveLevel("TestLevel2.lvl",testLevel.SaveLevel());
-
-
-
-
+            contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
+            
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory,contentManager);
-
-
-
+            
             Diagnostics.PushLog("Initialization complete");
         }
         /****************************************************************************/
@@ -122,6 +118,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void UnloadContent()
         {
+            contentManager.Unload();
             Diagnostics.PushLog("Unloading content complete");
             Diagnostics.CloseLogFile();
         }
@@ -210,7 +207,7 @@ namespace PlagueEngine
                 renderConfig = defaultRenderConfig;
                 contentManager.SaveConfiguration(defaultRenderConfig);
             }
-            renderer = new Renderer(this, renderConfig);       
+            renderer = new Renderer(this, renderConfig);
         }
         /****************************************************************************/
 

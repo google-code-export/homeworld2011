@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 using PlagueEngine.LowLevelGameFlow;
 
@@ -51,6 +51,7 @@ namespace PlagueEngine.Rendering.Components
         }
         /****************************************************************************/
 
+
         /****************************************************************************/
         /// Scren Width
         /****************************************************************************/
@@ -61,8 +62,6 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
 
 
-
-
         /****************************************************************************/
         /// Scren Height
         /****************************************************************************/
@@ -71,7 +70,6 @@ namespace PlagueEngine.Rendering.Components
             get { return renderer.Device.Viewport.Height; }
         }
         /****************************************************************************/
-
 
 
         /****************************************************************************/
@@ -339,8 +337,6 @@ namespace PlagueEngine.Rendering.Components
             if (renderer.CurrentCamera == this) renderer.CurrentCamera = null;
         }
         /****************************************************************************/
-
-
 
     }
     /********************************************************************************/
