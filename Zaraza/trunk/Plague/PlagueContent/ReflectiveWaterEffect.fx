@@ -15,12 +15,31 @@ float WaveSpeed;
 float Time;
 
 texture ReflectionMap;
+texture RefractionMap;
+
+float Bias;
+
+float3 SunLightDirection;
+float3 SunLightAmbient;
+float3 SunLightDiffuse;
+float3 SunLightSpecular;
+
+float3 CameraPosition;
 
 sampler2D reflectionMapSampler = sampler_state
 {
 	texture = <ReflectionMap>;
-	MinFilter = Point;
-	MagFilter = Point;
+	MinFilter = Anisotropic;
+	MagFilter = Anisotropic;
+	AddressU = Mirror;
+	AddressV = Mirror;
+};
+
+sampler2D refractionMapSampler = sampler_state
+{
+	texture = <RefractionMap>;
+	MinFilter = Anisotropic;
+	MagFilter = Anisotropic;
 	AddressU = Mirror;
 	AddressV = Mirror;
 };
@@ -43,6 +62,7 @@ struct VertexShaderOutput
     float4 Position			  : POSITION0;
 	float4 ReflectionPosition : TEXCOORD1;
 	float2 NormalMapPosition  : TEXCOORD2;
+	float3 WorldPosition	  : TEXCOORD3;
 };
 
 float2 postProjToScreen(float4 position)
@@ -59,7 +79,7 @@ float2 halfPixel()
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 {
     VertexShaderOutput output;
-
+			
 	float4x4 wvp	= mul(World, mul(View, Projection));
 	output.Position = mul(input.Position, wvp);
 	
@@ -68,6 +88,8 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 
 	output.NormalMapPosition = input.UV/WaveLength;
 	output.NormalMapPosition.y -= Time * WaveSpeed;
+
+	output.WorldPosition = mul(input.Position,World);
 
     return output;
 }
@@ -79,8 +101,18 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 		
     float2 reflectionUV = postProjToScreen(input.ReflectionPosition) + halfPixel();
 	float3 reflection	= tex2D(reflectionMapSampler, reflectionUV + UVOffset);
-	
-	return float4(lerp(reflection, Color, ColorAmount), 1);
+	float3 refraction	= tex2D(refractionMapSampler, reflectionUV + UVOffset);	
+
+	float3 output = lerp(lerp(refraction,reflection,Bias), Color, ColorAmount);	
+
+	float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
+	float3 reflectionVector = -reflect(SunLightDirection, normal.rgb);
+	float specular = dot(normalize(reflectionVector), viewDirection);
+	specular = pow(specular, 256);
+
+	output += specular * SunLightSpecular;
+
+	return float4(output, 1);
 }
 
 technique Technique1

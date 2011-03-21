@@ -83,6 +83,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "Terrain":
                     result = CreateTerrain(data);
                     break;
+                case "SunLight":
+                    result = CreateSunLight(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -207,9 +210,32 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             tdata.WaveLength,
                                                                             tdata.WaveHeight,
                                                                             tdata.WaveSpeed,
-                                                                            tdata.NormalMap),
+                                                                            tdata.NormalMap,
+                                                                            tdata.Bias,
+                                                                            tdata.WTextureTiling),
                                                                             tdata.World);
 
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create Sun Light
+        /****************************************************************************/
+        public SunLight CreateSunLight(GameObjectInstanceData data)
+        {
+            SunLight result = new SunLight();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            SunLightData sdata = (SunLightData)data;
+
+            result.Init(renderingComponentsFactory.CreateSunLightComponent(result,
+                                                                            sdata.Ambient,
+                                                                            sdata.Diffuse,
+                                                                            sdata.Specular),
+                                                                            sdata.World);
             return result;
         }
         /****************************************************************************/

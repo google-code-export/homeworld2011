@@ -121,7 +121,9 @@ namespace PlagueEngine.Rendering
                                                                  float waveLength,
                                                                  float waveHeight,
                                                                  float waveSpeed,                                  
-                                                                 String normalMap)
+                                                                 String normalMap,
+                                                                 float bias,
+                                                                 float textureTiling)
         {
             WaterSurfaceComponent result = new WaterSurfaceComponent(gameObject,
                                                                      renderer,
@@ -134,11 +136,32 @@ namespace PlagueEngine.Rendering
                                                                      waveHeight,
                                                                      waveSpeed,
                                                                      content.LoadTexture2D(normalMap),
+                                                                     bias,
+                                                                     textureTiling,
                                                                      content.Load<Effect>("ReflectiveWaterEffect"));
             
             renderer.preRender.Add(result);
             return result;
         }                                                                 
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create SunlightComponent
+        /****************************************************************************/
+        public SunLightComponent CreateSunLightComponent(GameObjectInstance gameObject,
+                                                         Vector3 ambientColor,
+                                                         Vector3 diffuseColor,
+                                                         Vector3 specularColor)
+        {
+            SunLightComponent result = new SunLightComponent(gameObject,
+                                                             renderer,
+                                                             ambientColor,
+                                                             diffuseColor,
+                                                             specularColor);
+            renderer.SunLight = result;
+            return result;
+        }                                                         
         /****************************************************************************/
 
     }
