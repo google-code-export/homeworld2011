@@ -31,6 +31,7 @@ namespace PlagueEngine.Rendering
         internal List<RenderableComponent> preRender             = new List<RenderableComponent>();
 
         private  CameraComponent             currentCamera       = null;
+        private  SunLightComponent           sunLight            = null;
         /****************************************************************************/
 
 
@@ -156,6 +157,14 @@ namespace PlagueEngine.Rendering
 
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
+                if (renderableComponent.Effect != null)
+                {
+                    renderableComponent.Effect.Parameters["SunLightDirection"].SetValue(sunLight.Direction);
+                    renderableComponent.Effect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
+                    renderableComponent.Effect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
+                    renderableComponent.Effect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
+                }
+
                 renderableComponent.Draw(currentCamera.View, currentCamera.Projection);
             }
         }
@@ -201,6 +210,24 @@ namespace PlagueEngine.Rendering
             set
             {
                 currentCamera = value;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Sun Light
+        /****************************************************************************/
+        public SunLightComponent SunLight
+        {
+            get
+            {
+                return sunLight;
+            }
+            
+            set
+            {
+                sunLight = value;
             }
         }
         /****************************************************************************/

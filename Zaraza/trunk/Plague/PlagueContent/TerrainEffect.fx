@@ -2,9 +2,10 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
-float3 LightDirection;
-float3 LightAmbient;
-float3 LightDiffuse;
+float3 SunLightDirection;
+float3 SunLightAmbient;
+float3 SunLightDiffuse;
+float3 SunLightSpecular;
 
 float TextureTiling;
 
@@ -79,7 +80,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 		clip(dot(float4(input.WorldPos, 1), ClipPlane));
 	}
 
-	float3 output = LightAmbient;
+	float3 output = SunLightAmbient;
 	
 	float3 baseTex = tex2D(BaseTextureSampler, input.UV * TextureTiling);
 	float3 rTex	   = tex2D(RTextureSampler,	   input.UV * TextureTiling);
@@ -93,7 +94,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 	texColor += wMap.r * rTex + wMap.g * gTex + wMap.b * bTex;
 
-	output += saturate(dot(normalize(LightDirection), normalize(input.Normal))) * LightDiffuse * texColor;
+	output += saturate(dot(normalize(SunLightDirection), normalize(input.Normal))) * SunLightDiffuse * texColor;
 
     return float4(output,1);
 }

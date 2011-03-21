@@ -152,15 +152,26 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.Height = 1500;
             tdata.CellSize = 100;
             tdata.TextureTiling = 40;
-            tdata.Level = 850;
-            tdata.Color = new Vector3(0.2f, 0.2f, 0.75f);
-            tdata.ColorAmount = 0.2f;
-            tdata.WaveLength = 3f;
+            tdata.Level = 950;
+            tdata.Color = new Vector3(0.2f, 0.2f, 0.6f);
+            tdata.ColorAmount = 0.1f;
+            tdata.WaveLength = 0.2f;
             tdata.WaveHeight = 0.1f;
-            tdata.WaveSpeed = 0.02f;
+            tdata.WaveSpeed = 0.5f;
             tdata.NormalMap = "normalmap";
+            tdata.WTextureTiling = 1000;
+            tdata.Bias = 0.4f;
             
             gameObjectsFactory.Create(tdata);
+
+            SunLightData sdata = new SunLightData();
+            sdata.Type = typeof(SunLight);
+            sdata.World = Matrix.CreateLookAt(new Vector3(1,-1,1), new Vector3(0, 0, 0), Vector3.Up);
+            sdata.Ambient = new Vector3(0.1f, 0.1f, 0.1f);
+            sdata.Diffuse = new Vector3(0.9f, 0.9f, 0.9f);
+            sdata.Specular = new Vector3(0f, 0f, 0f);
+
+            gameObjectsFactory.Create(sdata);
         }
         /****************************************************************************/
 

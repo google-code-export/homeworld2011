@@ -245,7 +245,7 @@ namespace PlagueEngine.Rendering.Components
 
 
         /****************************************************************************/
-        /// Move Foreward
+        /// Move Forward
         /****************************************************************************/
         public void MoveForward(float step)
         {

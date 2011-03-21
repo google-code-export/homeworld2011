@@ -79,6 +79,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.WaveLength     = waterComponent.WaveLength;
             data.WaveSpeed      = waterComponent.WaveSpeed;
             data.NormalMap      = waterComponent.NormalMap;
+            data.Bias           = waterComponent.Bias;
+            data.WTextureTiling = waterComponent.TextureTiling;
 
             return data;
         }
@@ -136,6 +138,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float WaveSpeed      { get; set; }
         [CategoryAttribute("Water Surface")]
         public String NormalMap     { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public float Bias           { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public float WTextureTiling { get; set; }
         /****************************************************************************/
 
     }
