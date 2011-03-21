@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Resources;
@@ -102,9 +103,42 @@ namespace PlagueEngine.Rendering
                                                             cellSize,
                                                             textureTiling,
                                                             content.Load<Effect>("TerrainEffect"));
-            result.ComputeMesh();          
+            result.ComputeMesh();
             return result;                                                                                      
         }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create WaterSurfaceComponent
+        /****************************************************************************/
+        public WaterSurfaceComponent CreateWaterSurfaceComponent(GameObjectInstance gameObject,
+                                                                 float width,
+                                                                 float length,
+                                                                 float level,
+                                                                 Vector3 color,
+                                                                 float colorAmount,
+                                                                 float waveLength,
+                                                                 float waveHeight,
+                                                                 float waveSpeed,                                  
+                                                                 String normalMap)
+        {
+            WaterSurfaceComponent result = new WaterSurfaceComponent(gameObject,
+                                                                     renderer,
+                                                                     width,
+                                                                     length,
+                                                                     level,
+                                                                     color,
+                                                                     colorAmount,
+                                                                     waveLength,
+                                                                     waveHeight,
+                                                                     waveSpeed,
+                                                                     content.LoadTexture2D(normalMap),
+                                                                     content.Load<Effect>("ReflectiveWaterEffect"));
+            
+            renderer.preRender.Add(result);
+            return result;
+        }                                                                 
         /****************************************************************************/
 
     }

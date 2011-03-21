@@ -170,6 +170,7 @@ namespace PlagueEngine
             base.OnExiting(sender, args);
             
             contentManager.SaveDefaultProfile();
+            contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
 
             Diagnostics.PushLog("Exiting");
         }

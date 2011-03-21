@@ -28,7 +28,8 @@ namespace PlagueEngine.Rendering
         private  RenderingComponentsFactory  componentsFactory   = null;
 
         internal List<RenderableComponent> renderableComponents  = new List<RenderableComponent>();
-        
+        internal List<RenderableComponent> preRender             = new List<RenderableComponent>();
+
         private  CameraComponent             currentCamera       = null;
         /****************************************************************************/
 
@@ -144,9 +145,14 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void Draw()
         {
-            Device.Clear(Color.CornflowerBlue);
-
             if (currentCamera == null) return;
+
+            foreach (RenderableComponent renderableComponent in preRender)
+            {
+                renderableComponent.PreRender(currentCamera.View, currentCamera.Projection);
+            }
+
+            Device.Clear(Color.CornflowerBlue);
 
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
@@ -206,6 +212,16 @@ namespace PlagueEngine.Rendering
         public void ReleaseRenderableComponent(RenderableComponent component)
         {
             renderableComponents.Remove(component);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Release PreRender Component
+        /****************************************************************************/
+        public void ReleasePreRenderComponent(RenderableComponent component)
+        {
+            preRender.Remove(component);
         }
         /****************************************************************************/
 
