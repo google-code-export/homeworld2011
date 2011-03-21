@@ -62,6 +62,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.CellSize       = terrainComponent.CellSize;
             data.TextureTiling  = terrainComponent.TextureTiling;
             data.HeightMap      = terrainComponent.HeightMap;
+            data.BaseTexture    = terrainComponent.BaseTexture;
             data.RTexture       = terrainComponent.RTexture;
             data.GTexture       = terrainComponent.GTexture;
             data.BTexture       = terrainComponent.BTexture;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System.Xml.Serialization;
 using System.IO;
 using System.Runtime.Serialization;
@@ -70,8 +71,20 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public override T Load<T>(string assetName)
         {
-            Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);
-            return base.Load<T>(assetName);
+            Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);                     
+            return base.Load<T>(assetName);                     
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Load Texture 2D
+        /****************************************************************************/
+        public Texture2D LoadTexture2D(string textureName)
+        {
+            Texture2D result = base.Load<Texture2D>(textureName);
+            result.Name = textureName;
+            return result;
         }
         /****************************************************************************/
 
