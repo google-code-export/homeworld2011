@@ -40,7 +40,7 @@ namespace PlagueEngine.LowLevelGameFlow
             else
             {
                 if (PickID(id)) this.id = id;
-                return false;
+                else return false;
             }
 
             this.definition = definition;

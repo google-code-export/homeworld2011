@@ -83,11 +83,13 @@ namespace PlagueEngine
             base.Initialize();
             
             testLevel = new Level(gameObjectsFactory);
-            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
-
+            
             testLevel.PutSomeObjects();
+
             contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
+            testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
+
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory,contentManager);
             
             Diagnostics.PushLog("Initialization complete");

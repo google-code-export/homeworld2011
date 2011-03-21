@@ -44,6 +44,8 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         public void LoadLevel(LevelData levelData)
         {
+            Clear();
+
             foreach (GameObjectInstanceData goid in levelData.gameObjects)
             {
                 gameObjectsFactory.Create(goid);                
