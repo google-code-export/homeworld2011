@@ -1,51 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 using PlagueEngine.LowLevelGameFlow;
-
+using PlagueEngine.Rendering;
+using PlagueEngine.Resources;
 
 /************************************************************************************/
-/// PlagueEngine.Rendering.Components
+/// PlagueEngine.Rendering
 /************************************************************************************/
-namespace PlagueEngine.Rendering.Components
+namespace PlagueEngine.Rendering
 {
 
     /********************************************************************************/
-    /// Basic Mesh Component
+    /// Renderable Component
     /********************************************************************************/
-    class BasicMeshComponent : RenderableComponent
+    abstract class RenderableComponent : GameObjectComponent
     {
-        
+
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Model                 model     = null;
+        protected Renderer       renderer = null;
+        protected Effect         effect   = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// BasicMeshComponent
+        /// Device
         /****************************************************************************/
-        public BasicMeshComponent(GameObjectInstance gameObject,Renderer renderer,Model model) : base(gameObject,renderer,null)
-        {
-            this.model = model;
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Model
-        /****************************************************************************/
-        public Model Model
+        protected GraphicsDevice device
         {
             get
             {
-                return model;
+                return renderer.Device;
             }
         }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Constructor
+        /****************************************************************************/
+        public RenderableComponent(GameObjectInstance gameObject,
+                                   Renderer renderer,
+                                   Effect effect) : base(gameObject)        
+        {
+            this.renderer = renderer;
+            this.effect   = effect;
+            
+            renderer.renderableComponents.Add(this);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Draw
+        /****************************************************************************/
+        public abstract void Draw(Matrix view, Matrix projection);
         /****************************************************************************/
 
 
@@ -54,17 +69,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            base.ReleaseMe();
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Draw
-        /****************************************************************************/
-        public override void Draw(Matrix view, Matrix projection)
-        {
-            model.Draw(gameObject.World, view, projection);                
+            renderer.ReleaseRenderableComponent(this);
         }
         /****************************************************************************/
 

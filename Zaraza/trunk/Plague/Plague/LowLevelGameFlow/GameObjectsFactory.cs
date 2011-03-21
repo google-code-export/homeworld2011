@@ -80,6 +80,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "LinkedCamera":
                     result = CreateLinkedCamera(data);
                     break;
+                case "Terrain":
+                    result = CreateTerrain(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -166,6 +169,36 @@ namespace PlagueEngine.LowLevelGameFlow
                          lcdata.ZoomSpeed,
                          lcdata.position,
                          lcdata.target);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create Terrain
+        /****************************************************************************/
+        private Terrain CreateTerrain(GameObjectInstanceData data)
+        {
+            Terrain result = new Terrain();
+            
+            if (!DefaultObjectInit(result, data)) return result = null; 
+
+            TerrainData tdata = (TerrainData)data;
+
+            result.Init(renderingComponentsFactory.CreateTerrainComponent(result,
+                                                                            tdata.HeightMap,
+                                                                            tdata.BaseTexture,
+                                                                            tdata.RTexture,
+                                                                            tdata.GTexture,
+                                                                            tdata.BTexture,
+                                                                            tdata.WeightMap,
+                                                                            tdata.Width,
+                                                                            tdata.Length,
+                                                                            tdata.Height,
+                                                                            tdata.CellSize,
+                                                                            tdata.TextureTiling),
+                                                                            tdata.World);
 
             return result;
         }
