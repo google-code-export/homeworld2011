@@ -24,8 +24,9 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        protected Renderer       renderer = null;
-        protected Effect         effect   = null;
+        protected Renderer       renderer  = null;
+        protected Effect         effect    = null;
+        protected bool           preRender = false;
         /****************************************************************************/
 
 
@@ -65,11 +66,59 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// Set Clip Plane
+        /****************************************************************************/
+        public void SetClipPlane(Vector4 plane)
+        {
+            if (effect == null) return;
+
+            effect.Parameters["ClipPlaneEnabled"].SetValue(true);
+            effect.Parameters["ClipPlane"].SetValue(plane);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Disable Clip Plane
+        /****************************************************************************/
+        public void DisableClipPlane()
+        {
+            if (effect == null) return;
+
+            effect.Parameters["ClipPlaneEnabled"].SetValue(false);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Pre Render
+        /****************************************************************************/
+        public virtual void PreRender(Matrix view, Matrix projection)
+        {         
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Using Pre Render
+        /****************************************************************************/
+        public bool UsingPreRender
+        {
+            get
+            {
+                return preRender;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Release Me
         /****************************************************************************/
         public override void ReleaseMe()
         {
             renderer.ReleaseRenderableComponent(this);
+            if (preRender) renderer.ReleasePreRenderComponent(this);
         }
         /****************************************************************************/
 

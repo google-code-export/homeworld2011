@@ -145,6 +145,7 @@
     <Compile Include="Rendering\Components\BasicMeshComponent.cs" />
     <Compile Include="Rendering\Components\CameraComponent.cs" />
     <Compile Include="Rendering\Components\TerrainComponent.cs" />
+    <Compile Include="Rendering\Components\WaterSurfaceComponent.cs" />
     <Compile Include="Rendering\RenderableComponent.cs" />
     <Compile Include="Rendering\RenderingComponentsFactory.cs" />
     <Compile Include="Rendering\RenderConfig.cs" />

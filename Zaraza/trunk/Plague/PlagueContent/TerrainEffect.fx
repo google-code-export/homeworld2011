@@ -14,6 +14,9 @@ texture GTexture;
 texture BTexture;
 texture WeightMap;
 
+bool ClipPlaneEnabled = false;
+float4 ClipPlane;
+
 sampler BaseTextureSampler = sampler_state 
 {
 	texture = <BaseTexture>;
@@ -51,6 +54,7 @@ struct VertexShaderOutput
     float4 Position : POSITION0;
 	float2 UV		: TEXCOORD0;
 	float4 Normal   : TEXCOORD1;
+	float3 WorldPos : TEXCOORD2;
 };
 
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
@@ -60,15 +64,21 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
     float4 worldPosition = mul(input.Position, World);
     float4 viewPosition  = mul(worldPosition, View);
     output.Position		 = mul(viewPosition, Projection);
+	
+	output.UV	    = input.UV;
+	output.Normal   = mul(input.Normal,World);
+	output.WorldPos = worldPosition;
 
-	output.UV	  = input.UV;
-	output.Normal = mul(input.Normal,World);
-
-    return output;
+	return output;
 }
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
+	if (ClipPlaneEnabled)
+	{
+		clip(dot(float4(input.WorldPos, 1), ClipPlane));
+	}
+
 	float3 output = LightAmbient;
 	
 	float3 baseTex = tex2D(BaseTextureSampler, input.UV * TextureTiling);

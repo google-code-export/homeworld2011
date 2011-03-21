@@ -8,6 +8,7 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 using Microsoft.Xna.Framework;
 
+
 /************************************************************************************/
 /// PlagueEngine.HighLevelGameFlow
 /************************************************************************************/
@@ -102,7 +103,7 @@ namespace PlagueEngine.HighLevelGameFlow
             data.Type = (typeof(StaticMesh));
             data.Definition = "Barrel";
             data.World = Matrix.Identity;
-            
+
             for (int i = 0; i < 10; i++)
             {
                 data.World *= Matrix.CreateTranslation(100, 0, 0);
@@ -126,7 +127,7 @@ namespace PlagueEngine.HighLevelGameFlow
             
             FreeCameraData fcdata = new FreeCameraData();
             fcdata.Type = typeof(FreeCamera);
-            fcdata.World = fcdata.World = Matrix.CreateLookAt(new Vector3(-200, 300, -200), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
+            fcdata.World = fcdata.World = Matrix.CreateLookAt(new Vector3(200, 2000, 200), new Vector3(300, 1000, 300), new Vector3(0, 1, 0));
             fcdata.MovementSpeed = 1;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
             fcdata.FoV = MathHelper.PiOver4;
@@ -151,7 +152,14 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.Height = 1500;
             tdata.CellSize = 100;
             tdata.TextureTiling = 40;
-
+            tdata.Level = 850;
+            tdata.Color = new Vector3(0.2f, 0.2f, 0.75f);
+            tdata.ColorAmount = 0.2f;
+            tdata.WaveLength = 3f;
+            tdata.WaveHeight = 0.1f;
+            tdata.WaveSpeed = 0.02f;
+            tdata.NormalMap = "normalmap";
+            
             gameObjectsFactory.Create(tdata);
         }
         /****************************************************************************/

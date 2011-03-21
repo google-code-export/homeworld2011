@@ -22,17 +22,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private TerrainComponent terrainComponent = null;
-
+        private TerrainComponent        terrainComponent = null;
+        private WaterSurfaceComponent   waterComponent   = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(TerrainComponent terrainComponent,Matrix world)
+        public void Init(TerrainComponent terrainComponent,WaterSurfaceComponent waterComponent,Matrix world)
         {
             this.terrainComponent = terrainComponent;
+            this.waterComponent   = waterComponent;
             this.World            = world;
         }
         /****************************************************************************/
@@ -43,7 +44,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            terrainComponent.ReleaseMe();                
+            terrainComponent.ReleaseMe();
+            waterComponent.ReleaseMe();
         }
         /****************************************************************************/
 
@@ -60,14 +62,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Length         = terrainComponent.Length;
             data.Height         = terrainComponent.Height;
             data.CellSize       = terrainComponent.CellSize;
-            data.TextureTiling  = terrainComponent.TextureTiling;
+           
             data.HeightMap      = terrainComponent.HeightMap;
             data.BaseTexture    = terrainComponent.BaseTexture;
             data.RTexture       = terrainComponent.RTexture;
             data.GTexture       = terrainComponent.GTexture;
             data.BTexture       = terrainComponent.BTexture;
             data.WeightMap      = terrainComponent.WeightMap;
-            
+            data.TextureTiling  = terrainComponent.TextureTiling;
+
+            data.Level          = waterComponent.Level;
+            data.Color          = waterComponent.WaterColor;
+            data.ColorAmount    = waterComponent.ColorAmount;
+
+            data.WaveHeight     = waterComponent.WaveHeight;
+            data.WaveLength     = waterComponent.WaveLength;
+            data.WaveSpeed      = waterComponent.WaveSpeed;
+            data.NormalMap      = waterComponent.NormalMap;
+
             return data;
         }
         /****************************************************************************/
@@ -109,6 +121,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public String WeightMap     { get; set; }
         [CategoryAttribute("Textures")]
         public float TextureTiling  { get; set; }
+
+        [CategoryAttribute("Water Surface")]
+        public float    Level       { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public Vector3  Color       { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public float    ColorAmount { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public float WaveLength     { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public float WaveHeight     { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public float WaveSpeed      { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public String NormalMap     { get; set; }
         /****************************************************************************/
 
     }
