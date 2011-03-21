@@ -39,18 +39,17 @@ public override void ReleaseComponents()
 }}}
 
 == Krok 2. == 
- * Najlepiej w tym samym pliku tworzymy klasę zwierającą parametry naszej klasy obiektu gry, niezbędne do jej utworzenia/odtworzenia. Aby parametr był edytowalny w edytorze gameObjectow musimy dodatkowo utworzyc tzw 'property' dla parametru (inaczej mówiąc - settery i gettery).
+ * Najlepiej w tym samym pliku tworzymy klasę zwierającą parametry naszej klasy obiektu gry, niezbędne do jej utworzenia/odtworzenia. Aby parametr był edytowalny w edytorze gameObjectow musimy dodatkowo utworzyc tzw 'property' dla parametru (inaczej mówiąc - settery i gettery). Żeby uprzyjemnić pracę jeszcze bardziej, dobrze dodać nazwy kategorii do kolejnych parametrów.
 {{{
+using using System.ComponentModel;
+
+...
+
 [Serializable]
 public class MyGameOebjctData : GameObjectInstanceData
 {
-    public int Turbo = 0;
-
-    public int turbo
-    {
-      get {return this.Turbo;}
-      set {this.Turbo=value;}
-    }
+    [CategoryAttribute("Category")]
+    public int Turbo { get; set; }
 }
 }}}
 
