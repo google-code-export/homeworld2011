@@ -127,7 +127,9 @@ namespace PlagueEngine.HighLevelGameFlow
             
             FreeCameraData fcdata = new FreeCameraData();
             fcdata.Type = typeof(FreeCamera);
-            fcdata.World = fcdata.World = Matrix.CreateLookAt(new Vector3(200, 2000, 200), new Vector3(300, 1000, 300), new Vector3(0, 1, 0));
+            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(200, 2000, 200),
+                                                             new Vector3(300, 1000, 300), 
+                                                             new Vector3(0, 1, 0)));
             fcdata.MovementSpeed = 1;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
             fcdata.FoV = MathHelper.PiOver4;
@@ -160,18 +162,18 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.WaveSpeed = 0.5f;
             tdata.NormalMap = "normalmap";
             tdata.WTextureTiling = 1000;
-            tdata.Bias = 0.4f;
+            tdata.Bias = 0.3f;
             
             gameObjectsFactory.Create(tdata);
 
             SunLightData sdata = new SunLightData();
             sdata.Type = typeof(SunLight);
-            sdata.World = Matrix.CreateLookAt(new Vector3(1,-1, 1), new Vector3(0, 0, 0), Vector3.Up);
+            sdata.World = Matrix.Identity;
             sdata.Ambient = new Vector3(0.1f, 0.1f, 0.1f);
             sdata.Diffuse = new Vector3(0.9f, 0.9f, 0.9f);
             sdata.Specular = new Vector3(1f, 1f, 1f);
 
-            gameObjectsFactory.Create(sdata);
+            ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(0,-1,0);
         }
         /****************************************************************************/
 

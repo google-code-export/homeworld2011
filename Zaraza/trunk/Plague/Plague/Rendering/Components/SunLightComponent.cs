@@ -69,11 +69,7 @@ namespace PlagueEngine.Rendering.Components
         { 
             get 
             {
-                Vector3 result = new Vector3(gameObject.World.M13, 
-                                             gameObject.World.M23, 
-                                             gameObject.World.M33);
-                result.Normalize();
-                return result;
+                return gameObject.World.Forward;
             } 
         }
         /****************************************************************************/
