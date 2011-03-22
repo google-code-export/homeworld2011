@@ -205,10 +205,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 
             }
 
-      
 
 
-            Vector3 targetPosition = Vector3.Transform(Vector3.Zero, Matrix.Invert(tracedObject.World));
+            
+            Vector3 targetPosition = tracedObject.World.Translation;
 
             if (targetPosition != target)
             {
@@ -542,6 +542,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             get { return this.Target; }
         }
+
+
     }
     /********************************************************************************/
 
