@@ -223,6 +223,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             get { return ActiveMouseListener; }
         }
 
+        new public Vector3 position
+        {
+            get { return Matrix.Invert(this.World).Translation; }
+            set { this.World = Matrix.CreateTranslation(value); }
+        }
+
     }
 
     /********************************************************************************/

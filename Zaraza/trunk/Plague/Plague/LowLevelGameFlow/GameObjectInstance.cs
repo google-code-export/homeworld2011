@@ -67,6 +67,10 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         private static uint GenerateID()
         {
+
+       return ++lastID;
+           
+
             if (freeIDs.Count != 0)
             {
                 uint id = freeIDs[freeIDs.Count - 1];
@@ -77,6 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow
             {
                 return ++lastID;
             }
+
         }
         /****************************************************************************/
 
@@ -210,12 +215,53 @@ namespace PlagueEngine.LowLevelGameFlow
             set { this.Definition = value; }
         }
 
-        // TODO: macierz świata to nie tylko pozycja, to też rotacja i skala
+       
         public Vector3 position
         {
-            get { return  Vector3.Transform(Vector3.Zero, this.World); }
+            get { return World.Translation; }
             set { World = Matrix.CreateWorld(value, Vector3.Forward, Vector3.Up); }
         }
+
+
+
+        public Vector3 rotation
+        {
+            get
+            {
+                float roll = MathHelper.ToDegrees((float)Math.Atan2(World.M12, World.M11));
+                float pitch = MathHelper.ToDegrees((float)(Math.Acos(World.M13) * -1));
+                float yaw = MathHelper.ToDegrees((float)Math.Atan2(World.M23, World.M33));
+
+                return new Vector3(yaw, pitch, roll);
+            }
+
+            set
+            {
+                Vector3 Rotation = rotation;
+                World = Matrix.CreateWorld(position, Vector3.Forward, Vector3.Up);
+                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(value.Y), MathHelper.ToRadians(value.X), MathHelper.ToRadians(value.Z));
+                
+                        
+            }
+        }
+
+        public Vector3 scale
+        {
+            set
+            {
+                World = Matrix.CreateWorld(position, Vector3.Forward, Vector3.Up);
+                World *= Matrix.CreateScale(value);
+            }
+            get
+            {
+                float x = new Vector3(World.M11, World.M12, World.M13).Length();
+                float y = new Vector3(World.M21, World.M22, World.M23).Length();
+                float z = new Vector3(World.M31, World.M32, World.M33).Length();
+
+                return new Vector3(x, y, z);
+            }
+        }
+
     }
     /********************************************************************************/
 
