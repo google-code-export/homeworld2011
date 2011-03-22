@@ -106,7 +106,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 output = lerp(lerp(refraction,reflection,Bias), Color, ColorAmount);	
 
 	float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
-	float3 reflectionVector = -reflect(SunLightDirection, normal.rgb);
+	float3 reflectionVector = reflect(-SunLightDirection,normal.rgb);
 	float specular = dot(normalize(reflectionVector), viewDirection);
 	specular = pow(specular, 256);
 
