@@ -69,7 +69,7 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             if (freeIDs.Count != 0)
             {
-                uint id = freeIDs[freeIDs.Count];
+                uint id = freeIDs[freeIDs.Count - 1];
                 freeIDs.RemoveAt(freeIDs.Count - 1);
                 return id;
             }

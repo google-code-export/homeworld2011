@@ -26,7 +26,9 @@ namespace PlagueEngine.Rendering.Components
         private float    aspect     = 0;        
         private float    zNear      = 0;
         private float    zFar       = 0;
-        private Renderer renderer   = null;
+
+        private Renderer    renderer   = null;
+        private Quaternion  quaternion;
         /****************************************************************************/
 
 
@@ -47,7 +49,6 @@ namespace PlagueEngine.Rendering.Components
             this.aspect     = renderer.Device.Viewport.AspectRatio;
 
             ComputeProjectionMatrix();
-
         }
         /****************************************************************************/
 
@@ -57,7 +58,10 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public int ScreenWidth
         {
-            get {return renderer.Device.Viewport.Width;}
+            get 
+            {
+                return renderer.Device.Viewport.Width;
+            }
         }
         /****************************************************************************/
 
@@ -67,7 +71,10 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public int ScreenHeight
         {
-            get { return renderer.Device.Viewport.Height; }
+            get 
+            { 
+                return renderer.Device.Viewport.Height; 
+            }
         }
         /****************************************************************************/
 
@@ -79,7 +86,7 @@ namespace PlagueEngine.Rendering.Components
         {
             get
             {
-                return gameObject.World;
+                return Matrix.Invert(gameObject.World);
             }
         }
         /****************************************************************************/
@@ -185,11 +192,24 @@ namespace PlagueEngine.Rendering.Components
 
 
         /****************************************************************************/
+        /// Rotate
+        /****************************************************************************/
+        private void Rotate(Vector3 vector,float angle)
+        {
+            quaternion = Quaternion.CreateFromAxisAngle(vector, angle);
+            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+            gameObject.World.Right   = Vector3.Transform(gameObject.World.Right,   quaternion);
+            gameObject.World.Up      = Vector3.Transform(gameObject.World.Up,      quaternion);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Rotate X
         /****************************************************************************/
         public void RotateX(float angle)
         {
-            gameObject.World *= Matrix.CreateRotationX(angle);            
+            Rotate(Vector3.Right, angle);
         }
         /****************************************************************************/
 
@@ -198,8 +218,8 @@ namespace PlagueEngine.Rendering.Components
         /// Rotate Y
         /****************************************************************************/
         public void RotateY(float angle)
-        {
-            gameObject.World *= Matrix.CreateRotationY(angle);
+        {            
+            Rotate(Vector3.Up, angle);
         }
         /****************************************************************************/
 
@@ -209,7 +229,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void RotateZ(float angle)
         {
-            gameObject.World *= Matrix.CreateRotationZ(angle);
+            Rotate(Vector3.Forward, angle); 
         }
         /****************************************************************************/
 
@@ -219,7 +239,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void Yaw(float angle)
         {
-            gameObject.World *= Matrix.CreateFromAxisAngle(gameObject.World.Up, angle);
+            Rotate(gameObject.World.Up, angle);
         }
         /****************************************************************************/
 
@@ -229,7 +249,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void Pitch(float angle)
         {
-            gameObject.World *= Matrix.CreateFromAxisAngle(gameObject.World.Right, angle);
+            Rotate(gameObject.World.Right, angle);
         }
         /****************************************************************************/
 
@@ -239,7 +259,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void Roll(float angle)
         {
-            gameObject.World *= Matrix.CreateFromAxisAngle(gameObject.World.Forward, angle);
+            Rotate(gameObject.World.Forward, angle);
         }
         /****************************************************************************/
 
@@ -249,7 +269,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveForward(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(0, 0, step);
+            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Forward * step);             
         }
         /****************************************************************************/
 
@@ -259,7 +279,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveUp(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(0, step * -1, 0);
+            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Up * step * -1);            
         }
         /****************************************************************************/
 
@@ -269,7 +289,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveRight(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(step, 0, 0);            
+            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Right * step);         
         }
         /****************************************************************************/
 
@@ -279,7 +299,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveX(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Right * step);  
+            gameObject.World *= Matrix.CreateTranslation(step, 0, 0);    
         }
         /****************************************************************************/
 
@@ -289,7 +309,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveY(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Up * step * -1);            
+            gameObject.World *= Matrix.CreateTranslation(0, step * -1, 0);
         }
         /****************************************************************************/
 
@@ -299,22 +319,27 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveZ(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Forward * step);            
+            gameObject.World *= Matrix.CreateTranslation(0, 0, step);           
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Look At
+        /// Look At (1)
         /****************************************************************************/
         public void LookAt(ref Vector3 position, ref Vector3 target, ref Vector3 up)
         {
-            gameObject.World = Matrix.CreateLookAt(position, target, up);
+            gameObject.World = Matrix.Invert(Matrix.CreateLookAt(position, target, up));
         }
+        /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Look At (2)
+        /****************************************************************************/
         public void LookAt(Vector3 position,Vector3 target,Vector3 up)
         {
-            gameObject.World = Matrix.CreateLookAt(position, target, up);
+            gameObject.World = Matrix.Invert(Matrix.CreateLookAt(position, target, up));
         }
         /****************************************************************************/
 

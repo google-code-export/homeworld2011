@@ -89,7 +89,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 	output.NormalMapPosition = input.UV/WaveLength;
 	output.NormalMapPosition.y -= Time * WaveSpeed;
 
-	output.WorldPosition = mul(input.Position,World);
+	output.WorldPosition = mul(mul(input.Position,World),View);
 
     return output;
 }
@@ -103,14 +103,21 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 reflection	= tex2D(reflectionMapSampler, reflectionUV + UVOffset);
 	float3 refraction	= tex2D(refractionMapSampler, reflectionUV + UVOffset);	
 
-	float3 output = lerp(lerp(refraction,reflection,Bias), Color, ColorAmount);	
+	float3 output = lerp(lerp(refraction,reflection,Bias), Color, ColorAmount);			
+
+	normal.g = -normal.g;
 
 	float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
-	float3 reflectionVector = reflect(-SunLightDirection,normal.rgb);
-	float specular = dot(normalize(reflectionVector), viewDirection);
-	specular = pow(specular, 256);
+	float3 halfVector	 = normalize(SunLightDirection + viewDirection);
 
-	output += specular * SunLightSpecular;
+	normal.rgb = float3(0,1,0);
+
+	//float3 reflectionVector = -reflect(SunLightDirection,float3(0,1,0));
+	//float specular = dot(normalize(reflectionVector), viewDirection);
+	
+	float specular = pow(saturate(dot(normal.rgb,halfVector)),256);
+
+	output += SunLightSpecular * specular;
 
 	return float4(output, 1);
 }

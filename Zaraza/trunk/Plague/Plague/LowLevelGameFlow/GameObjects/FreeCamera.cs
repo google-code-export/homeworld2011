@@ -86,19 +86,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     break;
 
                 case Keys.A:
-                    cameraComponent.MoveRight((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)));
+                    cameraComponent.MoveRight((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)) * -1);
                     break;
 
                 case Keys.D:
-                    cameraComponent.MoveRight((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds) * -1));
+                    cameraComponent.MoveRight((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)));
                     break;
 
                 case Keys.Q:
-                    cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)));
+                    cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)) * -1);
                     break;
 
                 case Keys.E:
-                    cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds) * -1));
+                    cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)));
                     break;
             }
         }
@@ -131,8 +131,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (rotation && mouseMovementState.Moved)
             {
-                cameraComponent.Yaw     (rotationSpeed * mouseMovementState.Difference.X);
-                cameraComponent.RotateX (rotationSpeed * mouseMovementState.Difference.Y);
+                cameraComponent.RotateY(-rotationSpeed * mouseMovementState.Difference.X);
+                cameraComponent.Pitch  (-rotationSpeed * mouseMovementState.Difference.Y);
             }
         }
         /****************************************************************************/
