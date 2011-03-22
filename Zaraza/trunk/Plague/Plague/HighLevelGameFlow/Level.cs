@@ -166,10 +166,10 @@ namespace PlagueEngine.HighLevelGameFlow
 
             SunLightData sdata = new SunLightData();
             sdata.Type = typeof(SunLight);
-            sdata.World = Matrix.CreateLookAt(new Vector3(1,-1,1), new Vector3(0, 0, 0), Vector3.Up);
+            sdata.World = Matrix.CreateLookAt(new Vector3(1,-1, 1), new Vector3(0, 0, 0), Vector3.Up);
             sdata.Ambient = new Vector3(0.1f, 0.1f, 0.1f);
             sdata.Diffuse = new Vector3(0.9f, 0.9f, 0.9f);
-            sdata.Specular = new Vector3(0f, 0f, 0f);
+            sdata.Specular = new Vector3(1f, 1f, 1f);
 
             gameObjectsFactory.Create(sdata);
         }

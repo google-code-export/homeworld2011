@@ -151,7 +151,11 @@ namespace PlagueEngine.Rendering.Components
             effect.Parameters["World"].SetValue(gameObject.World * Matrix.CreateTranslation(0, level, 0));
             effect.Parameters["View"].SetValue(view);
             effect.Parameters["Projection"].SetValue(projection);
-            effect.Parameters["CameraPosition"].SetValue(view.Translation);
+
+            Matrix camera = Matrix.Invert(view);
+
+            effect.Parameters["CameraPosition"].SetValue(camera.Translation);
+
             effect.Parameters["Time"].SetValue((float)clock.Time.TotalSeconds);
             
             effect.CurrentTechnique.Passes[0].Apply();
