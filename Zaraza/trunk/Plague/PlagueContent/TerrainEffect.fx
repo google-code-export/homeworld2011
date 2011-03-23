@@ -1,6 +1,7 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
+float3 CameraPosition;
 
 float3 SunLightDirection;
 float3 SunLightAmbient;
@@ -52,10 +53,10 @@ struct VertexShaderInput
 
 struct VertexShaderOutput
 {
-    float4 Position : POSITION0;
-	float2 UV		: TEXCOORD0;
-	float4 Normal   : TEXCOORD1;
-	float3 WorldPos : TEXCOORD2;
+    float4 Position		 : POSITION0;
+	float2 UV			 : TEXCOORD0;
+	float4 Normal		 : TEXCOORD1;
+	float3 WorldPosition : TEXCOORD2;
 };
 
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
@@ -66,9 +67,9 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
     float4 viewPosition  = mul(worldPosition, View);
     output.Position		 = mul(viewPosition, Projection);
 	
-	output.UV	    = input.UV;
-	output.Normal   = mul(input.Normal,World);
-	output.WorldPos = worldPosition;
+	output.UV			 = input.UV;
+	output.Normal		 = mul(input.Normal,World);
+	output.WorldPosition = worldPosition;
 
 	return output;
 }
@@ -77,7 +78,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
 	if (ClipPlaneEnabled)
 	{
-		clip(dot(float4(input.WorldPos, 1), ClipPlane));
+		clip(dot(float4(input.WorldPosition, 1), ClipPlane));
 	}
 
 	float3 output = SunLightAmbient;
@@ -95,7 +96,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	texColor += wMap.r * rTex + wMap.g * gTex + wMap.b * bTex;
 
 	output += saturate(dot(normalize(SunLightDirection), normalize(input.Normal))) * SunLightDiffuse * texColor;
-
+	
     return float4(output,1);
 }
 

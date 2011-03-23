@@ -163,6 +163,7 @@ namespace PlagueEngine.Rendering
                     renderableComponent.Effect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
                     renderableComponent.Effect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
                     renderableComponent.Effect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
+                    renderableComponent.Effect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
                 }
 
                 renderableComponent.Draw(currentCamera.View, currentCamera.Projection);
