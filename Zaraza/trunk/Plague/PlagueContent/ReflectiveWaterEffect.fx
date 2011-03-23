@@ -26,6 +26,10 @@ float3 SunLightSpecular;
 
 float3 CameraPosition;
 
+float3x3 TBN = float3x3(float3(1,0,0),
+						float3(0,0,1),
+					    float3(0,1,0));
+
 sampler2D reflectionMapSampler = sampler_state
 {
 	texture = <ReflectionMap>;
@@ -106,7 +110,8 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 output = lerp(lerp(refraction,reflection,Bias), Color, ColorAmount);			
 
 	float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
-	float3 reflectionVector = -reflect(float3(1,1,1), normal.rgb); // LightDirection specjalnie na pa³e
+	
+	float3 reflectionVector = reflect(normalize(SunLightDirection), mul(normal,TBN));
 	float specular = dot(normalize(reflectionVector), viewDirection);
 	specular = pow(specular, 256);
 
