@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -148,7 +149,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.MovementSpeed       = this.movementSpeed;
             data.RotationSpeed       = this.rotationSpeed;
-            data.FoV                 = this.cameraComponent.FoV;
+            data.FoV                 = MathHelper.ToDegrees(cameraComponent.FoV);
             data.ZNear               = this.cameraComponent.ZNear;
             data.ZFar                = this.cameraComponent.ZFar;
             data.ActiveKeyListener   = this.keyboardListenerComponent.Active;
@@ -179,56 +180,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class FreeCameraData : GameObjectInstanceData
     {
-        public float  MovementSpeed       = 0;
-        public float  RotationSpeed       = 0;
-        public float  FoV                 = 0;
-        public float  ZNear               = 0;
-        public float  ZFar                = 0;
-        public bool   ActiveKeyListener   = false;
-        public bool   ActiveMouseListener = false;
+        [CategoryAttribute("Movement")]
+        public float MovementSpeed { set; get; }
+        [CategoryAttribute("Movement")]
+        public float RotationSpeed { set; get; }
 
-        public float movementSpeed
-        {
-            set { this.MovementSpeed = value; }
-            get { return MovementSpeed; }
-        }
-        public float rotationSpeed
-        {
-            set { this.RotationSpeed = value; }
-            get { return RotationSpeed; }
-        }
-        public float FOV
-        {
-            set { this.FoV = value; }
-            get { return FoV; }
-        }
-        public float zNear
-        {
-            set { this.ZNear = value; }
-            get { return ZNear; }
-        }
-        public float zFar
-        {
-            set { this.ZFar = value; }
-            get { return ZFar; }
-        }
-        public bool activeKeyListener
-        {
-            set { this.ActiveKeyListener = value; }
-            get { return ActiveKeyListener; }
-        }
-        public bool activeMouseListener
-        {
-            set { this.ActiveMouseListener = value; }
-            get { return ActiveMouseListener; }
-        }
+        [CategoryAttribute("Perspective")]
+        public float FoV { set; get; }
+        [CategoryAttribute("Perspective")]
+        public float ZNear { set; get; }
+        [CategoryAttribute("Perspective")]
+        public float ZFar { set; get; }
 
-        new public Vector3 position
-        {
-            get { return Matrix.Invert(this.World).Translation; }
-            set { this.World = Matrix.CreateTranslation(value); }
-        }
-
+        [CategoryAttribute("Input")]
+        public bool ActiveKeyListener { set; get; }
+        [CategoryAttribute("Input")]
+        public bool ActiveMouseListener { set; get; }
     }
 
     /********************************************************************************/

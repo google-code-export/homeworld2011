@@ -127,11 +127,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float TextureTiling  { get; set; }
 
         [CategoryAttribute("Water Surface")]
-        public float    Level       { get; set; }
+        public float Level          { get; set; }
         [CategoryAttribute("Water Surface")]
         public Vector3  Color       { get; set; }
         [CategoryAttribute("Water Surface")]
-        public float    ColorAmount { get; set; }
+        public float ColorAmount    { get; set; }
         [CategoryAttribute("Water Surface")]
         public float WaveLength     { get; set; }
         [CategoryAttribute("Water Surface")]

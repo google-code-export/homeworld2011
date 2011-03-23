@@ -191,7 +191,7 @@ namespace PlagueEngine.Rendering.Components
             RasterizerState defaultRasterizerState = device.RasterizerState;
             device.RasterizerState = rasterizerState;
             device.SetRenderTarget(reflectionMap);
-            device.Clear(Color.CornflowerBlue);
+            device.Clear(renderer.ClearColor);
 
             foreach (RenderableComponent renderableComponent in renderer.renderableComponents)
             {
@@ -223,7 +223,7 @@ namespace PlagueEngine.Rendering.Components
             Vector4 clipPlane = new Vector4(0, -1, 0, surfacePosition + clipPlaneAdjustment);
 
             device.SetRenderTarget(refractionMap);
-            device.Clear(Color.CornflowerBlue);
+            device.Clear(renderer.ClearColor);
 
             foreach (RenderableComponent renderableComponent in renderer.renderableComponents)
             {

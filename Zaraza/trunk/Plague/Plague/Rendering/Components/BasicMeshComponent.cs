@@ -22,16 +22,18 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Model                 model     = null;
+        private Model  model     = null;
+        private String modelName = String.Empty;             
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// BasicMeshComponent
         /****************************************************************************/
-        public BasicMeshComponent(GameObjectInstance gameObject,Renderer renderer,Model model) : base(gameObject,renderer,null)
+        public BasicMeshComponent(GameObjectInstance gameObject,Renderer renderer,Model model,String name) : base(gameObject,renderer,null)
         {
-            this.model = model;
+            this.model     = model;
+            this.modelName = name;
         }
         /****************************************************************************/
 
@@ -39,11 +41,11 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Model
         /****************************************************************************/
-        public Model Model
+        public String Model
         {
             get
             {
-                return model;
+                return modelName;
             }
         }
         /****************************************************************************/
@@ -64,7 +66,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void Draw()
         {
-            //model.Draw(gameObject.World, view, projection);                
+            model.Draw(gameObject.World, renderer.CurrentCamera.View, renderer.CurrentCamera.Projection);                
         }
         /****************************************************************************/
 

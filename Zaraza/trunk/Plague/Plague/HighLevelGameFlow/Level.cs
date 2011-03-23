@@ -98,7 +98,7 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         public void PutSomeObjects()
         {
-            GameObjectInstanceData data = new GameObjectInstanceData();
+            StaticMeshData data = new StaticMeshData();
 
             data.Type = (typeof(StaticMesh));
             data.Definition = "Barrel";
@@ -132,7 +132,7 @@ namespace PlagueEngine.HighLevelGameFlow
                                                              new Vector3(0, 1, 0)));
             fcdata.MovementSpeed = 1;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-            fcdata.FoV = MathHelper.PiOver4;
+            fcdata.FoV = 60;
             fcdata.ZNear = 10;
             fcdata.ZFar = 100000;
             fcdata.ActiveKeyListener = true;
@@ -159,7 +159,7 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.ColorAmount = 0.1f;
             tdata.WaveLength = 0.2f;
             tdata.WaveHeight = 0.1f;
-            tdata.WaveSpeed = 0.5f;
+            tdata.WaveSpeed = 0.1f;
             tdata.NormalMap = "normalmap";
             tdata.WTextureTiling = 1000;
             tdata.Bias = 0.3f;

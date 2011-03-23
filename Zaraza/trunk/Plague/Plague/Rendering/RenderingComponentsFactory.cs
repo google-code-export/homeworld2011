@@ -49,7 +49,8 @@ namespace PlagueEngine.Rendering
         {
             BasicMeshComponent result = new BasicMeshComponent( gameObject,
                                                                 renderer,
-                                                                content.Load<Model>(asset));
+                                                                content.Load<Model>(asset),
+                                                                asset);
           
             return result;
         }

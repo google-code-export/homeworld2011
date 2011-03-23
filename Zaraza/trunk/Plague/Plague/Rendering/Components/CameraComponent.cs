@@ -43,7 +43,7 @@ namespace PlagueEngine.Rendering.Components
                                 float zFar) : base(gameObject)
         {
             this.renderer   = renderer;
-            this.fov        = fov;            
+            this.fov        = MathHelper.ToRadians(fov);            
             this.zNear      = zNear;
             this.zFar       = zFar;
             this.aspect     = renderer.Device.Viewport.AspectRatio;

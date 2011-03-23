@@ -102,13 +102,26 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         private StaticMesh CreateStaticMesh(GameObjectInstanceData data)
         {
-            StaticMesh result = new StaticMesh();
+            StaticMesh result = new StaticMesh();                    
 
-            if (!DefaultObjectInit(result, data)) return result = null;            
+            if (!DefaultObjectInit(result, data)) return result = null;
 
-            result.Init( renderingComponentsFactory.CreateBasicMeshComponent ( result, 
-                                                                               (String)gameObjectsDefinitions[data.Definition].Properties["Model"]), 
-                         data.World);
+            StaticMeshData smdata = (StaticMeshData)data;
+
+            if (String.IsNullOrEmpty(data.definition))
+            {
+                result.Init(renderingComponentsFactory.CreateBasicMeshComponent(result,
+                                                                                smdata.Model),
+                                                                                data.World);
+            
+            }
+            else
+            {
+                result.Init(renderingComponentsFactory.CreateBasicMeshComponent(result,
+                                                                               (String)gameObjectsDefinitions[smdata.Definition].Properties["Model"]),
+                                                                               data.World);
+            
+            }
             
             return result;
         }

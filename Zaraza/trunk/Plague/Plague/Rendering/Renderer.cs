@@ -23,15 +23,16 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private  GraphicsDeviceManager       graphics            = null;
-        internal ContentManager              contentManager      = null;
-        private  RenderingComponentsFactory  componentsFactory   = null;
+        private  GraphicsDeviceManager       graphics             = null;
+        internal ContentManager              contentManager       = null;
+        private  RenderingComponentsFactory  componentsFactory    = null;
 
-        internal List<RenderableComponent> renderableComponents  = new List<RenderableComponent>();
-        internal List<RenderableComponent> preRender             = new List<RenderableComponent>();
+        internal List<RenderableComponent>   renderableComponents = new List<RenderableComponent>();
+        internal List<RenderableComponent>   preRender            = new List<RenderableComponent>();
 
-        private  CameraComponent             currentCamera       = null;
-        private  SunLightComponent           sunLight            = null;
+        private  CameraComponent             currentCamera        = null;
+        private  SunLightComponent           sunLight             = null;
+        private  Color                       clearColor           = Color.CornflowerBlue;
         /****************************************************************************/
 
 
@@ -153,7 +154,7 @@ namespace PlagueEngine.Rendering
                 renderableComponent.PreRender(currentCamera);
             }
 
-            Device.Clear(Color.CornflowerBlue);
+            Device.Clear(clearColor);
 
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
@@ -236,6 +237,24 @@ namespace PlagueEngine.Rendering
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Clear Color
+        /****************************************************************************/
+        public Color ClearColor
+        {
+            get
+            {
+                return clearColor;    
+            }
+
+            set
+            {
+                clearColor = value;
+            }
+        }
+        /****************************************************************************/
+        
 
         /****************************************************************************/
         /// Release Renderable Component
