@@ -78,9 +78,9 @@ float2 halfPixel()
 
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 {
-    VertexShaderOutput output;
-			
-	float4x4 wvp	= mul(World, mul(View, Projection));
+    VertexShaderOutput output;		
+
+	float4x4 wvp	= mul(World,mul(View, Projection));
 	output.Position = mul(input.Position, wvp);
 	
 	float4x4 rwvp			  = mul(World, mul(ReflectedView, Projection));
@@ -89,14 +89,14 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 	output.NormalMapPosition = input.UV/WaveLength;
 	output.NormalMapPosition.y -= Time * WaveSpeed;
 
-	output.WorldPosition = mul(mul(input.Position,World),View);
+	output.WorldPosition = mul(input.Position,World);
 
     return output;
 }
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-	float4 normal	= tex2D(waterNormalSampler, input.NormalMapPosition) * 2 - 1;
+	float3 normal	= normalize(tex2D(waterNormalSampler, input.NormalMapPosition) * 2 - 1);
 	float2 UVOffset = WaveHeight * normal.rg;
 		
     float2 reflectionUV = postProjToScreen(input.ReflectionPosition) + halfPixel();
@@ -105,17 +105,10 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 	float3 output = lerp(lerp(refraction,reflection,Bias), Color, ColorAmount);			
 
-	normal.g = -normal.g;
-
 	float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
-	float3 halfVector	 = normalize(SunLightDirection + viewDirection);
-
-	normal.rgb = float3(0,1,0);
-
-	//float3 reflectionVector = -reflect(SunLightDirection,float3(0,1,0));
-	//float specular = dot(normalize(reflectionVector), viewDirection);
-	
-	float specular = pow(saturate(dot(normal.rgb,halfVector)),256);
+	float3 reflectionVector = -reflect(float3(1,1,1), normal.rgb); // LightDirection specjalnie na pa³e
+	float specular = dot(normalize(reflectionVector), viewDirection);
+	specular = pow(specular, 256);
 
 	output += SunLightSpecular * specular;
 

@@ -152,7 +152,7 @@ namespace PlagueEngine.Rendering.Components
             effect.Parameters["View"].SetValue(view);
             effect.Parameters["Projection"].SetValue(projection);
                         
-            effect.Parameters["CameraPosition"].SetValue(view.Translation);
+            //effect.Parameters["CameraPosition"].SetValue(view.Translation);
 
             effect.Parameters["Time"].SetValue((float)clock.Time.TotalSeconds);
             

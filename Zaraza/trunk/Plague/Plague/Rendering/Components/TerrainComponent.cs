@@ -184,7 +184,8 @@ namespace PlagueEngine.Rendering.Components
             effect.Parameters["World"].SetValue(Matrix.Identity);
             effect.Parameters["View"].SetValue(view);
             effect.Parameters["Projection"].SetValue(projection);
-                        
+            //effect.Parameters["CameraPosition"].SetValue(view.Translation);
+
             effect.CurrentTechnique.Passes[0].Apply();
             device.Indices = indexBuffer;
             device.SetVertexBuffer(vertexBuffer);
@@ -198,13 +199,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         private void SetEffect()
         {
-            // TODO: Wymienić Światło kierunkowe wbite na pałe na normalne
-            //effect.Parameters["LightAmbient"].SetValue(new Vector3(0.1f, 0.1f, 0.1f));
-            //effect.Parameters["LightDiffuse"].SetValue(new Vector3(0.9f, 0.9f, 0.9f));
-            //effect.Parameters["LightDirection"].SetValue(new Vector3(1, -1, 1));
-            
             effect.Parameters["TextureTiling"].SetValue(textureTiling);
-
             effect.Parameters["BaseTexture"].SetValue(baseTexture);
             effect.Parameters["RTexture"].SetValue(rTexture);
             effect.Parameters["GTexture"].SetValue(gTexture);

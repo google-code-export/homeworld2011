@@ -44,7 +44,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             get
             {
-                return World.Forward;
+                Vector3 result = World.Forward;
+                result.Normalize();
+                return result;
             }
 
             set
