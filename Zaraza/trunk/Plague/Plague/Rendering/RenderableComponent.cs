@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering;
+using PlagueEngine.Rendering.Components;
 using PlagueEngine.Resources;
 
 /************************************************************************************/
@@ -61,7 +62,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
-        public abstract void Draw(Matrix view, Matrix projection);
+        public abstract void Draw();
         /****************************************************************************/
 
 
@@ -93,7 +94,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Pre Render
         /****************************************************************************/
-        public virtual void PreRender(Matrix view, Matrix projection)
+        public virtual void PreRender(CameraComponent camera)
         {         
         }
         /****************************************************************************/

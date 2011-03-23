@@ -123,7 +123,9 @@ namespace PlagueEngine.Rendering
                                                                  float waveSpeed,                                  
                                                                  String normalMap,
                                                                  float bias,
-                                                                 float textureTiling)
+                                                                 float textureTiling,
+                                                                 float clipPlaneAdjustemnt,
+                                                                 float specularStrength)
         {
             WaterSurfaceComponent result = new WaterSurfaceComponent(gameObject,
                                                                      renderer,
@@ -138,6 +140,8 @@ namespace PlagueEngine.Rendering
                                                                      content.LoadTexture2D(normalMap),
                                                                      bias,
                                                                      textureTiling,
+                                                                     clipPlaneAdjustemnt,
+                                                                     specularStrength,
                                                                      content.Load<Effect>("ReflectiveWaterEffect"));
             
             renderer.preRender.Add(result);

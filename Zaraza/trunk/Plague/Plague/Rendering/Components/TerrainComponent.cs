@@ -31,9 +31,9 @@ namespace PlagueEngine.Rendering.Components
         
         private VertexBuffer vertexBuffer   = null;
         private IndexBuffer  indexBuffer    = null;
-        private int vertexCount = 0;
-        private int indexCount = 0;
-        private int trianglesCount = 0;
+        private int          vertexCount    = 0;
+        private int          indexCount     = 0;
+        private int          trianglesCount = 0;
         
         private Texture2D    heightMap      = null;
         private Texture2D    baseTexture    = null;
@@ -179,13 +179,9 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
-        public override void Draw(Matrix view, Matrix projection)
+        public override void Draw()
         {
             effect.Parameters["World"].SetValue(Matrix.Identity);
-            effect.Parameters["View"].SetValue(view);
-            effect.Parameters["Projection"].SetValue(projection);
-            //effect.Parameters["CameraPosition"].SetValue(view.Translation);
-
             effect.CurrentTechnique.Passes[0].Apply();
             device.Indices = indexBuffer;
             device.SetVertexBuffer(vertexBuffer);

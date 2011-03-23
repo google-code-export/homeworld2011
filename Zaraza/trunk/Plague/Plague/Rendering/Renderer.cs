@@ -150,7 +150,7 @@ namespace PlagueEngine.Rendering
 
             foreach (RenderableComponent renderableComponent in preRender)
             {
-                renderableComponent.PreRender(currentCamera.View, currentCamera.Projection);
+                renderableComponent.PreRender(currentCamera);
             }
 
             Device.Clear(Color.CornflowerBlue);
@@ -159,14 +159,17 @@ namespace PlagueEngine.Rendering
             {
                 if (renderableComponent.Effect != null)
                 {
-                    renderableComponent.Effect.Parameters["SunLightDirection"].SetValue(sunLight.Direction);
-                    renderableComponent.Effect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
-                    renderableComponent.Effect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
-                    renderableComponent.Effect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
-                    renderableComponent.Effect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
+                    renderableComponent.Effect.Parameters["SunLightDirection"]  .SetValue(sunLight.Direction);
+                    renderableComponent.Effect.Parameters["SunLightAmbient"]    .SetValue(sunLight.AmbientColor);
+                    renderableComponent.Effect.Parameters["SunLightDiffuse"]    .SetValue(sunLight.DiffuseColor);
+                    renderableComponent.Effect.Parameters["SunLightSpecular"]   .SetValue(sunLight.SpecularColor);
+                    renderableComponent.Effect.Parameters["CameraPosition"]     .SetValue(currentCamera.Position);
+                    renderableComponent.Effect.Parameters["View"]               .SetValue(currentCamera.View);
+                    renderableComponent.Effect.Parameters["Projection"]         .SetValue(currentCamera.Projection);
+                    renderableComponent.Effect.Parameters["ViewProjection"]     .SetValue(currentCamera.ViewProjection);
                 }
 
-                renderableComponent.Draw(currentCamera.View, currentCamera.Projection);
+                renderableComponent.Draw();
             }
         }
         /****************************************************************************/

@@ -201,6 +201,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             tdata.Height,
                                                                             tdata.CellSize,
                                                                             tdata.TextureTiling),
+
                         renderingComponentsFactory.CreateWaterSurfaceComponent(result,
                                                                             tdata.Width  * tdata.CellSize,
                                                                             tdata.Length * tdata.CellSize,
@@ -212,7 +213,9 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             tdata.WaveSpeed,
                                                                             tdata.NormalMap,
                                                                             tdata.Bias,
-                                                                            tdata.WTextureTiling),
+                                                                            tdata.WTextureTiling,
+                                                                            tdata.ClipPlaneAdjustment,
+                                                                            tdata.SpecularStength),
                                                                             tdata.World);
 
             return result;
