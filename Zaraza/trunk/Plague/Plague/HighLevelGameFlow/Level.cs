@@ -173,7 +173,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Diffuse = new Vector3(0.9f, 0.9f, 0.9f);
             sdata.Specular = new Vector3(1f, 1f, 1f);
 
-            ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(0,-1,-1);
+            ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(0,-1,0);
         }
         /****************************************************************************/
 
