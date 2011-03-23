@@ -42,6 +42,8 @@ namespace PlagueEngine.Rendering.Components
         private Texture2D           normalMap           = null;
         private float               bias                = 0;
         private float               textureTiling       = 0;
+        private float               clipPlaneAdjustment = 0;
+        private float               specularStrength    = 0;
 
         private RasterizerState     rasterizerState     = new RasterizerState();
         private Matrix              reflectionMatrix    = Matrix.Identity;
@@ -66,20 +68,24 @@ namespace PlagueEngine.Rendering.Components
                                      Texture2D          normalMap,
                                      float              bias,
                                      float              textureTiling,
+                                     float              clipPlaneAdjustment,
+                                     float              specularStrength,
                                      Effect             effect) 
             : base(gameObject,renderer,effect)
         {
-            this.width         = width;
-            this.length        = length;
-            this.level         = level;
-            this.waterColor    = waterColor;
-            this.colorAmount   = colorAmount;
-            this.normalMap     = normalMap;
-            this.waveLength    = waveLength;
-            this.waveHeight    = waveHeight;
-            this.waveSpeed     = waveSpeed;
-            this.bias          = bias;
-            this.textureTiling = textureTiling;
+            this.width               = width;
+            this.length              = length;
+            this.level               = level;
+            this.waterColor          = waterColor;
+            this.colorAmount         = colorAmount;
+            this.normalMap           = normalMap;
+            this.waveLength          = waveLength;
+            this.waveHeight          = waveHeight;
+            this.waveSpeed           = waveSpeed;
+            this.bias                = bias;
+            this.textureTiling       = textureTiling;
+            this.clipPlaneAdjustment = clipPlaneAdjustment;
+            this.specularStrength    = specularStrength;
             
             this.reflectionMap = new RenderTarget2D(device,
                                                     device.Viewport.Width,
@@ -146,14 +152,9 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
-        public override void Draw(Matrix view, Matrix projection)
+        public override void Draw()
         {
             effect.Parameters["World"].SetValue(gameObject.World * Matrix.CreateTranslation(0, level, 0));
-            effect.Parameters["View"].SetValue(view);
-            effect.Parameters["Projection"].SetValue(projection);
-                        
-            //effect.Parameters["CameraPosition"].SetValue(view.Translation);
-
             effect.Parameters["Time"].SetValue((float)clock.Time.TotalSeconds);
             
             effect.CurrentTechnique.Passes[0].Apply();
@@ -167,10 +168,10 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Render Reflection
         /****************************************************************************/
-        public override void PreRender(Matrix view,Matrix projection)
+        public override void PreRender(CameraComponent camera)
         {
-            RenderReflection(view,projection);
-            RenderRefraction(view,projection);
+            RenderReflection(camera);
+            RenderRefraction(camera);
         }
         /****************************************************************************/
 
@@ -178,13 +179,14 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Render Reflection
         /****************************************************************************/
-        public void RenderReflection(Matrix view, Matrix projection)
+        public void RenderReflection(CameraComponent camera)
         {
-            Matrix reflectedView = reflectionMatrix * view;
-
+            Matrix reflectedView           = reflectionMatrix * camera.View;
+            Matrix reflectedViewProjection = reflectedView    * camera.Projection;
+            
             effect.Parameters["ReflectedView"].SetValue(reflectedView);
 
-            Vector4 clipPlane = new Vector4(0, 1, 0, -surfacePosition + 20);
+            Vector4 clipPlane = new Vector4(0, 1, 0, -surfacePosition + clipPlaneAdjustment);
 
             RasterizerState defaultRasterizerState = device.RasterizerState;
             device.RasterizerState = rasterizerState;
@@ -193,10 +195,14 @@ namespace PlagueEngine.Rendering.Components
 
             foreach (RenderableComponent renderableComponent in renderer.renderableComponents)
             {
-                if (renderableComponent != this)
+                if (renderableComponent != this && renderableComponent.Effect != null)
                 {
                     renderableComponent.SetClipPlane(clipPlane);
-                    renderableComponent.Draw(reflectedView, projection);
+                    renderableComponent.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
+                    renderableComponent.Effect.Parameters["View"]          .SetValue(reflectedView);
+                    renderableComponent.Effect.Parameters["Projection"]    .SetValue(camera.Projection);
+                    renderableComponent.Effect.Parameters["ViewProjection"].SetValue(reflectedViewProjection);
+                    renderableComponent.Draw();
                     renderableComponent.DisableClipPlane();
                 }
             }
@@ -212,19 +218,23 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Render Refraction
         /****************************************************************************/
-        private void RenderRefraction(Matrix view, Matrix projection)
+        private void RenderRefraction(CameraComponent camera)
         {
-            Vector4 clipPlane = new Vector4(0,-1, 0, surfacePosition + 20);
+            Vector4 clipPlane = new Vector4(0, -1, 0, surfacePosition + clipPlaneAdjustment);
 
             device.SetRenderTarget(refractionMap);
             device.Clear(Color.CornflowerBlue);
 
             foreach (RenderableComponent renderableComponent in renderer.renderableComponents)
             {
-                if (renderableComponent != this)
+                if (renderableComponent != this && renderableComponent.Effect != null)
                 {
                     renderableComponent.SetClipPlane(clipPlane);
-                    renderableComponent.Draw(view, projection);
+                    renderableComponent.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
+                    renderableComponent.Effect.Parameters["View"]          .SetValue(camera.View);
+                    renderableComponent.Effect.Parameters["Projection"]    .SetValue(camera.Projection);
+                    renderableComponent.Effect.Parameters["ViewProjection"].SetValue(camera.ViewProjection);
+                    renderableComponent.Draw();
                     renderableComponent.DisableClipPlane();
                 }
             }
@@ -241,15 +251,16 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         private void SetupEffect()
         {
-            effect.Parameters["Color"].SetValue(waterColor);
-            effect.Parameters["ColorAmount"].SetValue(colorAmount);
-            effect.Parameters["ViewportWidth"].SetValue((float)device.Viewport.Width);
-            effect.Parameters["ViewportHeight"].SetValue((float)device.Viewport.Height);
-            effect.Parameters["WaterNormalMap"].SetValue(normalMap);
-            effect.Parameters["WaveLength"].SetValue(waveLength);
-            effect.Parameters["WaveHeight"].SetValue(waveHeight);
-            effect.Parameters["WaveSpeed"].SetValue(waveSpeed);
-            effect.Parameters["Bias"].SetValue(bias);
+            effect.Parameters["Color"]           .SetValue(waterColor);
+            effect.Parameters["ColorAmount"]     .SetValue(colorAmount);
+            effect.Parameters["ViewportWidth"]   .SetValue((float)device.Viewport.Width);
+            effect.Parameters["ViewportHeight"]  .SetValue((float)device.Viewport.Height);
+            effect.Parameters["WaterNormalMap"]  .SetValue(normalMap);
+            effect.Parameters["WaveLength"]      .SetValue(waveLength);
+            effect.Parameters["WaveHeight"]      .SetValue(waveHeight);
+            effect.Parameters["WaveSpeed"]       .SetValue(waveSpeed);
+            effect.Parameters["Bias"]            .SetValue(bias);
+            effect.Parameters["SpecularStrength"].SetValue(specularStrength);
         }
         /****************************************************************************/
 
@@ -269,18 +280,20 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public float    Width       { get { return width;       } }
-        public float    Length      { get { return length;      } }
-        public float    Level       { get { return level;       } }
-        public Vector3  WaterColor  { get { return waterColor;  } }
-        public float    ColorAmount { get { return colorAmount; } }
+        public float    Width             { get { return width;               } }
+        public float    Length            { get { return length;              } }
+        public float    Level             { get { return level;               } }
+        public Vector3  WaterColor        { get { return waterColor;          } }
+        public float    ColorAmount       { get { return colorAmount;         } }
 
-        public float  WaveLength    { get { return waveLength;     } }
-        public float  WaveHeight    { get { return waveHeight;     } }
-        public float  WaveSpeed     { get { return waveSpeed;      } }
-        public String NormalMap     { get { return normalMap.Name; } }
-        public float  Bias          { get { return bias;           } }
-        public float TextureTiling  { get { return textureTiling;  } }
+        public float  WaveLength          { get { return waveLength;          } }
+        public float  WaveHeight          { get { return waveHeight;          } }
+        public float  WaveSpeed           { get { return waveSpeed;           } }
+        public String NormalMap           { get { return normalMap.Name;      } }
+        public float  Bias                { get { return bias;                } }
+        public float  TextureTiling       { get { return textureTiling;       } }
+        public float  ClipPlaneAdjustment { get { return clipPlaneAdjustment; } }
+        public float  SpecularStrength    { get { return specularStrength;    } }
         /****************************************************************************/
 
     }

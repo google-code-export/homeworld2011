@@ -75,12 +75,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Color          = waterComponent.WaterColor;
             data.ColorAmount    = waterComponent.ColorAmount;
 
-            data.WaveHeight     = waterComponent.WaveHeight;
-            data.WaveLength     = waterComponent.WaveLength;
-            data.WaveSpeed      = waterComponent.WaveSpeed;
-            data.NormalMap      = waterComponent.NormalMap;
-            data.Bias           = waterComponent.Bias;
-            data.WTextureTiling = waterComponent.TextureTiling;
+            data.WaveHeight          = waterComponent.WaveHeight;
+            data.WaveLength          = waterComponent.WaveLength;
+            data.WaveSpeed           = waterComponent.WaveSpeed;
+            data.NormalMap           = waterComponent.NormalMap;
+            data.Bias                = waterComponent.Bias;
+            data.WTextureTiling      = waterComponent.TextureTiling;
+            data.ClipPlaneAdjustment = waterComponent.ClipPlaneAdjustment;
+            data.SpecularStength     = waterComponent.SpecularStrength;
 
             return data;
         }
@@ -142,6 +144,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float Bias           { get; set; }
         [CategoryAttribute("Water Surface")]
         public float WTextureTiling { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public float ClipPlaneAdjustment { get; set; }
+        [CategoryAttribute("Water Surface")]
+        public float SpecularStength { get; set; }
         /****************************************************************************/
 
     }

@@ -66,10 +66,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Generate ID
         /****************************************************************************/
         private static uint GenerateID()
-        {
-
-       return ++lastID;
-           
+        {                    
 
             if (freeIDs.Count != 0)
             {

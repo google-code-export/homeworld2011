@@ -62,9 +62,9 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
-        public override void Draw(Matrix view, Matrix projection)
+        public override void Draw()
         {
-            model.Draw(gameObject.World, view, projection);                
+            //model.Draw(gameObject.World, view, projection);                
         }
         /****************************************************************************/
 

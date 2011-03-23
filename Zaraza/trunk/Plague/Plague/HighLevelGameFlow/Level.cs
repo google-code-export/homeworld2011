@@ -163,7 +163,9 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.NormalMap = "normalmap";
             tdata.WTextureTiling = 1000;
             tdata.Bias = 0.3f;
-            
+            tdata.SpecularStength = 500;
+            tdata.ClipPlaneAdjustment = 20;
+
             gameObjectsFactory.Create(tdata);
 
             SunLightData sdata = new SunLightData();
@@ -173,7 +175,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Diffuse = new Vector3(0.9f, 0.9f, 0.9f);
             sdata.Specular = new Vector3(1f, 1f, 1f);
 
-            ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(0,-1,0);
+            ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(0,-1,-1);
         }
         /****************************************************************************/
 
