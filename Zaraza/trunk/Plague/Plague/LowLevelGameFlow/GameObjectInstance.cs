@@ -99,7 +99,7 @@ namespace PlagueEngine.LowLevelGameFlow
             }
             else
             {
-                for (uint i = lastID; i < id; i++)
+                for (uint i = lastID + 1; i < id; i++)
                 {
                     freeIDs.Add(i);
                 }

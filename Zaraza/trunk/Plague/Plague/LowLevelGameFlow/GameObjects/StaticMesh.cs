@@ -46,10 +46,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             basicMeshComponent.ReleaseMe();
         }
         /****************************************************************************/
-
-
-
-
+        
 
         /****************************************************************************/
         /// Get Data
@@ -58,6 +55,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             StaticMeshData data = new StaticMeshData();
             GetData(data);
+            data.Model = basicMeshComponent.Model;
             return data;
         }
         /****************************************************************************/
@@ -74,7 +72,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class StaticMeshData : GameObjectInstanceData
     {
-
+        public String Model { get; set; }        
     }
     /********************************************************************************/
 
