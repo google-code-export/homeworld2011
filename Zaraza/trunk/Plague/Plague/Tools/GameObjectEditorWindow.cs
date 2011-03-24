@@ -14,7 +14,8 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Resources;
 using PlagueEngine.HighLevelGameFlow;
-
+using PlagueEngine.Input;
+using PlagueEngine.Input.Components;
 
 /********************************************************************************/
 /// PlagueEngine.Tools
@@ -87,7 +88,7 @@ namespace PlagueEngine.Tools
             {
                 ComboboxDefinitions.Items.Add(definition);
             }
-            this.Visible = true;
+            this.Visible = false;
 
 
             loadLevelNames();
@@ -228,6 +229,10 @@ namespace PlagueEngine.Tools
         }
         /********************************************************************************/
 
+
+        /********************************************************************************/
+        /// Load Level Names
+        /********************************************************************************/
         private void loadLevelNames()
         {
             listBoxLevelNames.Items.Clear();
@@ -241,14 +246,27 @@ namespace PlagueEngine.Tools
             }
 
         }
+        /********************************************************************************/
 
 
+
+
+        /********************************************************************************/
+        /// Set Level
+        /********************************************************************************/
         public void setLevel(Level level,string levelName)
         {
             this.currentLevel = level;
             this.currentLevelName = levelName;
         }
+        /********************************************************************************/
 
+
+
+
+        /********************************************************************************/
+        /// Button Load Click
+        /********************************************************************************/
         private void buttonLoad_Click(object sender, EventArgs e)
         {
             if (listBoxLevelNames.SelectedIndex != -1)
@@ -270,9 +288,14 @@ namespace PlagueEngine.Tools
 
             }
         }
+        /********************************************************************************/
 
-           
 
+
+
+        /********************************************************************************/
+        /// Button New Click
+        /********************************************************************************/
         private void buttonNew_Click(object sender, EventArgs e)
         {
             bool NewCanceled = false;
@@ -371,7 +394,14 @@ namespace PlagueEngine.Tools
             ((Form)(Form.FromHandle(gameWindowHandle))).Visible = gameWindowVisible;
             
          }
+        /********************************************************************************/
 
+
+
+
+        /********************************************************************************/
+        /// Button Save Click
+        /********************************************************************************/
         private void buttonSave_Click(object sender, EventArgs e)
         {
             if (currentLevelName != string.Empty && currentLevel != null)
@@ -380,7 +410,14 @@ namespace PlagueEngine.Tools
                 levelSaved = true;
             }
         }
+        /********************************************************************************/
 
+
+
+
+        /********************************************************************************/
+        /// Button Delete Click
+        /********************************************************************************/
         private void buttonDelete_Click(object sender, EventArgs e)
         {
 
@@ -415,7 +452,14 @@ namespace PlagueEngine.Tools
                 }
             }
         }
+        /********************************************************************************/
 
+
+
+
+        /********************************************************************************/
+        /// Form Closing
+        /********************************************************************************/
         private void GameObjectEditorWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!levelSaved)
@@ -432,7 +476,14 @@ namespace PlagueEngine.Tools
             }
 
         }
+        /********************************************************************************/
 
+
+
+
+        /********************************************************************************/
+        /// Button Create Definitin Click
+        /********************************************************************************/
         private void buttonCreateDefinition_Click(object sender, EventArgs e)
         {
             if (gameObjectsName.SelectedIndex != -1)
@@ -487,7 +538,7 @@ namespace PlagueEngine.Tools
 
        
         }
-
+        /********************************************************************************/
 
     
 

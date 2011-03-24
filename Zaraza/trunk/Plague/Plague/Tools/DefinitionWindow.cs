@@ -118,14 +118,14 @@ namespace PlagueEngine.Tools
                 }
                 else
                 {
-                    this.Hide();
+                    this.Close();
                 }
             }
         }
         private void Cancel_Click(object sender, System.EventArgs e)
         {
             canceled = true;
-            this.Hide();
+            this.Close();
             
         }
 
