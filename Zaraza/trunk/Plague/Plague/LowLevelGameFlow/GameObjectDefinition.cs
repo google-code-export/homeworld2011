@@ -20,6 +20,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Fields
         /****************************************************************************/
         public String Name                           = String.Empty;
+        public String GameObjectClass                = string.Empty;
         public Dictionary<String, object> Properties = new Dictionary<String, object>();
         /****************************************************************************/
 
@@ -42,7 +43,8 @@ namespace PlagueEngine.LowLevelGameFlow
             Properties.Clear();
 
             Name = reader.ReadElementString();
-            
+            GameObjectClass = reader.ReadElementString();
+
             int count = int.Parse(reader.GetAttribute("Count"));
             reader.ReadStartElement();
             
@@ -68,6 +70,7 @@ namespace PlagueEngine.LowLevelGameFlow
         public void WriteXml(System.Xml.XmlWriter writer)
         {
             writer.WriteElementString("Name", Name);
+            writer.WriteElementString("GameObjectClass", GameObjectClass);
             writer.WriteStartElement("Properties");
             writer.WriteAttributeString("Count", Properties.Keys.Count.ToString());
             foreach (String key in Properties.Keys)

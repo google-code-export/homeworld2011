@@ -57,11 +57,12 @@ namespace PlagueEngine.Resources
             LoadGameObjectsDefinitions();
 
             //GameObjectDefinition god = new GameObjectDefinition();
-            //god.Name = "Target";
-            //god.Properties.Add("Model", "target");
-            //gameObjectsDefinitions.Add(god.Name,god);
+            //god.Name = "Barrel";
+            //god.GameObjectClass = "StaticMesh";
+            //god.Properties.Add("Model", "barrel");
+            //gameObjectsDefinitions.Add(god.Name, god);
 
-         //   SaveGameObjectsDefinitions();
+            //SaveGameObjectsDefinitions();
         }
         /****************************************************************************/
 
