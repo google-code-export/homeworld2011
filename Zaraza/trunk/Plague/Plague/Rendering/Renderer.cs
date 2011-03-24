@@ -153,7 +153,7 @@ namespace PlagueEngine.Rendering
             {
                 renderableComponent.PreRender(currentCamera);
             }
-
+            
             Device.Clear(clearColor);
 
             foreach (RenderableComponent renderableComponent in renderableComponents)
