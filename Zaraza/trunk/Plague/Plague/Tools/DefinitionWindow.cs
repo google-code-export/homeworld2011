@@ -99,7 +99,27 @@ namespace PlagueEngine.Tools
         {
             if (this.textbox.Text != string.Empty)
             {
-                this.Hide();
+                bool badData = false;
+
+                foreach (Field f in fields)
+                {
+                    if (f.checkbox.Checked)
+                    {
+                        if (f.value.Text == string.Empty)
+                        {
+                            badData = true;
+                        }
+                    }
+                }
+
+                if (badData)
+                {
+                    MessageBox.Show("Bad data!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    this.Hide();
+                }
             }
         }
         private void Cancel_Click(object sender, System.EventArgs e)
