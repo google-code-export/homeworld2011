@@ -90,7 +90,7 @@ namespace PlagueEngine
             
             testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
 
-            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory,contentManager);
+            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory,contentManager,this.Window.Handle);
             gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
             
             Diagnostics.PushLog("Initialization complete");
@@ -142,7 +142,7 @@ namespace PlagueEngine
             TimeControl.Update(gameTime.ElapsedGameTime);
             
             input.Update();
-
+            
             base.Update(gameTime);
         }
         /****************************************************************************/
@@ -172,7 +172,7 @@ namespace PlagueEngine
             base.OnExiting(sender, args);
             
             contentManager.SaveDefaultProfile();
-            contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
+            //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
 
             Diagnostics.PushLog("Exiting");
         }

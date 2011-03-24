@@ -42,6 +42,7 @@
             this.buttonNew = new System.Windows.Forms.Button();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.listBoxLevelNames = new System.Windows.Forms.ListBox();
+            this.buttonCreateDefinition = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -59,6 +60,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.buttonCreateDefinition);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.ComboboxDefinitions);
             this.tabPage1.Controls.Add(this.button1);
@@ -93,7 +95,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(109, 384);
+            this.button1.Location = new System.Drawing.Point(33, 384);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(122, 23);
             this.button1.TabIndex = 9;
@@ -189,6 +191,16 @@
             this.listBoxLevelNames.Size = new System.Drawing.Size(341, 342);
             this.listBoxLevelNames.TabIndex = 0;
             // 
+            // buttonCreateDefinition
+            // 
+            this.buttonCreateDefinition.Location = new System.Drawing.Point(218, 384);
+            this.buttonCreateDefinition.Name = "buttonCreateDefinition";
+            this.buttonCreateDefinition.Size = new System.Drawing.Size(119, 23);
+            this.buttonCreateDefinition.TabIndex = 12;
+            this.buttonCreateDefinition.Text = "Create definition";
+            this.buttonCreateDefinition.UseVisualStyleBackColor = true;
+            this.buttonCreateDefinition.Click += new System.EventHandler(this.buttonCreateDefinition_Click);
+            // 
             // GameObjectEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -197,6 +209,7 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "GameObjectEditorWindow";
             this.Text = "GameObjectEditorWindow";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GameObjectEditorWindow_FormClosing);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -221,6 +234,7 @@
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonNew;
         private System.Windows.Forms.Button buttonLoad;
+        private System.Windows.Forms.Button buttonCreateDefinition;
 
 
     }

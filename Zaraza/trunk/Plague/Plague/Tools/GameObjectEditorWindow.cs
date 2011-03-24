@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
@@ -52,6 +53,8 @@ namespace PlagueEngine.Tools
         private gameObjectsClassName currentClassName = null;
         private GameObjectInstanceData currentObject = null;
 
+        private IntPtr gameWindowHandle;
+
         private string levelDirectory = @"Data\levels";
         private string levelExtension = ".lvl";
         private string currentLevelName = string.Empty;
@@ -65,13 +68,13 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager)
+        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,IntPtr gameWindowHandle)
         {
             InitializeComponent();
             FillClassNames();
             this.factory = factory;
             this.contentManager = contentManager;
-
+            this.gameWindowHandle = gameWindowHandle;
 
             foreach (var gameObject in gameObjectClassNames)
             {
@@ -260,6 +263,7 @@ namespace PlagueEngine.Tools
         private void buttonNew_Click(object sender, EventArgs e)
         {
             bool NewCanceled = false;
+            bool gameWindowVisible = ((Form)(Form.FromHandle(gameWindowHandle))).Visible;
 
             if (!levelSaved)
             {
@@ -350,6 +354,9 @@ namespace PlagueEngine.Tools
                 }
             }
 
+
+            ((Form)(Form.FromHandle(gameWindowHandle))).Visible = gameWindowVisible;
+            
          }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -395,6 +402,57 @@ namespace PlagueEngine.Tools
                 }
             }
         }
+
+        private void GameObjectEditorWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!levelSaved)
+            {
+                if (currentLevelName != string.Empty && currentLevel != null)
+                {
+                    DialogResult result = MessageBox.Show("Save current level?", "Level is not saved!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        contentManager.SaveLevel(currentLevelName, currentLevel.SaveLevel());
+                        levelSaved = true;
+                    }
+                }
+            }
+
+        }
+
+        private void buttonCreateDefinition_Click(object sender, EventArgs e)
+        {
+            if (gameObjectsName.SelectedIndex != -1)
+            {
+
+               
+                PropertyInfo[] fieldInfo = currentClassName.dataClassType.GetProperties();
+                List<PropertyInfo> list = fieldInfo.ToList<PropertyInfo>();
+
+                for (int i = 0; i < list.Count; i++)//zagniezdzanie definicji nam chyba nie jest potrzebne
+                {
+                    if (list[i].Name == "Definition" || list[i].Name == "definition") list.RemoveAt(i);
+                }
+
+                DefinitionWindow definitionWindow = new DefinitionWindow(list);
+                definitionWindow.ShowDialog();
+
+                if (!definitionWindow.canceled)
+                {
+                    foreach(DefinitionWindow.Field field in definitionWindow.fields )
+                    {
+                       
+                    }
+
+                }
+
+
+                
+            }
+            
+        }
+
+
     
 
 
