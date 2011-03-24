@@ -27,7 +27,7 @@ namespace PlagueEngine.Tools
     /********************************************************************************/
     partial class GameObjectEditorWindow : Form
     {
-
+        
 
 
         /********************************************************************************/
@@ -60,6 +60,8 @@ namespace PlagueEngine.Tools
         private string currentLevelName = string.Empty;
         private Level currentLevel = null;
         private bool levelSaved = true;
+
+        
         /********************************************************************************/
 
 
@@ -92,8 +94,7 @@ namespace PlagueEngine.Tools
         }
         /********************************************************************************/
 
-
-
+  
 
         /********************************************************************************/
         /// Fill Names
@@ -425,24 +426,37 @@ namespace PlagueEngine.Tools
             if (gameObjectsName.SelectedIndex != -1)
             {
 
-               
-                PropertyInfo[] fieldInfo = currentClassName.dataClassType.GetProperties();
-                List<PropertyInfo> list = fieldInfo.ToList<PropertyInfo>();
 
+                PropertyInfo[] PropertyInfo = currentClassName.dataClassType.GetProperties();
+                List<PropertyInfo> list = PropertyInfo.ToList<PropertyInfo>();
+               
                 for (int i = 0; i < list.Count; i++)//zagniezdzanie definicji nam chyba nie jest potrzebne
                 {
-                    if (list[i].Name == "Definition" || list[i].Name == "definition") list.RemoveAt(i);
+
+                    if (list[i].Name == "definition" || list[i].Name == "Definition" || list[i].Name == "Yaw" || list[i].Name == "Roll" || list[i].Name == "Pitch" || list[i].Name == "Position" || list[i].Name == "Scale")
+                    {
+                        list.RemoveAt(i);
+                        --i;
+                    }
                 }
 
-                DefinitionWindow definitionWindow = new DefinitionWindow(list);
+                DefinitionWindow definitionWindow = new DefinitionWindow(list,this.currentObject);
                 definitionWindow.ShowDialog();
 
                 if (!definitionWindow.canceled)
                 {
+                    GameObjectDefinition god = new GameObjectDefinition();
+                    god.Name = definitionWindow.textbox.Text;
+
                     foreach(DefinitionWindow.Field field in definitionWindow.fields )
                     {
-                       
+                        if (field.checkbox.Checked)
+                        {
+                            god.Properties.Add(field.label.Text, currentClassName.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
+                        }
                     }
+                    contentManager.GameObjectsDefinitions.Add(god.Name, god);
+                    contentManager.SaveGameObjectsDefinitions();
 
                 }
 
