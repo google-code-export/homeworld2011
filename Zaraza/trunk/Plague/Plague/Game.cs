@@ -49,7 +49,7 @@ namespace PlagueEngine
             this.title          = title;
             Window.Title        = title;
             this.IsMouseVisible = true;
-
+            
             Diagnostics.Game                = this;
             Diagnostics.ShowDiagnostics     = true;
             Diagnostics.ForceGCOnUpdate     = true;
@@ -84,9 +84,9 @@ namespace PlagueEngine
             
             testLevel = new Level(gameObjectsFactory);
             
-            testLevel.PutSomeObjects();
+            //testLevel.PutSomeObjects();
 
-            contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
+            //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
             testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
 
@@ -157,6 +157,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Draw(GameTime gameTime)
         {
+            
             renderer.Draw();
             base.Draw(gameTime);           
         }

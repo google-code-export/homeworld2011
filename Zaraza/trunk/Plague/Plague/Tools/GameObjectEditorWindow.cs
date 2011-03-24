@@ -241,8 +241,14 @@ namespace PlagueEngine.Tools
                 {
                     this.currentLevelName = listBoxLevelNames.SelectedItem.ToString();
 
-
-                    this.currentLevel.LoadLevel(contentManager.LoadLevel(this.currentLevelName));
+                    try
+                    {
+                        this.currentLevel.LoadLevel(contentManager.LoadLevel(this.currentLevelName));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Incompatibility or other black magic! :<", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    }
                 }
                 
 
@@ -320,7 +326,7 @@ namespace PlagueEngine.Tools
                         }
                     }
 
-                } while ((newName == false) || (box2.canceled == true));
+                } while ((newName == false) && (box2.canceled == false));
 
                 if (!box2.canceled)
                 {
@@ -345,6 +351,50 @@ namespace PlagueEngine.Tools
             }
 
          }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            if (currentLevelName != string.Empty && currentLevel != null)
+            {
+                contentManager.SaveLevel(currentLevelName, currentLevel.SaveLevel());
+                levelSaved = true;
+            }
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+
+
+            if (listBoxLevelNames.SelectedIndex == -1)
+            {
+                if (currentLevelName == string.Empty || currentLevel == null) return;
+
+                DialogResult result = MessageBox.Show("Delete currrent level: " + currentLevelName + " ?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    File.Delete(Directory.GetCurrentDirectory() + "\\" + levelDirectory + "\\" + currentLevelName);
+                    currentLevel.Clear();
+                    currentLevelName = string.Empty;
+                }
+            }
+            else
+            {
+                string filename = listBoxLevelNames.SelectedItem.ToString();
+
+                DialogResult result = MessageBox.Show("Delete level: " + filename + " ?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    File.Delete(Directory.GetCurrentDirectory()+ "\\" + levelDirectory +"\\"+ filename);
+                    if (filename == currentLevelName)
+                        currentLevel.Clear();
+
+                    listBoxLevelNames.Items.Remove(filename);
+
+                }
+            }
+        }
     
 
 
