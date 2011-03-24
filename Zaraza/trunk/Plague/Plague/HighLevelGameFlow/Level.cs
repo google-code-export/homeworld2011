@@ -104,12 +104,10 @@ namespace PlagueEngine.HighLevelGameFlow
             data.Definition = "Barrel";
             data.World = Matrix.Identity;
 
-            for (int i = 0; i < 10; i++)
-            {
+     
                 data.World *= Matrix.CreateTranslation(100, 0, 0);
                 gameObjectsFactory.Create(data);
-            }
-            
+    
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
             //lcdata.position = new Vector3(-200, 300, -200);

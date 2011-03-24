@@ -91,9 +91,10 @@ namespace PlagueEngine
             testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
 
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory,contentManager);
+            gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
             
             Diagnostics.PushLog("Initialization complete");
-        }
+        }   
         /****************************************************************************/
         
 

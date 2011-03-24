@@ -37,8 +37,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.gameObjectsName = new System.Windows.Forms.ComboBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.buttonDelete = new System.Windows.Forms.Button();
+            this.buttonSave = new System.Windows.Forms.Button();
+            this.buttonNew = new System.Windows.Forms.Button();
+            this.buttonLoad = new System.Windows.Forms.Button();
+            this.listBoxLevelNames = new System.Windows.Forms.ListBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -64,7 +70,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(380, 417);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Create new";
+            this.tabPage1.Text = "GameObject";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // label2
@@ -122,13 +128,64 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.buttonDelete);
+            this.tabPage2.Controls.Add(this.buttonSave);
+            this.tabPage2.Controls.Add(this.buttonNew);
+            this.tabPage2.Controls.Add(this.buttonLoad);
+            this.tabPage2.Controls.Add(this.listBoxLevelNames);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(380, 417);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Edit";
+            this.tabPage2.Text = "Level";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // buttonDelete
+            // 
+            this.buttonDelete.Location = new System.Drawing.Point(269, 384);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(75, 23);
+            this.buttonDelete.TabIndex = 4;
+            this.buttonDelete.Text = "Delete";
+            this.buttonDelete.UseVisualStyleBackColor = true;
+            // 
+            // buttonSave
+            // 
+            this.buttonSave.Location = new System.Drawing.Point(188, 384);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(75, 23);
+            this.buttonSave.TabIndex = 3;
+            this.buttonSave.Text = "Save";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            // 
+            // buttonNew
+            // 
+            this.buttonNew.Location = new System.Drawing.Point(107, 384);
+            this.buttonNew.Name = "buttonNew";
+            this.buttonNew.Size = new System.Drawing.Size(75, 23);
+            this.buttonNew.TabIndex = 2;
+            this.buttonNew.Text = "New";
+            this.buttonNew.UseVisualStyleBackColor = true;
+            this.buttonNew.Click += new System.EventHandler(this.buttonNew_Click);
+            // 
+            // buttonLoad
+            // 
+            this.buttonLoad.Location = new System.Drawing.Point(25, 384);
+            this.buttonLoad.Name = "buttonLoad";
+            this.buttonLoad.Size = new System.Drawing.Size(75, 23);
+            this.buttonLoad.TabIndex = 1;
+            this.buttonLoad.Text = "Load";
+            this.buttonLoad.UseVisualStyleBackColor = true;
+            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
+            // 
+            // listBoxLevelNames
+            // 
+            this.listBoxLevelNames.FormattingEnabled = true;
+            this.listBoxLevelNames.Location = new System.Drawing.Point(20, 19);
+            this.listBoxLevelNames.Name = "listBoxLevelNames";
+            this.listBoxLevelNames.Size = new System.Drawing.Size(341, 342);
+            this.listBoxLevelNames.TabIndex = 0;
             // 
             // GameObjectEditorWindow
             // 
@@ -141,6 +198,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -156,6 +214,11 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox ComboboxDefinitions;
+        private System.Windows.Forms.ListBox listBoxLevelNames;
+        private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.Button buttonNew;
+        private System.Windows.Forms.Button buttonLoad;
 
 
     }

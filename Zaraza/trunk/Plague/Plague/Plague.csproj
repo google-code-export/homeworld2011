@@ -167,6 +167,12 @@
     <Compile Include="Tools\GameObjectEditorWindow.Designer.cs">
       <DependentUpon>GameObjectEditorWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\LevelNameMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\LevelNameMessageBox.Designer.cs">
+      <DependentUpon>LevelNameMessageBox.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -212,6 +218,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\GameObjectEditorWindow.resx">
       <DependentUpon>GameObjectEditorWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\LevelNameMessageBox.resx">
+      <DependentUpon>LevelNameMessageBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
