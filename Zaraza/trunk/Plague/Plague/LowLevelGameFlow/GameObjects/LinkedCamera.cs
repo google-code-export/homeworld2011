@@ -476,11 +476,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float ZFar = 0;
         public bool ActiveKeyListener = false;
         public bool ActiveMouseListener = false;
-        public Vector3 Position;
+        public Vector3 position;
         public Vector3 Target;
 
         public float movementSpeed
         {
+            
             set { this.MovementSpeed = value; }
             get { return MovementSpeed; }
         }
@@ -522,26 +523,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
 
 
-        new public Vector3  position
-        {
-            get { return this.Position; }
-            set 
-            {
-                this.Position = value;
-                World = Matrix.CreateLookAt(value, target, Vector3.Up); 
-            }
-
-        }
-
-        public Vector3 target
-        {
-            set 
-            { 
-                this.Target = value;
-                this.World = Matrix.CreateLookAt(position, value, Vector3.Up);
-            }
-            get { return this.Target; }
-        }
 
 
     }

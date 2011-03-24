@@ -184,7 +184,7 @@ namespace PlagueEngine.LowLevelGameFlow
                          lcdata.RotationSpeed,
                          lcdata.ZoomSpeed,
                          lcdata.position,
-                         lcdata.target);
+                         lcdata.Target);
 
             return result;
         }

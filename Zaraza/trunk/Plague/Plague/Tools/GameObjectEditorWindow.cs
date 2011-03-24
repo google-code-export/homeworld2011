@@ -6,11 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
+using System.Text.RegularExpressions;
 
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Resources;
-
+using PlagueEngine.HighLevelGameFlow;
 
 
 /********************************************************************************/
@@ -49,6 +51,12 @@ namespace PlagueEngine.Tools
         private GameObjectsFactory factory = null;
         private gameObjectsClassName currentClassName = null;
         private GameObjectInstanceData currentObject = null;
+
+        private string levelDirectory = @"Data\levels";
+        private string levelExtension = ".lvl";
+        private string currentLevelName = string.Empty;
+        private Level currentLevel = null;
+        private bool levelSaved = true;
         /********************************************************************************/
 
 
@@ -75,6 +83,9 @@ namespace PlagueEngine.Tools
                 ComboboxDefinitions.Items.Add(definition);
             }
             this.Visible = true;
+
+
+            loadLevelNames();
         }
         /********************************************************************************/
 
@@ -161,13 +172,28 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {
-            currentObject.Type = currentClassName.ClassType;
+            
 
-            factory.Create(currentObject);
-            ComboboxDefinitions.SelectedIndex = -1;//2x, tak musi byc
-            ComboboxDefinitions.SelectedIndex = -1;
-            gameObjectsName.SelectedIndex = -1;
-            gameObjectsName.SelectedIndex = -1;
+            try
+            {
+                this.currentObject.Type = currentClassName.ClassType;
+                this.factory.Create(currentObject);
+                this.propertyGrid1.SelectedObject = null;
+
+                this.ComboboxDefinitions.SelectedIndex = -1;//2x, tak musi byc
+                this.ComboboxDefinitions.SelectedIndex = -1;
+                this.gameObjectsName.SelectedIndex = -1;
+                this.gameObjectsName.SelectedIndex = -1;
+
+                levelSaved = false;
+
+            }
+            catch(Exception execption)
+            {
+                MessageBox.Show("That makes 100 errors \nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
         }
         /********************************************************************************/
 
@@ -185,9 +211,141 @@ namespace PlagueEngine.Tools
             }
         }
         /********************************************************************************/
+
+        private void loadLevelNames()
+        {
+            listBoxLevelNames.Items.Clear();
+           
+            DirectoryInfo di = new DirectoryInfo(levelDirectory);
+            FileInfo[] fileNames = di.GetFiles("*"+levelExtension);
+
+            foreach (FileInfo fileInfo in fileNames)
+            {
+                listBoxLevelNames.Items.Add(fileInfo.Name);
+            }
+
+        }
+
+
+        public void setLevel(Level level,string levelName)
+        {
+            this.currentLevel = level;
+            this.currentLevelName = levelName;
+        }
+
+        private void buttonLoad_Click(object sender, EventArgs e)
+        {
+            if (listBoxLevelNames.SelectedIndex != -1)
+            {
+                if (this.currentLevelName != listBoxLevelNames.SelectedItem.ToString())
+                {
+                    this.currentLevelName = listBoxLevelNames.SelectedItem.ToString();
+
+
+                    this.currentLevel.LoadLevel(contentManager.LoadLevel(this.currentLevelName));
+                }
+                
+
+            }
+        }
+
+           
+
+        private void buttonNew_Click(object sender, EventArgs e)
+        {
+            bool NewCanceled = false;
+
+            if (!levelSaved)
+            {
+                DialogResult result = MessageBox.Show("Save level?", "Notification", MessageBoxButtons.YesNoCancel);
+                if (result == DialogResult.Yes)
+                {
+                    if (currentLevelName == string.Empty)
+                    {
+                        LevelNameMessageBox box = new LevelNameMessageBox("Old level name:");
+                        box.ShowDialog();
+
+                        if (!box.canceled)
+                        {
+
+                            Regex reg = new Regex(@""+levelExtension+"$");
+                            if(!reg.IsMatch(box.levelName))
+                            {
+                                currentLevelName = box.levelName + levelExtension;
+                            }
+                            else
+                            {
+                                currentLevelName = box.levelName;
+                            }
+                            
+                            contentManager.SaveLevel( currentLevelName, currentLevel.SaveLevel());
+                            listBoxLevelNames.Items.Add(currentLevelName);
+                        }
+                    }
+                    else
+                    {
+                        contentManager.SaveLevel(currentLevelName, currentLevel.SaveLevel());
+                    }
+                }
+
+                if (result == DialogResult.No)
+                {
+                    currentLevelName = string.Empty;
+                }
+
+                if (result == DialogResult.Cancel)
+                {
+                    NewCanceled = true;
+                }
+            }
+
+
+
+            if (!NewCanceled)
+            {
+                
+                LevelNameMessageBox box2 = new LevelNameMessageBox("New level name:");
+                bool newName;
+                do
+                {
+                    newName = true;
+                    box2.ShowDialog();
+
+                    foreach (string name in listBoxLevelNames.Items)
+                    {
+                        if ((name == box2.levelName) || (name == (box2.levelName + levelExtension)))
+                        {
+                            newName = false;
+                            MessageBox.Show("Name already exists!", "Error", MessageBoxButtons.OK);
+                        }
+                    }
+
+                } while ((newName == false) || (box2.canceled == true));
+
+                if (!box2.canceled)
+                {
+
+                    Regex reg2 = new Regex(@"" + levelExtension + "$");
+                    if(reg2.IsMatch(box2.levelName))
+                    {
+                        currentLevelName=box2.levelName;
+                    
+                    }
+                    else
+                    {
+                        currentLevelName = box2.levelName + levelExtension;
+                    }
+
+                    listBoxLevelNames.Items.Add(currentLevelName);
+                    currentLevel.Clear();
+                    contentManager.SaveLevel(currentLevelName, currentLevel.SaveLevel());
+                    levelSaved = true;
+
+                }
+            }
+
+         }
     
-
-
 
 
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-
+using System.ComponentModel;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
@@ -206,6 +206,11 @@ namespace PlagueEngine.LowLevelGameFlow
         public String   Definition      = String.Empty;
         public Matrix   World           = Matrix.Identity;
 
+
+        private Vector3 position = Vector3.Zero;
+        private Vector3 rotation = Vector3.Zero;
+        private Vector3 scale = Vector3.One;
+
         public String definition
         {
             get { return this.Definition; }
@@ -213,49 +218,99 @@ namespace PlagueEngine.LowLevelGameFlow
         }
 
        
-        public Vector3 position
+        public Vector3 Position
         {
-            get { return World.Translation; }
-            set { World = Matrix.CreateWorld(value, Vector3.Forward, Vector3.Up); }
-        }
+            get { return this.position; }
 
-
-
-        public Vector3 rotation
-        {
-            get
-            {
-                float roll = MathHelper.ToDegrees((float)Math.Atan2(World.M12, World.M11));
-                float pitch = MathHelper.ToDegrees((float)(Math.Acos(World.M13) * -1));
-                float yaw = MathHelper.ToDegrees((float)Math.Atan2(World.M23, World.M33));
-
-                return new Vector3(yaw, pitch, roll);
-            }
-
-            set
-            {
-                Vector3 Rotation = rotation;
-                World = Matrix.CreateWorld(position, Vector3.Forward, Vector3.Up);
-                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(value.Y), MathHelper.ToRadians(value.X), MathHelper.ToRadians(value.Z));
+            set {
+                this.position = value;
+                World = Matrix.Identity;
+                World *= Matrix.CreateScale(Scale);
+                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(Yaw),MathHelper.ToRadians( Pitch),MathHelper.ToRadians( Roll));
+                World *= Matrix.CreateTranslation(value);
                 
-                        
-            }
+                }
         }
 
-        public Vector3 scale
+        [CategoryAttribute("Rotation")]
+        public float Roll
+        {
+            set
+            { 
+                this.rotation.X = value;
+             
+
+                World = Matrix.Identity;
+                World *= Matrix.CreateScale(Scale);
+                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(Yaw), MathHelper.ToRadians(Pitch), MathHelper.ToRadians(value));
+                World *= Matrix.CreateTranslation(position);
+                
+            }
+
+            get
+            {
+                return this.rotation.X;
+            }
+
+        }
+        [CategoryAttribute("Rotation")]
+        public float Yaw
         {
             set
             {
-                World = Matrix.CreateWorld(position, Vector3.Forward, Vector3.Up);
+                this.rotation.Y = value;
+            
+                World = Matrix.Identity;
+                World *= Matrix.CreateScale(Scale);
+                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(value), MathHelper.ToRadians(Pitch), MathHelper.ToRadians(Roll));
+                World *= Matrix.CreateTranslation(position);
+                
+            }
+
+            get
+            {
+                return this.rotation.Y;
+            }
+
+        }
+        [CategoryAttribute("Rotation")]
+        public float Pitch
+        {
+            set
+            {
+                this.rotation.X = value;
+
+                World = Matrix.Identity;
+                World *= Matrix.CreateScale(Scale);
+                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(Yaw), MathHelper.ToRadians(value), MathHelper.ToRadians(Roll));
+                World *= Matrix.CreateTranslation(position);
+                
+            }
+
+            get
+            {
+                return this.rotation.Z;
+
+            }
+
+        }
+
+        public Vector3 Scale
+        {
+            set
+            {
+                this.scale = value;
+            
+
+                World = Matrix.Identity;
                 World *= Matrix.CreateScale(value);
+                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(Yaw), MathHelper.ToRadians(Pitch), MathHelper.ToRadians(Roll));
+                World *= Matrix.CreateTranslation(position);
+                
             }
             get
             {
-                float x = new Vector3(World.M11, World.M12, World.M13).Length();
-                float y = new Vector3(World.M21, World.M22, World.M23).Length();
-                float z = new Vector3(World.M31, World.M32, World.M33).Length();
-
-                return new Vector3(x, y, z);
+                return this.scale;
             }
         }
 

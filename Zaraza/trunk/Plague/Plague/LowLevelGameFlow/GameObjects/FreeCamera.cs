@@ -192,10 +192,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Perspective")]
         public float ZFar { set; get; }
 
+        public Vector3 position
+        {
+            get { return Matrix.Invert(this.World).Translation; }
+            set { this.World = Matrix.CreateTranslation(value); }
+        }
+
+
         [CategoryAttribute("Input")]
         public bool ActiveKeyListener { set; get; }
         [CategoryAttribute("Input")]
         public bool ActiveMouseListener { set; get; }
+
     }
 
     /********************************************************************************/
