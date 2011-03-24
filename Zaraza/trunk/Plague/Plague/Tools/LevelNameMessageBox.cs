@@ -30,14 +30,14 @@ namespace PlagueEngine.Tools
                 this.levelName = textBoxLevelName.Text;
                 this.canceled = false;
                 
-                this.Hide();
+                this.Close();
             }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             this.canceled = true;
-            this.Hide();
+            this.Close();
         }
 
 
