@@ -1,0 +1,26 @@
+#summary Uzywanie edytora poziomow i definicji.
+
+= Edytor poziomow =
+ * Przycisk New - Tworzy nowy poziom. Jesli wczesniej edytowany poziom nie byl zapisany daje nam mozliwosc jego zapisu.
+
+ * Przycisk Delete: usuwa zaznaczony z listy poziom. Jesli zaznaczony poziom jest aktualnym poziomem, to zostanie takze usuniety (wyczyszczony z gameObjectow). W przeciwnym wypadku usuwany jest plik z danymi o poziomie. Jesli na liscie nie jest zaznaczony zaden poziom usuniety zostanie aktualny poziom. Przed kazdym usunieciem wyskakuje okienko potwierdzajace.
+
+ * Przycisk Save zapisuje aktualny poziom.
+
+ * Przycisk Load wczytuje poziom wybrany z listy. Jesli wybrany poziom jest aktualnym to nie nastapi jego zaladowanie.
+
+
+= Dodawanie obiektow do poziomu = 
+
+ * Jesli nasz poziom jest nowym poziomem - nie ma na nim zadnych gameObjectow, podstawowym krokiem jest stworzenie kamery. Jesli jej nie bedzie to nic nie zobaczymy na scenie.
+
+ * Aby dodac nowy obiekt wystarczy wybrac tym gameObjectu i uzupelnic pola w tabelce. Jesli mamy stworzona juz jakas definicje, mozemy ja wybrac z listy, co nam uzupelni wybrane pola wczesniej ustalonymi wartosciami. Pola wypelniane sa na podstawie nazwy - jesli definicja zostala stworzona do innego typu gameObjectu to pola o tej samej nazwie co w stworzonej definicji i tak zostana wypelnione.
+
+= Dodawanie definicji =
+
+ * Definicje obiektow sa to grupy parametrow, ktore moga zostac przepisane do nowotworzonych przez nas obiektow. Aby taka definicje stworzyc klikamy Create definition. W pole textowe na samej gorze wpisujemy nazwe definicji . Nastepnie polami wyboru wybieramy ktore pola maja zostac zapisane do definicji. Jesli zaznaczone pole bedzie puste (nie bedzie mialo z lewej strony zadnej wartosci, nawet 0) to definicja nie zostanie utworzona. 
+
+
+= Znane bledy =
+
+ * Tworzenie  definicji z Vector3 powoduje blad przy zapisie definicji. W rezultacie stracimy caly/czesc pliku z definicjami.
