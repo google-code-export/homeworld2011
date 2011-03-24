@@ -210,7 +210,19 @@ namespace PlagueEngine.Tools
         {
             if (ComboboxDefinitions.SelectedIndex != -1)
             {
+                GameObjectDefinition god = contentManager.GameObjectsDefinitions[ComboboxDefinitions.SelectedItem.ToString()];
                 currentObject.definition = ComboboxDefinitions.Items[ComboboxDefinitions.SelectedIndex].ToString();
+
+                PropertyInfo[] propInfo = currentClassName.dataClassType.GetProperties();
+
+                foreach (PropertyInfo pf in propInfo)
+                {
+                    if(god.Properties.ContainsKey(pf.Name))
+                    {
+                        pf.SetValue(this.currentObject, god.Properties[pf.Name],null);
+                    }
+                }
+
                 propertyGrid1.Refresh();
             }
         }
@@ -458,12 +470,22 @@ namespace PlagueEngine.Tools
                     contentManager.GameObjectsDefinitions.Add(god.Name, god);
                     contentManager.SaveGameObjectsDefinitions();
 
+                    //update definition
+                    ComboboxDefinitions.Items.Clear();
+                    foreach (var definition in contentManager.GameObjectsDefinitions.Keys)
+                    {
+                        ComboboxDefinitions.Items.Add(definition);
+                    }
+                   
+
+
                 }
 
 
                 
             }
-            
+
+       
         }
 
 
