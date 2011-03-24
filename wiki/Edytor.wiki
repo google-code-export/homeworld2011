@@ -14,11 +14,11 @@
 
  * Jesli nasz poziom jest nowym poziomem - nie ma na nim zadnych gameObjectow, podstawowym krokiem jest stworzenie kamery. Jesli jej nie bedzie to nic nie zobaczymy na scenie.
 
- * Aby dodac nowy obiekt wystarczy wybrac tym gameObjectu i uzupelnic pola w tabelce. Jesli mamy stworzona juz jakas definicje, mozemy ja wybrac z listy, co nam uzupelni wybrane pola wczesniej ustalonymi wartosciami. Pola wypelniane sa na podstawie nazwy - jesli definicja zostala stworzona do innego typu gameObjectu to pola o tej samej nazwie co w stworzonej definicji i tak zostana wypelnione.
+ * Aby dodac nowy obiekt wystarczy wybrac tym gameObjectu i uzupelnic pola w tabelce. Jesli mamy stworzona juz jakas definicje, mozemy ja wybrac z listy, co nam uzupelni wybrane pola wczesniej ustalonymi wartosciami.
 
 = Dodawanie definicji =
 
- * Definicje obiektow sa to grupy parametrow, ktore moga zostac przepisane do nowotworzonych przez nas obiektow. Aby taka definicje stworzyc klikamy Create definition. W pole textowe na samej gorze wpisujemy nazwe definicji . Nastepnie polami wyboru wybieramy ktore pola maja zostac zapisane do definicji. Jesli zaznaczone pole bedzie puste (nie bedzie mialo z lewej strony zadnej wartosci, nawet 0) to definicja nie zostanie utworzona. 
+ * Definicje obiektow sa to grupy parametrow, ktore moga zostac przepisane do nowotworzonych przez nas obiektow. Aby taka definicje stworzyc klikamy Create definition. W pole textowe na samej gorze wpisujemy nazwe definicji . Nastepnie polami wyboru wybieramy ktore pola maja zostac zapisane do definicji. Jesli zaznaczone pole bedzie puste (nie bedzie mialo z lewej strony zadnej wartosci, nawet 0) to definicja nie zostanie utworzona. Definicje sa przypisane do klasy gameObjectu dla ktorej zostaly stworzone i nie moga byc uzyte (wybrane) do innej klasy.
 
 
 = Znane bledy =
