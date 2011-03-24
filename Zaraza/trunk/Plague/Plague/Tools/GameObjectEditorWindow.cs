@@ -62,6 +62,8 @@ namespace PlagueEngine.Tools
         private Level currentLevel = null;
         private bool levelSaved = true;
 
+        private GameObjectDefinition currentDefinition = null;
+        
         
         /********************************************************************************/
 
@@ -84,18 +86,45 @@ namespace PlagueEngine.Tools
                 gameObjectsName.Items.Add(gameObject.className);
             }
 
-            foreach(var definition in contentManager.GameObjectsDefinitions.Keys)
-            {
-                ComboboxDefinitions.Items.Add(definition);
-            }
-            this.Visible = false;
+
+            this.Visible = true;
+
 
 
             loadLevelNames();
         }
         /********************************************************************************/
 
-  
+
+
+        /********************************************************************************/
+        /// Load Definition For Class
+        /********************************************************************************/
+        private void LoadDefinitionForClass(string gameObjectClass)
+        {
+            
+           
+            ComboboxDefinitions.SelectedIndex = -1;
+            ComboboxDefinitions.SelectedIndex = -1;
+            ComboboxDefinitions.SelectedText = "";
+            ComboboxDefinitions.Items.Clear();
+            currentDefinition = null;
+
+            foreach (GameObjectDefinition definition in contentManager.GameObjectsDefinitions.Values)
+            {
+
+                if (definition.GameObjectClass == gameObjectClass)
+                {
+
+                    ComboboxDefinitions.Items.Add(definition.Name);
+                    
+                }
+            }
+        }
+        /********************************************************************************/
+
+
+
 
         /********************************************************************************/
         /// Fill Names
@@ -110,6 +139,8 @@ namespace PlagueEngine.Tools
                 currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassName.dataClassType));
 
                 propertyGrid1.SelectedObject = currentObject;
+
+                LoadDefinitionForClass(objectname);
             }
         }
         /********************************************************************************/
@@ -195,7 +226,7 @@ namespace PlagueEngine.Tools
             }
             catch(Exception execption)
             {
-                MessageBox.Show("That makes 100 errors \nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n"+execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
 
@@ -211,16 +242,35 @@ namespace PlagueEngine.Tools
         {
             if (ComboboxDefinitions.SelectedIndex != -1)
             {
-                GameObjectDefinition god = contentManager.GameObjectsDefinitions[ComboboxDefinitions.SelectedItem.ToString()];
-                currentObject.definition = ComboboxDefinitions.Items[ComboboxDefinitions.SelectedIndex].ToString();
+                if (currentDefinition != null)
+                {
+                    PropertyInfo[] propINFO = currentClassName.dataClassType.GetProperties();
+
+                    foreach (PropertyInfo pI in propINFO)
+                    {
+                        if (currentDefinition.Properties.ContainsKey(pI.Name))
+                        {
+                            
+                            pI.SetValue(this.currentObject,null,null);
+                        }
+                    }
+                }
+
+                
+
+
+
+
+                currentDefinition = contentManager.GameObjectsDefinitions[ComboboxDefinitions.SelectedItem.ToString()];
+                currentObject.definition = ComboboxDefinitions.SelectedItem.ToString();
 
                 PropertyInfo[] propInfo = currentClassName.dataClassType.GetProperties();
 
                 foreach (PropertyInfo pf in propInfo)
                 {
-                    if(god.Properties.ContainsKey(pf.Name))
+                    if (currentDefinition.Properties.ContainsKey(pf.Name))
                     {
-                        pf.SetValue(this.currentObject, god.Properties[pf.Name],null);
+                        pf.SetValue(this.currentObject, currentDefinition.Properties[pf.Name], null);
                     }
                 }
 
@@ -510,6 +560,7 @@ namespace PlagueEngine.Tools
                 {
                     GameObjectDefinition god = new GameObjectDefinition();
                     god.Name = definitionWindow.textbox.Text;
+                    god.GameObjectClass = this.currentClassName.className;
 
                     foreach(DefinitionWindow.Field field in definitionWindow.fields )
                     {
@@ -521,13 +572,8 @@ namespace PlagueEngine.Tools
                     contentManager.GameObjectsDefinitions.Add(god.Name, god);
                     contentManager.SaveGameObjectsDefinitions();
 
-                    //update definition
-                    ComboboxDefinitions.Items.Clear();
-                    foreach (var definition in contentManager.GameObjectsDefinitions.Keys)
-                    {
-                        ComboboxDefinitions.Items.Add(definition);
-                    }
-                   
+
+                    ComboboxDefinitions.Items.Add(definitionWindow.textbox.Text);
 
 
                 }

@@ -211,8 +211,8 @@ namespace PlagueEngine.Rendering.Components
         /// Compute Projection Matrix
         /****************************************************************************/
         private void ComputeProjectionMatrix()
-        { 
-            projection = Matrix.CreatePerspectiveFieldOfView(FoV, aspect, zNear, zFar);
+        {
+            projection = Matrix.CreatePerspectiveFieldOfView(FoV, aspect, ZNear, ZFar);
         }
         /****************************************************************************/
 
