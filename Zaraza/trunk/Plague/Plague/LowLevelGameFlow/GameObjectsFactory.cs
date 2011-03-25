@@ -58,6 +58,10 @@ namespace PlagueEngine.LowLevelGameFlow
             {
                 gameObjects = value;
             }
+            get
+            {
+                return this.gameObjects;
+            }
         }
         /****************************************************************************/
 
