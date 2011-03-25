@@ -28,7 +28,18 @@ namespace PlagueEngine.Tools
     /********************************************************************************/
     partial class GameObjectEditorWindow : Form
     {
-        
+
+
+        /********************************************************************************/
+        /// Definition Counter
+        /********************************************************************************/
+        class DefinitionCounter
+        {
+            public int count = 0;
+            public string levelName = string.Empty;
+        }
+        /********************************************************************************/
+
 
 
         /********************************************************************************/
@@ -88,7 +99,7 @@ namespace PlagueEngine.Tools
 
 
             this.Visible = true;
-
+            this.MaximizeBox = false;
 
 
             loadLevelNames();
@@ -221,8 +232,11 @@ namespace PlagueEngine.Tools
                 this.gameObjectsName.SelectedIndex = -1;
                 this.gameObjectsName.SelectedIndex = -1;
 
+                this.ComboboxDefinitions.Items.Clear();
+
                 levelSaved = false;
 
+                currentDefinition = null;
             }
             catch(Exception execption)
             {
@@ -583,6 +597,137 @@ namespace PlagueEngine.Tools
             }
 
        
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        /// Button Delete Definitin Click
+        /********************************************************************************/
+        private void buttonDeleteDefinition_Click(object sender, EventArgs e)
+        {
+            if (ComboboxDefinitions.SelectedIndex != -1 && currentDefinition != null)
+            {
+
+                //zliczanie ile obiektow w levelach korzysta z definicji 
+                List<DefinitionCounter> definitionCounter = new List<DefinitionCounter>();
+                int allDefinitions = 0;
+
+
+                foreach (string levelName in listBoxLevelNames.Items)
+                {
+                    LevelData levelData = contentManager.LoadLevel(levelName);
+
+                    DefinitionCounter dc = new DefinitionCounter();
+                    dc.levelName = levelName;
+
+                    if (levelName == currentLevelName)
+                    {
+                        foreach (GameObjectInstance gameObject in factory.GameObjects.Values)
+                        {
+                            if (gameObject.Definition == ComboboxDefinitions.SelectedItem.ToString())
+                            {
+                                dc.count++;
+                                allDefinitions++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (GameObjectInstanceData gameObjectdata in levelData.gameObjects)
+                        {
+                            if (gameObjectdata.definition == ComboboxDefinitions.SelectedItem.ToString())
+                            {
+                                dc.count++;
+                                allDefinitions++;
+                            }
+                        }
+                    }
+
+                    definitionCounter.Add(dc);
+
+                }
+
+
+                //wyswietlanie ilosci definicji w levelach
+                string messageBoxText = string.Empty;
+
+                for(int i=0;i<definitionCounter.Count;i++)
+                {
+                    if (definitionCounter[i].count == 0)
+                    {
+                        definitionCounter.RemoveAt(i);
+                        i--;
+                    }
+                    else
+                    {
+                        messageBoxText += definitionCounter[i].count.ToString() + " objects in " + definitionCounter[i].levelName+"\n";
+                    }
+                }
+
+
+                DialogResult dialogResult = new DialogResult();
+                if (allDefinitions != 0)
+                {
+                    dialogResult = MessageBox.Show("Objects using this definition:\n\n" + messageBoxText + "\n\nDelete this definition?\n(Clicking yes can leads to error while loading level data)", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                }
+                //usuwanie definicji z comboboxa
+                if (dialogResult == DialogResult.Yes || allDefinitions==0)
+                {
+
+
+                    contentManager.GameObjectsDefinitions.Remove(currentDefinition.Name);
+                    contentManager.SaveGameObjectsDefinitions();
+
+                    ComboboxDefinitions.Items.Remove(ComboboxDefinitions.SelectedItem);
+
+                    ComboboxDefinitions.SelectedIndex = -1;
+                    ComboboxDefinitions.SelectedIndex = -1;
+                    ComboboxDefinitions.SelectedText = "";
+                }
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        /// PropertyGid Property Value Changed
+        /********************************************************************************/
+        private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            if(ComboboxDefinitions.SelectedIndex!=-1)
+            {
+            
+                bool cancelDefinition = false;
+
+                foreach (string propertyName in currentDefinition.Properties.Keys)
+                {
+                    if (e.ChangedItem.Label == propertyName && currentDefinition.Properties[propertyName] != e.ChangedItem.Value)
+                    {
+                        cancelDefinition = true;
+                    }
+                }
+
+
+                if (cancelDefinition)
+                {
+                    PropertyInfo propINFO = currentClassName.dataClassType.GetProperty("definition");
+                    propINFO.SetValue(this.currentObject, null, null);
+
+                    this.ComboboxDefinitions.SelectedIndex = -1;//2x, tak musi byc
+                    this.ComboboxDefinitions.SelectedIndex = -1;
+                    currentDefinition = null;
+                    propertyGrid1.Refresh();
+                    
+                }
+
+
+
+            }
         }
         /********************************************************************************/
 

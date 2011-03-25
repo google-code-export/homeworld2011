@@ -30,6 +30,8 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.buttonDeleteDefinition = new System.Windows.Forms.Button();
+            this.buttonCreateDefinition = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.ComboboxDefinitions = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -42,7 +44,6 @@
             this.buttonNew = new System.Windows.Forms.Button();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.listBoxLevelNames = new System.Windows.Forms.ListBox();
-            this.buttonCreateDefinition = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -60,6 +61,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.buttonDeleteDefinition);
             this.tabPage1.Controls.Add(this.buttonCreateDefinition);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.ComboboxDefinitions);
@@ -75,6 +77,26 @@
             this.tabPage1.Text = "GameObject";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // buttonDeleteDefinition
+            // 
+            this.buttonDeleteDefinition.Location = new System.Drawing.Point(351, 41);
+            this.buttonDeleteDefinition.Name = "buttonDeleteDefinition";
+            this.buttonDeleteDefinition.Size = new System.Drawing.Size(24, 23);
+            this.buttonDeleteDefinition.TabIndex = 13;
+            this.buttonDeleteDefinition.Text = "X";
+            this.buttonDeleteDefinition.UseVisualStyleBackColor = true;
+            this.buttonDeleteDefinition.Click += new System.EventHandler(this.buttonDeleteDefinition_Click);
+            // 
+            // buttonCreateDefinition
+            // 
+            this.buttonCreateDefinition.Location = new System.Drawing.Point(218, 384);
+            this.buttonCreateDefinition.Name = "buttonCreateDefinition";
+            this.buttonCreateDefinition.Size = new System.Drawing.Size(119, 23);
+            this.buttonCreateDefinition.TabIndex = 12;
+            this.buttonCreateDefinition.Text = "Create definition";
+            this.buttonCreateDefinition.UseVisualStyleBackColor = true;
+            this.buttonCreateDefinition.Click += new System.EventHandler(this.buttonCreateDefinition_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -89,7 +111,7 @@
             this.ComboboxDefinitions.FormattingEnabled = true;
             this.ComboboxDefinitions.Location = new System.Drawing.Point(93, 43);
             this.ComboboxDefinitions.Name = "ComboboxDefinitions";
-            this.ComboboxDefinitions.Size = new System.Drawing.Size(282, 21);
+            this.ComboboxDefinitions.Size = new System.Drawing.Size(255, 21);
             this.ComboboxDefinitions.TabIndex = 10;
             this.ComboboxDefinitions.SelectedIndexChanged += new System.EventHandler(this.ComboboxDefinitions_SelectedIndexChanged);
             // 
@@ -109,6 +131,7 @@
             this.propertyGrid1.Name = "propertyGrid1";
             this.propertyGrid1.Size = new System.Drawing.Size(380, 310);
             this.propertyGrid1.TabIndex = 8;
+            this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged);
             // 
             // label1
             // 
@@ -191,22 +214,13 @@
             this.listBoxLevelNames.Size = new System.Drawing.Size(341, 342);
             this.listBoxLevelNames.TabIndex = 0;
             // 
-            // buttonCreateDefinition
-            // 
-            this.buttonCreateDefinition.Location = new System.Drawing.Point(218, 384);
-            this.buttonCreateDefinition.Name = "buttonCreateDefinition";
-            this.buttonCreateDefinition.Size = new System.Drawing.Size(119, 23);
-            this.buttonCreateDefinition.TabIndex = 12;
-            this.buttonCreateDefinition.Text = "Create definition";
-            this.buttonCreateDefinition.UseVisualStyleBackColor = true;
-            this.buttonCreateDefinition.Click += new System.EventHandler(this.buttonCreateDefinition_Click);
-            // 
             // GameObjectEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(393, 442);
+            this.ClientSize = new System.Drawing.Size(389, 442);
             this.Controls.Add(this.tabControl1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "GameObjectEditorWindow";
             this.Text = "GameObjectEditorWindow";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GameObjectEditorWindow_FormClosing);
@@ -235,6 +249,7 @@
         private System.Windows.Forms.Button buttonNew;
         private System.Windows.Forms.Button buttonLoad;
         private System.Windows.Forms.Button buttonCreateDefinition;
+        private System.Windows.Forms.Button buttonDeleteDefinition;
 
 
     }
