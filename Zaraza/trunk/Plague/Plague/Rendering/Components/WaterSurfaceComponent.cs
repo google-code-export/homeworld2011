@@ -166,7 +166,7 @@ namespace PlagueEngine.Rendering.Components
 
 
         /****************************************************************************/
-        /// Render Reflection
+        /// Pre Render
         /****************************************************************************/
         public override void PreRender(CameraComponent camera)
         {

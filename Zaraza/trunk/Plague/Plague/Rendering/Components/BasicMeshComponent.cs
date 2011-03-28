@@ -22,18 +22,17 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Model  model     = null;
-        private String modelName = String.Empty;             
+        private PlagueEngineModel model = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// BasicMeshComponent
         /****************************************************************************/
-        public BasicMeshComponent(GameObjectInstance gameObject,Renderer renderer,Model model,String name) : base(gameObject,renderer,null)
+        public BasicMeshComponent(GameObjectInstance gameObject, Renderer renderer, PlagueEngineModel model)
+            : base(gameObject, renderer, null)
         {
-            this.model     = model;
-            this.modelName = name;
+            this.model = model;
         }
         /****************************************************************************/
 
@@ -45,7 +44,7 @@ namespace PlagueEngine.Rendering.Components
         {
             get
             {
-                return modelName;
+                return model.Name;
             }
         }
         /****************************************************************************/
@@ -56,6 +55,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
+            model.IndexBuffer.Dispose();
+            model.VertexBuffer.Dispose();
             base.ReleaseMe();
         }
         /****************************************************************************/
@@ -66,7 +67,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void Draw()
         {
-            model.Draw(gameObject.World, renderer.CurrentCamera.View, renderer.CurrentCamera.Projection);                
+            //model.Draw(gameObject.World, renderer.CurrentCamera.View, renderer.CurrentCamera.Projection);                
         }
         /****************************************************************************/
 

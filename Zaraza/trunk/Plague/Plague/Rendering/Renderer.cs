@@ -153,25 +153,23 @@ namespace PlagueEngine.Rendering
             {
                 renderableComponent.PreRender(currentCamera);
             }
-            
+
             Device.Clear(clearColor);
 
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
-                if (renderableComponent.Effect != null)
-                {
-                    renderableComponent.Effect.Parameters["SunLightDirection"]  .SetValue(sunLight.Direction);
-                    renderableComponent.Effect.Parameters["SunLightAmbient"]    .SetValue(sunLight.AmbientColor);
-                    renderableComponent.Effect.Parameters["SunLightDiffuse"]    .SetValue(sunLight.DiffuseColor);
-                    renderableComponent.Effect.Parameters["SunLightSpecular"]   .SetValue(sunLight.SpecularColor);
-                    renderableComponent.Effect.Parameters["CameraPosition"]     .SetValue(currentCamera.Position);
-                    renderableComponent.Effect.Parameters["View"]               .SetValue(currentCamera.View);
-                    renderableComponent.Effect.Parameters["Projection"]         .SetValue(currentCamera.Projection);
-                    renderableComponent.Effect.Parameters["ViewProjection"]     .SetValue(currentCamera.ViewProjection);
-                }
+                renderableComponent.Effect.Parameters["SunLightDirection"].SetValue(sunLight.Direction);
+                renderableComponent.Effect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
+                renderableComponent.Effect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
+                renderableComponent.Effect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
+                renderableComponent.Effect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
+                renderableComponent.Effect.Parameters["View"].SetValue(currentCamera.View);
+                renderableComponent.Effect.Parameters["Projection"].SetValue(currentCamera.Projection);
+                renderableComponent.Effect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
 
                 renderableComponent.Draw();
-            }
+            }                    
+
         }
         /****************************************************************************/
 

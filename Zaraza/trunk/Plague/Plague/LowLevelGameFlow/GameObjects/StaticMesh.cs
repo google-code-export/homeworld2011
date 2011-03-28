@@ -23,17 +23,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        BasicMeshComponent basicMeshComponent = null;
+        DynamicMeshComponent meshComponent = null;
         /****************************************************************************/
        
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(BasicMeshComponent basicMeshComponent, Matrix world)
+        public void Init(DynamicMeshComponent meshComponent, Matrix world)
         {
-            this.basicMeshComponent = basicMeshComponent;
-            this.World              = world;
+            this.meshComponent = meshComponent;
+            this.World         = world;
         }
         /****************************************************************************/
 
@@ -43,7 +43,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            basicMeshComponent.ReleaseMe();
+            meshComponent.ReleaseMe();
         }
         /****************************************************************************/
         
@@ -55,7 +55,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             StaticMeshData data = new StaticMeshData();
             GetData(data);
-            data.Model = basicMeshComponent.Model;
+            data.Model = meshComponent.Name;
             return data;
         }
         /****************************************************************************/
