@@ -16,6 +16,7 @@ using PlagueEngine.HighLevelGameFlow;
 /************************************************************************************/
 /// PlagueEngine.Resources
 /************************************************************************************/ 
+
 namespace PlagueEngine.Resources
 {
 
@@ -60,11 +61,13 @@ namespace PlagueEngine.Resources
 
             //LoadGameObjectsDefinitions();
 
+
             GameObjectDefinition god = new GameObjectDefinition();
             god.Name = "Barrel";
             god.GameObjectClass = "StaticMesh";
-            god.Properties.Add("Model", "Barrel");
+            god.Properties.Add("Model", "barrel");
             gameObjectsDefinitions.Add(god.Name, god);
+
 
             SaveGameObjectsDefinitions();
         }
