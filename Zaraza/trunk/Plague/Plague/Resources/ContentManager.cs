@@ -8,6 +8,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
+using PlagueEngine.Rendering;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.HighLevelGameFlow;
 
@@ -42,6 +43,9 @@ namespace PlagueEngine.Resources
         private const String dataDirectory      = "Data";
         private const String objectsDefinitions = "ObjectsDefinitions";
         private const String levelsDirectory    = "Levels";
+        private const String textures           = "Textures";
+        private const String effects            = "Effects";
+        private const String models             = "Models";
         /****************************************************************************/
 
 
@@ -54,15 +58,15 @@ namespace PlagueEngine.Resources
             DetectProfiles();
             LoadDefaultProfile();
 
-            LoadGameObjectsDefinitions();
+            //LoadGameObjectsDefinitions();
 
-            //GameObjectDefinition god = new GameObjectDefinition();
-            //god.Name = "Barrel";
-            //god.GameObjectClass = "StaticMesh";
-            //god.Properties.Add("Model", "barrel");
-            //gameObjectsDefinitions.Add(god.Name, god);
+            GameObjectDefinition god = new GameObjectDefinition();
+            god.Name = "Barrel";
+            god.GameObjectClass = "StaticMesh";
+            god.Properties.Add("Model", "Barrel");
+            gameObjectsDefinitions.Add(god.Name, god);
 
-            //SaveGameObjectsDefinitions();
+            SaveGameObjectsDefinitions();
         }
         /****************************************************************************/
 
@@ -72,7 +76,7 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public override T Load<T>(string assetName)
         {
-            Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);                     
+            //Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);                     
             return base.Load<T>(assetName);                     
         }
         /****************************************************************************/
@@ -83,8 +87,31 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public Texture2D LoadTexture2D(string textureName)
         {
-            Texture2D result = base.Load<Texture2D>(textureName);
+            Texture2D result = base.Load<Texture2D>(textures + '\\' + textureName);
             result.Name = textureName;
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Load Effect
+        /****************************************************************************/
+        public Effect LoadEffect(string effectName)
+        {
+            Effect result = base.Load<Effect>(effects + '\\' + effectName);
+            result.Name = effectName;
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Load Model
+        /****************************************************************************/
+        public PlagueEngineModel LoadModel(string modelName)
+        {
+            PlagueEngineModel result = base.Load<PlagueEngineModel>(models + '\\' + modelName);
             return result;
         }
         /****************************************************************************/

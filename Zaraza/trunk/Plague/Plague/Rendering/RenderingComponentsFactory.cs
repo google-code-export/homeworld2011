@@ -27,6 +27,10 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         private Renderer        renderer    = null;
         private ContentManager  content     = null;
+
+        private const String diffuseSufix  = "_diffuse";
+        private const String specularSufix = "_specular";
+        private const String normalsSufix  = "_normals";
         /****************************************************************************/
 
 
@@ -49,8 +53,7 @@ namespace PlagueEngine.Rendering
         {
             BasicMeshComponent result = new BasicMeshComponent( gameObject,
                                                                 renderer,
-                                                                content.Load<Model>(asset),
-                                                                asset);
+                                                                content.LoadModel(asset));
           
             return result;
         }
@@ -103,7 +106,7 @@ namespace PlagueEngine.Rendering
                                                             height,
                                                             cellSize,
                                                             textureTiling,
-                                                            content.Load<Effect>("TerrainEffect"));
+                                                            content.LoadEffect("TerrainEffect"));
             result.ComputeMesh();
             return result;                                                                                      
         }
@@ -143,7 +146,7 @@ namespace PlagueEngine.Rendering
                                                                      textureTiling,
                                                                      clipPlaneAdjustemnt,
                                                                      specularStrength,
-                                                                     content.Load<Effect>("ReflectiveWaterEffect"));
+                                                                     content.LoadEffect("ReflectiveWaterEffect"));
             
             renderer.preRender.Add(result);
             return result;
@@ -167,6 +170,24 @@ namespace PlagueEngine.Rendering
             renderer.SunLight = result;
             return result;
         }                                                         
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create DynamicMeshComponent
+        /****************************************************************************/
+        public DynamicMeshComponent CreateDynamicMeshComponent(GameObjectInstance gameObject,
+                                                               String modelName)
+        { 
+            DynamicMeshComponent result = new DynamicMeshComponent(gameObject,
+                                                                   renderer,
+                                                                   content.LoadModel(modelName),
+                                                                   content.LoadTexture2D(modelName + diffuseSufix),
+                                                                   content.LoadTexture2D(modelName + specularSufix),
+                                                                   content.LoadTexture2D(modelName + normalsSufix),
+                                                                   content.LoadEffect("DynamicMeshEffect"));
+            return result;
+        }                                            
         /****************************************************************************/
 
     }

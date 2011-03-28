@@ -66,7 +66,7 @@
     </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>PlagueEngine.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
@@ -149,9 +149,11 @@
     <Compile Include="Game.cs" />
     <Compile Include="Rendering\Components\BasicMeshComponent.cs" />
     <Compile Include="Rendering\Components\CameraComponent.cs" />
+    <Compile Include="Rendering\Components\DynamicMeshComponent.cs" />
     <Compile Include="Rendering\Components\SunLightComponent.cs" />
     <Compile Include="Rendering\Components\TerrainComponent.cs" />
     <Compile Include="Rendering\Components\WaterSurfaceComponent.cs" />
+    <Compile Include="Rendering\PlagueEngineModel.cs" />
     <Compile Include="Rendering\RenderableComponent.cs" />
     <Compile Include="Rendering\RenderingComponentsFactory.cs" />
     <Compile Include="Rendering\RenderConfig.cs" />

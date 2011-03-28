@@ -114,14 +114,14 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (String.IsNullOrEmpty(data.definition))
             {
-                result.Init(renderingComponentsFactory.CreateBasicMeshComponent(result,
+                result.Init(renderingComponentsFactory.CreateDynamicMeshComponent(result,
                                                                                 smdata.Model),
                                                                                 data.World);
             
             }
             else
             {
-                result.Init(renderingComponentsFactory.CreateBasicMeshComponent(result,
+                result.Init(renderingComponentsFactory.CreateDynamicMeshComponent(result,
                                                                                (String)gameObjectsDefinitions[smdata.Definition].Properties["Model"]),
                                                                                data.World);
             

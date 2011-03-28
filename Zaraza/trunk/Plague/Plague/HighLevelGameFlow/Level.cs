@@ -102,12 +102,21 @@ namespace PlagueEngine.HighLevelGameFlow
 
             data.Type = (typeof(StaticMesh));
             data.Definition = "Barrel";
-            data.World = Matrix.Identity;
+            data.World = Matrix.CreateTranslation(3500,1000,900);
 
-     
-                data.World *= Matrix.CreateTranslation(100, 0, 0);
+            for (int i = 0; i < 10; i++)
+            {
+                data.World *= Matrix.CreateTranslation(0, 0, -100);
                 gameObjectsFactory.Create(data);
-    
+            }
+
+            data.World = Matrix.CreateTranslation(3000, 900, 900);
+            for (int i = 0; i < 10; i++)
+            {
+                data.World *= Matrix.CreateTranslation(0, 0, 100);
+                gameObjectsFactory.Create(data);
+            }
+
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
             //lcdata.position = new Vector3(-200, 300, -200);
@@ -126,7 +135,7 @@ namespace PlagueEngine.HighLevelGameFlow
             FreeCameraData fcdata = new FreeCameraData();
             fcdata.Type = typeof(FreeCamera);
             fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(200, 2000, 200),
-                                                             new Vector3(300, 1000, 300), 
+                                                             new Vector3(300, 1990, 300), 
                                                              new Vector3(0, 1, 0)));
             fcdata.MovementSpeed = 1;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
@@ -154,15 +163,15 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.TextureTiling = 40;
             tdata.Level = 950;
             tdata.Color = new Vector3(0.2f, 0.2f, 0.6f);
-            tdata.ColorAmount = 0.1f;
+            tdata.ColorAmount = 0.5f;
             tdata.WaveLength = 0.2f;
             tdata.WaveHeight = 0.1f;
             tdata.WaveSpeed = 0.1f;
             tdata.NormalMap = "normalmap";
             tdata.WTextureTiling = 1000;
-            tdata.Bias = 0.3f;
+            tdata.Bias = 0.4f;
             tdata.SpecularStength = 500;
-            tdata.ClipPlaneAdjustment = 20;
+            tdata.ClipPlaneAdjustment = 10;
 
             gameObjectsFactory.Create(tdata);
 
@@ -170,8 +179,8 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Type = typeof(SunLight);
             sdata.World = Matrix.Identity;
             sdata.Ambient = new Vector3(0.1f, 0.1f, 0.1f);
-            sdata.Diffuse = new Vector3(0.9f, 0.9f, 0.9f);
-            sdata.Specular = new Vector3(1f, 1f, 1f);
+            sdata.Diffuse = new Vector3(0.8f, 0.7f, 0.5f);
+            sdata.Specular = new Vector3(0.9f, 0.9f, 0.9f);
 
             ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(0,-1,-1);
         }
