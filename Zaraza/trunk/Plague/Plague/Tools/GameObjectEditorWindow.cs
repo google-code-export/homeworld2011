@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
@@ -62,6 +64,8 @@ namespace PlagueEngine.Tools
         private List<gameObjectsClassName> gameObjectClassNames = new List<gameObjectsClassName>();
         private ContentManager contentManager = null;
         private GameObjectsFactory factory = null;
+
+
         private gameObjectsClassName currentClassName = null;
         private GameObjectInstanceData currentObject = null;
 
@@ -75,7 +79,9 @@ namespace PlagueEngine.Tools
 
         private GameObjectDefinition currentDefinition = null;
         
-        
+
+        //pola do zakladki edytuj
+        private GameObjectInstanceData currentEditGameObject = null;
         /********************************************************************************/
 
 
@@ -103,6 +109,8 @@ namespace PlagueEngine.Tools
 
 
             loadLevelNames();
+            LoadAllObjectsId();
+            LoadFilters();
         }
         /********************************************************************************/
 
@@ -132,6 +140,28 @@ namespace PlagueEngine.Tools
                 }
             }
         }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        /// Load Filters
+        /********************************************************************************/
+        private void LoadFilters()
+        {
+            comboBoxFilterId.Items.Clear();
+
+            comboBoxFilterId.Items.Add("Show all");
+
+            foreach (gameObjectsClassName className in gameObjectClassNames)
+            {
+                comboBoxFilterId.Items.Add(className.className);
+            }
+
+            comboBoxFilterId.SelectedItem = "Show all";
+        }
+
         /********************************************************************************/
 
 
@@ -187,6 +217,15 @@ namespace PlagueEngine.Tools
             terrain.ClassType = typeof(Terrain);
             terrain.dataClassType = typeof(TerrainData);
             gameObjectClassNames.Add(terrain);
+
+
+            gameObjectsClassName SunLight = new gameObjectsClassName();
+            SunLight.className = "SunLight";
+            SunLight.ClassType = typeof(SunLight);
+            SunLight.dataClassType = typeof(SunLightData);
+            gameObjectClassNames.Add(SunLight);
+
+           
         }
         /********************************************************************************/
 
@@ -237,6 +276,8 @@ namespace PlagueEngine.Tools
                 levelSaved = false;
 
                 currentDefinition = null;
+
+                LoadFilteredID(null, null);
             }
             catch(Exception execption)
             {
@@ -316,6 +357,28 @@ namespace PlagueEngine.Tools
 
 
         /********************************************************************************/
+        /// Load objects id
+        /********************************************************************************/
+        private void LoadAllObjectsId()
+        {
+            comboboxGameObjectId.SelectedIndex = -1;
+            comboboxGameObjectId.SelectedIndex = -1;
+            comboboxGameObjectId.Items.Clear();
+
+            foreach (GameObjectInstance gameObject in factory.GameObjects.Values)
+            {
+                comboboxGameObjectId.Items.Add(gameObject.ID.ToString());
+            }
+
+
+        }
+        /********************************************************************************/
+
+
+
+
+
+        /********************************************************************************/
         /// Set Level
         /********************************************************************************/
         public void setLevel(Level level,string levelName)
@@ -341,7 +404,9 @@ namespace PlagueEngine.Tools
 
                     try
                     {
+                        
                         this.currentLevel.LoadLevel(contentManager.LoadLevel(this.currentLevelName));
+                        LoadFilteredID(null,null);
                     }
                     catch (Exception ex)
                     {
@@ -363,8 +428,7 @@ namespace PlagueEngine.Tools
         private void buttonNew_Click(object sender, EventArgs e)
         {
             bool NewCanceled = false;
-            bool gameWindowVisible = ((Form)(Form.FromHandle(gameWindowHandle))).Visible;
-
+          
             if (!levelSaved)
             {
                 DialogResult result = MessageBox.Show("Save level?", "Notification", MessageBoxButtons.YesNoCancel);
@@ -454,9 +518,8 @@ namespace PlagueEngine.Tools
                 }
             }
 
+            LoadFilteredID(null,null);
 
-            ((Form)(Form.FromHandle(gameWindowHandle))).Visible = gameWindowVisible;
-            
          }
         /********************************************************************************/
 
@@ -729,6 +792,96 @@ namespace PlagueEngine.Tools
 
             }
         }
+
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        /// combobox GameObjectId Selected Index Changed
+        /********************************************************************************/
+        private void comboboxGameObjectId_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboboxGameObjectId.SelectedIndex != -1)
+            {   
+                uint id;
+                uint.TryParse(comboboxGameObjectId.SelectedItem.ToString(),out id);
+
+                currentEditGameObject = factory.GameObjects[id].GetData();
+                currentEditGameObject.Position = currentEditGameObject.World.Translation;
+                propertyGrid2.SelectedObject = currentEditGameObject;
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        /// propertyGrid2 Property Value Changed
+        /********************************************************************************/
+        private void propertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            factory.GameObjects[currentEditGameObject.ID].Dispose();
+            
+            factory.Create(currentEditGameObject);
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        /// button Delete Object Click
+        /********************************************************************************/
+        private void buttonDeleteObject_Click(object sender, EventArgs e)
+        {
+            if (comboboxGameObjectId.SelectedIndex != -1)
+            {
+                factory.GameObjects[currentEditGameObject.ID].Dispose();
+                comboboxGameObjectId.SelectedIndex = -1;
+                comboboxGameObjectId.SelectedIndex = -1;
+
+                factory.GameObjects.Remove(currentEditGameObject.ID);
+                currentEditGameObject = null;
+                propertyGrid2.SelectedObject = null;
+                
+                LoadFilteredID(null,null);
+            }
+
+        }
+
+        private void LoadFilteredID(object sender, EventArgs e)
+        {
+            if (comboBoxFilterId.SelectedItem == "Show all")
+            {
+                LoadAllObjectsId();
+            }
+            else
+            {
+
+                foreach (gameObjectsClassName gameObjectclassName in gameObjectClassNames)
+                {
+                    if (comboBoxFilterId.SelectedItem.ToString() == gameObjectclassName.className)
+                    {
+                        comboboxGameObjectId.SelectedIndex = -1;
+                        comboboxGameObjectId.SelectedIndex = -1;
+                        comboboxGameObjectId.Items.Clear();
+
+                        foreach (GameObjectInstance gameObject in factory.GameObjects.Values)
+                        {
+                            if (gameObject.GetType() == gameObjectclassName.ClassType)
+                            {
+                                comboboxGameObjectId.Items.Add(gameObject.ID);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
         /********************************************************************************/
 
     
