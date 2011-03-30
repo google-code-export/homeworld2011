@@ -69,7 +69,7 @@ namespace PlagueEngine.Resources
             god.Properties.Add("Diffuse",   "Barrel_diffuse");
             god.Properties.Add("Specular",  "Barrel_specular");
             god.Properties.Add("Normals",   "Barrel_normals");
-            god.Properties.Add("InstancingMode", Renderer.InstancingModeToUInt(InstancingModes.DynamicInstancing));
+            god.Properties.Add("InstancingMode", Renderer.InstancingModeToUInt(InstancingModes.NoInstancing));
             gameObjectsDefinitions.Add(god.Name, god);
 
 

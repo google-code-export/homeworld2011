@@ -212,6 +212,21 @@ namespace PlagueEngine.Rendering
                         renderer.dynamicInstancedMeshes.AddMeshComponent(result);                    
                     }
                     break;
+
+                case InstancingModes.NoInstancing:
+                    {
+                        PlagueEngineModel model = renderer.batchedMeshes.PickModel(modelName);
+                        TexturesPack textures = renderer.batchedMeshes.PickTexturesPack(model, new String[] { diffuseMap, specularMap, normalMap });
+
+                        result = new MeshComponent(gameObject,
+                                                   renderer,
+                                                   model,
+                                                   textures,
+                                                   instancingMode);
+
+                        renderer.batchedMeshes.AddMeshComponent(result);     
+                    }
+                    break;
             }
 
             return result;
