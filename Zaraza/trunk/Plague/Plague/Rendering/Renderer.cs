@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Xml.Serialization;
 
 using PlagueEngine.Resources;
 using PlagueEngine.Rendering.Components;
@@ -23,18 +24,21 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private  GraphicsDeviceManager       graphics             = null;
-        internal ContentManager              contentManager       = null;
-        private  RenderingComponentsFactory  componentsFactory    = null;
+        private  GraphicsDeviceManager       graphics              = null;
+        internal ContentManager              contentManager        = null;
+        private  RenderingComponentsFactory  componentsFactory     = null;
 
-        internal List<RenderableComponent>   renderableComponents = new List<RenderableComponent>();
-        internal List<RenderableComponent>   preRender            = new List<RenderableComponent>();
+        internal List<RenderableComponent>   renderableComponents  = new List<RenderableComponent>();
+        internal List<RenderableComponent>   preRender             = new List<RenderableComponent>();        
 
-        private  CameraComponent             currentCamera        = null;
-        private  SunLightComponent           sunLight             = null;
-        private  Color                       clearColor           = Color.CornflowerBlue;
+        private  CameraComponent             currentCamera         = null;
+        private  SunLightComponent           sunLight              = null;
+        private  Color                       clearColor            = Color.CornflowerBlue;
+
+        internal StaticInstancedMeshes       staticInstancedMeshes = null;
+        private  Effect                      instancedMeshEffect   = null;
         /****************************************************************************/
-
+            
 
         /****************************************************************************/
         /// Constants
@@ -49,10 +53,11 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public Renderer(Game game,RenderConfig config)
         {
-            graphics             = new GraphicsDeviceManager(game);
-            contentManager       = game.ContentManager;           
-            CurrentConfiguration = config;
-            componentsFactory    = new RenderingComponentsFactory(this);
+            graphics              = new GraphicsDeviceManager(game);
+            contentManager        = game.ContentManager;           
+            CurrentConfiguration  = config;
+            componentsFactory     = new RenderingComponentsFactory(this);            
+            staticInstancedMeshes = new StaticInstancedMeshes(contentManager, this);            
         }
         /****************************************************************************/
 
@@ -168,8 +173,19 @@ namespace PlagueEngine.Rendering
                 renderableComponent.Effect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
 
                 renderableComponent.Draw();
-            }                    
+            }
 
+            instancedMeshEffect.Parameters["SunLightDirection"].SetValue(sunLight.Direction);
+            instancedMeshEffect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
+            instancedMeshEffect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
+            instancedMeshEffect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
+
+            instancedMeshEffect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
+            instancedMeshEffect.Parameters["View"].SetValue(currentCamera.View);
+            instancedMeshEffect.Parameters["Projection"].SetValue(currentCamera.Projection);
+            instancedMeshEffect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
+
+            staticInstancedMeshes.Draw(instancedMeshEffect);
         }
         /****************************************************************************/
 
@@ -270,11 +286,64 @@ namespace PlagueEngine.Rendering
         public void ReleasePreRenderComponent(RenderableComponent component)
         {
             preRender.Remove(component);
+        }        
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Load Effects
+        /****************************************************************************/
+        public void LoadEffects()
+        {
+            instancedMeshEffect = contentManager.LoadEffect("InstancedMeshEffect");
+        }
+        /****************************************************************************/
+        
+
+        /****************************************************************************/
+        /// Instancing Mode To UInt
+        /****************************************************************************/
+        public static uint InstancingModeToUInt(InstancingModes instancingMode)
+        {
+            switch (instancingMode)
+            {
+                case InstancingModes.NoInstancing:      return 1;
+                case InstancingModes.StaticInstancing:  return 2;
+                case InstancingModes.DynamicInstancing: return 3;
+                default: return 0;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// UInt To Instancing Mode
+        /****************************************************************************/
+        public static InstancingModes UIntToInstancingMode(uint value)
+        {
+            switch (value)
+            {
+                case 1:  return InstancingModes.NoInstancing;
+                case 2:  return InstancingModes.StaticInstancing;
+                default: return InstancingModes.DynamicInstancing;
+            }
         }
         /****************************************************************************/
 
     }
     /********************************************************************************/
-    
+
+
+    /********************************************************************************/
+    /// Instancing Modes
+    /********************************************************************************/
+    public enum InstancingModes
+    {
+        NoInstancing,
+        StaticInstancing,
+        DynamicInstancing
+    }
+    /********************************************************************************/
+
 }
 /************************************************************************************/

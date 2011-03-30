@@ -15,38 +15,37 @@ namespace PlagueEngine.Rendering.Components
 {
 
     /********************************************************************************/
-    /// Dynamic Mesh Component
+    /// Mesh Component
     /********************************************************************************/
-    class DynamicMeshComponent : RenderableComponent
+    class MeshComponent : GameObjectComponent
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
         private PlagueEngineModel model    = null;
-        
-        private Texture2D         diffuse  = null;
-        private Texture2D         specular = null;
-        private Texture2D         normals  = null;
+        private TexturesPack      textures = null;
+        private Effect            effect   = null;
+        private Renderer          renderer = null;
+
+        private readonly InstancingModes instancingMode;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public DynamicMeshComponent(GameObjectInstance gameObject, 
-                                    Renderer           renderer, 
-                                    PlagueEngineModel  model, 
-                                    Texture2D          diffuse,
-                                    Texture2D          specular,
-                                    Texture2D          normals,
-                                    Effect             effect)
-            : base(gameObject, renderer, effect)
+        public MeshComponent(GameObjectInstance gameObject, 
+                             Renderer           renderer, 
+                             PlagueEngineModel  model,
+                             TexturesPack       textures,
+                             InstancingModes    instancingMode)
+            : base(gameObject)
         {
-            this.model    = model;
-            this.diffuse  = diffuse;
-            this.specular = specular;
-            this.normals  = normals;
+            this.renderer       = renderer;
+            this.model          = model;
+            this.textures       = textures;
+            this.instancingMode = instancingMode;
         }        
         /****************************************************************************/
 
@@ -56,41 +55,26 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            base.ReleaseMe();
+            switch (instancingMode)
+            { 
+                case InstancingModes.StaticInstancing:
+                    renderer.staticInstancedMeshes.RemoveMeshComponent(this);
+                    break;
+            }            
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Name        
+        /// Properties
         /****************************************************************************/
-        public String Name
-        {
-            get
-            {
-                return model.Name;
-            }
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Draw
-        /****************************************************************************/
-        public override void Draw()
-        {
-            effect.Parameters["World"].SetValue(gameObject.World);
-            effect.Parameters["DiffuseMap"].SetValue(diffuse);
-            effect.Parameters["SpecularMap"].SetValue(specular);
-            effect.Parameters["NormalsMap"].SetValue(normals);
-            effect.CurrentTechnique.Passes[0].Apply();
-            device.Indices = model.IndexBuffer;
-            device.SetVertexBuffer(model.VertexBuffer);
-            device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, model.VertexCount, 0, model.TriangleCount);
-        }
+        public PlagueEngineModel Model          { get { return model;          } }
+        public TexturesPack      Textures       { get { return textures;       } }
+        public InstancingModes   InstancingMode { get { return instancingMode; } }
         /****************************************************************************/
 
     }
     /********************************************************************************/
+
 }
 /************************************************************************************/

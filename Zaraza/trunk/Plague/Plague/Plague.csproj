@@ -149,7 +149,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Rendering\Components\BasicMeshComponent.cs" />
     <Compile Include="Rendering\Components\CameraComponent.cs" />
-    <Compile Include="Rendering\Components\DynamicMeshComponent.cs" />
+    <Compile Include="Rendering\Components\MeshComponent.cs" />
     <Compile Include="Rendering\Components\SunLightComponent.cs" />
     <Compile Include="Rendering\Components\TerrainComponent.cs" />
     <Compile Include="Rendering\Components\WaterSurfaceComponent.cs" />
@@ -158,6 +158,8 @@
     <Compile Include="Rendering\RenderingComponentsFactory.cs" />
     <Compile Include="Rendering\RenderConfig.cs" />
     <Compile Include="Rendering\Renderer.cs" />
+    <Compile Include="Rendering\StaticInstancedMeshes.cs" />
+    <Compile Include="Rendering\TexturesPack.cs" />
     <Compile Include="Resources\ContentManager.cs" />
     <Compile Include="TimeControlSystem\Clock.cs" />
     <Compile Include="TimeControlSystem\FrameCounter.cs" />

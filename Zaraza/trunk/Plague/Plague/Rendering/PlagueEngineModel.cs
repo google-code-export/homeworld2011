@@ -22,11 +22,11 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Fields
         /****************************************************************************/        
-        public int TriangleCount;
-        public int VertexCount;
+        public int          TriangleCount;
+        public int          VertexCount;
         public VertexBuffer VertexBuffer;
-        public IndexBuffer IndexBuffer;
-        public String Name;
+        public IndexBuffer  IndexBuffer;
+        public String       Name;
         /****************************************************************************/
 
 
@@ -34,7 +34,7 @@ namespace PlagueEngine.Rendering
         /// Constructor (for use only by the XNB deserializer)
         /****************************************************************************/
         private PlagueEngineModel()
-        { 
+        {
         }
         /****************************************************************************/
 
@@ -49,7 +49,6 @@ namespace PlagueEngine.Rendering
         }
         /****************************************************************************/
 
-        
     }
     /********************************************************************************/
 

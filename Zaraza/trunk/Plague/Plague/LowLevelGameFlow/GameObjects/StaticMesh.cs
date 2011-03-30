@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
-
+using PlagueEngine.Rendering;
 
 /************************************************************************************/
 /// Plague.LowLevelGameFlow.GameObjects
@@ -23,14 +23,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        DynamicMeshComponent meshComponent = null;
+        MeshComponent meshComponent = null;
         /****************************************************************************/
        
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(DynamicMeshComponent meshComponent, Matrix world)
+        public void Init(MeshComponent meshComponent, Matrix world)
         {
             this.meshComponent = meshComponent;
             this.World         = world;
@@ -55,7 +55,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             StaticMeshData data = new StaticMeshData();
             GetData(data);
-            data.Model = meshComponent.Name;
+            data.Model          = meshComponent.Model.Name;
+            data.Diffuse        = meshComponent.Textures.Diffuse.Name;
+            data.Specular       = meshComponent.Textures.Specular.Name;
+            data.Normals        = meshComponent.Textures.Normals.Name;
+            data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);                        
             return data;
         }
         /****************************************************************************/
@@ -72,7 +76,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class StaticMeshData : GameObjectInstanceData
     {
-        public String Model { get; set; }        
+        public String Model           { get; set; }
+        public String Diffuse         { get; set; }
+        public String Specular        { get; set; }
+        public String Normals         { get; set; }        
+        public uint   InstancingMode  { get; set; }
     }
     /********************************************************************************/
 

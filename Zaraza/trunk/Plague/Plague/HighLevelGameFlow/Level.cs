@@ -101,21 +101,39 @@ namespace PlagueEngine.HighLevelGameFlow
             StaticMeshData data = new StaticMeshData();
 
             data.Type = (typeof(StaticMesh));
-            data.Definition = "Barrel";
-            data.World = Matrix.CreateTranslation(3500,1000,900);
+            data.Definition = "Rusty Barrel";
+            //data.World = Matrix.CreateTranslation(3500,1000,900);
 
-            for (int i = 0; i < 10; i++)
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    data.World *= Matrix.CreateTranslation(0, 0, -100);
+            //    gameObjectsFactory.Create(data);
+            //}
+
+            //data.World = Matrix.CreateTranslation(3000, 900, 900);
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    data.World *= Matrix.CreateTranslation(0, 0, 100);
+            //    gameObjectsFactory.Create(data);
+            //}
+
+            //data.World = Matrix.CreateTranslation(2700, 800, 900);
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    data.World *= Matrix.CreateTranslation(0, 0, 100);
+            //    gameObjectsFactory.Create(data);
+            //}
+
+
+            for (int i = 0; i < 20; i++)
             {
-                data.World *= Matrix.CreateTranslation(0, 0, -100);
-                gameObjectsFactory.Create(data);
+                for (int j = 0; j < 20; j++)
+                {
+                    data.World = Matrix.CreateTranslation(100 * i, 0, 100 * j);
+                    gameObjectsFactory.Create(data);
+                }                
             }
 
-            data.World = Matrix.CreateTranslation(3000, 900, 900);
-            for (int i = 0; i < 10; i++)
-            {
-                data.World *= Matrix.CreateTranslation(0, 0, 100);
-                gameObjectsFactory.Create(data);
-            }
 
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
@@ -173,7 +191,7 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.SpecularStength = 500;
             tdata.ClipPlaneAdjustment = 10;
 
-            gameObjectsFactory.Create(tdata);
+            //gameObjectsFactory.Create(tdata);
 
             SunLightData sdata = new SunLightData();
             sdata.Type = typeof(SunLight);
@@ -182,7 +200,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Diffuse = new Vector3(0.8f, 0.7f, 0.5f);
             sdata.Specular = new Vector3(0.9f, 0.9f, 0.9f);
 
-            ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(0,-1,-1);
+            ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(-1,-1,-1);
         }
         /****************************************************************************/
 

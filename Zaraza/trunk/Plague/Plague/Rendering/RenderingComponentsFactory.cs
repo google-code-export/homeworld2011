@@ -27,10 +27,6 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         private Renderer        renderer    = null;
         private ContentManager  content     = null;
-
-        private const String diffuseSufix  = "_diffuse";
-        private const String specularSufix = "_specular";
-        private const String normalsSufix  = "_normals";
         /****************************************************************************/
 
 
@@ -174,18 +170,35 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
-        /// Create DynamicMeshComponent
+        /// Create MeshComponent
         /****************************************************************************/
-        public DynamicMeshComponent CreateDynamicMeshComponent(GameObjectInstance gameObject,
-                                                               String modelName)
-        { 
-            DynamicMeshComponent result = new DynamicMeshComponent(gameObject,
-                                                                   renderer,
-                                                                   content.LoadModel(modelName),
-                                                                   content.LoadTexture2D(modelName + diffuseSufix),
-                                                                   content.LoadTexture2D(modelName + specularSufix),
-                                                                   content.LoadTexture2D(modelName + normalsSufix),
-                                                                   content.LoadEffect("DynamicMeshEffect"));
+        public MeshComponent CreateMeshComponent(GameObjectInstance gameObject,
+                                                 String modelName,
+                                                 String diffuseMap,
+                                                 String specularMap,
+                                                 String normalMap,
+                                                 InstancingModes instancingMode)
+        {
+            MeshComponent result = null;
+
+            switch (instancingMode)
+            {
+                case InstancingModes.StaticInstancing:
+                    {
+                        PlagueEngineModel model     = renderer.staticInstancedMeshes.PickModel(modelName);
+                        TexturesPack      textures  = renderer.staticInstancedMeshes.PickTexturesPack(model, new String[] { diffuseMap, specularMap, normalMap });
+
+                        result = new MeshComponent(gameObject,
+                                                   renderer,
+                                                   model,
+                                                   textures,
+                                                   instancingMode);
+                        
+                        renderer.staticInstancedMeshes.AddMeshComponent(result);
+                    }
+                    break;            
+            }
+
             return result;
         }                                            
         /****************************************************************************/

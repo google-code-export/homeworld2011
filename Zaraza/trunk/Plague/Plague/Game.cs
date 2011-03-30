@@ -90,8 +90,10 @@ namespace PlagueEngine
             
             testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
 
-            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, this.Window.Handle);
-            gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
+            renderer.staticInstancedMeshes.CommitMeshTransforms();
+
+            //GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, this.Window.Handle);
+            //gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
             
             Diagnostics.PushLog("Initialization complete");
         }   
@@ -107,6 +109,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void LoadContent()
         {
+            renderer.LoadEffects();
             Diagnostics.PushLog("Loading content complete");
         }
         /****************************************************************************/

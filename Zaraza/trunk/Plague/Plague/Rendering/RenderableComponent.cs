@@ -25,9 +25,9 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        protected Renderer       renderer  = null;
-        protected Effect         effect    = null;
-        protected bool           preRender = false;
+        protected Renderer        renderer   = null;
+        protected Effect          effect     = null;
+        protected bool            preRender  = false;
         /****************************************************************************/
 
 
@@ -141,3 +141,5 @@ namespace PlagueEngine.Rendering
 
 }
 /************************************************************************************/
+
+
