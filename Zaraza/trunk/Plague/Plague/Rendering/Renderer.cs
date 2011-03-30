@@ -24,19 +24,20 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private  GraphicsDeviceManager       graphics              = null;
-        internal ContentManager              contentManager        = null;
-        private  RenderingComponentsFactory  componentsFactory     = null;
+        private  GraphicsDeviceManager       graphics               = null;
+        internal ContentManager              contentManager         = null;
+        private  RenderingComponentsFactory  componentsFactory      = null;
 
-        internal List<RenderableComponent>   renderableComponents  = new List<RenderableComponent>();
-        internal List<RenderableComponent>   preRender             = new List<RenderableComponent>();        
+        internal List<RenderableComponent>   renderableComponents   = new List<RenderableComponent>();
+        internal List<RenderableComponent>   preRender              = new List<RenderableComponent>();        
 
-        private  CameraComponent             currentCamera         = null;
-        private  SunLightComponent           sunLight              = null;
-        private  Color                       clearColor            = Color.CornflowerBlue;
+        private  CameraComponent             currentCamera          = null;
+        private  SunLightComponent           sunLight               = null;
+        private  Color                       clearColor             = Color.CornflowerBlue;
 
-        internal StaticInstancedMeshes       staticInstancedMeshes = null;
-        private  Effect                      instancedMeshEffect   = null;
+        internal StaticInstancedMeshes       staticInstancedMeshes  = null;
+        internal DynamicInstancedMeshes      dynamicInstancedMeshes = null;
+        private  Effect                      instancedMeshEffect    = null;
         /****************************************************************************/
             
 
@@ -53,11 +54,12 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public Renderer(Game game,RenderConfig config)
         {
-            graphics              = new GraphicsDeviceManager(game);
-            contentManager        = game.ContentManager;           
-            CurrentConfiguration  = config;
-            componentsFactory     = new RenderingComponentsFactory(this);            
-            staticInstancedMeshes = new StaticInstancedMeshes(contentManager, this);            
+            graphics               = new GraphicsDeviceManager(game);
+            contentManager         = game.ContentManager;           
+            CurrentConfiguration   = config;
+            componentsFactory      = new RenderingComponentsFactory(this);            
+            staticInstancedMeshes  = new StaticInstancedMeshes (contentManager, this);
+            dynamicInstancedMeshes = new DynamicInstancedMeshes(contentManager, this);
         }
         /****************************************************************************/
 
@@ -185,7 +187,8 @@ namespace PlagueEngine.Rendering
             instancedMeshEffect.Parameters["Projection"].SetValue(currentCamera.Projection);
             instancedMeshEffect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
 
-            staticInstancedMeshes.Draw(instancedMeshEffect);
+            staticInstancedMeshes.Draw (instancedMeshEffect);
+            dynamicInstancedMeshes.Draw(instancedMeshEffect);
         }
         /****************************************************************************/
 
