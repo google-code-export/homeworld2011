@@ -63,9 +63,13 @@ namespace PlagueEngine.Resources
 
 
             GameObjectDefinition god = new GameObjectDefinition();
-            god.Name = "Barrel";
+            god.Name = "Rusty Barrel";
             god.GameObjectClass = "StaticMesh";
-            god.Properties.Add("Model", "barrel");
+            god.Properties.Add("Model",     "Barrel");
+            god.Properties.Add("Diffuse",   "Barrel_diffuse");
+            god.Properties.Add("Specular",  "Barrel_specular");
+            god.Properties.Add("Normals",   "Barrel_normals");
+            god.Properties.Add("InstancingMode", Renderer.InstancingModeToUInt(InstancingModes.StaticInstancing));
             gameObjectsDefinitions.Add(god.Name, god);
 
 
@@ -79,7 +83,7 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public override T Load<T>(string assetName)
         {
-            //Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);                     
+            Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);                     
             return base.Load<T>(assetName);                     
         }
         /****************************************************************************/
@@ -90,7 +94,7 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public Texture2D LoadTexture2D(string textureName)
         {
-            Texture2D result = base.Load<Texture2D>(textures + '\\' + textureName);
+            Texture2D result = Load<Texture2D>(textures + '\\' + textureName);
             result.Name = textureName;
             return result;
         }
@@ -102,7 +106,7 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public Effect LoadEffect(string effectName)
         {
-            Effect result = base.Load<Effect>(effects + '\\' + effectName);
+            Effect result = Load<Effect>(effects + '\\' + effectName);
             result.Name = effectName;
             return result;
         }
@@ -114,7 +118,7 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public PlagueEngineModel LoadModel(string modelName)
         {
-            PlagueEngineModel result = base.Load<PlagueEngineModel>(models + '\\' + modelName);
+            PlagueEngineModel result = Load<PlagueEngineModel>(models + '\\' + modelName);
             return result;
         }
         /****************************************************************************/
@@ -194,7 +198,7 @@ namespace PlagueEngine.Resources
 
             String str = String.Empty;
             foreach (String profile in profiles) str += profile + "; ";
-            Diagnostics.PushLog("Deteted Profiles: " + str);        
+            Diagnostics.PushLog("Decteted Profiles: " + str);        
         }
         /****************************************************************************/
 

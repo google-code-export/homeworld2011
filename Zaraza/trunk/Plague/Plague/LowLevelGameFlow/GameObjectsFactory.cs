@@ -114,16 +114,61 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (String.IsNullOrEmpty(data.definition))
             {
-                result.Init(renderingComponentsFactory.CreateDynamicMeshComponent(result,
-                                                                                smdata.Model),
-                                                                                data.World);
+                result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                           smdata.Model,
+                                                                           smdata.Diffuse,
+                                                                           smdata.Specular,
+                                                                           smdata.Normals,
+                                                                           Renderer.UIntToInstancingMode(smdata.InstancingMode)),
+                                                                           smdata.World);
             
             }
             else
             {
-                result.Init(renderingComponentsFactory.CreateDynamicMeshComponent(result,
-                                                                               (String)gameObjectsDefinitions[smdata.Definition].Properties["Model"]),
-                                                                               data.World);
+                if(!gameObjectsDefinitions.Keys.Contains(smdata.Definition))
+                {
+                    Diagnostics.PushLog("No existing definition: " + smdata.Definition + ". Creating object failed.");
+                    return result = null;
+                }
+                
+                GameObjectDefinition definition = gameObjectsDefinitions[smdata.Definition];
+
+
+                /**************************/
+                // Model
+                String Model;
+                if (definition.Properties.Keys.Contains("Model")) Model = (String)definition.Properties["Model"];
+                else Model = smdata.Model;
+                /**************************/
+                // Diffuse
+                String Diffuse;
+                if (definition.Properties.Keys.Contains("Diffuse")) Diffuse = (String)definition.Properties["Diffuse"];
+                else Diffuse = smdata.Diffuse;
+                /**************************/
+                // Specular
+                String Specular;
+                if (definition.Properties.Keys.Contains("Specular")) Specular = (String)definition.Properties["Specular"];
+                else Specular = smdata.Specular;
+                /**************************/
+                // Normals
+                String Normals;
+                if (definition.Properties.Keys.Contains("Normals")) Normals = (String)definition.Properties["Normals"];
+                else Normals = smdata.Normals;
+                /**************************/
+                // InstancingMode
+                InstancingModes InstancingMode;
+                if (definition.Properties.Keys.Contains("InstancingMode")) InstancingMode = Renderer.UIntToInstancingMode((uint)definition.Properties["InstancingMode"]);
+                else InstancingMode = Renderer.UIntToInstancingMode(smdata.InstancingMode);
+                /**************************/
+
+
+                result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                           Model,
+                                                                           Diffuse,
+                                                                           Specular,
+                                                                           Normals,
+                                                                           InstancingMode),
+                                                                           data.World);
             
             }
             
