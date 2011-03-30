@@ -63,6 +63,9 @@ namespace PlagueEngine.Rendering.Components
                 case InstancingModes.DynamicInstancing:
                     renderer.dynamicInstancedMeshes.RemoveMeshComponent(this);
                     break;
+                case InstancingModes.NoInstancing:
+                    renderer.batchedMeshes.RemoveMeshComponent(this);
+                    break;
             }            
         }
         /****************************************************************************/

@@ -37,7 +37,10 @@ namespace PlagueEngine.Rendering
 
         internal StaticInstancedMeshes       staticInstancedMeshes  = null;
         internal DynamicInstancedMeshes      dynamicInstancedMeshes = null;
+        internal BatchedMeshes               batchedMeshes          = null;
+
         private  Effect                      instancedMeshEffect    = null;
+        private  Effect                      batchedMeshEffect      = null;
         /****************************************************************************/
             
 
@@ -60,6 +63,7 @@ namespace PlagueEngine.Rendering
             componentsFactory      = new RenderingComponentsFactory(this);            
             staticInstancedMeshes  = new StaticInstancedMeshes (contentManager, this);
             dynamicInstancedMeshes = new DynamicInstancedMeshes(contentManager, this);
+            batchedMeshes          = new BatchedMeshes(contentManager, this);
         }
         /****************************************************************************/
 
@@ -189,6 +193,18 @@ namespace PlagueEngine.Rendering
 
             staticInstancedMeshes.Draw (instancedMeshEffect);
             dynamicInstancedMeshes.Draw(instancedMeshEffect);
+
+            batchedMeshEffect.Parameters["SunLightDirection"].SetValue(sunLight.Direction);
+            batchedMeshEffect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
+            batchedMeshEffect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
+            batchedMeshEffect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
+
+            batchedMeshEffect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
+            batchedMeshEffect.Parameters["View"].SetValue(currentCamera.View);
+            batchedMeshEffect.Parameters["Projection"].SetValue(currentCamera.Projection);
+            batchedMeshEffect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
+            
+            batchedMeshes.Draw(batchedMeshEffect);
         }
         /****************************************************************************/
 
@@ -299,6 +315,7 @@ namespace PlagueEngine.Rendering
         public void LoadEffects()
         {
             instancedMeshEffect = contentManager.LoadEffect("InstancedMeshEffect");
+            batchedMeshEffect   = contentManager.LoadEffect("MeshEffect");
         }
         /****************************************************************************/
         

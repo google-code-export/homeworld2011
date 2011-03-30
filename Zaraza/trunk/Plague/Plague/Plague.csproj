@@ -153,6 +153,7 @@
     <Compile Include="Rendering\Components\SunLightComponent.cs" />
     <Compile Include="Rendering\Components\TerrainComponent.cs" />
     <Compile Include="Rendering\Components\WaterSurfaceComponent.cs" />
+    <Compile Include="Rendering\BatchedMeshes.cs" />
     <Compile Include="Rendering\DynamicInstancedMeshes.cs" />
     <Compile Include="Rendering\PlagueEngineModel.cs" />
     <Compile Include="Rendering\RenderableComponent.cs" />

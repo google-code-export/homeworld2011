@@ -134,8 +134,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\DynamicMeshEffect.fx">
-      <Name>DynamicMeshEffect</Name>
+    <Compile Include="Effects\MeshEffect.fx">
+      <Name>MeshEffect</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
