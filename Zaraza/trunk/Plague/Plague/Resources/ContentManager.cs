@@ -58,7 +58,7 @@ namespace PlagueEngine.Resources
             game.Content = this;
             DetectProfiles();
             LoadDefaultProfile();
-
+            
             //LoadGameObjectsDefinitions();
             
             GameObjectDefinition god = new GameObjectDefinition();
