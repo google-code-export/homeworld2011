@@ -144,6 +144,9 @@
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SunLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
+    <Compile Include="Physics\Components\BoxPhysicsComponent.cs" />
+    <Compile Include="Physics\PhysicsComponent.cs" />
+    <Compile Include="Physics\PhysicsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />

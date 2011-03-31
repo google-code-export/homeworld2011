@@ -33,7 +33,7 @@ namespace PlagueEngine
         private ContentManager      contentManager      = null;
         private Input.Input         input               = null;
         private GameObjectsFactory  gameObjectsFactory  = null;
-        
+      //  private PhysicsManager      physicsManager      = null;
         // TODO: Stworzyæ manager leveli, który automagicznie bêdzie wczytywa³ kolejne levele
         private Level               testLevel           = null;
 
@@ -65,6 +65,8 @@ namespace PlagueEngine
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,                                        
                                                         contentManager.GameObjectsDefinitions);
+
+            //physicsManager = new PhysicsManager();
         }
         /****************************************************************************/
 
@@ -86,10 +88,10 @@ namespace PlagueEngine
             
             testLevel.PutSomeObjects();
 
-            contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
+           // contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
-            testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
-
+            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
+            
             renderer.batchedMeshes.CommitMeshTransforms();
 
             //GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, this.Window.Handle);
@@ -143,7 +145,7 @@ namespace PlagueEngine
         {
             Diagnostics.Update(gameTime.ElapsedGameTime);
             TimeControl.Update(gameTime.ElapsedGameTime);
-            
+            //physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);
             input.Update();
             
             base.Update(gameTime);

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Reflection;
-using System.Drawing;
+
 using System.Drawing.Imaging;
 
 using PlagueEngine.LowLevelGameFlow.GameObjects;
@@ -410,7 +410,7 @@ namespace PlagueEngine.Tools
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Incompatibility or other black magic! :<", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                        MessageBox.Show("Incompatibility or other black magic! :<\n\n"+ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
                     }
                 }
                 
@@ -854,7 +854,7 @@ namespace PlagueEngine.Tools
 
         private void LoadFilteredID(object sender, EventArgs e)
         {
-            if (comboBoxFilterId.SelectedItem == "Show all")
+            if (comboBoxFilterId.SelectedItem.ToString() == "Show all")
             {
                 LoadAllObjectsId();
             }
