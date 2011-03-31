@@ -278,7 +278,7 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             set
             {
-                this.rotation.X = value;
+                this.rotation.Z = value;
 
                 World = Matrix.Identity;
                 World *= Matrix.CreateScale(Scale);
