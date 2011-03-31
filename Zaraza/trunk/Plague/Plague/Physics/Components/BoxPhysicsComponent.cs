@@ -26,7 +26,12 @@ namespace PlagueEngine.Physics.Components
     class BoxPhysicsComponent : PhysicsComponent
     {
 
-
+        private float mass;
+        private Vector3 boxSize;
+        private float elasticity;
+        private float staticRoughness;
+        private float dynamicRoughness;
+        private bool immovable;
 
 
         /****************************************************************************/
@@ -40,11 +45,18 @@ namespace PlagueEngine.Physics.Components
                                     float elasticity,
                                     float staticRoughness,
                                     float dynamicRoughness,
-                                    bool immovable)
+                                    bool immovable,
+                                    Matrix world)
             :base(gameObject, physicsManager)
         {
 
-            
+            this.boxSize = boxSize;
+            this.dynamicRoughness = dynamicRoughness;
+            this.elasticity = elasticity;
+            this.immovable = immovable;
+            this.mass = mass;
+            this.staticRoughness = staticRoughness;
+
 
             body = new Body();
             skin = new CollisionSkin(body);
@@ -54,7 +66,7 @@ namespace PlagueEngine.Physics.Components
 
             skin.AddPrimitive(box, new MaterialProperties(elasticity, staticRoughness, dynamicRoughness));
 
-            body.MoveTo(gameObject.World.Translation, gameObject.World);
+            body.MoveTo(world.Translation, world);
             //body.MoveTo(gameObject.World.Translation, Matrix.Identity);
 
             Vector3 CenterMassPosition = SetMass(mass);
@@ -69,6 +81,26 @@ namespace PlagueEngine.Physics.Components
 
 
 
+
+        /****************************************************************************/
+        ///  GetData
+        /****************************************************************************/
+        public override PhysicsComponentData GetData()
+        {
+            BoxPhysicsComponentData data = new BoxPhysicsComponentData();
+            GetData(data);
+            data.boxSize = this.boxSize;
+            data.dynamicRoughness = this.dynamicRoughness;
+            data.elasicity = this.elasticity;
+            data.immovable = this.immovable;
+            data.mass = this.mass;
+            data.staticRoughness = this.staticRoughness;
+
+            return data;
+        }
+
+        /****************************************************************************/
+
     }
     /****************************************************************************/
 
@@ -76,3 +108,17 @@ namespace PlagueEngine.Physics.Components
 
 }
 /****************************************************************************/
+
+
+
+
+public class BoxPhysicsComponentData : PhysicsComponentData
+{
+    public bool immovable;
+    public float mass;
+    public Vector3 boxSize;
+    public float elasicity;
+    public float staticRoughness;
+    public float dynamicRoughness;
+}
+

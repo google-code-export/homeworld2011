@@ -10,7 +10,7 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input;
 using PlagueEngine.Tools;
-
+using PlagueEngine.Physics;
 
 /************************************************************************************/
 /// PlagueEngine
@@ -33,7 +33,7 @@ namespace PlagueEngine
         private ContentManager      contentManager      = null;
         private Input.Input         input               = null;
         private GameObjectsFactory  gameObjectsFactory  = null;
-      //  private PhysicsManager      physicsManager      = null;
+        private PhysicsManager      physicsManager      = null;
         // TODO: Stworzyæ manager leveli, który automagicznie bêdzie wczytywa³ kolejne levele
         private Level               testLevel           = null;
 
@@ -61,12 +61,15 @@ namespace PlagueEngine
             input          = new Input.Input(this);
 
             InitRenderer();
-            
+
+            physicsManager = new PhysicsManager();
+
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,                                        
-                                                        contentManager.GameObjectsDefinitions);
+                                                        contentManager.GameObjectsDefinitions,
+                                                        physicsManager);
 
-            //physicsManager = new PhysicsManager();
+
         }
         /****************************************************************************/
 
@@ -86,7 +89,7 @@ namespace PlagueEngine
             
             testLevel = new Level(gameObjectsFactory);
             
-            //testLevel.PutSomeObjects();
+            testLevel.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
@@ -94,8 +97,11 @@ namespace PlagueEngine
             
             renderer.batchedMeshes.CommitMeshTransforms();
 
+
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, this.Window.Handle);
-            gameObjectEditor.setLevel(testLevel,String.Empty);
+            gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
+
+
             
             Diagnostics.PushLog("Initialization complete");
         }   
@@ -145,7 +151,7 @@ namespace PlagueEngine
         {
             Diagnostics.Update(gameTime.ElapsedGameTime);
             TimeControl.Update(gameTime.ElapsedGameTime);
-            //physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);
+            physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);
             input.Update();
             
             base.Update(gameTime);

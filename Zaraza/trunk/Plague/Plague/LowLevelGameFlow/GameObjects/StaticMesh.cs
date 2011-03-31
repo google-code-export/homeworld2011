@@ -8,6 +8,7 @@ using System.ComponentModel;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Rendering;
+using PlagueEngine.Physics;
 
 /************************************************************************************/
 /// Plague.LowLevelGameFlow.GameObjects
@@ -25,17 +26,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         MeshComponent meshComponent = null;
-
+        PhysicsComponent physicsComponent = null;
         /****************************************************************************/
        
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(MeshComponent meshComponent, Matrix world)
+        public void Init(MeshComponent meshComponent, Matrix world,PhysicsComponent physicsComponent)
         {
-            this.meshComponent = meshComponent;
-            this.World         = world;
+            this.meshComponent      = meshComponent;
+            this.World              = world;
+            this.physicsComponent   = physicsComponent;
         }
         /****************************************************************************/
 
@@ -46,6 +48,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void ReleaseComponents()
         {
             meshComponent.ReleaseMe();
+            physicsComponent.ReleaseMe();
         }
         /****************************************************************************/
         
@@ -61,7 +64,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Diffuse        = (meshComponent.Textures.Diffuse  == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
             data.Specular       = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
             data.Normals        = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
-            data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);                        
+            data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);
+            data.physicsComponentData = physicsComponent.GetData();        
             return data;
         }
         /****************************************************************************/
@@ -78,6 +82,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class StaticMeshData : GameObjectInstanceData
     {
+
+        public String model                                 { get; set; }
+        public String diffuse                               { get; set; }
+        public String specular                              { get; set; }
+        public String normals                               { get; set; }        
+        public uint   instancingMode                        { get; set; }
+        public PhysicsComponentData physicsComponentData    { get; set; }
+        
+
         [CategoryAttribute("Model")]
         public String Model           { get; set; }
 
@@ -93,6 +106,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
         public uint   InstancingMode  { get; set; }
+
     }
     /********************************************************************************/
 

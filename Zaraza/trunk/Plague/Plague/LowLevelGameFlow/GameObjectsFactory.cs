@@ -8,7 +8,7 @@ using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input;
 using PlagueEngine.Input.Components;
-
+using PlagueEngine.Physics;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 
@@ -29,6 +29,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         private RenderingComponentsFactory               renderingComponentsFactory = null;
         private InputComponentsFactory                   inputComponentsFactory     = null;
+        private PhysicsManager                           physicsManager             = null;
         private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;
         
         private Dictionary<uint, GameObjectInstance>     gameObjects                = null;
@@ -40,11 +41,13 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public GameObjectsFactory(RenderingComponentsFactory               renderingComponentsFactory,
                                   InputComponentsFactory                   inputComponentsFactory,
-                                  Dictionary<String, GameObjectDefinition> gameObjectsDefinitions)
+                                  Dictionary<String, GameObjectDefinition> gameObjectsDefinitions,
+                                  PhysicsManager                           physicsManager)
         {
             this.renderingComponentsFactory = renderingComponentsFactory;
             this.inputComponentsFactory     = inputComponentsFactory;
-            this.gameObjectsDefinitions     = gameObjectsDefinitions;            
+            this.gameObjectsDefinitions     = gameObjectsDefinitions;
+            this.physicsManager             = physicsManager;
         }
         /****************************************************************************/
 
@@ -120,7 +123,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                            smdata.Specular,
                                                                            smdata.Normals,
                                                                            Renderer.UIntToInstancingMode(smdata.InstancingMode)),
-                                                                           smdata.World);
+                                                                           smdata.World,
+                                                                           physicsManager.CreatePhysicsComponent(data,result));
             
             }
             else
@@ -161,20 +165,23 @@ namespace PlagueEngine.LowLevelGameFlow
                 else InstancingMode = Renderer.UIntToInstancingMode(smdata.InstancingMode);
                 /**************************/
 
-
-                result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                           Model,
-                                                                           Diffuse,
-                                                                           Specular,
-                                                                           Normals,
-                                                                           InstancingMode),
-                                                                           data.World);
-            
+                    
+                    result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                               Model,
+                                                                               Diffuse,
+                                                                               Specular,
+                                                                               Normals,
+                                                                               InstancingMode),
+                                                                               data.World,
+                                                                               physicsManager.CreatePhysicsComponent(data, result));
+               
             }
             
             return result;
         }
         /****************************************************************************/
+
+
 
 
         /****************************************************************************/
