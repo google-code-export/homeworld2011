@@ -35,12 +35,7 @@ namespace PlagueEngine.Rendering
         private  SunLightComponent           sunLight               = null;
         private  Color                       clearColor             = Color.CornflowerBlue;
 
-        internal StaticInstancedMeshes       staticInstancedMeshes  = null;
-        internal DynamicInstancedMeshes      dynamicInstancedMeshes = null;
         internal BatchedMeshes               batchedMeshes          = null;
-
-        private  Effect                      instancedMeshEffect    = null;
-        private  Effect                      batchedMeshEffect      = null;
         /****************************************************************************/
             
 
@@ -61,8 +56,6 @@ namespace PlagueEngine.Rendering
             contentManager         = game.ContentManager;           
             CurrentConfiguration   = config;
             componentsFactory      = new RenderingComponentsFactory(this);            
-            staticInstancedMeshes  = new StaticInstancedMeshes (contentManager, this);
-            dynamicInstancedMeshes = new DynamicInstancedMeshes(contentManager, this);
             batchedMeshes          = new BatchedMeshes(contentManager, this);
         }
         /****************************************************************************/
@@ -181,30 +174,17 @@ namespace PlagueEngine.Rendering
                 renderableComponent.Draw();
             }
 
-            instancedMeshEffect.Parameters["SunLightDirection"].SetValue(sunLight.Direction);
-            instancedMeshEffect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
-            instancedMeshEffect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
-            instancedMeshEffect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
+            batchedMeshes.SetEffectParameter("SunLightDirection",   sunLight.Direction);
+            batchedMeshes.SetEffectParameter("SunLightAmbient",     sunLight.AmbientColor);
+            batchedMeshes.SetEffectParameter("SunLightDiffuse",     sunLight.DiffuseColor);
+            batchedMeshes.SetEffectParameter("SunLightSpecular",    sunLight.SpecularColor);
 
-            instancedMeshEffect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
-            instancedMeshEffect.Parameters["View"].SetValue(currentCamera.View);
-            instancedMeshEffect.Parameters["Projection"].SetValue(currentCamera.Projection);
-            instancedMeshEffect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
-
-            staticInstancedMeshes.Draw (instancedMeshEffect);
-            dynamicInstancedMeshes.Draw(instancedMeshEffect);
-
-            batchedMeshEffect.Parameters["SunLightDirection"].SetValue(sunLight.Direction);
-            batchedMeshEffect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
-            batchedMeshEffect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
-            batchedMeshEffect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
-
-            batchedMeshEffect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
-            batchedMeshEffect.Parameters["View"].SetValue(currentCamera.View);
-            batchedMeshEffect.Parameters["Projection"].SetValue(currentCamera.Projection);
-            batchedMeshEffect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
+            batchedMeshes.SetEffectParameter("CameraPosition",      currentCamera.Position);
+            batchedMeshes.SetEffectParameter("View",                currentCamera.View);
+            batchedMeshes.SetEffectParameter("Projection",          currentCamera.Projection);
+            batchedMeshes.SetEffectParameter("ViewProjection",      currentCamera.ViewProjection);
             
-            batchedMeshes.Draw(batchedMeshEffect);
+            batchedMeshes.Draw();
         }
         /****************************************************************************/
 
@@ -307,18 +287,7 @@ namespace PlagueEngine.Rendering
             preRender.Remove(component);
         }        
         /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Load Effects
-        /****************************************************************************/
-        public void LoadEffects()
-        {
-            instancedMeshEffect = contentManager.LoadEffect("InstancedMeshEffect");
-            batchedMeshEffect   = contentManager.LoadEffect("MeshEffect");
-        }
-        /****************************************************************************/
-        
+                
 
         /****************************************************************************/
         /// Instancing Mode To UInt
@@ -350,18 +319,6 @@ namespace PlagueEngine.Rendering
         }
         /****************************************************************************/
 
-    }
-    /********************************************************************************/
-
-
-    /********************************************************************************/
-    /// Instancing Modes
-    /********************************************************************************/
-    public enum InstancingModes
-    {
-        NoInstancing,
-        StaticInstancing,
-        DynamicInstancing
     }
     /********************************************************************************/
 

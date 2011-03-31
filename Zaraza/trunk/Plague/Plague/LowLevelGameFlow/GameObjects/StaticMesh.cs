@@ -56,9 +56,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             StaticMeshData data = new StaticMeshData();
             GetData(data);
             data.Model          = meshComponent.Model.Name;
-            data.Diffuse        = meshComponent.Textures.Diffuse.Name;
-            data.Specular       = meshComponent.Textures.Specular.Name;
-            data.Normals        = meshComponent.Textures.Normals.Name;
+            data.Diffuse        = (meshComponent.Textures.Diffuse  == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
+            data.Specular       = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
+            data.Normals        = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
             data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);                        
             return data;
         }

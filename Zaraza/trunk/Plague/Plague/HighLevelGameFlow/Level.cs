@@ -102,38 +102,15 @@ namespace PlagueEngine.HighLevelGameFlow
 
             data.Type = (typeof(StaticMesh));
             data.Definition = "Rusty Barrel";
-            //data.World = Matrix.CreateTranslation(3500,1000,900);
-
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    data.World *= Matrix.CreateTranslation(0, 0, -100);
-            //    gameObjectsFactory.Create(data);
-            //}
-
-            //data.World = Matrix.CreateTranslation(3000, 900, 900);
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    data.World *= Matrix.CreateTranslation(0, 0, 100);
-            //    gameObjectsFactory.Create(data);
-            //}
-
-            //data.World = Matrix.CreateTranslation(2700, 800, 900);
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    data.World *= Matrix.CreateTranslation(0, 0, 100);
-            //    gameObjectsFactory.Create(data);
-            //}
-
 
             for (int i = 0; i < 20; i++)
             {
                 for (int j = 0; j < 20; j++)
                 {
-                    data.World = Matrix.CreateTranslation(100 * i, 0, 100 * j);
+                    data.World = Matrix.CreateTranslation(150 * i, 900, 150 * j);
                     gameObjectsFactory.Create(data);
                 }                
             }
-
 
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
@@ -191,7 +168,7 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.SpecularStength = 500;
             tdata.ClipPlaneAdjustment = 10;
 
-            //gameObjectsFactory.Create(tdata);
+            gameObjectsFactory.Create(tdata);
 
             SunLightData sdata = new SunLightData();
             sdata.Type = typeof(SunLight);
