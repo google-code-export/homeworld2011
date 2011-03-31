@@ -25,7 +25,6 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         private PlagueEngineModel model    = null;
         private TexturesPack      textures = null;
-        private Effect            effect   = null;
         private Renderer          renderer = null;
         
         private Techniques technique;
