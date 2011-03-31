@@ -86,16 +86,16 @@ namespace PlagueEngine
             
             testLevel = new Level(gameObjectsFactory);
             
-            testLevel.PutSomeObjects();
+            //testLevel.PutSomeObjects();
 
-           // contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
+            //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
             //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
             
             renderer.batchedMeshes.CommitMeshTransforms();
 
-            //GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, this.Window.Handle);
-            //gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
+            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, this.Window.Handle);
+            gameObjectEditor.setLevel(testLevel,String.Empty);
             
             Diagnostics.PushLog("Initialization complete");
         }   

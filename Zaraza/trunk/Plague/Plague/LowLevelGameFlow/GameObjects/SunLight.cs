@@ -114,6 +114,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Vector3 Diffuse   { get; set; }
         [CategoryAttribute("Light Color")]
         public Vector3 Specular  { get; set; }
+        [CategoryAttribute("Direction")]
+        public Vector3 Direction
+        {
+            get
+            {
+                return this.World.Forward;
+            }
+
+            set
+            {
+                if (!value.Equals(Vector3.Up))
+                {
+                    World.Forward = value;
+                    World.Up = Vector3.Up;
+                    World.Right = Vector3.Cross(value, Vector3.Up);
+                }
+                else
+                {
+                    World.Forward = value;
+                    World.Right = Vector3.Right;
+                    World.Up = Vector3.Cross(value, Vector3.Right);
+                }
+            }
+        }
         /****************************************************************************/
 
     }
