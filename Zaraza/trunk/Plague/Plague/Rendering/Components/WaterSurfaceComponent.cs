@@ -170,6 +170,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void PreRender(CameraComponent camera)
         {
+            if (camera.Position.Y < this.surfacePosition) return;
             RenderReflection(camera);
             RenderRefraction(camera);            
         }
@@ -207,6 +208,15 @@ namespace PlagueEngine.Rendering.Components
                 }
             }
 
+            renderer.batchedMeshes.SetEffectParameter("CameraPosition", camera.Position);
+            renderer.batchedMeshes.SetEffectParameter("View", reflectedView);
+            renderer.batchedMeshes.SetEffectParameter("Projection", camera.Projection);
+            renderer.batchedMeshes.SetEffectParameter("ViewProjection", reflectedViewProjection);
+            renderer.batchedMeshes.SetEffectParameter("ClipPlaneEnabled", true);
+            renderer.batchedMeshes.SetEffectParameter("ClipPlane", clipPlane);
+            renderer.batchedMeshes.Draw();
+            renderer.batchedMeshes.SetEffectParameter("ClipPlaneEnabled", false);
+            
             device.SetRenderTarget(null);
             device.RasterizerState = defaultRasterizerState;
 
@@ -239,6 +249,14 @@ namespace PlagueEngine.Rendering.Components
                 }
             }
 
+            renderer.batchedMeshes.SetEffectParameter("CameraPosition", camera.Position);
+            renderer.batchedMeshes.SetEffectParameter("View", camera.View);
+            renderer.batchedMeshes.SetEffectParameter("Projection", camera.Projection);
+            renderer.batchedMeshes.SetEffectParameter("ViewProjection", camera.ViewProjection);
+            renderer.batchedMeshes.SetEffectParameter("ClipPlaneEnabled", true);
+            renderer.batchedMeshes.SetEffectParameter("ClipPlane", clipPlane);
+            renderer.batchedMeshes.Draw();
+            renderer.batchedMeshes.SetEffectParameter("ClipPlaneEnabled", false);
             device.SetRenderTarget(null);
 
             effect.Parameters["RefractionMap"].SetValue(refractionMap);

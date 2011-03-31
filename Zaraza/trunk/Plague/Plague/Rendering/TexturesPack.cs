@@ -23,7 +23,6 @@ namespace PlagueEngine.Rendering
         private Texture2D diffuse    = null;
         private Texture2D specular   = null;
         private Texture2D normals    = null;
-        private uint      references = 0;
         /************************************************************************/
 
 
@@ -34,9 +33,7 @@ namespace PlagueEngine.Rendering
         {
             this.diffuse  = diffuse;
             this.specular = specular;
-            this.normals  = normals;
-            
-            references = 1;
+            this.normals  = normals;           
         }
         /************************************************************************/
 
@@ -46,34 +43,25 @@ namespace PlagueEngine.Rendering
         /************************************************************************/
         public bool Equals(String[] textures)
         {
-            if (!diffuse .Name.Equals(textures[0])) return false;
-            if (!specular.Name.Equals(textures[1])) return false;
-            if (!normals .Name.Equals(textures[2])) return false;
+            if (diffuse == null)
+            {
+                if (!String.IsNullOrEmpty(textures[0])) return false;
+            }
+            else if (!diffuse.Name.Equals(textures[0])) return false;
+
+            if (specular == null)
+            {
+               if(!String.IsNullOrEmpty(textures[1])) return false;
+            }
+            else if(!specular.Name.Equals(textures[1])) return false;
+
+            if (normals == null)
+            {
+                if (!String.IsNullOrEmpty(textures[2])) return false;
+            }
+            else if (!normals.Name.Equals(textures[2])) return false;
             
             return true;
-        }
-        /************************************************************************/
-
-
-        /************************************************************************/
-        /// IncrementReferenceCounter
-        /************************************************************************/
-        public void IncrementReferenceCounter()
-        {
-            ++references;
-        }
-        /************************************************************************/
-
-
-        /************************************************************************/
-        /// DecrementReferenceCounter
-        /************************************************************************/
-        public bool DecrementReferenceCounter()
-        {
-            if (references == 0) throw new Exception("Null reference counter decrementation!!??WTF??");
-            
-            if (--references == 0) return true;
-            else return false;
         }
         /************************************************************************/
 

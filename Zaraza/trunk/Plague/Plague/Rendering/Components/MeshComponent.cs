@@ -27,7 +27,8 @@ namespace PlagueEngine.Rendering.Components
         private TexturesPack      textures = null;
         private Effect            effect   = null;
         private Renderer          renderer = null;
-
+        
+        private Techniques technique;
         private readonly InstancingModes instancingMode;
         /****************************************************************************/
 
@@ -39,13 +40,15 @@ namespace PlagueEngine.Rendering.Components
                              Renderer           renderer, 
                              PlagueEngineModel  model,
                              TexturesPack       textures,
-                             InstancingModes    instancingMode)
+                             InstancingModes    instancingMode,
+                             Techniques         technique)
             : base(gameObject)
         {
             this.renderer       = renderer;
             this.model          = model;
             this.textures       = textures;
             this.instancingMode = instancingMode;
+            this.technique      = technique;
         }        
         /****************************************************************************/
 
@@ -55,18 +58,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            switch (instancingMode)
-            { 
-                case InstancingModes.StaticInstancing:
-                    renderer.staticInstancedMeshes.RemoveMeshComponent(this);
-                    break;
-                case InstancingModes.DynamicInstancing:
-                    renderer.dynamicInstancedMeshes.RemoveMeshComponent(this);
-                    break;
-                case InstancingModes.NoInstancing:
-                    renderer.batchedMeshes.RemoveMeshComponent(this);
-                    break;
-            }            
+            renderer.batchedMeshes.RemoveMeshComponent(instancingMode, technique, this);            
         }
         /****************************************************************************/
 

@@ -42,21 +42,6 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
-        /// Create BasicMeshComponent        
-        /****************************************************************************/
-        public BasicMeshComponent CreateBasicMeshComponent(GameObjectInstance gameObject,
-                                                           String asset)
-        {
-            BasicMeshComponent result = new BasicMeshComponent( gameObject,
-                                                                renderer,
-                                                                content.LoadModel(asset));
-          
-            return result;
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
         /// Create CameraComponent
         /****************************************************************************/
         public CameraComponent CreateCameraComponent(GameObjectInstance gameObject,
@@ -180,57 +165,38 @@ namespace PlagueEngine.Rendering
                                                  InstancingModes instancingMode)
         {
             MeshComponent result = null;
+            
+            Techniques technique = GuessTechnique(specularMap, normalMap);
 
-            switch (instancingMode)
-            {
-                case InstancingModes.StaticInstancing:
-                    {
-                        PlagueEngineModel model     = renderer.staticInstancedMeshes.PickModel(modelName);
-                        TexturesPack      textures  = renderer.staticInstancedMeshes.PickTexturesPack(model, new String[] { diffuseMap, specularMap, normalMap });
+            PlagueEngineModel model    = renderer.batchedMeshes.PickModel(instancingMode,technique,modelName);
+            TexturesPack      textures = renderer.batchedMeshes.PickTexturesPack(instancingMode, technique, model, new String[] { diffuseMap, specularMap, normalMap });
 
-                        result = new MeshComponent(gameObject,
-                                                   renderer,
-                                                   model,
-                                                   textures,
-                                                   instancingMode);
-                        
-                        renderer.staticInstancedMeshes.AddMeshComponent(result);
-                    }
-                    break;
+            result = new MeshComponent(gameObject,
+                                       renderer,
+                                       model,
+                                       textures,
+                                       instancingMode,
+                                       technique);
 
-                case InstancingModes.DynamicInstancing:
-                    {
-                        PlagueEngineModel model = renderer.dynamicInstancedMeshes.PickModel(modelName);
-                        TexturesPack textures = renderer.dynamicInstancedMeshes.PickTexturesPack(model, new String[] { diffuseMap, specularMap, normalMap });
-
-                        result = new MeshComponent(gameObject,
-                                                   renderer,
-                                                   model,
-                                                   textures,
-                                                   instancingMode);
-
-                        renderer.dynamicInstancedMeshes.AddMeshComponent(result);                    
-                    }
-                    break;
-
-                case InstancingModes.NoInstancing:
-                    {
-                        PlagueEngineModel model = renderer.batchedMeshes.PickModel(modelName);
-                        TexturesPack textures = renderer.batchedMeshes.PickTexturesPack(model, new String[] { diffuseMap, specularMap, normalMap });
-
-                        result = new MeshComponent(gameObject,
-                                                   renderer,
-                                                   model,
-                                                   textures,
-                                                   instancingMode);
-
-                        renderer.batchedMeshes.AddMeshComponent(result);     
-                    }
-                    break;
-            }
+            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique,result);            
 
             return result;
         }                                            
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Guess Technique
+        /****************************************************************************/
+        private Techniques GuessTechnique(String specularMap, String normalMap)
+        {
+            if ( String.IsNullOrEmpty(specularMap) &&  String.IsNullOrEmpty(normalMap)) return Techniques.Diffuse;
+            if (!String.IsNullOrEmpty(specularMap) &&  String.IsNullOrEmpty(normalMap)) return Techniques.DiffuseSpecular;
+            if ( String.IsNullOrEmpty(specularMap) && !String.IsNullOrEmpty(normalMap)) return Techniques.DiffuseNormal;
+            if (!String.IsNullOrEmpty(specularMap) && !String.IsNullOrEmpty(normalMap)) return Techniques.DiffuseSpecularNormal;
+            
+            return Techniques.Diffuse;
+        }
         /****************************************************************************/
 
     }
