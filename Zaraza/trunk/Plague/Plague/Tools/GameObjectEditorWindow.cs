@@ -804,13 +804,17 @@ namespace PlagueEngine.Tools
         private void comboboxGameObjectId_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboboxGameObjectId.SelectedIndex != -1)
-            {   
+            {
                 uint id;
-                uint.TryParse(comboboxGameObjectId.SelectedItem.ToString(),out id);
+                uint.TryParse(comboboxGameObjectId.SelectedItem.ToString(), out id);
 
                 currentEditGameObject = factory.GameObjects[id].GetData();
                 currentEditGameObject.Position = currentEditGameObject.World.Translation;
                 propertyGrid2.SelectedObject = currentEditGameObject;
+            }
+            else
+            {
+                propertyGrid2.SelectedObject = null;
             }
         }
         /********************************************************************************/
@@ -824,7 +828,7 @@ namespace PlagueEngine.Tools
         private void propertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             factory.GameObjects[currentEditGameObject.ID].Dispose();
-            
+            factory.GameObjects.Remove(currentEditGameObject.ID);
             factory.Create(currentEditGameObject);
         }
         /********************************************************************************/
