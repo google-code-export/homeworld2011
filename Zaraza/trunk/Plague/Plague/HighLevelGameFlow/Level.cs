@@ -5,7 +5,8 @@ using System.Text;
 
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
-
+using PlagueEngine.Physics.Components;
+using PlagueEngine.Physics;
 using Microsoft.Xna.Framework;
 
 
@@ -103,14 +104,36 @@ namespace PlagueEngine.HighLevelGameFlow
             data.Type = (typeof(StaticMesh));
             data.Definition = "Rusty Barrel";
 
-            for (int i = 0; i < 20; i++)
-            {
-                for (int j = 0; j < 20; j++)
-                {
-                    data.World = Matrix.CreateTranslation(150 * i, 900, 150 * j);
-                    gameObjectsFactory.Create(data);
-                }                
-            }
+            BoxPhysicsComponentData bpdata = new BoxPhysicsComponentData();
+            bpdata.immovable = false;
+            bpdata.mass = 10;
+            bpdata.elasicity = 0.5f;
+            bpdata.dynamicRoughness = 0.5f;
+            bpdata.staticRoughness = 0.5f;
+            bpdata.type=(typeof(BoxPhysicsComponent));
+            bpdata.boxSize = new Vector3(100, 100, 100);
+
+            data.physicsComponentData = bpdata;
+            data.World = Matrix.CreateTranslation(0, 900, 0);
+                    
+            gameObjectsFactory.Create(data);
+
+
+
+
+            bpdata = new BoxPhysicsComponentData();
+            bpdata.immovable = false;
+            bpdata.mass = 10;
+            bpdata.elasicity = 0.5f;
+            bpdata.dynamicRoughness = 0.5f;
+            bpdata.staticRoughness = 0.5f;
+            bpdata.type = (typeof(BoxPhysicsComponent));
+            bpdata.boxSize = new Vector3(100, 100, 100);
+
+            data.physicsComponentData = bpdata;
+            data.World = Matrix.CreateTranslation(0, 1300, 0);
+
+            gameObjectsFactory.Create(data);
 
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);

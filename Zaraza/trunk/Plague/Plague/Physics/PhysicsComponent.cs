@@ -25,8 +25,8 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         ///  Fields
         /****************************************************************************/
-        protected Body body = null;                       public Body Body { get { return this.body; } }
-        protected CollisionSkin skin = null; public CollisionSkin Skin { get { return this.skin; } }
+        protected Body body = null;                         public Body Body { get { return this.body; } }
+        protected CollisionSkin skin = null;                public CollisionSkin Skin { get { return this.skin; } }
         protected GameObjectInstance gameobject = null;
         protected PhysicsManager physicsManager = null;
 
@@ -99,7 +99,33 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
 
 
+
+        /****************************************************************************/
+        ///  GetData
+        /****************************************************************************/
+        public void GetData(PhysicsComponentData data)
+        {
+            data.type = this.GetType();
+        }
+
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        ///  GetData
+        /****************************************************************************/
+        public abstract PhysicsComponentData GetData();
+
+        /****************************************************************************/
+
+
     }
 
     
+}
+
+public class PhysicsComponentData 
+{
+    public Type type;
 }
