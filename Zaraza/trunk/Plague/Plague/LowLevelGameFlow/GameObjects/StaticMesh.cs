@@ -48,7 +48,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void ReleaseComponents()
         {
             meshComponent.ReleaseMe();
-            physicsComponent.ReleaseMe();
+
+            if (physicsComponent != null)
+            {
+                physicsComponent.ReleaseMe();
+            }
         }
         /****************************************************************************/
         
@@ -65,7 +69,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Specular       = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
             data.Normals        = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
             data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);
-            data.physicsComponentData = physicsComponent.GetData();        
+
+            if (physicsComponent != null)
+            {
+                data.physicsComponentData = physicsComponent.GetData();
+            }
+            
             return data;
         }
         /****************************************************************************/
@@ -83,12 +92,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     public class StaticMeshData : GameObjectInstanceData
     {
 
-        public String model                                 { get; set; }
-        public String diffuse                               { get; set; }
-        public String specular                              { get; set; }
-        public String normals                               { get; set; }        
-        public uint   instancingMode                        { get; set; }
-        public PhysicsComponentData physicsComponentData    { get; set; }
+
+        public PhysicsComponentData physicsComponentData;
         
 
         [CategoryAttribute("Model")]

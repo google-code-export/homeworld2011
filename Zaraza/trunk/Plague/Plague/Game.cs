@@ -67,7 +67,7 @@ namespace PlagueEngine
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,                                        
                                                         contentManager.GameObjectsDefinitions,
-                                                        physicsManager);
+                                                        physicsManager.PhysicsComponentFactory);
 
 
         }
@@ -98,7 +98,7 @@ namespace PlagueEngine
             renderer.batchedMeshes.CommitMeshTransforms();
 
 
-            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, this.Window.Handle);
+            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager);
             gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
 
 

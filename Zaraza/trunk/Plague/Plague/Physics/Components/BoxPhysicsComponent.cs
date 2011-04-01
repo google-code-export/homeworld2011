@@ -66,8 +66,10 @@ namespace PlagueEngine.Physics.Components
 
             skin.AddPrimitive(box, new MaterialProperties(elasticity, staticRoughness, dynamicRoughness));
 
-            body.MoveTo(world.Translation, world);
-            //body.MoveTo(gameObject.World.Translation, Matrix.Identity);
+            Matrix tmp = world;
+            tmp.Translation = Vector3.Zero;
+            //body.MoveTo(world.Translation, world);
+            body.MoveTo(world.Translation, tmp);
 
             Vector3 CenterMassPosition = SetMass(mass);
             skin.ApplyLocalTransform(new Transform(-CenterMassPosition, Matrix.Identity));
@@ -112,6 +114,10 @@ namespace PlagueEngine.Physics.Components
 
 
 
+
+/****************************************************************************/
+///  Box Physics Component Data
+/****************************************************************************/
 public class BoxPhysicsComponentData : PhysicsComponentData
 {
     public bool immovable;
@@ -121,4 +127,4 @@ public class BoxPhysicsComponentData : PhysicsComponentData
     public float staticRoughness;
     public float dynamicRoughness;
 }
-
+/****************************************************************************/
