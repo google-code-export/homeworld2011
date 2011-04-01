@@ -18,6 +18,8 @@ using PlagueEngine.Resources;
 using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input;
 using PlagueEngine.Input.Components;
+using Microsoft.Xna.Framework;
+
 
 /********************************************************************************/
 /// PlagueEngine.Tools
@@ -55,7 +57,11 @@ namespace PlagueEngine.Tools
         }
         /********************************************************************************/
 
-
+        public class FixedGameObjectProperties
+        {
+            public Vector3 rotation = Vector3.Zero;
+            public Vector3 scale = Vector3.One;
+        }
 
 
         /********************************************************************************/
@@ -69,7 +75,7 @@ namespace PlagueEngine.Tools
         private gameObjectsClassName currentClassName = null;
         private GameObjectInstanceData currentObject = null;
 
-        private IntPtr gameWindowHandle;
+    
 
         private string levelDirectory = @"Data\levels";
         private string levelExtension = ".lvl";
@@ -82,6 +88,7 @@ namespace PlagueEngine.Tools
 
         //pola do zakladki edytuj
         private GameObjectInstanceData currentEditGameObject = null;
+        private FixedGameObjectProperties fixedGameObjectProperties = new FixedGameObjectProperties();
         /********************************************************************************/
 
 
@@ -90,13 +97,14 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,IntPtr gameWindowHandle)
+        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager)
         {
             InitializeComponent();
             FillClassNames();
             this.factory = factory;
             this.contentManager = contentManager;
-            this.gameWindowHandle = gameWindowHandle;
+       
+
 
             foreach (var gameObject in gameObjectClassNames)
             {
@@ -810,6 +818,10 @@ namespace PlagueEngine.Tools
 
                 currentEditGameObject = factory.GameObjects[id].GetData();
                 currentEditGameObject.Position = currentEditGameObject.World.Translation;
+                currentEditGameObject.Yaw = fixedGameObjectProperties.rotation.X;
+                currentEditGameObject.Pitch = fixedGameObjectProperties.rotation.Y;
+                currentEditGameObject.Roll = fixedGameObjectProperties.rotation.Z;
+                currentEditGameObject.Scale = fixedGameObjectProperties.scale;
                 propertyGrid2.SelectedObject = currentEditGameObject;
             }
             else
@@ -827,6 +839,10 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void propertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
+            fixedGameObjectProperties.rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
+            fixedGameObjectProperties.scale = currentEditGameObject.Scale;
+            
+            
             factory.GameObjects[currentEditGameObject.ID].Dispose();
             factory.GameObjects.Remove(currentEditGameObject.ID);
             factory.Create(currentEditGameObject);

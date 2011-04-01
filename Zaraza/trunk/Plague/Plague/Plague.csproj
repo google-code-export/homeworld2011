@@ -149,6 +149,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
     <Compile Include="Physics\Components\BoxPhysicsComponent.cs" />
     <Compile Include="Physics\PhysicsComponent.cs" />
+    <Compile Include="Physics\PhysicsComponentFactory.cs" />
     <Compile Include="Physics\PhysicsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

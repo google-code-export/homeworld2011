@@ -105,7 +105,7 @@ namespace PlagueEngine.HighLevelGameFlow
             data.Definition = "Rusty Barrel";
 
             BoxPhysicsComponentData bpdata = new BoxPhysicsComponentData();
-            bpdata.immovable = false;
+            bpdata.immovable = true;
             bpdata.mass = 10;
             bpdata.elasicity = 0.5f;
             bpdata.dynamicRoughness = 0.5f;
@@ -114,9 +114,16 @@ namespace PlagueEngine.HighLevelGameFlow
             bpdata.boxSize = new Vector3(100, 100, 100);
 
             data.physicsComponentData = bpdata;
-            data.World = Matrix.CreateTranslation(0, 900, 0);
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    data.World = Matrix.CreateTranslation(i*100, 1100, j*100);
+                    gameObjectsFactory.Create(data);
+
+                }
+            }
                     
-            gameObjectsFactory.Create(data);
 
 
 
@@ -124,16 +131,28 @@ namespace PlagueEngine.HighLevelGameFlow
             bpdata = new BoxPhysicsComponentData();
             bpdata.immovable = false;
             bpdata.mass = 10;
-            bpdata.elasicity = 0.5f;
+            bpdata.elasicity = 0.08f;
             bpdata.dynamicRoughness = 0.5f;
             bpdata.staticRoughness = 0.5f;
             bpdata.type = (typeof(BoxPhysicsComponent));
             bpdata.boxSize = new Vector3(100, 100, 100);
 
+            
             data.physicsComponentData = bpdata;
-            data.World = Matrix.CreateTranslation(0, 1300, 0);
 
-            gameObjectsFactory.Create(data);
+
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+
+                    data.World = Matrix.CreateTranslation(i*100+33, 1500, j*100+77);
+
+                    gameObjectsFactory.Create(data);
+
+                }
+            }
+                    
 
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
@@ -191,7 +210,7 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.SpecularStength = 500;
             tdata.ClipPlaneAdjustment = 10;
 
-            gameObjectsFactory.Create(tdata);
+            //gameObjectsFactory.Create(tdata);
 
             SunLightData sdata = new SunLightData();
             sdata.Type = typeof(SunLight);

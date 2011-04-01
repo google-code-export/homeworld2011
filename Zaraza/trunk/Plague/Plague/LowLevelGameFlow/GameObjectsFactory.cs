@@ -29,7 +29,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         private RenderingComponentsFactory               renderingComponentsFactory = null;
         private InputComponentsFactory                   inputComponentsFactory     = null;
-        private PhysicsManager                           physicsManager             = null;
+        private PhysicsComponentFactory                  physicsComponentFactory    = null;
         private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;
         
         private Dictionary<uint, GameObjectInstance>     gameObjects                = null;
@@ -42,12 +42,12 @@ namespace PlagueEngine.LowLevelGameFlow
         public GameObjectsFactory(RenderingComponentsFactory               renderingComponentsFactory,
                                   InputComponentsFactory                   inputComponentsFactory,
                                   Dictionary<String, GameObjectDefinition> gameObjectsDefinitions,
-                                  PhysicsManager                           physicsManager)
+                                  PhysicsComponentFactory physicsComponentFactory)
         {
             this.renderingComponentsFactory = renderingComponentsFactory;
             this.inputComponentsFactory     = inputComponentsFactory;
             this.gameObjectsDefinitions     = gameObjectsDefinitions;
-            this.physicsManager             = physicsManager;
+            this.physicsComponentFactory    = physicsComponentFactory;
         }
         /****************************************************************************/
 
@@ -117,14 +117,48 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (String.IsNullOrEmpty(data.definition))
             {
-                result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                           smdata.Model,
-                                                                           smdata.Diffuse,
-                                                                           smdata.Specular,
-                                                                           smdata.Normals,
-                                                                           Renderer.UIntToInstancingMode(smdata.InstancingMode)),
-                                                                           smdata.World,
-                                                                           physicsManager.CreatePhysicsComponent(data,result));
+
+                if (smdata.physicsComponentData == null)
+                {
+                    result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                               smdata.Model,
+                                                                               smdata.Diffuse,
+                                                                               smdata.Specular,
+                                                                               smdata.Normals,
+                                                                               Renderer.UIntToInstancingMode(smdata.InstancingMode)),
+                                                                               smdata.World,
+                                                                               null);
+                }
+                else
+                {
+
+                    switch (smdata.physicsComponentData.type.Name)
+                    {
+                        case "BoxPhysicsComponent":
+
+                        BoxPhysicsComponentData boxData = (BoxPhysicsComponentData)smdata.physicsComponentData;
+
+
+                                            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                       smdata.Model,
+                                                       smdata.Diffuse,
+                                                       smdata.Specular,
+                                                       smdata.Normals,
+                                                       Renderer.UIntToInstancingMode(smdata.InstancingMode)),
+                                                       smdata.World,
+                                                       physicsComponentFactory.CreateBoxPhysicsComponent(
+                                                                                            result,
+                                                                                            boxData.mass,
+                                                                                            boxData.boxSize,
+                                                                                            boxData.elasicity,
+                                                                                            boxData.staticRoughness,
+                                                                                            boxData.dynamicRoughness,
+                                                                                            boxData.immovable,
+                                                                                            data.World));
+                        break;
+
+                    }
+                }
             
             }
             else
@@ -165,15 +199,50 @@ namespace PlagueEngine.LowLevelGameFlow
                 else InstancingMode = Renderer.UIntToInstancingMode(smdata.InstancingMode);
                 /**************************/
 
-                    
+
+
+                if (smdata.physicsComponentData == null)
+                {
                     result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                               Model,
-                                                                               Diffuse,
-                                                                               Specular,
-                                                                               Normals,
-                                                                               InstancingMode),
-                                                                               data.World,
-                                                                               physicsManager.CreatePhysicsComponent(data, result));
+                       Model,
+                       Diffuse,
+                       Specular,
+                       Normals,
+                       InstancingMode),
+                       data.World,
+                       null);
+                }
+                else
+                {
+                    switch (smdata.physicsComponentData.type.Name)
+                    {
+                        case "BoxPhysicsComponent":
+
+                            BoxPhysicsComponentData boxData = (BoxPhysicsComponentData)smdata.physicsComponentData;
+
+                            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                               Model,
+                                               Diffuse,
+                                               Specular,
+                                               Normals,
+                                               InstancingMode),
+                                               data.World,
+                                               physicsComponentFactory.CreateBoxPhysicsComponent(
+                                                                                            result,
+                                                                                            boxData.mass,
+                                                                                            boxData.boxSize,
+                                                                                            boxData.elasicity,
+                                                                                            boxData.staticRoughness,
+                                                                                            boxData.dynamicRoughness,
+                                                                                            boxData.immovable,
+                                                                                            data.World));
+                            break;
+
+
+
+                    }
+                }
+
                
             }
             

@@ -27,6 +27,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         private PhysicsSystem physicsSystem = null;
         private List<PhysicsComponent> physicsComponents = new List<PhysicsComponent>();
+        private PhysicsComponentFactory physicsComponentFactory = null;
         /****************************************************************************/
 
 
@@ -37,6 +38,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public PhysicsManager()
         {
+            physicsComponentFactory = new PhysicsComponentFactory(this);
             physicsSystem=new PhysicsSystem();
             physicsSystem.CollisionSystem=new CollisionSystemSAP();
             
@@ -80,31 +82,14 @@ namespace PlagueEngine.Physics
 
 
         /****************************************************************************/
-        ///  Create Physics Component
+        ///  Properties
         /****************************************************************************/
-        public PhysicsComponent CreatePhysicsComponent(GameObjectInstanceData data,GameObjectInstance gameObject)
-        {
-            PhysicsComponent result = null;
-
-            if (data.Type.Name == "StaticMesh")
-            {
-                StaticMeshData smdata = (StaticMeshData)data;
-
-                if(smdata.physicsComponentData.type.Name=="BoxPhysicsComponent")
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)smdata.physicsComponentData;
-                    result =  new BoxPhysicsComponent(gameObject, this, bpdata.mass, bpdata.boxSize, bpdata.elasicity, bpdata.staticRoughness, bpdata.dynamicRoughness, bpdata.immovable,data.World);
-
-                }
-            }
-
-            physicsComponents.Add(result);
-
-            return result;
-        }
-
-
+        public List<PhysicsComponent> PhysicsComponents { get { return this.physicsComponents; } }
+        public PhysicsComponentFactory PhysicsComponentFactory { get { return this.physicsComponentFactory; } }
         /****************************************************************************/
+
+
+
 
 
     }
