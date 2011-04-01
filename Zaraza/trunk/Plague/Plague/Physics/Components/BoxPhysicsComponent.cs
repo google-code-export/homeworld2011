@@ -120,11 +120,11 @@ namespace PlagueEngine.Physics.Components
 /****************************************************************************/
 public class BoxPhysicsComponentData : PhysicsComponentData
 {
-    public bool immovable;
-    public float mass;
-    public Vector3 boxSize;
-    public float elasicity;
-    public float staticRoughness;
-    public float dynamicRoughness;
+    public bool immovable               { get; set; }
+    public float mass                   { get; set; }
+    public Vector3 boxSize              { get; set; }
+    public float elasicity              { get; set; }
+    public float staticRoughness        { get; set; }
+    public float dynamicRoughness       { get; set; }
 }
 /****************************************************************************/

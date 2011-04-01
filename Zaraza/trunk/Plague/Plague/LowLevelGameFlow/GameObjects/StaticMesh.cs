@@ -94,7 +94,97 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         public PhysicsComponentData physicsComponentData;
-        
+
+        [CategoryAttribute("BoxPhysiscComponent")]
+        public float elasticity
+        {
+            get
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                return bpdata.elasicity;
+            }
+            set
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                bpdata.elasicity = value;
+            }
+        }
+
+        [CategoryAttribute("BoxPhysiscComponent")]
+        public float staticRoughness
+        {
+            get
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                return bpdata.staticRoughness;
+            }
+            set
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                bpdata.staticRoughness = value;
+            }
+        }
+
+        [CategoryAttribute("BoxPhysiscComponent")]
+        public float dynamicRoughness
+        {
+            get
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                return bpdata.dynamicRoughness;
+            }
+            set
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                bpdata.dynamicRoughness = value;
+            }
+        }
+
+        [CategoryAttribute("BoxPhysiscComponent")]
+        public Vector3 boxSize
+        {
+            get
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                return bpdata.boxSize;
+            }
+            set
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                bpdata.boxSize = value;
+            }
+        }
+
+        [CategoryAttribute("BoxPhysiscComponent")]
+        public float mass
+        {
+            get
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                return bpdata.mass;
+            }
+            set
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                bpdata.mass = value;
+            }
+        }
+
+        [CategoryAttribute("BoxPhysiscComponent")]
+        public bool immovable
+        {
+            get
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                return bpdata.immovable;
+            }
+            set
+            {
+                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                bpdata.immovable = value;
+            }
+        }
+
 
         [CategoryAttribute("Model")]
         public String Model           { get; set; }
