@@ -26,12 +26,12 @@ namespace PlagueEngine.Physics.Components
     class BoxPhysicsComponent : PhysicsComponent
     {
 
-        private float mass;
-        private Vector3 boxSize;
-        private float elasticity;
-        private float staticRoughness;
-        private float dynamicRoughness;
-        private bool immovable;
+        public float mass;
+        public Vector3 boxSize;
+        public float elasticity;
+        public float staticRoughness;
+        public float dynamicRoughness;
+        public bool immovable;
 
 
         /****************************************************************************/
@@ -84,24 +84,6 @@ namespace PlagueEngine.Physics.Components
 
 
 
-        /****************************************************************************/
-        ///  GetData
-        /****************************************************************************/
-        public override PhysicsComponentData GetData()
-        {
-            BoxPhysicsComponentData data = new BoxPhysicsComponentData();
-            GetData(data);
-            data.boxSize = this.boxSize;
-            data.dynamicRoughness = this.dynamicRoughness;
-            data.elasicity = this.elasticity;
-            data.immovable = this.immovable;
-            data.mass = this.mass;
-            data.staticRoughness = this.staticRoughness;
-
-            return data;
-        }
-
-        /****************************************************************************/
 
     }
     /****************************************************************************/
@@ -115,17 +97,3 @@ namespace PlagueEngine.Physics.Components
 
 
 
-/****************************************************************************/
-///  Box Physics Component Data
-/****************************************************************************/
-[Serializable]
-public class BoxPhysicsComponentData : PhysicsComponentData
-{
-    public bool immovable               { get; set; }
-    public float mass                   { get; set; }
-    public Vector3 boxSize              { get; set; }
-    public float elasicity              { get; set; }
-    public float staticRoughness        { get; set; }
-    public float dynamicRoughness       { get; set; }
-}
-/****************************************************************************/

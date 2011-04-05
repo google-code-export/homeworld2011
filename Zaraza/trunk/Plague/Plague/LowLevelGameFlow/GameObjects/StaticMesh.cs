@@ -9,6 +9,7 @@ using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Rendering;
 using PlagueEngine.Physics;
+using PlagueEngine.Physics.Components;
 
 /************************************************************************************/
 /// Plague.LowLevelGameFlow.GameObjects
@@ -72,7 +73,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (physicsComponent != null)
             {
-                data.physicsComponentData = physicsComponent.GetData();
+                BoxPhysicsComponent bpc =(BoxPhysicsComponent)physicsComponent;
+                data.Elasticity = bpc.elasticity;
+                data.DynamicRoughness = bpc.dynamicRoughness;
+                data.StaticRoughness = bpc.staticRoughness;
+                data.BoxSize = bpc.boxSize;
+                data.Immovable = bpc.immovable;
+                data.Mass = bpc.mass;
             }
             
             return data;
@@ -91,204 +98,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class StaticMeshData : GameObjectInstanceData
     {
-
-
-        public PhysicsComponentData physicsComponentData = null; 
-
-
-        private float Elasticity;
-        private float StaticRoughness;
-        private float DynamicRoughness;
-        private Vector3 BoxSize;
-        private float Mass;
-        private bool Immovable;
-
         [CategoryAttribute("BoxPhysiscComponent")]
-        public float elasticity
-        {
-            get
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    return bpdata.elasicity;
-                }
-                else
-                {
-                    return Elasticity;
-                }
-
-            }
-            set
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    bpdata.elasicity = value;
-                }
-                else
-                {
-                    Elasticity = value;
-                }
-
-            }
-        }
-
+        public bool PhysicsActive      { get; set; }
         [CategoryAttribute("BoxPhysiscComponent")]
-        public float staticRoughness
-        {
-            get
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    return bpdata.staticRoughness;
-                }
-                else
-                {
-                    return StaticRoughness;
-                }
-
-            }
-            set
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    bpdata.staticRoughness = value;
-                }
-                else
-                {
-                    StaticRoughness = value;
-                }
-
-            }
-        }
-
+        public float Elasticity        { get; set; }
         [CategoryAttribute("BoxPhysiscComponent")]
-        public float dynamicRoughness
-        {
-            get
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    return bpdata.dynamicRoughness;
-                }
-                else
-                {
-                    return DynamicRoughness;
-                }
-
-            }
-            set
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    bpdata.dynamicRoughness = value;
-                }
-                else
-                {
-                    DynamicRoughness=value;
-                }
-
-            }
-        }
-
+        public float StaticRoughness   { get; set; }
         [CategoryAttribute("BoxPhysiscComponent")]
-        public Vector3 boxSize
-        {
-            get
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    return bpdata.boxSize;
-                }
-                else
-                {
-                    return BoxSize;
-                }
-
-            }
-            set
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    bpdata.boxSize = value;
-                }
-                else
-                {
-                    BoxSize = value;
-                }
-
-            }
-        }
-
+        public float DynamicRoughness  { get; set; }
         [CategoryAttribute("BoxPhysiscComponent")]
-        public float mass
-        {
-            get
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    return bpdata.mass;
-                }
-                else
-                {
-                    return Mass;
-                }
-
-            }
-            set
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    bpdata.mass = value;
-                }
-                else
-                {
-                    Mass = value;
-                }
-
-            }
-        }
-
+        public Vector3 BoxSize         { get; set; }
         [CategoryAttribute("BoxPhysiscComponent")]
-        public bool immovable
-        {
-            get
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    return bpdata.immovable;
-                }
-                else
-                {
-                    return Immovable;
-                }
+        public float Mass              { get; set; }
+        [CategoryAttribute("BoxPhysiscComponent")]
+        public bool Immovable         { get; set; }
 
-            }
-            set
-            {
-                if (physicsComponentData != null)
-                {
-                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                    bpdata.immovable = value;
-                }
-                else
-                {
-                    Immovable = value;
-                }
-
-            }
-        }
-
+        
+       
 
         [CategoryAttribute("Model")]
         public String Model           { get; set; }
