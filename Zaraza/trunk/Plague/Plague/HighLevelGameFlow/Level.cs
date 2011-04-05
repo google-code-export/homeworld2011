@@ -104,16 +104,16 @@ namespace PlagueEngine.HighLevelGameFlow
             data.Type = (typeof(StaticMesh));
             data.Definition = "Rusty Barrel";
 
-            BoxPhysicsComponentData bpdata = new BoxPhysicsComponentData();
-            bpdata.immovable = true;
-            bpdata.mass = 10;
-            bpdata.elasicity = 0.5f;
-            bpdata.dynamicRoughness = 0.5f;
-            bpdata.staticRoughness = 0.5f;
-            bpdata.type=(typeof(BoxPhysicsComponent));
-            bpdata.boxSize = new Vector3(100, 100, 100);
+            data.PhysicsActive = true;
+            data.Immovable = true;
+            data.Mass = 10;
+            data.Elasticity = 0.5f;
+            data.DynamicRoughness = 0.5f;
+            data.StaticRoughness = 0.5f;
+        
+            data.BoxSize = new Vector3(100, 100, 100);
 
-            data.physicsComponentData = bpdata;
+        
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)
@@ -123,22 +123,19 @@ namespace PlagueEngine.HighLevelGameFlow
 
                 }
             }
-                    
 
 
 
-
-            bpdata = new BoxPhysicsComponentData();
-            bpdata.immovable = false;
-            bpdata.mass = 10;
-            bpdata.elasicity = 0.08f;
-            bpdata.dynamicRoughness = 0.5f;
-            bpdata.staticRoughness = 0.5f;
-            bpdata.type = (typeof(BoxPhysicsComponent));
-            bpdata.boxSize = new Vector3(100, 100, 100);
+            data.PhysicsActive = true;
+            data.Immovable = false;
+            data.Mass = 10;
+            data.Elasticity = 0.08f;
+            data.DynamicRoughness = 0.5f;
+            data.StaticRoughness = 0.5f;
+           
+            data.BoxSize = new Vector3(100, 100, 100);
 
             
-            data.physicsComponentData = bpdata;
 
 
             for (int i = 0; i < 10; i++)

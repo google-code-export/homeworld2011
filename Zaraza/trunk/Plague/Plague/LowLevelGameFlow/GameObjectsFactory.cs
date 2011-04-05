@@ -118,7 +118,7 @@ namespace PlagueEngine.LowLevelGameFlow
             if (String.IsNullOrEmpty(data.definition))
             {
 
-                if (smdata.physicsComponentData == null)
+                if (smdata.PhysicsActive == false)
                 {
                     result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                                                                                smdata.Model,
@@ -132,13 +132,6 @@ namespace PlagueEngine.LowLevelGameFlow
                 else
                 {
 
-                    switch (smdata.physicsComponentData.type.Name)
-                    {
-                        case "BoxPhysicsComponent":
-
-                        BoxPhysicsComponentData boxData = (BoxPhysicsComponentData)smdata.physicsComponentData;
-
-
                                             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                                                        smdata.Model,
                                                        smdata.Diffuse,
@@ -148,16 +141,15 @@ namespace PlagueEngine.LowLevelGameFlow
                                                        smdata.World,
                                                        physicsComponentFactory.CreateBoxPhysicsComponent(
                                                                                             result,
-                                                                                            boxData.mass,
-                                                                                            boxData.boxSize,
-                                                                                            boxData.elasicity,
-                                                                                            boxData.staticRoughness,
-                                                                                            boxData.dynamicRoughness,
-                                                                                            boxData.immovable,
+                                                                                            smdata.Mass,
+                                                                                            smdata.BoxSize,
+                                                                                            smdata.Elasticity,
+                                                                                            smdata.StaticRoughness,
+                                                                                            smdata.DynamicRoughness,
+                                                                                            smdata.Immovable,
                                                                                             data.World));
-                        break;
-
-                    }
+                     
+                    
                 }
             
             }
@@ -201,7 +193,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
 
-                if (smdata.physicsComponentData == null)
+                if (smdata.PhysicsActive == false)
                 {
                     result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                        Model,
@@ -214,11 +206,7 @@ namespace PlagueEngine.LowLevelGameFlow
                 }
                 else
                 {
-                    switch (smdata.physicsComponentData.type.Name)
-                    {
-                        case "BoxPhysicsComponent":
-
-                            BoxPhysicsComponentData boxData = (BoxPhysicsComponentData)smdata.physicsComponentData;
+            
 
                             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                                                Model,
@@ -229,18 +217,14 @@ namespace PlagueEngine.LowLevelGameFlow
                                                data.World,
                                                physicsComponentFactory.CreateBoxPhysicsComponent(
                                                                                             result,
-                                                                                            boxData.mass,
-                                                                                            boxData.boxSize,
-                                                                                            boxData.elasicity,
-                                                                                            boxData.staticRoughness,
-                                                                                            boxData.dynamicRoughness,
-                                                                                            boxData.immovable,
+                                                                                            smdata.Mass,
+                                                                                            smdata.BoxSize,
+                                                                                            smdata.Elasticity,
+                                                                                            smdata.StaticRoughness,
+                                                                                            smdata.DynamicRoughness,
+                                                                                            smdata.Immovable,
                                                                                             data.World));
-                            break;
-
-
-
-                    }
+                      
                 }
 
                
