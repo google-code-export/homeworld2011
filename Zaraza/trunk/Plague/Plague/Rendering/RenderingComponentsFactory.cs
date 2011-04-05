@@ -75,7 +75,6 @@ namespace PlagueEngine.Rendering
                                                         float textureTiling)
         {
             TerrainComponent result = new TerrainComponent( gameObject,
-                                                            renderer,
                                                             content.LoadTexture2D(heightMap),
                                                             content.LoadTexture2D(basetexture),
                                                             content.LoadTexture2D(rtexture),
@@ -113,7 +112,6 @@ namespace PlagueEngine.Rendering
                                                                  float specularStrength)
         {
             WaterSurfaceComponent result = new WaterSurfaceComponent(gameObject,
-                                                                     renderer,
                                                                      width,
                                                                      length,
                                                                      level,
@@ -138,17 +136,17 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Create SunlightComponent
         /****************************************************************************/
-        public SunLightComponent CreateSunLightComponent(GameObjectInstance gameObject,
-                                                         Vector3 ambientColor,
+        public SunlightComponent CreateSunlightComponent(GameObjectInstance gameObject,
                                                          Vector3 diffuseColor,
-                                                         Vector3 specularColor)
+                                                         Vector3 specularColor,
+                                                         bool    enabled)
         {
-            SunLightComponent result = new SunLightComponent(gameObject,
+            SunlightComponent result = new SunlightComponent(gameObject,
                                                              renderer,
-                                                             ambientColor,
                                                              diffuseColor,
-                                                             specularColor);
-            renderer.SunLight = result;
+                                                             specularColor,
+                                                             enabled);
+            renderer.Sunlight = result;
             return result;
         }                                                         
         /****************************************************************************/
@@ -172,14 +170,10 @@ namespace PlagueEngine.Rendering
             TexturesPack      textures = renderer.batchedMeshes.PickTexturesPack(instancingMode, technique, model, new String[] { diffuseMap, specularMap, normalMap });
 
             result = new MeshComponent(gameObject,
-                                       renderer,
                                        model,
                                        textures,
                                        instancingMode,
-                                       technique);
-
-            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique,result);            
-
+                                       technique);                    
             return result;
         }                                            
         /****************************************************************************/

@@ -25,7 +25,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         private PlagueEngineModel model    = null;
         private TexturesPack      textures = null;
-        private Renderer          renderer = null;
+        
+        internal static Renderer   renderer = null;
         
         private Techniques technique;
         private readonly InstancingModes instancingMode;
@@ -36,18 +37,18 @@ namespace PlagueEngine.Rendering.Components
         /// Constructor
         /****************************************************************************/
         public MeshComponent(GameObjectInstance gameObject, 
-                             Renderer           renderer, 
                              PlagueEngineModel  model,
                              TexturesPack       textures,
                              InstancingModes    instancingMode,
                              Techniques         technique)
             : base(gameObject)
         {
-            this.renderer       = renderer;
             this.model          = model;
             this.textures       = textures;
             this.instancingMode = instancingMode;
             this.technique      = technique;
+
+            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);
         }        
         /****************************************************************************/
 

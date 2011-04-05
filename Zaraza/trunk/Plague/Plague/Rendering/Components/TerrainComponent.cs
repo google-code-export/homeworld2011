@@ -49,7 +49,6 @@ namespace PlagueEngine.Rendering.Components
         /// Constructor
         /****************************************************************************/
         public TerrainComponent(GameObjectInstance gameObject,
-                                Renderer           renderer,
                                 Texture2D          heightMap,
                                 Texture2D          baseTexture,
                                 Texture2D          rTexture,
@@ -61,7 +60,7 @@ namespace PlagueEngine.Rendering.Components
                                 float              height,
                                 float              cellSize,
                                 float              textureTiling,
-                                Effect             effect) : base(gameObject,renderer,effect)
+                                Effect             effect) : base(gameObject,effect)
         {
             this.width          = width;
             this.length         = length;
@@ -181,7 +180,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void Draw()
         {
-            effect.Parameters["World"].SetValue(Matrix.Identity);
+            effect.Parameters["World"].SetValue(gameObject.World);
             effect.CurrentTechnique.Passes[0].Apply();
             device.Indices = indexBuffer;
             device.SetVertexBuffer(vertexBuffer);

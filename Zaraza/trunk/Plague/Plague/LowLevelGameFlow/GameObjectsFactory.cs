@@ -90,8 +90,8 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "Terrain":
                     result = CreateTerrain(data);
                     break;
-                case "SunLight":
-                    result = CreateSunLight(data);
+                case "Sunlight":
+                    result = CreateSunlight(data);
                     break;
             }
 
@@ -117,41 +117,14 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (String.IsNullOrEmpty(data.definition))
             {
-
-                if (smdata.PhysicsActive == false)
-                {
-                    result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                               smdata.Model,
-                                                                               smdata.Diffuse,
-                                                                               smdata.Specular,
-                                                                               smdata.Normals,
-                                                                               Renderer.UIntToInstancingMode(smdata.InstancingMode)),
-                                                                               smdata.World,
-                                                                               null);
-                }
-                else
-                {
-
-                                            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                       smdata.Model,
-                                                       smdata.Diffuse,
-                                                       smdata.Specular,
-                                                       smdata.Normals,
-                                                       Renderer.UIntToInstancingMode(smdata.InstancingMode)),
-                                                       smdata.World,
-                                                       physicsComponentFactory.CreateBoxPhysicsComponent(
-                                                                                            result,
-                                                                                            smdata.Mass,
-                                                                                            smdata.BoxSize,
-                                                                                            smdata.Elasticity,
-                                                                                            smdata.StaticRoughness,
-                                                                                            smdata.DynamicRoughness,
-                                                                                            smdata.Immovable,
-                                                                                            data.World));
-                     
-                    
-                }
-            
+                result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                            smdata.Model,
+                                                                            smdata.Diffuse,
+                                                                            smdata.Specular,
+                                                                            smdata.Normals,
+                                                                            Renderer.UIntToInstancingMode(smdata.InstancingMode)),
+                                                                            smdata.World);                    
+                               
             }
             else
             {
@@ -193,41 +166,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
 
-                if (smdata.PhysicsActive == false)
-                {
-                    result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                       Model,
-                       Diffuse,
-                       Specular,
-                       Normals,
-                       InstancingMode),
-                       data.World,
-                       null);
-                }
-                else
-                {
-            
-
-                            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                               Model,
-                                               Diffuse,
-                                               Specular,
-                                               Normals,
-                                               InstancingMode),
-                                               data.World,
-                                               physicsComponentFactory.CreateBoxPhysicsComponent(
-                                                                                            result,
-                                                                                            smdata.Mass,
-                                                                                            smdata.BoxSize,
-                                                                                            smdata.Elasticity,
-                                                                                            smdata.StaticRoughness,
-                                                                                            smdata.DynamicRoughness,
-                                                                                            smdata.Immovable,
-                                                                                            data.World));
-                      
-                }
-
-               
+                result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                            Model,
+                                                                            Diffuse,
+                                                                            Specular,
+                                                                            Normals,
+                                                                            InstancingMode),
+                                                                            data.World);
             }
             
             return result;
@@ -348,19 +293,19 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Sun Light
         /****************************************************************************/
-        public SunLight CreateSunLight(GameObjectInstanceData data)
+        public Sunlight CreateSunlight(GameObjectInstanceData data)
         {
-            SunLight result = new SunLight();
+            Sunlight result = new Sunlight();
 
             if (!DefaultObjectInit(result, data)) return result = null;
 
-            SunLightData sdata = (SunLightData)data;
+            SunlightData sdata = (SunlightData)data;
 
-            result.Init(renderingComponentsFactory.CreateSunLightComponent(result,
-                                                                            sdata.Ambient,
-                                                                            sdata.Diffuse,
-                                                                            sdata.Specular),
-                                                                            sdata.World);
+            result.Init(renderingComponentsFactory.CreateSunlightComponent(result,
+                                                                           sdata.Diffuse,
+                                                                           sdata.Specular,
+                                                                           sdata.Enabled),
+                                                                           sdata.World);
             return result;
         }
         /****************************************************************************/

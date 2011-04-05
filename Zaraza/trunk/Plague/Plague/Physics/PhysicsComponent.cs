@@ -21,7 +21,6 @@ namespace PlagueEngine.Physics
     abstract class PhysicsComponent
     {
 
-
         /****************************************************************************/
         ///  Fields
         /****************************************************************************/
@@ -29,21 +28,18 @@ namespace PlagueEngine.Physics
         protected CollisionSkin skin = null;                public CollisionSkin Skin   { get { return this.skin; } }
         protected GameObjectInstance gameobject = null;
         protected PhysicsManager physicsManager = null;
-
-
-        
-
+        /****************************************************************************/
+      
 
         /****************************************************************************/
         ///  Constructor
         /****************************************************************************/
         public PhysicsComponent(GameObjectInstance gameobject,PhysicsManager physicsManager)
         {
-
-            this.gameobject = gameobject;
+            this.gameobject     = gameobject;
             this.physicsManager = physicsManager;
         }
-
+        /****************************************************************************/
 
 
         /****************************************************************************/
@@ -51,13 +47,11 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void UpdateWorldMatrix()
         {
-            
-            gameobject.World=body.Orientation;
-            gameobject.World.Translation=body.Position;
+            gameobject.World             = body.Orientation;
+            gameobject.World.Translation = body.Position;
         }
-
-
-
+        /****************************************************************************/
+        
 
         /****************************************************************************/
         ///  Set mass
@@ -84,10 +78,6 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
 
 
-
-
-
-
         /****************************************************************************/
         ///  ReleaseMe
         /****************************************************************************/
@@ -95,16 +85,11 @@ namespace PlagueEngine.Physics
         {
             this.physicsManager.ReleaseComponent(this);
         }
-
         /****************************************************************************/
-
-
 
     }
     /****************************************************************************/
     
-
-
 }
 /****************************************************************************/
 

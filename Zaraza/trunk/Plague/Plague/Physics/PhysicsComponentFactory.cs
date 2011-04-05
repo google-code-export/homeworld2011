@@ -12,25 +12,17 @@ using PlagueEngine.Physics.Components;
 namespace PlagueEngine.Physics
 {
 
-
-
-
     /****************************************************************************/
     ///  PhysicsComponentFactory
     /****************************************************************************/
     class PhysicsComponentFactory
     {
 
-
-
-
         /****************************************************************************/
         ///  Fields
         /****************************************************************************/
         PhysicsManager physicsManager = null;
         /****************************************************************************/
-
-
 
 
         /****************************************************************************/
@@ -43,27 +35,19 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
 
 
-
-
-
         /****************************************************************************/
         ///  CreateBoxPhysicsComponent
         /****************************************************************************/
         public BoxPhysicsComponent CreateBoxPhysicsComponent(GameObjectInstance gameObject,float mass,Vector3 boxSize,float elasticity,float staticRoughness,float dynamicRoughness, bool immovable,Matrix world)
         {
-            BoxPhysicsComponent bpc=new  BoxPhysicsComponent(gameObject,physicsManager,mass,boxSize,elasticity,staticRoughness,dynamicRoughness,immovable,world);
+            BoxPhysicsComponent bpc = new BoxPhysicsComponent(gameObject,physicsManager,mass,boxSize,elasticity,staticRoughness,dynamicRoughness,immovable,world);
             physicsManager.PhysicsComponents.Add(bpc);
             return bpc;
         }
         /****************************************************************************/
-
-
-
+        
     }
     /****************************************************************************/
-
-
-
 
 }
 /****************************************************************************/

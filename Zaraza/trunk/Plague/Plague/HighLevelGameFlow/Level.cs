@@ -102,44 +102,17 @@ namespace PlagueEngine.HighLevelGameFlow
             StaticMeshData data = new StaticMeshData();
 
             data.Type = (typeof(StaticMesh));
-            data.Definition = "Rusty Barrel";
-
-            data.Immovable = true;
-            data.Mass = 10;
-            data.Elasticity = 0.5f;
-            data.DynamicRoughness = 0.5f;
-            data.StaticRoughness = 0.5f;
-            data.PhysicsActive = true;
-            data.BoxSize = new Vector3(100, 100, 100);
-
+            data.Definition = "Rusty Barrel";            
         
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    data.World = Matrix.CreateTranslation(i*100, 1100, j*100);
+                    data.World = Matrix.CreateTranslation(i * 2.5f, 35, j * 2.5f);
                     gameObjectsFactory.Create(data);
 
                 }
-            }
-           
-            data.Immovable = false;
-        
-            
-
-
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-
-                    data.World = Matrix.CreateTranslation(i*100+33, 1500, j*100+77);
-
-                    gameObjectsFactory.Create(data);
-
-                }
-            }
-                    
+            }                               
 
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
@@ -158,14 +131,14 @@ namespace PlagueEngine.HighLevelGameFlow
             
             FreeCameraData fcdata = new FreeCameraData();
             fcdata.Type = typeof(FreeCamera);
-            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(200, 2000, 200),
-                                                             new Vector3(300, 1990, 300), 
-                                                             new Vector3(0, 1, 0)));
-            fcdata.MovementSpeed = 1;
+            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(-20,  50, -20),
+                                                             new Vector3(  0,   0,   0), 
+                                                             new Vector3(  0,   1,   0)));
+            fcdata.MovementSpeed = 0.05f;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
             fcdata.FoV = 60;
-            fcdata.ZNear = 10;
-            fcdata.ZFar = 100000;
+            fcdata.ZNear = 0.1f;
+            fcdata.ZFar = 10000;
             fcdata.ActiveKeyListener = true;
             fcdata.ActiveMouseListener = true;
             gameObjectsFactory.Create(fcdata);
@@ -173,7 +146,7 @@ namespace PlagueEngine.HighLevelGameFlow
 
             TerrainData tdata = new TerrainData();
             tdata.Type = typeof(Terrain);
-            tdata.World = Matrix.Identity;
+            tdata.World = Matrix.CreateTranslation(0,0,0);
             tdata.HeightMap = "Heightmap";
             tdata.BaseTexture = "grass";
             tdata.RTexture = "ground";
@@ -182,31 +155,31 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.WeightMap = "Weightmap";
             tdata.Width = 256;
             tdata.Length = 256;
-            tdata.Height = 1500;
-            tdata.CellSize = 100;
+            tdata.Height = 60;
+            tdata.CellSize = 5;
             tdata.TextureTiling = 40;
-            tdata.Level = 950;
+            tdata.Level = 35;
             tdata.Color = new Vector3(0.2f, 0.2f, 0.6f);
             tdata.ColorAmount = 0.5f;
-            tdata.WaveLength = 0.2f;
-            tdata.WaveHeight = 0.1f;
+            tdata.WaveLength = 0.04f;
+            tdata.WaveHeight = 0.02f;
             tdata.WaveSpeed = 0.1f;
             tdata.NormalMap = "normalmap";
             tdata.WTextureTiling = 1000;
             tdata.Bias = 0.4f;
             tdata.SpecularStength = 500;
-            tdata.ClipPlaneAdjustment = 10;
+            tdata.ClipPlaneAdjustment = 0.01f;
 
-            //gameObjectsFactory.Create(tdata);
+            gameObjectsFactory.Create(tdata);
 
-            SunLightData sdata = new SunLightData();
-            sdata.Type = typeof(SunLight);
+            SunlightData sdata = new SunlightData();
+            sdata.Type = typeof(Sunlight);
             sdata.World = Matrix.Identity;
-            sdata.Ambient = new Vector3(0.1f, 0.1f, 0.1f);
+            sdata.Enabled = true;
             sdata.Diffuse = new Vector3(0.8f, 0.7f, 0.5f);
             sdata.Specular = new Vector3(0.9f, 0.9f, 0.9f);
 
-            ((SunLight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(-1,-1,-1);
+            ((Sunlight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(-1,-1,-1);
         }
         /****************************************************************************/
 

@@ -11,10 +11,12 @@ float3	 CameraPosition;
 /****************************************************/
 /// Sunlight
 /****************************************************/
-float3 SunLightDirection;
-float3 SunLightAmbient;
-float3 SunLightDiffuse;
-float3 SunLightSpecular;
+float3 Ambient;
+
+bool   SunlightEnabled = false;
+float3 SunlightDirection;
+float3 SunlightDiffuse;
+float3 SunlightSpecular;
 /****************************************************/
 
 
@@ -178,17 +180,23 @@ float4 PSDNFunction(VSComplexOutput input) : COLOR0
 {
 	ClipMe(input.WorldPosition);
 	 
-	float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
+	float3 diffuseTex = tex2D(DiffuseMapSampler,input.UV);
+	float3 output = Ambient * diffuseTex;
+
+	if(SunlightEnabled)
+	{
+		float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
 	 
-	normal = normalize(mul(normal,input.TBN));		
+		normal = normalize(mul(normal,input.TBN));		
 
-	float3 lightDirection = -normalize(SunLightDirection);
+		float3 lightDirection = -normalize(SunlightDirection);
 	
-	float NdotL = saturate(dot(normal,lightDirection));
-	float3 diffuse = NdotL * SunLightDiffuse;
+		float NdotL = saturate(dot(normal,lightDirection));
+		float3 diffuse = NdotL * SunlightDiffuse;
 
-	float3 output = (SunLightAmbient + diffuse) * tex2D(DiffuseMapSampler,input.UV);	
-		
+		output += diffuse * diffuseTex;	
+	}
+	
     return float4(output, 1);
 }
 /****************************************************/
@@ -201,31 +209,38 @@ float4 PSDSNFunction(VSComplexOutput input) : COLOR0
 {
 	ClipMe(input.WorldPosition);
 
-	float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
+	float3 diffuseTex = tex2D(DiffuseMapSampler,input.UV);
+	float3 output = Ambient * diffuseTex;
+
+	if(SunlightEnabled)
+	{
+
+		float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
 	 
-	normal = normalize(mul(normal,input.TBN));	
+		normal = normalize(mul(normal,input.TBN));	
 
-	float3 lightDirection = -normalize(SunLightDirection);
+		float3 lightDirection = -normalize(SunlightDirection);
 	
-	float NdotL = saturate(dot(normal,lightDirection));
-	float3 diffuse = NdotL * SunLightDiffuse;
+		float NdotL = saturate(dot(normal,lightDirection));
+		float3 diffuse = NdotL * SunlightDiffuse;
 
-	float3 output = (SunLightAmbient + diffuse) * tex2D(DiffuseMapSampler,input.UV);	
+		output += diffuse * diffuseTex;	
 
-	if(NdotL > 0)
-	{	
-		float4 specularColor = tex2D(SpecularMapSampler,input.UV);
+		if(NdotL > 0)
+		{	
+			float4 specularColor = tex2D(SpecularMapSampler,input.UV);
 
-		float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
+			float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
 	
-		float3 reflectionVector = reflect(lightDirection,normal);
-		float  specularValue	= dot(normalize(reflectionVector), viewDirection);
+			float3 reflectionVector = reflect(lightDirection,normal);
+			float  specularValue	= dot(normalize(reflectionVector), viewDirection);
 	
-		specularValue = pow(specularValue, specularColor.a * 100);
+			specularValue = pow(specularValue, specularColor.a * 100);
 		
-		output += specularValue * specularColor.rgb * SunLightSpecular;
+			output += specularValue * specularColor.rgb * SunlightSpecular;
 
-	}	
+		}	
+	}
 		
     return float4(output, 1);
 }
@@ -238,16 +253,22 @@ float4 PSDSNFunction(VSComplexOutput input) : COLOR0
 float4 PSDFunction(VSSimpleOutput input) : COLOR0
 {
 	ClipMe(input.WorldPosition);
-	 
-	float3 normal = normalize(input.Normal);		
 
-	float3 lightDirection = -normalize(SunLightDirection);
+	float3 diffuseTex = tex2D(DiffuseMapSampler,input.UV);
+	float3 output = Ambient * diffuseTex;
+
+	if(SunlightEnabled)
+	{	 
+		float3 normal = normalize(input.Normal);		
+
+		float3 lightDirection = -normalize(SunlightDirection);
 	
-	float NdotL = saturate(dot(normal,lightDirection));
-	float3 diffuse = NdotL * SunLightDiffuse;
+		float NdotL = saturate(dot(normal,lightDirection));
+		float3 diffuse = NdotL * SunlightDiffuse;
 
-	float3 output = (SunLightAmbient + diffuse) * tex2D(DiffuseMapSampler,input.UV);	
-		
+		output += diffuse * diffuseTex;	
+	}	
+
     return float4(output, 1);
 }
 /****************************************************/
@@ -259,31 +280,37 @@ float4 PSDFunction(VSSimpleOutput input) : COLOR0
 float4 PSDSFunction(VSSimpleOutput input) : COLOR0
 {
 	ClipMe(input.WorldPosition);
-
-	float3 normal = normalize(input.Normal);		
-
-	float3 lightDirection = -normalize(SunLightDirection);
 	
-	float NdotL = saturate(dot(normal,lightDirection));
-	float3 diffuse = NdotL * SunLightDiffuse;
+	float3 diffuseTex = tex2D(DiffuseMapSampler,input.UV);
+	float3 output = Ambient * diffuseTex;
 
-	float3 output = (SunLightAmbient + diffuse) * tex2D(DiffuseMapSampler,input.UV);	
-
-	if(NdotL > 0)
+	if(SunlightEnabled)
 	{	
-		float4 specularColor = tex2D(SpecularMapSampler,input.UV);
+		float3 normal = normalize(input.Normal);		
 
-		float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
+		float3 lightDirection = -normalize(SunlightDirection);
 	
-		float3 reflectionVector = reflect(lightDirection,normal);
-		float  specularValue	= dot(normalize(reflectionVector), viewDirection);
-	
-		specularValue = pow(specularValue, specularColor.a * 100);
-		
-		output += specularValue * specularColor.rgb * SunLightSpecular;
+		float NdotL = saturate(dot(normal,lightDirection));
+		float3 diffuse = NdotL * SunlightDiffuse;
 
-	}	
+		output += diffuse * diffuseTex;	
+
+		if(NdotL > 0)
+		{	
+			float4 specularColor = tex2D(SpecularMapSampler,input.UV);
+
+			float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
+	
+			float3 reflectionVector = reflect(lightDirection,normal);
+			float  specularValue	= dot(normalize(reflectionVector), viewDirection);
+	
+			specularValue = pow(specularValue, specularColor.a * 100);
 		
+			output += specularValue * specularColor.rgb * SunlightSpecular;
+
+		}	
+	}
+	
     return float4(output, 1);
 }
 /****************************************************/

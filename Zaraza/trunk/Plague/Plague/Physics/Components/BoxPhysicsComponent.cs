@@ -18,27 +18,24 @@ using PlagueEngine.LowLevelGameFlow;
 namespace PlagueEngine.Physics.Components
 {
 
-
-
     /****************************************************************************/
     ///  BoxPhysicsComponent
     /****************************************************************************/
     class BoxPhysicsComponent : PhysicsComponent
     {
 
-        public float mass;
-        public Vector3 boxSize;
-        public float elasticity;
-        public float staticRoughness;
-        public float dynamicRoughness;
-        public bool immovable;
+        public float    mass;
+        public Vector3  boxSize;
+        public float    elasticity;
+        public float    staticRoughness;
+        public float    dynamicRoughness;
+        public bool     immovable;
 
 
         /****************************************************************************/
         ///  Constructor
         /****************************************************************************/
-        public BoxPhysicsComponent(
-                                    GameObjectInstance gameObject,
+        public BoxPhysicsComponent( GameObjectInstance gameObject,
                                     PhysicsManager physicsManager,
                                     float mass,
                                     Vector3 boxSize,
