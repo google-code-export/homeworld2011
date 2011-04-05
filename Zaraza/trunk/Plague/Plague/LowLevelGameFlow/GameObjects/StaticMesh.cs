@@ -93,20 +93,44 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     {
 
 
-        public PhysicsComponentData physicsComponentData;
+        public PhysicsComponentData physicsComponentData = null; 
+
+
+        private float Elasticity;
+        private float StaticRoughness;
+        private float DynamicRoughness;
+        private Vector3 BoxSize;
+        private float Mass;
+        private bool Immovable;
 
         [CategoryAttribute("BoxPhysiscComponent")]
         public float elasticity
         {
             get
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                return bpdata.elasicity;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    return bpdata.elasicity;
+                }
+                else
+                {
+                    return Elasticity;
+                }
+
             }
             set
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                bpdata.elasicity = value;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    bpdata.elasicity = value;
+                }
+                else
+                {
+                    Elasticity = value;
+                }
+
             }
         }
 
@@ -115,13 +139,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             get
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                return bpdata.staticRoughness;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    return bpdata.staticRoughness;
+                }
+                else
+                {
+                    return StaticRoughness;
+                }
+
             }
             set
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                bpdata.staticRoughness = value;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    bpdata.staticRoughness = value;
+                }
+                else
+                {
+                    StaticRoughness = value;
+                }
+
             }
         }
 
@@ -130,13 +170,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             get
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                return bpdata.dynamicRoughness;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    return bpdata.dynamicRoughness;
+                }
+                else
+                {
+                    return DynamicRoughness;
+                }
+
             }
             set
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                bpdata.dynamicRoughness = value;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    bpdata.dynamicRoughness = value;
+                }
+                else
+                {
+                    DynamicRoughness=value;
+                }
+
             }
         }
 
@@ -145,13 +201,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             get
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                return bpdata.boxSize;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    return bpdata.boxSize;
+                }
+                else
+                {
+                    return BoxSize;
+                }
+
             }
             set
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                bpdata.boxSize = value;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    bpdata.boxSize = value;
+                }
+                else
+                {
+                    BoxSize = value;
+                }
+
             }
         }
 
@@ -160,13 +232,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             get
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                return bpdata.mass;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    return bpdata.mass;
+                }
+                else
+                {
+                    return Mass;
+                }
+
             }
             set
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                bpdata.mass = value;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    bpdata.mass = value;
+                }
+                else
+                {
+                    Mass = value;
+                }
+
             }
         }
 
@@ -175,13 +263,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             get
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                return bpdata.immovable;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    return bpdata.immovable;
+                }
+                else
+                {
+                    return Immovable;
+                }
+
             }
             set
             {
-                BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
-                bpdata.immovable = value;
+                if (physicsComponentData != null)
+                {
+                    BoxPhysicsComponentData bpdata = (BoxPhysicsComponentData)physicsComponentData;
+                    bpdata.immovable = value;
+                }
+                else
+                {
+                    Immovable = value;
+                }
+
             }
         }
 

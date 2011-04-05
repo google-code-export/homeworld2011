@@ -185,10 +185,10 @@ namespace PlagueEngine.Tools
                 string objectname = gameObjectsName.Items[gameObjectsName.SelectedIndex].ToString();
 
                 currentClassName = getClass(objectname);
-                currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassName.dataClassType));
-
+                //currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassName.dataClassType));
+                currentObject = new StaticMeshData();
                 propertyGrid1.SelectedObject = currentObject;
-
+                
                 LoadDefinitionForClass(objectname);
             }
         }
