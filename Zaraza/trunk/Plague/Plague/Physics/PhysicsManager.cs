@@ -40,7 +40,20 @@ namespace PlagueEngine.Physics
         {
             physicsComponentFactory = new PhysicsComponentFactory(this);
             physicsSystem=new PhysicsSystem();
-            physicsSystem.CollisionSystem=new CollisionSystemSAP();
+
+            //physicsSystem.CollisionSystem = new CollisionSystemGrid(32, 32, 32, 30, 30, 30);
+            //physicsSystem.CollisionSystem = new CollisionSystemBrute();
+            physicsSystem.CollisionSystem = new CollisionSystemSAP();
+
+
+            physicsSystem.EnableFreezing = true;
+            physicsSystem.SolverType = PhysicsSystem.Solver.Normal;
+            physicsSystem.CollisionSystem.UseSweepTests = true;
+
+            physicsSystem.NumCollisionIterations = 1;
+            physicsSystem.NumContactIterations = 1;
+            physicsSystem.NumPenetrationRelaxtionTimesteps = 1;
+
             
         }
         /****************************************************************************/
