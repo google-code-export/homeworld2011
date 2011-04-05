@@ -104,13 +104,12 @@ namespace PlagueEngine.HighLevelGameFlow
             data.Type = (typeof(StaticMesh));
             data.Definition = "Rusty Barrel";
 
-            data.PhysicsActive = true;
             data.Immovable = true;
             data.Mass = 10;
             data.Elasticity = 0.5f;
             data.DynamicRoughness = 0.5f;
             data.StaticRoughness = 0.5f;
-        
+            data.PhysicsActive = true;
             data.BoxSize = new Vector3(100, 100, 100);
 
         
@@ -123,18 +122,9 @@ namespace PlagueEngine.HighLevelGameFlow
 
                 }
             }
-
-
-
-            data.PhysicsActive = true;
-            data.Immovable = false;
-            data.Mass = 10;
-            data.Elasticity = 0.08f;
-            data.DynamicRoughness = 0.5f;
-            data.StaticRoughness = 0.5f;
            
-            data.BoxSize = new Vector3(100, 100, 100);
-
+            data.Immovable = false;
+        
             
 
 
