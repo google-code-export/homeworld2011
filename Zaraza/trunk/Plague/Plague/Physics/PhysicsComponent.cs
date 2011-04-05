@@ -134,6 +134,7 @@ namespace PlagueEngine.Physics
 /****************************************************************************/
 ///  Physics Component Data
 /****************************************************************************/
+[Serializable]
 public class PhysicsComponentData 
 {
     public Type type;
