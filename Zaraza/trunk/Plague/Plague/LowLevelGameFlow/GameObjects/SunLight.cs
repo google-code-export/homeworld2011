@@ -16,22 +16,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Sun Light
     /********************************************************************************/
-    class SunLight : GameObjectInstance
+    class Sunlight : GameObjectInstance
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private SunLightComponent sunLightComponent = null;
+        private SunlightComponent SunlightComponent = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(SunLightComponent sunLightComponent, Matrix world)
+        public void Init(SunlightComponent SunlightComponent, Matrix world)
         {
-            this.sunLightComponent = sunLightComponent;
+            this.SunlightComponent = SunlightComponent;
             this.World             = world;
         }
         /****************************************************************************/
@@ -73,12 +73,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            SunLightData data = new SunLightData();
+            SunlightData data = new SunlightData();
             GetData(data);
 
-            data.Ambient   = sunLightComponent.AmbientColor;
-            data.Diffuse   = sunLightComponent.DiffuseColor;
-            data.Specular  = sunLightComponent.SpecularColor;
+            data.Enabled   = SunlightComponent.Enabled;
+            data.Diffuse   = SunlightComponent.DiffuseColor;
+            data.Specular  = SunlightComponent.SpecularColor;
 
             return data;
         }
@@ -90,7 +90,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            sunLightComponent.ReleaseMe();
+            SunlightComponent.ReleaseMe();
         }
         /****************************************************************************/
 
@@ -102,14 +102,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// Sun Light Data
     /********************************************************************************/
     [Serializable]
-    public class SunLightData : GameObjectInstanceData
+    public class SunlightData : GameObjectInstanceData
     {
 
         /****************************************************************************/
         /// Properties
-        /****************************************************************************/
-        [CategoryAttribute("Light Color")]
-        public Vector3 Ambient   { get; set; }
+        /****************************************************************************/        
+        public bool Enabled   { get; set; }
+
         [CategoryAttribute("Light Color")]
         public Vector3 Diffuse   { get; set; }
         [CategoryAttribute("Light Color")]

@@ -52,7 +52,7 @@ namespace PlagueEngine.Input
             public KeyboardListener(KeyboardListenerComponent listener, OnKey onKey)
             {
                 this.listener = listener;
-                this.onKey    = onKey;
+                this.onKey    = onKey;                
             }
             /************************************************************************/
 
@@ -138,6 +138,8 @@ namespace PlagueEngine.Input
         {
             this.game         = game;
             componentsFactory = new InputComponentsFactory(this);
+            
+            InputComponent.input = this;
         }
         /****************************************************************************/
 

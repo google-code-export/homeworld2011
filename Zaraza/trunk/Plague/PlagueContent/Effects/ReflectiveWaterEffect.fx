@@ -20,10 +20,12 @@ texture RefractionMap;
 
 float Bias;
 
-float3 SunLightDirection;
-float3 SunLightAmbient;
-float3 SunLightDiffuse;
-float3 SunLightSpecular;
+float3 Ambient;
+
+bool   SunlightEnabled = false;
+float3 SunlightDirection;
+float3 SunlightDiffuse;
+float3 SunlightSpecular;
 
 float SpecularStrength;
 
@@ -103,23 +105,25 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
+	if(!SunlightEnabled) return float4(0,0,0,1);
+
 	float3 normal	= normalize(tex2D(waterNormalSampler, input.NormalMapPosition) * 2 - 1);
 	float2 UVOffset = WaveHeight * normal.rg;
 		
     float2 reflectionUV = postProjToScreen(input.ReflectionPosition) + halfPixel();
 	float3 reflection	= tex2D(reflectionMapSampler, reflectionUV + UVOffset);
 	float3 refraction	= tex2D(refractionMapSampler, reflectionUV + UVOffset);	
-
-	float3 output		= lerp(lerp(refraction,reflection,Bias), Color * SunLightDiffuse, ColorAmount);			
+		
+	float3 output = lerp(lerp(refraction,reflection,Bias), Color * SunlightDiffuse, ColorAmount);			
 
 	float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
 	
-	float3 reflectionVector = reflect(normalize(SunLightDirection), normalize(mul(normal,TBN)));
+	float3 reflectionVector = reflect(normalize(SunlightDirection), normalize(mul(normal,TBN)));
 	float specular			= dot(normalize(reflectionVector), viewDirection);
 	
 	specular = pow(specular, SpecularStrength);
 
-	output += SunLightSpecular * specular;
+	output += SunlightSpecular * specular;
 
 	return float4(output, 1);
 }

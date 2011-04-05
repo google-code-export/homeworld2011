@@ -56,7 +56,6 @@ namespace PlagueEngine.Rendering.Components
         /// Constructor
         /****************************************************************************/
         public WaterSurfaceComponent(GameObjectInstance gameObject,
-                                     Renderer           renderer,
                                      float              width,
                                      float              length,
                                      float              level,
@@ -71,7 +70,7 @@ namespace PlagueEngine.Rendering.Components
                                      float              clipPlaneAdjustment,
                                      float              specularStrength,
                                      Effect             effect) 
-            : base(gameObject,renderer,effect)
+            : base(gameObject,effect)
         {
             this.width               = width;
             this.length              = length;

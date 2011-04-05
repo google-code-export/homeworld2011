@@ -16,23 +16,21 @@ namespace PlagueEngine.Input.Components
     /********************************************************************************/
     /// KeyboardListenerComponent
     /********************************************************************************/
-    class KeyboardListenerComponent : GameObjectComponent
+    class KeyboardListenerComponent : InputComponent
     {
         
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Input input  = null;
-        private bool  active = true;
+        private bool          active = true;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Keyboard Listener Component
         /****************************************************************************/
-        public KeyboardListenerComponent(GameObjectInstance gameObject, Input input, bool active) : base(gameObject)
+        public KeyboardListenerComponent(GameObjectInstance gameObject, bool active) : base(gameObject)
         {
-            this.input  = input;
             this.active = active;
         }
         /****************************************************************************/

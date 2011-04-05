@@ -32,8 +32,9 @@ namespace PlagueEngine.Rendering
         internal List<RenderableComponent>   preRender              = new List<RenderableComponent>();        
 
         private  CameraComponent             currentCamera          = null;
-        private  SunLightComponent           sunLight               = null;
+        private  SunlightComponent           sunlight               = null;
         private  Color                       clearColor             = Color.CornflowerBlue;
+        private  Vector3                     ambient                = new Vector3(0.1f, 0.1f, 0.1f);
 
         internal BatchedMeshes               batchedMeshes          = null;
         /****************************************************************************/
@@ -57,6 +58,9 @@ namespace PlagueEngine.Rendering
             CurrentConfiguration   = config;
             componentsFactory      = new RenderingComponentsFactory(this);            
             batchedMeshes          = new BatchedMeshes(contentManager, this);
+
+            MeshComponent.renderer       = this;
+            RenderableComponent.renderer = this;
         }
         /****************************************************************************/
 
@@ -162,28 +166,45 @@ namespace PlagueEngine.Rendering
 
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
-                renderableComponent.Effect.Parameters["SunLightDirection"].SetValue(sunLight.Direction);
-                renderableComponent.Effect.Parameters["SunLightAmbient"].SetValue(sunLight.AmbientColor);
-                renderableComponent.Effect.Parameters["SunLightDiffuse"].SetValue(sunLight.DiffuseColor);
-                renderableComponent.Effect.Parameters["SunLightSpecular"].SetValue(sunLight.SpecularColor);
+                renderableComponent.Effect.Parameters["Ambient"       ].SetValue(ambient);
                 renderableComponent.Effect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
-                renderableComponent.Effect.Parameters["View"].SetValue(currentCamera.View);
-                renderableComponent.Effect.Parameters["Projection"].SetValue(currentCamera.Projection);
+                renderableComponent.Effect.Parameters["View"          ].SetValue(currentCamera.View);
+                renderableComponent.Effect.Parameters["Projection"    ].SetValue(currentCamera.Projection);
                 renderableComponent.Effect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
+
+                if (sunlight != null && sunlight.Enabled)
+                {
+                    renderableComponent.Effect.Parameters["SunlightEnabled"  ].SetValue(true);
+                    renderableComponent.Effect.Parameters["SunlightDirection"].SetValue(sunlight.Direction);
+                    renderableComponent.Effect.Parameters["SunlightDiffuse"  ].SetValue(sunlight.DiffuseColor);
+                    renderableComponent.Effect.Parameters["SunlightSpecular" ].SetValue(sunlight.SpecularColor);
+                }
+                else
+                {
+                    renderableComponent.Effect.Parameters["SunlightEnabled"].SetValue(false);
+                }
 
                 renderableComponent.Draw();
             }
 
-            batchedMeshes.SetEffectParameter("SunLightDirection",   sunLight.Direction);
-            batchedMeshes.SetEffectParameter("SunLightAmbient",     sunLight.AmbientColor);
-            batchedMeshes.SetEffectParameter("SunLightDiffuse",     sunLight.DiffuseColor);
-            batchedMeshes.SetEffectParameter("SunLightSpecular",    sunLight.SpecularColor);
+            batchedMeshes.SetEffectParameter("Ambient",         ambient);
+            batchedMeshes.SetEffectParameter("CameraPosition",  currentCamera.Position);
+            batchedMeshes.SetEffectParameter("View",            currentCamera.View);
+            batchedMeshes.SetEffectParameter("Projection",      currentCamera.Projection);
+            batchedMeshes.SetEffectParameter("ViewProjection",  currentCamera.ViewProjection);
 
-            batchedMeshes.SetEffectParameter("CameraPosition",      currentCamera.Position);
-            batchedMeshes.SetEffectParameter("View",                currentCamera.View);
-            batchedMeshes.SetEffectParameter("Projection",          currentCamera.Projection);
-            batchedMeshes.SetEffectParameter("ViewProjection",      currentCamera.ViewProjection);
-            
+            if (sunlight != null && sunlight.Enabled)
+            {
+                batchedMeshes.SetEffectParameter("SunlightEnabled",   true);
+                batchedMeshes.SetEffectParameter("SunlightDirection", sunlight.Direction);
+                batchedMeshes.SetEffectParameter("SunlightDiffuse",   sunlight.DiffuseColor);
+                batchedMeshes.SetEffectParameter("SunlightSpecular",  sunlight.SpecularColor);
+            }
+            else
+            {
+                batchedMeshes.SetEffectParameter("SunlightEnabled", false);
+            }
+                        
             batchedMeshes.Draw();
         }
         /****************************************************************************/
@@ -236,16 +257,16 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Sun Light
         /****************************************************************************/
-        public SunLightComponent SunLight
+        public SunlightComponent Sunlight
         {
             get
             {
-                return sunLight;
+                return sunlight;
             }
             
             set
             {
-                sunLight = value;
+                sunlight = value;
             }
         }
         /****************************************************************************/

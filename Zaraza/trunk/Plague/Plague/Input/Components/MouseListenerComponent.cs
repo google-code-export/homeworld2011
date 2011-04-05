@@ -37,13 +37,12 @@ namespace PlagueEngine.Input.Components
     /********************************************************************************/
     /// Mouse Listener Component
     /********************************************************************************/
-    class MouseListenerComponent : GameObjectComponent
+    class MouseListenerComponent : InputComponent
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Input input  = null;
         private bool  active = true;
         /****************************************************************************/
 
@@ -51,9 +50,8 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         /// Mouse Listener Component
         /****************************************************************************/
-        public MouseListenerComponent(GameObjectInstance gameObject,Input input,bool active):base(gameObject)
+        public MouseListenerComponent(GameObjectInstance gameObject,bool active):base(gameObject)
         {
-            this.input=input;
             this.active=active;
         }
         /****************************************************************************/

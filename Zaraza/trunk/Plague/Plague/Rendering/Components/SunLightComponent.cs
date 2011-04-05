@@ -16,34 +16,34 @@ namespace PlagueEngine.Rendering.Components
     /********************************************************************************/
     /// Sun Light Component
     /********************************************************************************/
-    class SunLightComponent : GameObjectComponent
+    class SunlightComponent : GameObjectComponent
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
         private Renderer renderer      = null;
-        private Vector3  ambientColor  = Vector3.Zero;
         private Vector3  diffuseColor  = Vector3.Zero;
         private Vector3  specularColor = Vector3.Zero;
+        private bool     enabled       = true;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public SunLightComponent(GameObjectInstance gameObject,
+        public SunlightComponent(GameObjectInstance gameObject,
                                  Renderer           renderer,
-                                 Vector3            ambientColor,
                                  Vector3            diffuseColor,
-                                 Vector3            specularColor)
+                                 Vector3            specularColor,
+                                 bool               enabled)
             : base(gameObject)
         {
             this.gameObject     = gameObject;
             this.renderer       = renderer;
-            this.ambientColor   = ambientColor;
             this.diffuseColor   = diffuseColor;
             this.specularColor  = specularColor;
+            this.enabled        = enabled;
         }
         /****************************************************************************/
 
@@ -53,7 +53,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            if (renderer.SunLight == this) renderer.SunLight = null;
+            if (renderer.Sunlight == this) renderer.Sunlight = null;
         }
         /****************************************************************************/
 
@@ -61,7 +61,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public Vector3 AmbientColor  { get { return ambientColor;             } }
+        public bool    Enabled       { get { return enabled;                  } }
         public Vector3 DiffuseColor  { get { return diffuseColor;             } }
         public Vector3 SpecularColor { get { return specularColor;            } }
         

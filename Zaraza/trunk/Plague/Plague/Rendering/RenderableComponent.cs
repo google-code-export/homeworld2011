@@ -25,7 +25,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        protected Renderer        renderer   = null;
+        internal static Renderer  renderer   = null;
         protected Effect          effect     = null;
         protected bool            preRender  = false;
         /****************************************************************************/
@@ -48,10 +48,8 @@ namespace PlagueEngine.Rendering
         /// Constructor
         /****************************************************************************/
         public RenderableComponent(GameObjectInstance gameObject,
-                                   Renderer renderer,
                                    Effect effect) : base(gameObject)        
         {
-            this.renderer = renderer;
             this.effect   = effect;
             
             renderer.renderableComponents.Add(this);

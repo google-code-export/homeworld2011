@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using PlagueEngine.Input.Components;
 using PlagueEngine.LowLevelGameFlow;
+
 
 /************************************************************************************/
 /// PlagueEngine.Input
@@ -13,45 +13,32 @@ namespace PlagueEngine.Input
 {
 
     /********************************************************************************/
-    /// InputComponentsFactory
+    /// Input Component
     /********************************************************************************/
-    class InputComponentsFactory
+    abstract class InputComponent : GameObjectComponent
     {
-
+        
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Input input = null;
+        internal static Input input = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public InputComponentsFactory(Input input)
-        {
-            this.input = input;
+        public InputComponent(GameObjectInstance gameObject)
+            : base(gameObject)
+        { 
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Create Keyboard Listener Component
+        /// Release Me 
         /****************************************************************************/
-        public KeyboardListenerComponent CreateKeyboardListenerComponent(GameObjectInstance gameObject, bool active)
-        {
-            return new KeyboardListenerComponent(gameObject, active);
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Mouse Listener Component
-        /****************************************************************************/
-        public MouseListenerComponent CreateMouseListenerComponent(GameObjectInstance gameObject, bool active)
-        {
-            return new MouseListenerComponent(gameObject, active);
-        }
+        public abstract override void ReleaseMe();        
         /****************************************************************************/
 
     }

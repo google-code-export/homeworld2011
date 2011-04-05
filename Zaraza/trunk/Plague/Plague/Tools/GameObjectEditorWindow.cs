@@ -228,11 +228,11 @@ namespace PlagueEngine.Tools
             gameObjectClassNames.Add(terrain);
 
 
-            gameObjectsClassName SunLight = new gameObjectsClassName();
-            SunLight.className = "SunLight";
-            SunLight.ClassType = typeof(SunLight);
-            SunLight.dataClassType = typeof(SunLightData);
-            gameObjectClassNames.Add(SunLight);
+            gameObjectsClassName Sunlight = new gameObjectsClassName();
+            Sunlight.className = "Sunlight";
+            Sunlight.ClassType = typeof(Sunlight);
+            Sunlight.dataClassType = typeof(SunlightData);
+            gameObjectClassNames.Add(Sunlight);
 
            
         }
@@ -266,9 +266,7 @@ namespace PlagueEngine.Tools
         /// button1_Click //klikniecie create
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
-        {
-            
-
+        {            
             try
             {
                 this.currentObject.Type = currentClassName.ClassType;
