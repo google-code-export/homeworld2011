@@ -118,6 +118,7 @@ namespace PlagueEngine.Physics.Components
 /****************************************************************************/
 ///  Box Physics Component Data
 /****************************************************************************/
+[Serializable]
 public class BoxPhysicsComponentData : PhysicsComponentData
 {
     public bool immovable               { get; set; }
