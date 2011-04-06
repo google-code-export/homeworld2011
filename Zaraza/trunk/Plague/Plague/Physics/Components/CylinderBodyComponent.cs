@@ -28,7 +28,6 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         private float  radius;
         private float  length;
-        private Matrix skinTransform;
         /****************************************************************************/
 
 
@@ -41,39 +40,31 @@ namespace PlagueEngine.Physics.Components
                                      bool               immovable,
                                      float              radius,
                                      float              length,
-                                     Matrix             world,
-                                     Matrix             skinTransform)
+                                     Matrix             world)
             : base(gameObject,material,mass,immovable)
         {
             this.radius        = radius;
             this.length        = length;
-            this.skinTransform = skinTransform;
-
-            //Capsule middle = new Capsule(new Vector3(0,20,0), 
-            //                             skinTransform, 
-            //                             radius, 
-            //                             length - 2 * radius);
-
-            //float sideLength = 2.0f * radius / (float)Math.Sqrt(2.0d);
-
-            //Vector3 sides = new Vector3(-0.5f * sideLength, -0.5f * sideLength, -radius);
-
-            //sides += new Vector3(0, 10, 0);
-
-            Box supply0 = new Box(skinTransform.Translation, skinTransform, new Vector3(radius,length,radius));
-
-            //Box supply1 = new Box(Vector3.Zero, Matrix.CreateRotationZ(MathHelper.PiOver4), new Vector3(sideLength, sideLength, length));
-
-            //skin.AddPrimitive(middle,  material);
-            skin.AddPrimitive(supply0, material);
-            //skin.AddPrimitive(supply1, material);
                         
+            Capsule middle = new Capsule(Vector3.Zero,Matrix.Identity, radius, length - 2.0f * radius);
+
+            float sideLength = 2.0f * radius / (float)Math.Sqrt(2.0d);
+
+            Vector3 sides = new Vector3(-0.5f * sideLength, -0.5f * sideLength, -radius);
+
+            Box supply0 = new Box(sides, Matrix.Identity, new Vector3(sideLength, sideLength, length));
+
+            Box supply1 = new Box(Vector3.Transform(sides, Matrix.CreateRotationZ(MathHelper.PiOver4)),
+                Matrix.CreateRotationZ(MathHelper.PiOver4), new Vector3(sideLength, sideLength, length));
+                        
+            skin.AddPrimitive(middle, material);
+            skin.AddPrimitive(supply0, material);
+            skin.AddPrimitive(supply1, material);
+            
             skin.ApplyLocalTransform(new Transform(-SetMass(), Matrix.Identity));
-
-
             /***************************************/
             // Manually set body inertia
-            /***************************************
+            /***************************************/
             float cylinderMass = body.Mass;
 
             float comOffs = (length - 2.0f * radius) * 0.5f; ;
@@ -96,7 +87,6 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         public float  Radius        { get { return radius;        } }
         public float  Length        { get { return length;        } }
-        public Matrix SkinTransform { get { return skinTransform; } }
         /****************************************************************************/
 
     }
