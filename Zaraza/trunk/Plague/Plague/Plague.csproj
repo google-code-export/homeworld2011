@@ -149,11 +149,12 @@
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Sunlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
-    <Compile Include="Physics\Components\BoxPhysicsComponent.cs" />
+    <Compile Include="Physics\CollisionSkinComponent.cs" />
     <Compile Include="Physics\Components\CylinderBodyComponent.cs" />
-    <Compile Include="Physics\PhysicsComponent.cs" />
     <Compile Include="Physics\PhysicsComponentFactory.cs" />
     <Compile Include="Physics\PhysicsManager.cs" />
+    <Compile Include="Physics\PlagueEngineCollisionSkin.cs" />
+    <Compile Include="Physics\RigidBodyComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />

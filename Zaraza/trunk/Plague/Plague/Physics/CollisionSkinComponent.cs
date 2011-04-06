@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Microsoft.Xna.Framework;
 
 using JigLibX.Geometry;
@@ -10,84 +11,58 @@ using JigLibX.Physics;
 using JigLibX.Math;
 using PlagueEngine.LowLevelGameFlow;
 
+
 /************************************************************************************/
 /// PlagueEngine.Physics
 /************************************************************************************/
 namespace PlagueEngine.Physics
 {
+
     /********************************************************************************/
-    /// PhysicsComponent
+    /// CollisionSkinComponent
     /********************************************************************************/
-    abstract class PhysicsComponent : GameObjectComponent
+    class CollisionSkinComponent : GameObjectComponent
     {
 
         /****************************************************************************/
         /// Fields
-        /****************************************************************************/               
-        internal static PhysicsManager physicsManager = null;
-        
-        protected Body          body = null;
-        protected CollisionSkin skin = null;
+        /****************************************************************************/        
+        protected PlagueEngineCollisionSkin skin = null;
+
+        private MaterialProperties material;
+        private bool isEnabled = false;
         /****************************************************************************/
-      
+
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public PhysicsComponent(GameObjectInstance gameObject) : base(gameObject)
+        public CollisionSkinComponent(GameObjectInstance gameObject, MaterialProperties material)
+            : base(gameObject)
         {
-            body = new Body();
-            skin = new CollisionSkin(body);
-            body.CollisionSkin = skin;
-
-            physicsManager.PhysicsComponents.Add(this);
+            skin = new PlagueEngineCollisionSkin(gameObject,null);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Update World Matrix
-        /****************************************************************************/
-        public void UpdateWorldMatrix()
-        {
-            if (!Body.IsBodyEnabled || Body.Immovable || !Body.IsActive) return;
-
-            gameObject.World             = body.Orientation;
-            gameObject.World.Translation = body.Position;            
-        }
-        /****************************************************************************/
-        
-
-        /****************************************************************************/
-        /// Set mass
-        /****************************************************************************/
-        protected Vector3 SetMass(float mass)
-        {
-            PrimitiveProperties primitiveProperties = new PrimitiveProperties(
-                                    PrimitiveProperties.MassDistributionEnum.Solid,
-                                    PrimitiveProperties.MassTypeEnum.Mass, mass);
-
-            float junk;
-            Vector3 centerOfMass;
-            Matrix it;
-            Matrix itCoM;
-
-            skin.GetMassProperties(primitiveProperties, out junk, out centerOfMass, out it, out itCoM);
-
-            this.body.BodyInertia = itCoM;
-            this.body.Mass = junk;
-
-            return centerOfMass;
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Enable 
+        /// Enable
         /****************************************************************************/
         public void Enable()
         {
-            body.EnableBody();
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
+            isEnabled = true;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Disable
+        /****************************************************************************/
+        public void Disable()
+        {
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(skin);
+            isEnabled = false;
         }
         /****************************************************************************/
 
@@ -97,8 +72,8 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            physicsManager.ReleaseComponent(this);
-            body.DisableBody();
+            if (isEnabled) Disable();
+            skin.Release();
         }
         /****************************************************************************/
 
@@ -106,13 +81,16 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public Body          Body { get { return this.body; } }
-        public CollisionSkin Skin { get { return this.skin; } }
+        public bool IsEnabled         { get { return isEnabled;                 } }
+        public float Elasticity       { get { return material.Elasticity;       } }
+        public float StaticRoughness  { get { return material.StaticRoughness;  } }
+        public float DynamicRoughness { get { return material.DynamicRoughness; } }
+        
+        public PlagueEngineCollisionSkin Skin { get { return skin; } }
         /****************************************************************************/
-          
+
     }
     /********************************************************************************/
-    
+
 }
 /************************************************************************************/
-
