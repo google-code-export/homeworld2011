@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using PlagueEngine.TimeControlSystem;
+using System.Diagnostics;
 
 
 /************************************************************************************/
@@ -33,6 +34,8 @@ namespace PlagueEngine
         private static String       logFile             = String.Empty;
         private static LogWindow    logWindow           = null;
         private static bool         showLogWindow       = false;
+        private static long         allocatedMemory     = -1;
+        private static TimeSpan     memoryElapsedTime   = TimeSpan.Zero;
 
         private static uint         timerID             = 0;
         /****************************************************************************/
@@ -44,15 +47,26 @@ namespace PlagueEngine
         public static void Update(TimeSpan deltaTime)
         {
             ++frames;
+            if (allocatedMemory == -1)
+            {
+                Diagnostics.AllocatedManagedMemoryUpdate();
+            }
 
             elapsedTime += deltaTime;
             totalElapsedTime += deltaTime;
+            memoryElapsedTime += deltaTime;
 
             if (elapsedTime.Seconds >= 1)
             {
                 fPS = frames / elapsedTime.Seconds;
                 frames = 0;
                 elapsedTime = TimeSpan.Zero;
+            }
+
+            if (memoryElapsedTime.Seconds >= 10)
+            {
+                Diagnostics.AllocatedManagedMemoryUpdate();
+                memoryElapsedTime = TimeSpan.Zero;
             }
 
             if (forceGCOnUpdate) GC.Collect();
@@ -188,7 +202,11 @@ namespace PlagueEngine
         {
             get
             {
-                return GC.GetTotalMemory(false);
+                return allocatedMemory;
+            }
+            set
+            {
+                allocatedMemory = value;
             }
         }
         /****************************************************************************/
@@ -300,7 +318,7 @@ namespace PlagueEngine
         public static void DiagnosticSnapshot()
         { 
             Diagnostics.PushLog("FPS: " + fPS.ToString() + " | Allocated Managed Memory: "  
-                                + (GC.GetTotalMemory(false)/1024).ToString() + " kb");               
+                                + Diagnostics.allocatedMemory.ToString() + " kb");               
         }
         /****************************************************************************/
 
@@ -311,7 +329,7 @@ namespace PlagueEngine
         public static void StartDiagnosticSnapshots(TimeSpan time)
         {
             if (timerID == 0) timerID = TimeControl.CreateTimer(time, -1, TimerCallback);
-            else TimeControl.ResetTimer(timerID,time,-1);            
+            else TimeControl.ResetTimer(timerID,time,-1);
         }
         /****************************************************************************/
 
@@ -338,13 +356,23 @@ namespace PlagueEngine
 
 
         /****************************************************************************/
+        /// Memory Update
+        /****************************************************************************/
+        private static void AllocatedManagedMemoryUpdate()
+        {
+            Diagnostics.allocatedMemory=Process.GetCurrentProcess().PrivateMemorySize64 / 1024;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// To String
         /****************************************************************************/
         public static String ToString()
         {
             return "FPS: "                          + fPS.ToString()                             + 
                    " | Run Time: "                  + totalElapsedTime.ToString(@"hh\:mm\:ss")   +
-                   " | Allocated Managed Memory: "  + (GC.GetTotalMemory(false)/1024).ToString() + " kb";
+                   " | Allocated Managed Memory: " +  Diagnostics.allocatedMemory.ToString() + " kb";
         }
         /****************************************************************************/
 
