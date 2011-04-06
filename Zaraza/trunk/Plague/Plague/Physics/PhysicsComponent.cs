@@ -10,51 +10,56 @@ using JigLibX.Physics;
 using JigLibX.Math;
 using PlagueEngine.LowLevelGameFlow;
 
-/****************************************************************************/
-///  PlagueEngine.Physics
-/****************************************************************************/
+/************************************************************************************/
+/// PlagueEngine.Physics
+/************************************************************************************/
 namespace PlagueEngine.Physics
 {
-    /****************************************************************************/
-    ///  PhysicsComponent
-    /****************************************************************************/
-    abstract class PhysicsComponent
+    /********************************************************************************/
+    /// PhysicsComponent
+    /********************************************************************************/
+    abstract class PhysicsComponent : GameObjectComponent
     {
 
         /****************************************************************************/
-        ///  Fields
-        /****************************************************************************/
-        protected Body body = null;                         public Body Body            { get { return this.body; } }
-        protected CollisionSkin skin = null;                public CollisionSkin Skin   { get { return this.skin; } }
-        protected GameObjectInstance gameobject = null;
-        protected PhysicsManager physicsManager = null;
+        /// Fields
+        /****************************************************************************/               
+        internal static PhysicsManager physicsManager = null;
+        
+        protected Body          body = null;
+        protected CollisionSkin skin = null;
         /****************************************************************************/
       
 
         /****************************************************************************/
-        ///  Constructor
+        /// Constructor
         /****************************************************************************/
-        public PhysicsComponent(GameObjectInstance gameobject,PhysicsManager physicsManager)
+        public PhysicsComponent(GameObjectInstance gameObject) : base(gameObject)
         {
-            this.gameobject     = gameobject;
-            this.physicsManager = physicsManager;
+            body = new Body();
+            skin = new CollisionSkin(body);
+            body.CollisionSkin = skin;
+
+            physicsManager.PhysicsComponents.Add(this);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        ///  Update World Matrix
+        /// Update World Matrix
         /****************************************************************************/
         public void UpdateWorldMatrix()
         {
-            gameobject.World             = body.Orientation;
-            gameobject.World.Translation = body.Position;
+            if (!Body.IsBodyEnabled || Body.Immovable || !Body.IsActive) return;
+
+            gameObject.World             = body.Orientation;
+            gameObject.World.Translation = body.Position;            
         }
         /****************************************************************************/
         
 
         /****************************************************************************/
-        ///  Set mass
+        /// Set mass
         /****************************************************************************/
         protected Vector3 SetMass(float mass)
         {
@@ -73,24 +78,41 @@ namespace PlagueEngine.Physics
             this.body.Mass = junk;
 
             return centerOfMass;
-
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        ///  ReleaseMe
+        /// Enable 
         /****************************************************************************/
-        public void ReleaseMe()
+        public void Enable()
         {
-            this.physicsManager.ReleaseComponent(this);
+            body.EnableBody();
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// ReleaseMe
+        /****************************************************************************/
+        public override void ReleaseMe()
+        {
+            physicsManager.ReleaseComponent(this);
+            body.DisableBody();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public Body          Body { get { return this.body; } }
+        public CollisionSkin Skin { get { return this.skin; } }
+        /****************************************************************************/
+          
     }
-    /****************************************************************************/
+    /********************************************************************************/
     
 }
-/****************************************************************************/
-
+/************************************************************************************/
 

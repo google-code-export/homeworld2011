@@ -21,6 +21,14 @@ using PlagueEngine.Input.Components;
 using Microsoft.Xna.Framework;
 
 
+// TODO: możliwośc robienia definicji z istniejącego obiektu (czyli podczas edytowania)
+// TODO: mozliwość zablokowania automatycznego edytowania obiektu, tzn blokujemy obiekt, i jak zmieniamy jakies dane to nie są one od razu nadawane, tylko po odblokowaniu, bądź naciśnięciu klawisza "Force Update"
+// TODO: klawisz "force update", który nadaje zmiany obiektowi nawet gdy wartości w property grid nie zmieniły się
+// TODO: "Save As..." do zapisywania leveli
+// TODO: jak tworzymy nowy obiekt w to po jego utworzeniu znika property grid z poprzendimi danymi które wprowadziliśmy
+// TODO: Do edycji domyślnei wybierany obiekt który ostatnio utworzyliśmy
+
+
 /********************************************************************************/
 /// PlagueEngine.Tools
 /********************************************************************************/
@@ -234,7 +242,13 @@ namespace PlagueEngine.Tools
             Sunlight.dataClassType = typeof(SunlightData);
             gameObjectClassNames.Add(Sunlight);
 
-           
+
+            gameObjectsClassName CylindricalBodyMesh = new gameObjectsClassName();
+            CylindricalBodyMesh.className = "CylindricalBodyMesh";
+            CylindricalBodyMesh.ClassType = typeof(CylindricalBodyMesh);
+            CylindricalBodyMesh.dataClassType = typeof(CylindricalBodyMeshData);
+            gameObjectClassNames.Add(CylindricalBodyMesh);
+
         }
         /********************************************************************************/
 

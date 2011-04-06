@@ -143,12 +143,14 @@
     <Compile Include="LowLevelGameFlow\GameObjectDefinition.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FreeCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Sunlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
     <Compile Include="Physics\Components\BoxPhysicsComponent.cs" />
+    <Compile Include="Physics\Components\CylinderBodyComponent.cs" />
     <Compile Include="Physics\PhysicsComponent.cs" />
     <Compile Include="Physics\PhysicsComponentFactory.cs" />
     <Compile Include="Physics\PhysicsManager.cs" />
