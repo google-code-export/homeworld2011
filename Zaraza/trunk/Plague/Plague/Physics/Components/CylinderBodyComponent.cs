@@ -20,17 +20,14 @@ namespace PlagueEngine.Physics.Components
     /********************************************************************************/
     /// CylinderBodyComponent
     /********************************************************************************/
-    class CylinderBodyComponent : PhysicsComponent
+    class CylinderBodyComponent : RigidBodyComponent
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public  readonly float              Mass;
-        public  readonly float              Radius;
-        public  readonly float              Length;
-        
-        private readonly MaterialProperties material;
+        private float radius;
+        private float length;
         /****************************************************************************/
 
 
@@ -38,19 +35,16 @@ namespace PlagueEngine.Physics.Components
         ///  Constructor
         /****************************************************************************/
         public CylinderBodyComponent(GameObjectInstance gameObject,
-                                     float mass,
-                                     float radius,
-                                     float length,
                                      MaterialProperties material,
-                                     bool immovable,
-                                     Matrix world)
-            : base(gameObject)
+                                     float              mass,
+                                     bool               immovable,
+                                     float              radius,
+                                     float              length,
+                                     Matrix             world)
+            : base(gameObject,material,mass,immovable)
         {
-
-            this.Mass     = mass;
-            this.Radius   = radius;
-            this.Length   = length;
-            this.material = material;
+            this.radius   = radius;
+            this.length   = length;
 
             Capsule middle = new Capsule(Vector3.Zero, Matrix.Identity, radius, length - 2.0f * radius);
 
@@ -68,7 +62,7 @@ namespace PlagueEngine.Physics.Components
             skin.AddPrimitive(supply0, material);
             skin.AddPrimitive(supply1, material);
 
-            skin.ApplyLocalTransform(new Transform(-SetMass(mass), Matrix.Identity));
+            skin.ApplyLocalTransform(new Transform(-SetMass(), Matrix.Identity));
 
             float cylinderMass = body.Mass;
 
@@ -80,38 +74,17 @@ namespace PlagueEngine.Physics.Components
 
             body.SetBodyInertia(Ixx, Iyy, Izz);
 
-            body.Immovable = immovable;
-            body.MoveTo(world.Translation, world);
-
+            MoveTo(world);
             Enable();            
         }
         /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Immovable
-        /****************************************************************************/
-        public bool Immovable
-        {
-            get
-            {
-                return body.Immovable;
-            }
-
-            set
-            {
-                body.Immovable = value;
-            }
-        }
-        /****************************************************************************/
-
+        
 
         /****************************************************************************/
         // Properties
         /****************************************************************************/
-        public float Elasticity       { get { return material.Elasticity;       } }
-        public float StaticRoughness  { get { return material.StaticRoughness;  } }
-        public float DynamicRoughness { get { return material.DynamicRoughness; } }
+        public float Radius  { get { return radius;  } }
+        public float Length  { get { return length;  } }
         /****************************************************************************/
 
     }

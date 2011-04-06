@@ -26,9 +26,9 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         ///  Fields
         /****************************************************************************/
-        private PhysicsSystem           physicsSystem           = null;
-        private List<PhysicsComponent>  physicsComponents       = new List<PhysicsComponent>();
-        private PhysicsComponentFactory physicsComponentFactory = null;
+        private  PhysicsSystem            physicsSystem           = null;
+        internal List<RigidBodyComponent> rigidBodies             = new List<RigidBodyComponent>();
+        internal PhysicsComponentFactory  physicsComponentFactory = null;
         /****************************************************************************/
         
 
@@ -39,6 +39,7 @@ namespace PlagueEngine.Physics
         {
             physicsComponentFactory       = new PhysicsComponentFactory();
             physicsSystem                 = new PhysicsSystem();
+            
             physicsSystem.CollisionSystem = new CollisionSystemSAP();
             
             physicsSystem.SolverType = PhysicsSystem.Solver.Normal;
@@ -50,7 +51,7 @@ namespace PlagueEngine.Physics
             physicsSystem.NumContactIterations             = 10;
             physicsSystem.NumPenetrationRelaxtionTimesteps = 15;
 
-            PhysicsComponent.physicsManager = this;
+            RigidBodyComponent.physicsManager = this;
         }
         /****************************************************************************/
 
@@ -62,31 +63,13 @@ namespace PlagueEngine.Physics
         {
             PhysicsSystem.CurrentPhysicsSystem.Integrate(timeStep);
             
-            foreach (PhysicsComponent component in physicsComponents)
+            foreach (RigidBodyComponent rigidBody in rigidBodies)
             {       
-                component.UpdateWorldMatrix();
+                rigidBody.Update();
             }
         }
         /****************************************************************************/
-        
-
-        /****************************************************************************/
-        ///  Release Component
-        /****************************************************************************/
-        public void ReleaseComponent(PhysicsComponent physicsComponent)
-        {
-            physicsComponents.Remove(physicsComponent);
-        }
-        /****************************************************************************/
-        
-
-        /****************************************************************************/
-        ///  Properties
-        /****************************************************************************/
-        public List<PhysicsComponent>   PhysicsComponents       { get { return this.physicsComponents;       } }
-        public PhysicsComponentFactory  PhysicsComponentFactory { get { return this.physicsComponentFactory; } }
-        /****************************************************************************/
-        
+               
     }
     /********************************************************************************/
     

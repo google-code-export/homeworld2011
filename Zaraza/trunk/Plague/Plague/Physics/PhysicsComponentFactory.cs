@@ -23,17 +23,6 @@ namespace PlagueEngine.Physics
     {
 
         /****************************************************************************/
-        ///  CreateBoxPhysicsComponent
-        /****************************************************************************
-        public BoxPhysicsComponent CreateBoxPhysicsComponent(GameObjectInstance gameObject,float mass,Vector3 boxSize,float elasticity,float staticRoughness,float dynamicRoughness, bool immovable,Matrix world)
-        {
-            BoxPhysicsComponent bpc = new BoxPhysicsComponent(gameObject,physicsManager,mass,boxSize,elasticity,staticRoughness,dynamicRoughness,immovable,world);            
-            return bpc;
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
         /// Create Cylinder Body Component
         /****************************************************************************/
         public CylinderBodyComponent CreateCylinderBodyComponent(   GameObjectInstance gameObject,
@@ -51,18 +40,17 @@ namespace PlagueEngine.Physics
                                                                  dynamicRoughness);
             
             CylinderBodyComponent result = new CylinderBodyComponent(gameObject,
+                                                                     material,                                                     
                                                                      mass,
-                                                                     radius,
-                                                                     length,
-                                                                     material,
                                                                      immovable,
+                                                                     radius,
+                                                                     length,                                                                     
                                                                      world);
 
             return result;
         }
         /****************************************************************************/
-
-        
+                
     }
     /********************************************************************************/
 
