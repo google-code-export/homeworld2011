@@ -31,6 +31,8 @@ namespace PlagueEngine.Physics
 
         private MaterialProperties material;
         private bool isEnabled = false;
+
+        internal static PhysicsManager physicsManager = null;
         /****************************************************************************/
 
 
@@ -41,6 +43,8 @@ namespace PlagueEngine.Physics
             : base(gameObject)
         {
             skin = new PlagueEngineCollisionSkin(gameObject,null);
+
+            physicsManager.collisionSkins.Add(this);
         }
         /****************************************************************************/
 
@@ -74,6 +78,7 @@ namespace PlagueEngine.Physics
         {
             if (isEnabled) Disable();
             skin.Release();
+            physicsManager.collisionSkins.Remove(this);
         }
         /****************************************************************************/
 

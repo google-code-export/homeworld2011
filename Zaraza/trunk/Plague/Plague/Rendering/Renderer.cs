@@ -37,6 +37,7 @@ namespace PlagueEngine.Rendering
         private  Vector3                     ambient                = new Vector3(0.1f, 0.1f, 0.1f);
 
         internal BatchedMeshes               batchedMeshes          = null;
+        internal DebugDrawer                 debugDrawer            = null;
         /****************************************************************************/
             
 
@@ -61,6 +62,17 @@ namespace PlagueEngine.Rendering
 
             MeshComponent.renderer       = this;
             RenderableComponent.renderer = this;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Init Debug Drawer
+        /****************************************************************************/
+        public void InitDebugDrawer(Physics.PhysicsManager physicsManager)
+        {
+            debugDrawer = new DebugDrawer(this, physicsManager);
+            debugDrawer.Enable();
         }
         /****************************************************************************/
 
@@ -206,6 +218,8 @@ namespace PlagueEngine.Rendering
             }
                         
             batchedMeshes.Draw();
+
+            if (debugDrawer != null) debugDrawer.Draw(currentCamera.View,currentCamera.Projection);
         }
         /****************************************************************************/
 
