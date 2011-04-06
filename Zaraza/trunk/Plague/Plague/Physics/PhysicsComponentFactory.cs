@@ -33,7 +33,8 @@ namespace PlagueEngine.Physics
                                                                     float staticRoughness,
                                                                     float dynamicRoughness,                                
                                                                     bool  immovable,
-                                                                    Matrix world)
+                                                                    Matrix world,
+                                                                    Matrix skinTransform)
         {
             MaterialProperties material = new MaterialProperties(elasticity,
                                                                  staticRoughness,
@@ -45,7 +46,8 @@ namespace PlagueEngine.Physics
                                                                      immovable,
                                                                      radius,
                                                                      length,                                                                     
-                                                                     world);
+                                                                     world,
+                                                                     skinTransform);
 
             return result;
         }

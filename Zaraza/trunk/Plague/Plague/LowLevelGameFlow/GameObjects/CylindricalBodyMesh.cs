@@ -76,6 +76,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Radius           = physicsComponent.Radius;
             data.Length           = physicsComponent.Length;
             data.Immovable        = physicsComponent.Immovable;
+            data.SkinTransform    = physicsComponent.SkinTransform;
 
             return data;
         }
@@ -127,6 +128,68 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float Length { get; set; }
+
+
+        /**************************************/
+        /// Skin Transform
+        /**************************************/
+        public Matrix SkinTransform = Matrix.Identity;
+        [CategoryAttribute("Collision Skin")]
+        public Vector3 SkinOrinetationUp 
+        {
+            get
+            {
+                return SkinTransform.Up;    
+            }
+
+            set
+            {
+                SkinTransform.Up = value;
+            }
+        }
+
+        [CategoryAttribute("Collision Skin")]
+        public Vector3 SkinOrinetationRight 
+        {
+            get
+            {
+                return SkinTransform.Right;
+            }
+
+            set
+            {
+                SkinTransform.Right = value;
+            }
+        }
+        
+        [CategoryAttribute("Collision Skin")]
+        public Vector3 SkinOrinetationForward 
+        {
+            get
+            {
+                return SkinTransform.Forward;
+            }
+
+            set
+            {
+                SkinTransform.Forward = value;
+            }
+        }
+
+        [CategoryAttribute("Collision Skin")]
+        public Vector3 SkinPosition 
+        {
+            get
+            {
+                return SkinTransform.Translation;
+            }
+
+            set
+            {
+                SkinTransform.Translation = value;
+            }
+        }
+        /**************************************/
     }
     /********************************************************************************/
     
