@@ -64,7 +64,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void Update()
         {
-            if (!body.IsBodyEnabled || body.Immovable || !body.IsActive) return;
+            //if (!body.IsBodyEnabled || body.Immovable || !body.IsActive) return;
 
             gameObject.World = body.Orientation;
             gameObject.World.Translation = body.Position;  

@@ -207,9 +207,6 @@ namespace PlagueEngine.LowLevelGameFlow
         public Matrix   World           = Matrix.Identity;
 
 
-        private Vector3 position = Vector3.Zero;
-        private Vector3 rotation = Vector3.Zero;
-        private Vector3 scale = Vector3.One;
 
         public String definition
         {
@@ -217,39 +214,25 @@ namespace PlagueEngine.LowLevelGameFlow
             set { this.Definition = value; }
         }
 
-       
+        
         public Vector3 Position
         {
-            get { return this.position; }
+            get { return this.World.Translation; }
 
-            set {
-                this.position = value;
-                World = Matrix.Identity;
-                World *= Matrix.CreateScale(Scale);
-                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(Yaw),MathHelper.ToRadians( Pitch),MathHelper.ToRadians( Roll));
-                World *= Matrix.CreateTranslation(value);
-                
-                }
+            set { this.World.Translation = value; }
         }
 
         [CategoryAttribute("Rotation")]
         public float Roll
         {
             set
-            { 
-                this.rotation.X = value;
-             
-
-                World = Matrix.Identity;
-                World *= Matrix.CreateScale(Scale);
-                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(Yaw), MathHelper.ToRadians(Pitch), MathHelper.ToRadians(value));
-                World *= Matrix.CreateTranslation(position);
-                
+            {
+                Rotate(World.Forward, value);               
             }
 
             get
             {
-                return this.rotation.X;
+                return 0;
             }
 
         }
@@ -258,18 +241,12 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             set
             {
-                this.rotation.Y = value;
-            
-                World = Matrix.Identity;
-                World *= Matrix.CreateScale(Scale);
-                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(value), MathHelper.ToRadians(Pitch), MathHelper.ToRadians(Roll));
-                World *= Matrix.CreateTranslation(position);
-                
+                Rotate(World.Up, value); 
             }
 
             get
             {
-                return this.rotation.Y;
+                return 0;
             }
 
         }
@@ -278,19 +255,12 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             set
             {
-                this.rotation.Z = value;
-
-                World = Matrix.Identity;
-                World *= Matrix.CreateScale(Scale);
-                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(Yaw), MathHelper.ToRadians(value), MathHelper.ToRadians(Roll));
-                World *= Matrix.CreateTranslation(position);
-                
+                Rotate(World.Right, value);
             }
 
             get
             {
-                return this.rotation.Z;
-
+                return 0;
             }
 
         }
@@ -299,20 +269,27 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             set
             {
-                this.scale = value;
-            
-
-                World = Matrix.Identity;
-                World *= Matrix.CreateScale(value);
-                World *= Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(Yaw), MathHelper.ToRadians(Pitch), MathHelper.ToRadians(Roll));
-                World *= Matrix.CreateTranslation(position);
-                
+                World *= Matrix.CreateScale(value);                          
             }
             get
             {
-                return this.scale;
+                return new Vector3(1,1,1);
             }
         }
+
+
+        /****************************************************************************/
+        /// Rotate
+        /****************************************************************************/
+        private void Rotate(Vector3 vector, float angle)
+        {
+            angle = MathHelper.ToRadians(angle);
+            Quaternion quaternion = Quaternion.CreateFromAxisAngle(vector, angle);
+            World.Forward         = Vector3.Transform(World.Forward, quaternion);
+            World.Right           = Vector3.Transform(World.Right, quaternion);
+            World.Up              = Vector3.Transform(World.Up, quaternion);
+        }
+        /****************************************************************************/
 
     }
     /********************************************************************************/

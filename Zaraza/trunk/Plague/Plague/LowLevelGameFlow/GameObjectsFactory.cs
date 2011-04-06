@@ -340,8 +340,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             cbmdata.StaticRoughness,
                                                                             cbmdata.DynamicRoughness,
                                                                             cbmdata.Immovable,
-                                                                            cbmdata.World,
-                                                                            cbmdata.SkinTransform),
+                                                                            cbmdata.World),
                                                                             cbmdata.World);
 
             return result;
