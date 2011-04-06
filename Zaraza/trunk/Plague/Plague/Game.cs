@@ -69,7 +69,7 @@ namespace PlagueEngine
                                                         contentManager.GameObjectsDefinitions,
                                                         physicsManager.physicsComponentFactory);
 
-
+            renderer.InitDebugDrawer(physicsManager);
         }
         /****************************************************************************/
 

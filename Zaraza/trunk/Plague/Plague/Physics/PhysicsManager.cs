@@ -26,9 +26,10 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         ///  Fields
         /****************************************************************************/
-        private  PhysicsSystem            physicsSystem           = null;
-        internal List<RigidBodyComponent> rigidBodies             = new List<RigidBodyComponent>();
-        internal PhysicsComponentFactory  physicsComponentFactory = null;
+        private  PhysicsSystem                  physicsSystem           = null;
+        internal List<RigidBodyComponent>       rigidBodies             = new List<RigidBodyComponent>();
+        internal List<CollisionSkinComponent>   collisionSkins          = new List<CollisionSkinComponent>();
+        internal PhysicsComponentFactory        physicsComponentFactory = null;
         /****************************************************************************/
         
 
