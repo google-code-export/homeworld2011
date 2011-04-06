@@ -72,7 +72,6 @@ namespace PlagueEngine.Rendering
         public void InitDebugDrawer(Physics.PhysicsManager physicsManager)
         {
             debugDrawer = new DebugDrawer(this, physicsManager);
-            debugDrawer.Enable();
         }
         /****************************************************************************/
 

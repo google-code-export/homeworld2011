@@ -21,7 +21,7 @@ namespace PlagueEngine.Physics
     /********************************************************************************/
     /// RigidBodyComponent
     /********************************************************************************/
-    class RigidBodyComponent : GameObjectComponent
+    abstract class RigidBodyComponent : GameObjectComponent
     {
 
         /****************************************************************************/

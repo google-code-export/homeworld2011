@@ -151,6 +151,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
     <Compile Include="Physics\CollisionSkinComponent.cs" />
     <Compile Include="Physics\Components\CylinderBodyComponent.cs" />
+    <Compile Include="Physics\Components\TerrainSkinComponent.cs" />
     <Compile Include="Physics\PhysicsComponentFactory.cs" />
     <Compile Include="Physics\PhysicsManager.cs" />
     <Compile Include="Physics\PlagueEngineCollisionSkin.cs" />

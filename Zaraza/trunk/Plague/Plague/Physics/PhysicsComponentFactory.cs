@@ -8,6 +8,7 @@ using JigLibX.Collision;
 
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Physics.Components;
+using PlagueEngine.Resources;
 
 
 /************************************************************************************/
@@ -21,6 +22,23 @@ namespace PlagueEngine.Physics
     /********************************************************************************/
     class PhysicsComponentFactory
     {
+
+        /****************************************************************************/
+        /// Fields
+        /****************************************************************************/
+        private ContentManager content = null;
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Constructor
+        /****************************************************************************/
+        public PhysicsComponentFactory(ContentManager content)
+        {
+            this.content = content;
+        }
+        /****************************************************************************/
+
 
         /****************************************************************************/
         /// Create Cylinder Body Component
@@ -47,6 +65,35 @@ namespace PlagueEngine.Physics
                                                                      length,                                                                     
                                                                      world);
 
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create Terrain Skin Component
+        /****************************************************************************/
+        public TerrainSkinComponent CreateTerrainSkinComponent(GameObjectInstance gameObject,
+                                                               String heightMap,
+                                                               int width,
+                                                               int length,
+                                                               float height,
+                                                               float scale,
+                                                               float elasticity,
+                                                               float staticRoughness,
+                                                               float dynamicRoughness)
+        {
+            MaterialProperties material = new MaterialProperties(elasticity,
+                                                                staticRoughness,
+                                                                dynamicRoughness);
+
+            TerrainSkinComponent result = new TerrainSkinComponent(gameObject,
+                                                                   content.LoadTexture2D(heightMap),
+                                                                   width,
+                                                                   length,
+                                                                   height,
+                                                                   scale,
+                                                                   material);
             return result;
         }
         /****************************************************************************/

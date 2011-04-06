@@ -63,7 +63,7 @@ namespace PlagueEngine
 
             InitRenderer();
 
-            physicsManager = new PhysicsManager();
+            physicsManager = new PhysicsManager(contentManager);
 
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,                                        
@@ -90,17 +90,17 @@ namespace PlagueEngine
             
             testLevel = new Level(gameObjectsFactory);
             
-            testLevel.PutSomeObjects();
+            //testLevel.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
-            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
+            testLevel.LoadLevel(contentManager.LoadLevel("ttt.lvl"));
             
             renderer.batchedMeshes.CommitMeshTransforms();
 
 
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager,renderer);
-            gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
+            gameObjectEditor.setLevel(testLevel, "ttt.lvl");
 
 
             
@@ -150,17 +150,6 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Update(GameTime gameTime)
         {
-            KeyboardState state = Keyboard.GetState();
-
-            if (state.IsKeyDown(Keys.F1))
-            {
-                renderer.debugDrawer.Disable();
-            }
-            else
-            {
-                renderer.debugDrawer.Enable();
-            }
-
             Diagnostics.Update(gameTime.ElapsedGameTime);
             TimeControl.Update(gameTime.ElapsedGameTime);
             physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);

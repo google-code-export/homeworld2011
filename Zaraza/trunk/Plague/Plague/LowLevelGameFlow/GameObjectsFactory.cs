@@ -284,6 +284,17 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             tdata.WTextureTiling,
                                                                             tdata.ClipPlaneAdjustment,
                                                                             tdata.SpecularStength),
+
+                         physicsComponentFactory.CreateTerrainSkinComponent(result,
+                                                                            tdata.HeightMap,
+                                                                            tdata.Width,
+                                                                            tdata.Length,
+                                                                            tdata.Height,
+                                                                            tdata.CellSize,
+                                                                            tdata.Elasticity,
+                                                                            tdata.StaticRoughness,
+                                                                            tdata.DynamicRoughness),
+
                                                                             tdata.World);
 
             return result;

@@ -21,7 +21,7 @@ namespace PlagueEngine.Physics
     /********************************************************************************/
     /// CollisionSkinComponent
     /********************************************************************************/
-    class CollisionSkinComponent : GameObjectComponent
+    abstract class CollisionSkinComponent : GameObjectComponent
     {
 
         /****************************************************************************/
@@ -43,6 +43,7 @@ namespace PlagueEngine.Physics
             : base(gameObject)
         {
             skin = new PlagueEngineCollisionSkin(gameObject,null);
+            this.material = material;
 
             physicsManager.collisionSkins.Add(this);
         }
