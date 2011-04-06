@@ -37,7 +37,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public PhysicsManager()
         {
-            physicsComponentFactory       = new PhysicsComponentFactory(this);
+            physicsComponentFactory       = new PhysicsComponentFactory();
             physicsSystem                 = new PhysicsSystem();
             physicsSystem.CollisionSystem = new CollisionSystemSAP();
             
@@ -46,9 +46,11 @@ namespace PlagueEngine.Physics
             physicsSystem.IsShockStepEnabled            = true;
             physicsSystem.CollisionSystem.UseSweepTests = true;
             
-            physicsSystem.NumCollisionIterations           = 1;
-            physicsSystem.NumContactIterations             = 1;
-            physicsSystem.NumPenetrationRelaxtionTimesteps = 1;                        
+            physicsSystem.NumCollisionIterations           = 10;
+            physicsSystem.NumContactIterations             = 10;
+            physicsSystem.NumPenetrationRelaxtionTimesteps = 15;
+
+            PhysicsComponent.physicsManager = this;
         }
         /****************************************************************************/
 

@@ -108,7 +108,7 @@ namespace PlagueEngine.HighLevelGameFlow
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    data.World = Matrix.CreateTranslation(i * 2.5f, 35, j * 2.5f);
+                    data.World = Matrix.CreateTranslation(i * 2.5f, 39, j * 2.5f);
                     gameObjectsFactory.Create(data);
 
                 }
@@ -158,17 +158,17 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.Height = 60;
             tdata.CellSize = 5;
             tdata.TextureTiling = 40;
-            tdata.Level = 35;
+            tdata.Level = 40;
             tdata.Color = new Vector3(0.2f, 0.2f, 0.6f);
             tdata.ColorAmount = 0.5f;
             tdata.WaveLength = 0.04f;
             tdata.WaveHeight = 0.02f;
             tdata.WaveSpeed = 0.1f;
             tdata.NormalMap = "normalmap";
-            tdata.WTextureTiling = 1000;
+            tdata.WTextureTiling = 250;
             tdata.Bias = 0.4f;
             tdata.SpecularStength = 500;
-            tdata.ClipPlaneAdjustment = 0.01f;
+            tdata.ClipPlaneAdjustment = 0.1f;
 
             gameObjectsFactory.Create(tdata);
 

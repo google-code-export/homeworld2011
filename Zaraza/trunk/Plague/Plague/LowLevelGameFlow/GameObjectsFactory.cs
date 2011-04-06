@@ -93,6 +93,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "Sunlight":
                     result = CreateSunlight(data);
                     break;
+                case "CylindricalBodyMesh":
+                    result = CreateCylindricalBodyMesh(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -178,9 +181,7 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// Create Free Camera
@@ -306,6 +307,42 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                            sdata.Specular,
                                                                            sdata.Enabled),
                                                                            sdata.World);
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create Cylindrical Body Mesh
+        /****************************************************************************/
+        public CylindricalBodyMesh CreateCylindricalBodyMesh(GameObjectInstanceData data)
+        {
+            CylindricalBodyMesh result = new CylindricalBodyMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            CylindricalBodyMeshData cbmdata = (CylindricalBodyMeshData)data;
+
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(cbmdata.InstancingMode);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       cbmdata.Model,
+                                                                       cbmdata.Diffuse,
+                                                                       cbmdata.Specular,
+                                                                       cbmdata.Normals,
+                                                                       InstancingMode),
+                        physicsComponentFactory.CreateCylinderBodyComponent(result,
+                                                                            cbmdata.Mass,
+                                                                            cbmdata.Radius,
+                                                                            cbmdata.Length,
+                                                                            cbmdata.Elasticity,
+                                                                            cbmdata.StaticRoughness,
+                                                                            cbmdata.DynamicRoughness,
+                                                                            cbmdata.Immovable,
+                                                                            cbmdata.World),
+                                                                            cbmdata.World);
+
             return result;
         }
         /****************************************************************************/

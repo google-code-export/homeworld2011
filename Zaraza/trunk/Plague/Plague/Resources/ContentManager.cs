@@ -59,19 +59,19 @@ namespace PlagueEngine.Resources
             DetectProfiles();
             LoadDefaultProfile();
             
-            LoadGameObjectsDefinitions();
+            //LoadGameObjectsDefinitions();
 
-            //GameObjectDefinition god = new GameObjectDefinition();
-            //god.Name = "Rusty Barrel";
-            //god.GameObjectClass = "StaticMesh";
-            //god.Properties.Add("Model", "Barrel");
-            //god.Properties.Add("Diffuse", "Barrel_diffuse");
-            //god.Properties.Add("Specular", "Barrel_specular");
-            //god.Properties.Add("Normals", "Barrel_normals");
-            //god.Properties.Add("InstancingMode", Renderer.InstancingModeToUInt(InstancingModes.DynamicInstancing));
-            //gameObjectsDefinitions.Add(god.Name, god);
+            GameObjectDefinition god = new GameObjectDefinition();
+            god.Name = "Rusty Barrel";
+            god.GameObjectClass = "StaticMesh";
+            god.Properties.Add("Model", "Barrel");
+            god.Properties.Add("Diffuse", "Barrel_diffuse");
+            god.Properties.Add("Specular", "Barrel_specular");
+            god.Properties.Add("Normals", "Barrel_normals");
+            god.Properties.Add("InstancingMode", Renderer.InstancingModeToUInt(InstancingModes.DynamicInstancing));
+            gameObjectsDefinitions.Add(god.Name, god);
 
-            //SaveGameObjectsDefinitions();
+            SaveGameObjectsDefinitions();
         }
         /****************************************************************************/
 
