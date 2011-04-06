@@ -6,6 +6,7 @@ using System.ComponentModel;
 using Microsoft.Xna.Framework;
 
 using PlagueEngine.Rendering.Components;
+using PlagueEngine.Physics.Components;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -22,19 +23,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private TerrainComponent        terrainComponent = null;
-        private WaterSurfaceComponent   waterComponent   = null;
+        private TerrainComponent        terrainComponent     = null;
+        private WaterSurfaceComponent   waterComponent       = null;
+        private TerrainSkinComponent    terrainSkinComponent = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(TerrainComponent terrainComponent,WaterSurfaceComponent waterComponent,Matrix world)
+        public void Init(TerrainComponent      terrainComponent,
+                         WaterSurfaceComponent waterComponent,
+                         TerrainSkinComponent  terrainSkinComponent,
+                         Matrix world)
         {
-            this.terrainComponent = terrainComponent;
-            this.waterComponent   = waterComponent;
-            this.World            = world;
+            this.terrainComponent     = terrainComponent;
+            this.waterComponent       = waterComponent;
+            this.terrainSkinComponent = terrainSkinComponent;
+            this.World                = world;
         }
         /****************************************************************************/
 
@@ -46,6 +52,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             terrainComponent.ReleaseMe();
             waterComponent.ReleaseMe();
+            terrainSkinComponent.ReleaseMe();
         }
         /****************************************************************************/
 
@@ -83,6 +90,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.WTextureTiling      = waterComponent.TextureTiling;
             data.ClipPlaneAdjustment = waterComponent.ClipPlaneAdjustment;
             data.SpecularStength     = waterComponent.SpecularStrength;
+
+            data.Elasticity          = terrainSkinComponent.Elasticity;
+            data.StaticRoughness     = terrainSkinComponent.StaticRoughness;
+            data.DynamicRoughness    = terrainSkinComponent.DynamicRoughness;
 
             return data;
         }
@@ -148,6 +159,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float ClipPlaneAdjustment { get; set; }
         [CategoryAttribute("Water Surface")]
         public float SpecularStength { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public float Elasticity { get; set; }
+        [CategoryAttribute("Physics")]
+        public float StaticRoughness { get; set; }
+        [CategoryAttribute("Physics")]
+        public float DynamicRoughness { get; set; }
         /****************************************************************************/
 
     }

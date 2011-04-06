@@ -9,6 +9,7 @@ using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
+using PlagueEngine.Resources;
 
 
 /************************************************************************************/
@@ -36,16 +37,15 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         ///  Constructor
         /****************************************************************************/
-        public PhysicsManager()
+        public PhysicsManager(ContentManager content)
         {
-            physicsComponentFactory       = new PhysicsComponentFactory();
+            physicsComponentFactory       = new PhysicsComponentFactory(content);
             physicsSystem                 = new PhysicsSystem();
             
             physicsSystem.CollisionSystem = new CollisionSystemSAP();
             
             physicsSystem.SolverType = PhysicsSystem.Solver.Normal;
             physicsSystem.EnableFreezing                = true;                       
-            //physicsSystem.IsShockStepEnabled            = true;
             physicsSystem.CollisionSystem.UseSweepTests = true;
             
             physicsSystem.NumCollisionIterations           = 1;
