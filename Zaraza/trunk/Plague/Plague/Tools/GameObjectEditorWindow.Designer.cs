@@ -403,7 +403,7 @@
             // checkBoxShowCollisionSkin
             // 
             this.checkBoxShowCollisionSkin.AutoSize = true;
-            this.checkBoxShowCollisionSkin.Location = new System.Drawing.Point(199, 17);
+            this.checkBoxShowCollisionSkin.Location = new System.Drawing.Point(199, 13);
             this.checkBoxShowCollisionSkin.Name = "checkBoxShowCollisionSkin";
             this.checkBoxShowCollisionSkin.Size = new System.Drawing.Size(115, 17);
             this.checkBoxShowCollisionSkin.TabIndex = 5;

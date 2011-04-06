@@ -274,11 +274,12 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {            
-           
+            try
+            {
                 this.currentObject.Type = currentClassName.ClassType;
                 currentEditGameObject=this.factory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
-                
+               
                 if (fixedGameObjectProperties.ContainsKey(currentEditGameObject.ID))
                 {
                     currentEditGameObject.Yaw = fixedGameObjectProperties[currentEditGameObject.ID].rotation.X;
@@ -303,7 +304,11 @@ namespace PlagueEngine.Tools
                 comboboxGameObjectId.SelectedIndex = comboboxGameObjectId.Items.Count - 1;
                 
                
-     
+            }
+            catch(Exception execption)
+            {
+                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n"+execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
 
         }
