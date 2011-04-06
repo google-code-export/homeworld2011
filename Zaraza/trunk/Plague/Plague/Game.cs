@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.Resources;
@@ -149,6 +150,17 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Update(GameTime gameTime)
         {
+            KeyboardState state = Keyboard.GetState();
+
+            if (state.IsKeyDown(Keys.F1))
+            {
+                renderer.debugDrawer.Disable();
+            }
+            else
+            {
+                renderer.debugDrawer.Enable();
+            }
+
             Diagnostics.Update(gameTime.ElapsedGameTime);
             TimeControl.Update(gameTime.ElapsedGameTime);
             physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);

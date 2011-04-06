@@ -50,8 +50,9 @@ namespace PlagueEngine.Physics
             skin = new PlagueEngineCollisionSkin(gameObject, body);
             body.CollisionSkin = skin;
 
-            this.mass = mass;
-            body.Immovable = immovable;
+            this.mass       = mass;
+            this.material   = material;
+            body.Immovable  = immovable;
 
             physicsManager.rigidBodies.Add(this);
         }

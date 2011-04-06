@@ -45,14 +45,15 @@ namespace PlagueEngine.Physics
             
             physicsSystem.SolverType = PhysicsSystem.Solver.Normal;
             physicsSystem.EnableFreezing                = true;                       
-            physicsSystem.IsShockStepEnabled            = true;
+            //physicsSystem.IsShockStepEnabled            = true;
             physicsSystem.CollisionSystem.UseSweepTests = true;
             
-            physicsSystem.NumCollisionIterations           = 10;
-            physicsSystem.NumContactIterations             = 10;
-            physicsSystem.NumPenetrationRelaxtionTimesteps = 15;
+            physicsSystem.NumCollisionIterations           = 1;
+            physicsSystem.NumContactIterations             = 1;
+            physicsSystem.NumPenetrationRelaxtionTimesteps = 1;
 
-            RigidBodyComponent.physicsManager = this;
+            RigidBodyComponent.physicsManager     = this;
+            CollisionSkinComponent.physicsManager = this;
         }
         /****************************************************************************/
 
@@ -62,7 +63,10 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void Update(float timeStep)
         {
-            PhysicsSystem.CurrentPhysicsSystem.Integrate(timeStep);
+            if (timeStep < 1.0f / 60.0f) physicsSystem.Integrate(timeStep);
+            else physicsSystem.Integrate(1.0f / 60.0f);
+
+            //PhysicsSystem.CurrentPhysicsSystem.Integrate(timeStep);
             
             foreach (RigidBodyComponent rigidBody in rigidBodies)
             {       
