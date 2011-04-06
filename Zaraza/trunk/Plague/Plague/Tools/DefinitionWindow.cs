@@ -105,8 +105,8 @@ namespace PlagueEngine.Tools
                     }
 
 
-                    field.value.Location = new Point(180, 35 + 25 * i);
-                    field.value.Size = new Size(80, 20);
+                    field.value.Location = new Point(150, 35 + 25 * i);
+                    field.value.Size = new Size(110, 20);
                     
                     field.checkbox.Location = new Point(270, 35 + 25 * i);
                     field.checkbox.Checked = false;

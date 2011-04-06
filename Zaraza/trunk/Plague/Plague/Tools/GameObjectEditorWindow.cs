@@ -19,14 +19,7 @@ using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input;
 using PlagueEngine.Input.Components;
 using Microsoft.Xna.Framework;
-
-
-// TODO: możliwośc robienia definicji z istniejącego obiektu (czyli podczas edytowania)
-// TODO: mozliwość zablokowania automatycznego edytowania obiektu, tzn blokujemy obiekt, i jak zmieniamy jakies dane to nie są one od razu nadawane, tylko po odblokowaniu, bądź naciśnięciu klawisza "Force Update"
-// TODO: klawisz "force update", który nadaje zmiany obiektowi nawet gdy wartości w property grid nie zmieniły się
-// TODO: "Save As..." do zapisywania leveli
-// TODO: jak tworzymy nowy obiekt w to po jego utworzeniu znika property grid z poprzendimi danymi które wprowadziliśmy
-// TODO: Do edycji domyślnei wybierany obiekt który ostatnio utworzyliśmy
+using PlagueEngine.Rendering;
 
 
 /********************************************************************************/
@@ -78,7 +71,7 @@ namespace PlagueEngine.Tools
         private List<gameObjectsClassName> gameObjectClassNames = new List<gameObjectsClassName>();
         private ContentManager contentManager = null;
         private GameObjectsFactory factory = null;
-
+        private Renderer renderer = null;
 
         private gameObjectsClassName currentClassName = null;
         private GameObjectInstanceData currentObject = null;
@@ -96,7 +89,7 @@ namespace PlagueEngine.Tools
 
         //pola do zakladki edytuj
         private GameObjectInstanceData currentEditGameObject = null;
-        private FixedGameObjectProperties fixedGameObjectProperties = new FixedGameObjectProperties();
+        private Dictionary<uint, FixedGameObjectProperties> fixedGameObjectProperties = new Dictionary<uint, FixedGameObjectProperties>();
         /********************************************************************************/
 
 
@@ -105,13 +98,13 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager)
+        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,Renderer renderer)
         {
             InitializeComponent();
             FillClassNames();
             this.factory = factory;
             this.contentManager = contentManager;
-       
+            this.renderer = renderer;
 
 
             foreach (var gameObject in gameObjectClassNames)
@@ -281,29 +274,36 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {            
-            try
-            {
+           
                 this.currentObject.Type = currentClassName.ClassType;
-                this.factory.Create(currentObject);
-                this.propertyGrid1.SelectedObject = null;
-
-                this.ComboboxDefinitions.SelectedIndex = -1;//2x, tak musi byc
-                this.ComboboxDefinitions.SelectedIndex = -1;
-                this.gameObjectsName.SelectedIndex = -1;
-                this.gameObjectsName.SelectedIndex = -1;
-
-                this.ComboboxDefinitions.Items.Clear();
+                currentEditGameObject=this.factory.Create(currentObject).GetData();
+                propertyGrid2.SelectedObject = currentEditGameObject;
+                
+                if (fixedGameObjectProperties.ContainsKey(currentEditGameObject.ID))
+                {
+                    currentEditGameObject.Yaw = fixedGameObjectProperties[currentEditGameObject.ID].rotation.X;
+                    currentEditGameObject.Pitch = fixedGameObjectProperties[currentEditGameObject.ID].rotation.Y;
+                    currentEditGameObject.Roll = fixedGameObjectProperties[currentEditGameObject.ID].rotation.Z;
+                    currentEditGameObject.Scale = fixedGameObjectProperties[currentEditGameObject.ID].scale;
+                }
+                else
+                {
+                    FixedGameObjectProperties tmp = new FixedGameObjectProperties();
+                    tmp.rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
+                    tmp.scale = currentEditGameObject.Scale;
+                    fixedGameObjectProperties.Add(currentEditGameObject.ID, tmp);
+                }
+                
 
                 levelSaved = false;
 
-                currentDefinition = null;
-
+              
+                comboBoxFilterId.SelectedItem = "Show all";
                 LoadFilteredID(null, null);
-            }
-            catch(Exception execption)
-            {
-                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n"+execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                comboboxGameObjectId.SelectedIndex = comboboxGameObjectId.Items.Count - 1;
+                
+               
+     
 
 
         }
@@ -428,6 +428,7 @@ namespace PlagueEngine.Tools
                         
                         this.currentLevel.LoadLevel(contentManager.LoadLevel(this.currentLevelName));
                         LoadFilteredID(null,null);
+                        fixedGameObjectProperties.Clear();
                     }
                     catch (Exception ex)
                     {
@@ -667,11 +668,27 @@ namespace PlagueEngine.Tools
                             god.Properties.Add(field.label.Text, currentClassName.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
                         }
                     }
+
+                    if(contentManager.GameObjectsDefinitions.ContainsKey(god.Name))
+                    {
+                        DialogResult dr=MessageBox.Show("Definition exists. Override?","",MessageBoxButtons.YesNo);
+                        if(dr==DialogResult.Yes)
+                        {
+                            contentManager.GameObjectsDefinitions.Remove(god.Name);
+                            contentManager.GameObjectsDefinitions.Add(god.Name, god);
+                            contentManager.SaveGameObjectsDefinitions();
+                        }
+                        
+                    }
+                    else
+                    {
                     contentManager.GameObjectsDefinitions.Add(god.Name, god);
                     contentManager.SaveGameObjectsDefinitions();
 
 
                     ComboboxDefinitions.Items.Add(definitionWindow.textbox.Text);
+
+                    }
 
 
                 }
@@ -831,10 +848,21 @@ namespace PlagueEngine.Tools
 
                 currentEditGameObject = factory.GameObjects[id].GetData();
                 currentEditGameObject.Position = currentEditGameObject.World.Translation;
-                currentEditGameObject.Yaw = fixedGameObjectProperties.rotation.X;
-                currentEditGameObject.Pitch = fixedGameObjectProperties.rotation.Y;
-                currentEditGameObject.Roll = fixedGameObjectProperties.rotation.Z;
-                currentEditGameObject.Scale = fixedGameObjectProperties.scale;
+
+                if (fixedGameObjectProperties.ContainsKey(currentEditGameObject.ID))
+                {
+                    currentEditGameObject.Yaw = fixedGameObjectProperties[currentEditGameObject.ID].rotation.X;
+                    currentEditGameObject.Pitch = fixedGameObjectProperties[currentEditGameObject.ID].rotation.Y;
+                    currentEditGameObject.Roll = fixedGameObjectProperties[currentEditGameObject.ID].rotation.Z;
+                    currentEditGameObject.Scale = fixedGameObjectProperties[currentEditGameObject.ID].scale;
+                }
+                else
+                {
+                    FixedGameObjectProperties tmp=new FixedGameObjectProperties();
+                    tmp.rotation= new Vector3(currentEditGameObject.Yaw,currentEditGameObject.Pitch,currentEditGameObject.Roll);
+                    tmp.scale=currentEditGameObject.Scale;
+                    fixedGameObjectProperties.Add(currentEditGameObject.ID, tmp);
+                }
                 propertyGrid2.SelectedObject = currentEditGameObject;
             }
             else
@@ -852,13 +880,16 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void propertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            fixedGameObjectProperties.rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
-            fixedGameObjectProperties.scale = currentEditGameObject.Scale;
-            
-            
-            factory.GameObjects[currentEditGameObject.ID].Dispose();
-            factory.GameObjects.Remove(currentEditGameObject.ID);
-            factory.Create(currentEditGameObject);
+            if (!checkBoxDisableEditing.Checked)
+            {
+                fixedGameObjectProperties[currentEditGameObject.ID].rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
+                fixedGameObjectProperties[currentEditGameObject.ID].scale = currentEditGameObject.Scale;
+
+
+                factory.GameObjects[currentEditGameObject.ID].Dispose();
+                factory.GameObjects.Remove(currentEditGameObject.ID);
+                factory.Create(currentEditGameObject);
+            }
         }
         /********************************************************************************/
 
@@ -913,6 +944,158 @@ namespace PlagueEngine.Tools
                 }
             }
         }
+
+        private void checkBoxDisableEditing_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!checkBoxDisableEditing.Checked)
+            {
+                fixedGameObjectProperties[currentEditGameObject.ID].rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
+                fixedGameObjectProperties[currentEditGameObject.ID].scale = currentEditGameObject.Scale;
+
+
+                factory.GameObjects[currentEditGameObject.ID].Dispose();
+                factory.GameObjects.Remove(currentEditGameObject.ID);
+                factory.Create(currentEditGameObject);
+            }
+        }
+
+        private void buttonForceUpdate_Click(object sender, EventArgs e)
+        {
+            fixedGameObjectProperties[currentEditGameObject.ID].rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
+            fixedGameObjectProperties[currentEditGameObject.ID].scale = currentEditGameObject.Scale;
+
+
+            factory.GameObjects[currentEditGameObject.ID].Dispose();
+            factory.GameObjects.Remove(currentEditGameObject.ID);
+            factory.Create(currentEditGameObject);
+        }
+
+        private void buttonCreateDefinitionEdit_Click(object sender, EventArgs e)
+        {
+            if (currentEditGameObject != null)
+            {
+                PropertyInfo[] PropertyInfo = currentEditGameObject.GetType().GetProperties();
+                List<PropertyInfo> list = PropertyInfo.ToList<PropertyInfo>();
+
+                for (int i = 0; i < list.Count; i++)//zagniezdzanie definicji nam chyba nie jest potrzebne
+                {
+
+                    if (list[i].Name == "definition" || list[i].Name == "Definition" || list[i].Name == "Yaw" || list[i].Name == "Roll" || list[i].Name == "Pitch" || list[i].Name == "Position" || list[i].Name == "Scale")
+                    {
+                        list.RemoveAt(i);
+                        --i;
+                    }
+                }
+
+                DefinitionWindow definitionWindow = new DefinitionWindow(list, this.currentEditGameObject);
+                definitionWindow.ShowDialog();
+
+                if (!definitionWindow.canceled)
+                {
+                    GameObjectDefinition god = new GameObjectDefinition();
+                    god.Name = definitionWindow.textbox.Text;
+                    god.GameObjectClass = this.currentClassName.className;
+
+                    foreach (DefinitionWindow.Field field in definitionWindow.fields)
+                    {
+                        if (field.checkbox.Checked)
+                        {
+                            god.Properties.Add(field.label.Text, currentClassName.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
+                        }
+                    }
+                    contentManager.GameObjectsDefinitions.Add(god.Name, god);
+                    contentManager.SaveGameObjectsDefinitions();
+
+
+                    ComboboxDefinitions.Items.Add(definitionWindow.textbox.Text);
+
+
+                }
+
+            }
+        }
+
+        private void buttonSaveAs_Click(object sender, EventArgs e)
+        {
+
+
+                        LevelNameMessageBox box = new LevelNameMessageBox("Level name:");
+                        box.ShowDialog();
+
+                        if (!box.canceled)
+                        {
+
+                            Regex reg = new Regex(@""+levelExtension+"$");
+                            if(!reg.IsMatch(box.levelName))
+                            {
+                                currentLevelName = box.levelName + levelExtension;
+                            }
+                            else
+                            {
+                                currentLevelName = box.levelName;
+                            }
+                            
+                            contentManager.SaveLevel( currentLevelName, currentLevel.SaveLevel());
+                            listBoxLevelNames.Items.Add(currentLevelName);
+                        }
+                
+          
+
+
+
+        }
+
+        private void propertyGrid1_PropertyValueChanged_1(object s, PropertyValueChangedEventArgs e)
+        {
+            if (currentDefinition != null)
+            {
+                bool changed = false;
+                foreach (String name in contentManager.GameObjectsDefinitions.Keys)
+                {
+                    if (name == currentDefinition.Name)
+                    {
+
+                        PropertyInfo[] pf = currentObject.GetType().GetProperties();
+                        foreach (PropertyInfo Property in pf)
+                        {
+                            if (contentManager.GameObjectsDefinitions[name].Properties.ContainsKey(Property.Name))
+                            {
+                                if (currentObject.GetType().GetProperty(Property.Name).GetValue(currentObject, null).ToString() != contentManager.GameObjectsDefinitions[name].Properties[Property.Name].ToString())
+                                {
+                                    changed = true;
+
+                                }
+                            }
+                        }
+                    }
+                }
+                if (changed)
+                {
+                    currentObject.GetType().GetProperty("definition").SetValue(currentObject, null, null);
+                    propertyGrid1.Refresh();
+                }
+            }
+        }
+
+        private void buttonCommitMeshTransforms_Click(object sender, EventArgs e)
+        {
+            renderer.batchedMeshes.CommitMeshTransforms();
+        }
+
+        private void checkBoxShowCollisionSkin_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxShowCollisionSkin.Checked)
+            {
+                renderer.debugDrawer.Enable();
+            }
+            else
+            {
+                renderer.debugDrawer.Disable();
+            }
+        }
+
+
+
 
 
         /********************************************************************************/
