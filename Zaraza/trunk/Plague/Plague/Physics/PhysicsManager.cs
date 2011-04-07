@@ -38,19 +38,21 @@ namespace PlagueEngine.Physics
         ///  Constructor
         /****************************************************************************/
         public PhysicsManager(ContentManager content)
-        {
+        {                       
+
+
             physicsComponentFactory       = new PhysicsComponentFactory(content);
             physicsSystem                 = new PhysicsSystem();
             
-            physicsSystem.CollisionSystem = new CollisionSystemSAP();
+            physicsSystem.CollisionSystem = new CollisionSystemBrute();
             
-            physicsSystem.SolverType = PhysicsSystem.Solver.Normal;
-            physicsSystem.EnableFreezing                = true;                       
+            physicsSystem.SolverType = PhysicsSystem.Solver.Accumulated;
+            physicsSystem.EnableFreezing                = true;
             physicsSystem.CollisionSystem.UseSweepTests = true;
             
-            physicsSystem.NumCollisionIterations           = 1;
-            physicsSystem.NumContactIterations             = 1;
-            physicsSystem.NumPenetrationRelaxtionTimesteps = 1;
+            physicsSystem.NumCollisionIterations           = 10;
+            physicsSystem.NumContactIterations             = 10;
+            physicsSystem.NumPenetrationRelaxtionTimesteps = 15;
 
             RigidBodyComponent.physicsManager     = this;
             CollisionSkinComponent.physicsManager = this;
