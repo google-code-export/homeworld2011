@@ -94,13 +94,13 @@ namespace PlagueEngine
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
-            testLevel.LoadLevel(contentManager.LoadLevel("ttt.lvl"));
+            testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
             
             renderer.batchedMeshes.CommitMeshTransforms();
 
 
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager,renderer);
-            gameObjectEditor.setLevel(testLevel, "ttt.lvl");
+            gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
 
 
             
