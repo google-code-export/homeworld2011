@@ -34,7 +34,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(TerrainComponent      terrainComponent,
                          WaterSurfaceComponent waterComponent,
-                         TerrainSkinComponent  terrainSkinComponent,
+                         TerrainSkinComponent terrainSkinComponent,
                          Matrix world)
         {
             this.terrainComponent     = terrainComponent;
@@ -91,9 +91,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ClipPlaneAdjustment = waterComponent.ClipPlaneAdjustment;
             data.SpecularStength     = waterComponent.SpecularStrength;
 
-            data.Elasticity          = terrainSkinComponent.Elasticity;
-            data.StaticRoughness     = terrainSkinComponent.StaticRoughness;
-            data.DynamicRoughness    = terrainSkinComponent.DynamicRoughness;
+            data.Elasticity = terrainSkinComponent.Elasticity;
+            data.StaticRoughness = terrainSkinComponent.StaticRoughness;
+            data.DynamicRoughness = terrainSkinComponent.DynamicRoughness;
 
             return data;
         }
@@ -160,12 +160,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Water Surface")]
         public float SpecularStength { get; set; }
 
+
+
         [CategoryAttribute("Physics")]
         public float Elasticity { get; set; }
         [CategoryAttribute("Physics")]
         public float StaticRoughness { get; set; }
         [CategoryAttribute("Physics")]
         public float DynamicRoughness { get; set; }
+
         /****************************************************************************/
 
     }

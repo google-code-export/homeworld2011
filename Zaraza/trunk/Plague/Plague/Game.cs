@@ -90,11 +90,11 @@ namespace PlagueEngine
             
             testLevel = new Level(gameObjectsFactory);
             
-            //testLevel.PutSomeObjects();
+            testLevel.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
-            testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
+            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
             
             renderer.batchedMeshes.CommitMeshTransforms();
 

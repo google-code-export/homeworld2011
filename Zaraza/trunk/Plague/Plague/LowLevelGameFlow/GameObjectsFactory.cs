@@ -93,6 +93,10 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "Sunlight":
                     result = CreateSunlight(data);
                     break;
+                case "SquareBodyMesh":
+                    result = CreateSquareBodyMesh(data);
+                    break;
+
                 case "CylindricalBodyMesh":
                     result = CreateCylindricalBodyMesh(data);
                     break;
@@ -101,6 +105,85 @@ namespace PlagueEngine.LowLevelGameFlow
             if (result == null) return null;
 
             if (gameObjects != null) gameObjects.Add(result.ID, result);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+
+
+        /****************************************************************************/
+        /// Create Cylindrical Body Mesh
+        /****************************************************************************/
+        public CylindricalBodyMesh CreateCylindricalBodyMesh(GameObjectInstanceData data)
+        {
+            CylindricalBodyMesh result = new CylindricalBodyMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            CylindricalBodyMeshData sbmdata = (CylindricalBodyMeshData)data;
+
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       sbmdata.Model,
+                                                                       sbmdata.Diffuse,
+                                                                       sbmdata.Specular,
+                                                                       sbmdata.Normals,
+                                                                       InstancingMode),
+                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
+                        sbmdata.Mass,
+                        sbmdata.Radius,
+                        sbmdata.Lenght,
+                        sbmdata.Elasticity,
+                        sbmdata.StaticRoughness,
+                        sbmdata.DynamicRoughness,
+                        sbmdata.Immovable,
+                        sbmdata.World),
+                        sbmdata.World);
+
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Create Square Body Mesh
+        /****************************************************************************/
+        public SquareBodyMesh CreateSquareBodyMesh(GameObjectInstanceData data)
+        {
+            SquareBodyMesh result = new SquareBodyMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            SquareBodyMeshData sbmdata = (SquareBodyMeshData)data;
+
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       sbmdata.Model,
+                                                                       sbmdata.Diffuse,
+                                                                       sbmdata.Specular,
+                                                                       sbmdata.Normals,
+                                                                       InstancingMode),
+                        physicsComponentFactory.CreateSquareBodyComponent(result,
+                        sbmdata.Mass,
+                        sbmdata.Lenght,
+                        sbmdata.Height,
+                        sbmdata.Width,
+                        sbmdata.Elasticity,
+                        sbmdata.StaticRoughness,
+                        sbmdata.DynamicRoughness,
+                        sbmdata.Immovable,
+                        sbmdata.World),
+                        sbmdata.World);
+
 
             return result;
         }
@@ -323,40 +406,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
-        /****************************************************************************/
-        /// Create Cylindrical Body Mesh
-        /****************************************************************************/
-        public CylindricalBodyMesh CreateCylindricalBodyMesh(GameObjectInstanceData data)
-        {
-            CylindricalBodyMesh result = new CylindricalBodyMesh();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            CylindricalBodyMeshData cbmdata = (CylindricalBodyMeshData)data;
-
-            InstancingModes InstancingMode;
-            InstancingMode = Renderer.UIntToInstancingMode(cbmdata.InstancingMode);
-
-            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       cbmdata.Model,
-                                                                       cbmdata.Diffuse,
-                                                                       cbmdata.Specular,
-                                                                       cbmdata.Normals,
-                                                                       InstancingMode),
-                        physicsComponentFactory.CreateCylinderBodyComponent(result,
-                                                                            cbmdata.Mass,
-                                                                            cbmdata.Radius,
-                                                                            cbmdata.Length,
-                                                                            cbmdata.Elasticity,
-                                                                            cbmdata.StaticRoughness,
-                                                                            cbmdata.DynamicRoughness,
-                                                                            cbmdata.Immovable,
-                                                                            cbmdata.World),
-                                                                            cbmdata.World);
-
-            return result;
-        }
-        /****************************************************************************/
+       
 
         
         /****************************************************************************/

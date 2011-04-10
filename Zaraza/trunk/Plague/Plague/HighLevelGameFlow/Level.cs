@@ -99,20 +99,35 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         public void PutSomeObjects()
         {
-            StaticMeshData data = new StaticMeshData();
 
-            data.Type = (typeof(StaticMesh));
-            data.Definition = "Rusty Barrel";            
-        
-            for (int i = 0; i < 10; i++)
+
+
+
+
+            CylindricalBodyMeshData cbdata = new CylindricalBodyMeshData();
+            cbdata.Type = (typeof(CylindricalBodyMesh));
+            cbdata.Model = "Barrel";
+            cbdata.Diffuse = "Barrel_diffuse";
+            cbdata.Specular = "Barrel_specular";
+            cbdata.Normals = "Barrel_normals";
+            cbdata.DynamicRoughness = 0.7f;
+            cbdata.Elasticity = 0.1f;
+            cbdata.StaticRoughness = 0.6f;
+            cbdata.Radius = 1.1f;
+            cbdata.Lenght = 3.1f;
+            cbdata.Mass = 1.0f;
+            cbdata.Immovable = false;
+
+
+            for (int i = 0; i < 5; i++)
             {
-                for (int j = 0; j < 10; j++)
+                for (int j = 0; j < 5; j++)
                 {
-                    data.World = Matrix.CreateTranslation(i * 2.5f, 39, j * 2.5f);
-                    gameObjectsFactory.Create(data);
+                    cbdata.World = Matrix.CreateTranslation(190 + i * 5.5f, 60,30+ j * 4.5f);
+                    gameObjectsFactory.Create(cbdata);
 
                 }
-            }                               
+            }
 
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
@@ -131,8 +146,8 @@ namespace PlagueEngine.HighLevelGameFlow
             
             FreeCameraData fcdata = new FreeCameraData();
             fcdata.Type = typeof(FreeCamera);
-            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(-20,  50, -20),
-                                                             new Vector3(  0,   0,   0), 
+            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(190,  80, 10),
+                                                             new Vector3(  200,   10,   70), 
                                                              new Vector3(  0,   1,   0)));
             fcdata.MovementSpeed = 0.05f;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
@@ -169,6 +184,10 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.Bias = 0.4f;
             tdata.SpecularStength = 500;
             tdata.ClipPlaneAdjustment = 0.1f;
+
+            tdata.Elasticity = 0.1f;
+            tdata.StaticRoughness = 0.9f;
+            tdata.DynamicRoughness = 0.9f;
 
             gameObjectsFactory.Create(tdata);
 
