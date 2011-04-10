@@ -41,33 +41,25 @@ namespace PlagueEngine.Physics
 
 
         /****************************************************************************/
-        /// Create Cylinder Body Component
+        /// Create Square Body Component
         /****************************************************************************/
-        public CylinderBodyComponent CreateCylinderBodyComponent(   GameObjectInstance gameObject,
-                                                                    float mass,
-                                                                    float radius,
-                                                                    float length,
-                                                                    float elasticity,
-                                                                    float staticRoughness,
-                                                                    float dynamicRoughness,                                
-                                                                    bool  immovable,
-                                                                    Matrix world)
+        public SquareBodyComponent CreateSquareBodyComponent(GameObjectInstance gameObject,
+                                    float mass,
+                                    float length,
+                                    float height,
+                                    float width,  
+                                    float elasticity,
+                                    float staticRoughness,
+                                    float dynamicRoughness, 
+                                    bool immovable,
+                                    Matrix world)
         {
-            MaterialProperties material = new MaterialProperties(elasticity,
-                                                                 staticRoughness,
-                                                                 dynamicRoughness);
-            
-            CylinderBodyComponent result = new CylinderBodyComponent(gameObject,
-                                                                     material,                                                     
-                                                                     mass,
-                                                                     immovable,
-                                                                     radius,
-                                                                     length,                                                                     
-                                                                     world);
+            MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
+            SquareBodyComponent result = new SquareBodyComponent(gameObject, mass, length, height, width, material, immovable, world);
             return result;
         }
-        /****************************************************************************/
+
 
 
         /****************************************************************************/
@@ -97,9 +89,39 @@ namespace PlagueEngine.Physics
             return result;
         }
         /****************************************************************************/
-                
+
+
+
+           
+        /****************************************************************************/
+        /// Create Cylidrical Body Component
+        /****************************************************************************/
+        public CylindricalBodyComponent CreateCylindricalBodyComponent(GameObjectInstance gameObject,
+                                    float mass,
+                                    float radius,
+                                    float length,
+                                    float elasticity,
+                                    float staticRoughness,
+                                    float dynamicRoughness, 
+                                    bool immovable,
+                                    Matrix world)
+        {
+            MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
+
+            CylindricalBodyComponent result = new CylindricalBodyComponent(gameObject, mass, radius, length, material, immovable, world);
+            return result;
+        }
+            /********************************************************************************/
+
+
+    }
+
+        /********************************************************************************/
+
+
     }
     /********************************************************************************/
 
-}
-/************************************************************************************/
+
+
+

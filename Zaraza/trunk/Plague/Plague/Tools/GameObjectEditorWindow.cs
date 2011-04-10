@@ -58,11 +58,7 @@ namespace PlagueEngine.Tools
         }
         /********************************************************************************/
 
-        public class FixedGameObjectProperties
-        {
-            public Vector3 rotation = Vector3.Zero;
-            public Vector3 scale = Vector3.One;
-        }
+
 
 
         /********************************************************************************/
@@ -89,7 +85,6 @@ namespace PlagueEngine.Tools
 
         //pola do zakladki edytuj
         private GameObjectInstanceData currentEditGameObject = null;
-        private Dictionary<uint, FixedGameObjectProperties> fixedGameObjectProperties = new Dictionary<uint, FixedGameObjectProperties>();
         /********************************************************************************/
 
 
@@ -235,12 +230,19 @@ namespace PlagueEngine.Tools
             Sunlight.dataClassType = typeof(SunlightData);
             gameObjectClassNames.Add(Sunlight);
 
-
             gameObjectsClassName CylindricalBodyMesh = new gameObjectsClassName();
             CylindricalBodyMesh.className = "CylindricalBodyMesh";
             CylindricalBodyMesh.ClassType = typeof(CylindricalBodyMesh);
             CylindricalBodyMesh.dataClassType = typeof(CylindricalBodyMeshData);
             gameObjectClassNames.Add(CylindricalBodyMesh);
+
+
+            gameObjectsClassName SquareBodyMesh = new gameObjectsClassName();
+            SquareBodyMesh.className = "SquareBodyMesh";
+            SquareBodyMesh.ClassType = typeof(SquareBodyMesh);
+            SquareBodyMesh.dataClassType = typeof(SquareBodyMeshData);
+            gameObjectClassNames.Add(SquareBodyMesh);
+
 
         }
         /********************************************************************************/
@@ -279,21 +281,7 @@ namespace PlagueEngine.Tools
                 this.currentObject.Type = currentClassName.ClassType;
                 currentEditGameObject=this.factory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
-               
-                if (fixedGameObjectProperties.ContainsKey(currentEditGameObject.ID))
-                {
-                    currentEditGameObject.Yaw = fixedGameObjectProperties[currentEditGameObject.ID].rotation.X;
-                    currentEditGameObject.Pitch = fixedGameObjectProperties[currentEditGameObject.ID].rotation.Y;
-                    currentEditGameObject.Roll = fixedGameObjectProperties[currentEditGameObject.ID].rotation.Z;
-                    currentEditGameObject.Scale = fixedGameObjectProperties[currentEditGameObject.ID].scale;
-                }
-                else
-                {
-                    FixedGameObjectProperties tmp = new FixedGameObjectProperties();
-                    tmp.rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
-                    tmp.scale = currentEditGameObject.Scale;
-                    fixedGameObjectProperties.Add(currentEditGameObject.ID, tmp);
-                }
+             
                 
 
                 levelSaved = false;
@@ -433,7 +421,7 @@ namespace PlagueEngine.Tools
                         
                         this.currentLevel.LoadLevel(contentManager.LoadLevel(this.currentLevelName));
                         LoadFilteredID(null,null);
-                        fixedGameObjectProperties.Clear();
+                       
                     }
                     catch (Exception ex)
                     {
@@ -854,20 +842,7 @@ namespace PlagueEngine.Tools
                 currentEditGameObject = factory.GameObjects[id].GetData();
                 currentEditGameObject.Position = currentEditGameObject.World.Translation;
 
-                if (fixedGameObjectProperties.ContainsKey(currentEditGameObject.ID))
-                {
-                    currentEditGameObject.Yaw = fixedGameObjectProperties[currentEditGameObject.ID].rotation.X;
-                    currentEditGameObject.Pitch = fixedGameObjectProperties[currentEditGameObject.ID].rotation.Y;
-                    currentEditGameObject.Roll = fixedGameObjectProperties[currentEditGameObject.ID].rotation.Z;
-                    currentEditGameObject.Scale = fixedGameObjectProperties[currentEditGameObject.ID].scale;
-                }
-                else
-                {
-                    FixedGameObjectProperties tmp=new FixedGameObjectProperties();
-                    tmp.rotation= new Vector3(currentEditGameObject.Yaw,currentEditGameObject.Pitch,currentEditGameObject.Roll);
-                    tmp.scale=currentEditGameObject.Scale;
-                    fixedGameObjectProperties.Add(currentEditGameObject.ID, tmp);
-                }
+           
                 propertyGrid2.SelectedObject = currentEditGameObject;
             }
             else
@@ -887,8 +862,7 @@ namespace PlagueEngine.Tools
         {
             if (!checkBoxDisableEditing.Checked)
             {
-                fixedGameObjectProperties[currentEditGameObject.ID].rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
-                fixedGameObjectProperties[currentEditGameObject.ID].scale = currentEditGameObject.Scale;
+                
 
 
                 factory.GameObjects[currentEditGameObject.ID].Dispose();
@@ -954,10 +928,7 @@ namespace PlagueEngine.Tools
         {
             if (!checkBoxDisableEditing.Checked)
             {
-                fixedGameObjectProperties[currentEditGameObject.ID].rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
-                fixedGameObjectProperties[currentEditGameObject.ID].scale = currentEditGameObject.Scale;
-
-
+              
                 factory.GameObjects[currentEditGameObject.ID].Dispose();
                 factory.GameObjects.Remove(currentEditGameObject.ID);
                 factory.Create(currentEditGameObject);
@@ -966,10 +937,7 @@ namespace PlagueEngine.Tools
 
         private void buttonForceUpdate_Click(object sender, EventArgs e)
         {
-            fixedGameObjectProperties[currentEditGameObject.ID].rotation = new Vector3(currentEditGameObject.Yaw, currentEditGameObject.Pitch, currentEditGameObject.Roll);
-            fixedGameObjectProperties[currentEditGameObject.ID].scale = currentEditGameObject.Scale;
-
-
+           
             factory.GameObjects[currentEditGameObject.ID].Dispose();
             factory.GameObjects.Remove(currentEditGameObject.ID);
             factory.Create(currentEditGameObject);

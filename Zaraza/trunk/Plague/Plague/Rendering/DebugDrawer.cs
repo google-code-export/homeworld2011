@@ -61,8 +61,10 @@ namespace PlagueEngine.Rendering
             this.basicEffect.Projection = projection;
             this.basicEffect.VertexColorEnabled = true;
 
+
             foreach (CollisionSkinComponent skin in physicsManager.collisionSkins)
             {
+                
                 AddShape(BodyRenderExtensions.GetLocalSkinWireframe(skin.Skin));
                 basicEffect.World = skin.GameObject.World;
                 basicEffect.CurrentTechnique.Passes[0].Apply();

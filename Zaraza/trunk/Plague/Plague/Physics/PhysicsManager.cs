@@ -54,7 +54,7 @@ namespace PlagueEngine.Physics
             physicsSystem.NumContactIterations             = 10;
             physicsSystem.NumPenetrationRelaxtionTimesteps = 15;
 
-            RigidBodyComponent.physicsManager     = this;
+            RigidBodyComponent.physicsManager = this;
             CollisionSkinComponent.physicsManager = this;
         }
         /****************************************************************************/
