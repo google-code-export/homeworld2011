@@ -11,6 +11,7 @@ Tabela ma prostą strukturę:
 
 
 || *DO ZROBIENIA* || *ROBIONE* || *PRZEZ KOGO* || *ZROBIONE* || *SPRAWDZIŁ* ||
+|| Rendering Konieczne ||
 ||  ||  ||  || Rendering _K_ *Kamery* ||  ||
 ||  ||  ||  || Rendering _K_ *Wyświetlanie modeli* ||  ||
 || Rendering _K_ *Wyświetlanie animowanych siatek* ||  ||  ||  ||  ||
@@ -19,6 +20,7 @@ Tabela ma prostą strukturę:
 || Rendering _K_ *Cienie* ||  ||  ||  ||  ||
 || Rendering _K_ *Emitery cząstek* ||  ||  ||  ||  ||
 || Rendering _K_ *Decal'e* ||  ||  ||  ||  ||
+|| Rendering Dodatkowe ||
 || Rendering _D_ *Efekty wolumetryczne* ||  ||  ||  ||  ||
 || Rendering _D_ *SSAO* ||  ||  ||  ||  ||
 || Rendering _D_ *Animacja obiektów (z poziomu silnika)* ||  ||  ||  ||  ||
