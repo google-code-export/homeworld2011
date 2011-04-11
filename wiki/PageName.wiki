@@ -1,0 +1,35 @@
+#summary Tablica wymagań i realizowanych cegiełek naszej aplikacji
+
+= Introduction =
+
+
+Systemy: Rendering,Audio,Fizyka,Front End,Input tworzone zgonie z komponentową konwencją. 
+Czyli każdy udostępnia komponenty realizujące określony zestaw zadań, oraz fabrykę komponentów. 
+
+Systemy Resources,Time Control, Events udostępniają swoje możliwości według uznania. 
+Events udostępnia interfejc realizowany przez GameObjectInstance. 
+
+Poniżej tabela z podziałem na wymagania konieczne (_K_) i dodatkowe (_D_)
+
+= Details =
+
+|| *Rendering* ||_K_||Kamery||Wyświetlanie modeli||Wyświetlanie animowanych siatek||Teren||Oświetlenie||Cienie||Emitery cząsteczek||Decal'e||    
+||         ||_D_||Efekty wolumetryczne||SSAO||Animacja obiektów (z poziomu silnika||Postprocess|| 
+    
+|| *Fizyka* ||_K_||Bryły kolizyjne||Fizyka ciał sztywnych||Teren||Reakcja na kolizje (delegaty)||Testowanie promieni||Testowanie obszarów||Kontrolery obiektów||
+||      ||_D_||Ragdoll||Rozpadające się obiekty||
+    
+|| *Audio* ||_K_||Odgrywanie ambientów||Źródła dźwięków|| 
+||     ||_D_||Efekty gloablne*||Efekty lokalne*|| 
+    
+|| *Input* ||_K_||Nasłuchiwanie myszy||Nasłuchiwanie klawiatury|| 
+||     ||_D_||mapowanie klawiszy||     
+|| *Front End* ||_K_||Kontrolki||HUD|| 
+|| *Resources* ||_K_||Przetwarzanie assetów||Serializacja danych|| 
+||         ||_D_||Profile|| 
+|| *Time Control* ||_K_||Zegary||Timery||Manipulacja Zegarem||    
+|| *Events* ||_K_||Rozsyłanie zdarzeń||Odbiór bezpośredni||Odbiór odroczony|| 
+||      ||_D_||Historia zdarzeń|| 
+    
+
+`*`) chociazby tłumienie dźwięków itd. 
