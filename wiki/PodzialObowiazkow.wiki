@@ -8,9 +8,9 @@ Tabela ma prostą strukturę:
 
 
 = Details =
-<table>
+<table border="2">
 <tr><td> *DO ZROBIENIA* </td><td> *ROBIONE* </td><td> *PRZEZ KOGO* </td><td> *ZROBIONE* </td><td> *SPRAWDZIŁ* </td></tr>
-<tr><td>*RENDERING*</td></tr>
+<tr><th><font color="red">*RENDERING*</font></th></tr>
 <tr><td>  </td><td>  </td><td>  </td><td>*Kamery* </td><td>  </td></tr>
 <tr><td>  </td><td>  </td><td>  </td><td>*Wyświetlanie modeli* </td><td>  </td></tr>
 <tr><td>*Wyświetlanie animowanych siatek* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
@@ -19,11 +19,11 @@ Tabela ma prostą strukturę:
 <tr><td>*Cienie* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>*Emitery cząstek* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>*Decal'e* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td>_D_ *Efekty wolumetryczne* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td>_D_ *SSAO* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td>Rendering _D_ *Animacja obiektów (z poziomu silnika)* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td>Rendering _D_ *Postprocess* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td>*FIZYKA*</td></tr>
+<tr><td>_Efekty wolumetryczne_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_SSAO_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_Animacja obiektów (z poziomu silnika)_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_Postprocess_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><th><font color="red">*FIZYKA*</font></th></tr>
 <tr><td>*Bryły kolizyjne* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>*Fizyka ciał sztywnych* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>*Teren* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
@@ -33,26 +33,31 @@ Tabela ma prostą strukturę:
 <tr><td>*Kontrolery dodatkowe* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>_Ragdoll_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>_Rozpadające się obiekty_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td>*AUDIO*</td></tr>
+<tr><th><font color="red">*AUDIO*</font></th></tr>
 <tr><td>*Odgrywanie ambientów* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>*Źródła dźwięków* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>_Efekty globalne`*`_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
 <tr><td>_Efekty lokalne`*`_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td>  </td><td>  </td><td> Andrzej </td><td> Input_K_ *Nasłuchiwanie myszy* </td><td> Krzysztof </td></tr>
-<tr><td>  </td><td>  </td><td> Andrzej </td><td> Input_K_ *Nasłuchiwanie klawiatury* </td><td> Krzysztof </td></tr>
-<tr><td> Input _D_ *Mapowanie klawiszy* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td> 11 kwie </td><td> Front End _K_ *Kontrolki* </td><td> Bartosz </td><td>  </td><td>  </td></tr>
-<tr><td> 11 kwie </td><td> Front End _K_ *HUD* </td><td> Bartosz </td><td>  </td><td>  </td></tr>
-<tr><td>  </td><td> Resources _K_ *Przetwarzanie assetów* </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td>  </td><td>  </td><td>  </td><td> Resources _K_ *Serializacja danych* </td><td>  </td></tr>
-<tr><td>  </td><td>  </td><td>  </td><td> Resources _D_ *Profile* </td><td>  </td></tr>
-<tr><td>  </td><td>  </td><td>  </td><td> Time Control _K_ *Zegary* </td><td>  </td></tr>
-<tr><td>  </td><td>  </td><td>  </td><td> Time Control _K_ *Timery* </td><td>  </td></tr>
-<tr><td>  </td><td>  </td><td>  </td><td> Time Control _K_ *Manipulacja Zegarem* </td><td>  </td></tr>
-<tr><td> Events _K_ *Rozsyłanie zdarzeń* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td> Events _K_ *Odbiór bezpośredni* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td> _K_ *Odbiór odroczony* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
-<tr><td> _D_ *Historia zdarzeń* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><th><font color="red">*INTERFACE*</font></th></tr>
+<tr><td>  </td><td>  </td><td> Andrzej </td><td>*Nasłuchiwanie myszy*</td><td> Krzysztof </td></tr>
+<tr><td>  </td><td>  </td><td> Andrzej </td><td>*Nasłuchiwanie klawiatury*</td><td> Krzysztof </td></tr>
+<tr><td>_Mapowanie klawiszy_</td><td> </td><td> </td><td> </td><td> </td></tr>
+<tr><th><font color="red">*FRONT END*</font></th></tr>
+<tr><td>11 kwie</td><td>*Kontrolki* </td><td> Bartosz </td><td>  </td><td>  </td></tr>
+<tr><td> 11 kwie </td><td>*HUD*</td><td> Bartosz </td><td>  </td><td>  </td></tr>
+<tr><th><font color="red">*RESOURCES*</font></th></tr>
+<tr><td> </td><td>*Przetwarzanie assetów*</td><td> </td><td> </td><td> </td></tr>
+<tr><td> </td><td> </td><td> </td><td>*Serializacja danych*</td><td> </td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td>_Profile_</td><td>  </td></tr>
+<tr><th><font color="red">*TIME CONTROL*</font></th></tr>
+<tr><td> </td><td> </td><td> </td><td>*Zegary*</td><td> </td></tr>
+<tr><td> </td><td> </td><td> </td><td>*Timery*</td><td>  </td></tr>
+<tr><td> </td><td> </td><td> </td><td>*Manipulacja Zegarem*</td><td> </td></tr>
+<tr><th><font color="red">*EVENTS*</font></th></tr>
+<tr><td>*Rozsyłanie zdarzeń*</td><td> </td><td> </td><td> </td><td> </td></tr>
+<tr><td>*Odbiór bezpośredni*</td><td> </td><td> </td><td> </td><td> </td></tr>
+<tr><td>*Odbiór odroczony*</td><td> </td><td> </td><td> </td><td> </td></tr>
+<tr><td>_Historia zdarzeń_</td><td> </td><td> </td><td> </td><td> </td></tr>
  </table>   
 || *DO ZROBIENIA* || *ROBIONE* || *PRZEZ KOGO* || *ZROBIONE* || *SPRAWDZIŁ* ||
 || Rendering Konieczne ||
