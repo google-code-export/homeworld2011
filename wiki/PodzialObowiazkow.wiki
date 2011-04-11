@@ -27,9 +27,9 @@ Tabela ma prostą strukturę:
 <td> ? </td>
 </tr>
 <tr>
-<td>*Wyświetlanie animowanych siatek* </td>
 <td> - </td>
-<td> - </td>
+<td> *Wyświetlanie animowanych siatek* </td>
+<td> Krzysztof </td>
 <td> - </td>
 <td> - </td>
 </tr>
