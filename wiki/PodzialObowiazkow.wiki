@@ -11,7 +11,7 @@ Tabela ma prostą strukturę:
 
 <table border="2">
 <tr><td> *DO ZROBIENIA* </td><td> *ROBIONE* </td><td> *PRZEZ KOGO* </td><td> *ZROBIONE* </td><td> *SPRAWDZIŁ* </td></tr>
-<tr><th><font color="red">*RENDERING*</font></th></tr>
+<tr><th colspan="5"><font color="red">*RENDERING*</font></th></tr>
 <tr>
 <td> ? </td>
 <td> ? </td>
@@ -96,7 +96,7 @@ Tabela ma prostą strukturę:
 <td> - </td>
 <td> - </td>
 </tr>
-<tr><th><font color="red">*FIZYKA*</font></th></tr>
+<tr><th colspan="5"><font color="red">*FIZYKA*</font></th></tr>
 <tr>
 <td> - </td>
 <td> *Bryły kolizyjne*  </td>
@@ -160,7 +160,7 @@ Tabela ma prostą strukturę:
 <td> - </td>
 <td> - </td>
 </tr>
-<tr><th><font color="red">*AUDIO*</font></th></tr>
+<tr><th colspan="5"><font color="red">*AUDIO*</font></th></tr>
 <tr>
 <td>*Odgrywanie ambientów* </td>
 <td> - </td>
@@ -189,7 +189,7 @@ Tabela ma prostą strukturę:
 <td> - </td>
 <td> - </td>
 </tr>
-<tr><th><font color="red">*INTERFACE*</font></th></tr>
+<tr><th colspan="5"><font color="red">*INTERFACE*</font></th></tr>
 <tr>
 <td> ? </td>
 <td> ? </td>
@@ -211,7 +211,7 @@ Tabela ma prostą strukturę:
 <td> - </td>
 <td> - </td>
 </tr>
-<tr><th><font color="red">*FRONT END*</font></th></tr>
+<tr><th colspan="5"><font color="red">*FRONT END*</font></th></tr>
 <tr>
 <td>11 kwie</td>
 <td>*Kontrolki* </td>
@@ -226,7 +226,7 @@ Tabela ma prostą strukturę:
 <td> ? </td>
 <td> ? </td>
 </tr>
-<tr><th><font color="red">*RESOURCES*</font></th></tr>
+<tr><th colspan="5"><font color="red">*RESOURCES*</font></th></tr>
 <tr>
 <td> ? </td>
 <td>*Przetwarzanie assetów*</td>
@@ -248,7 +248,7 @@ Tabela ma prostą strukturę:
 <td>_Profile_</td>
 <td> ? </td>
 </tr>
-<tr><th><font color="red">*TIME CONTROL*</font></th></tr>
+<tr><th colspan="5"><font color="red">*TIME CONTROL*</font></th></tr>
 <tr>
 <td> ? </td>
 <td> ? </td>
@@ -270,7 +270,7 @@ Tabela ma prostą strukturę:
 <td>*Manipulacja Zegarem*</td>
 <td> ? </td>
 </tr>
-<tr><th><font color="red">*EVENTS*</font></th></tr>
+<tr><th colspan="5"><font color="red">*EVENTS*</font></th></tr>
 <tr>
 <td>*Rozsyłanie zdarzeń*</td>
 <td> - </td>
