@@ -98,23 +98,23 @@ Tabela ma prostą strukturę:
 </tr>
 <tr><th><font color="red">*FIZYKA*</font></th></tr>
 <tr>
-<td>*Bryły kolizyjne* </td>
 <td> - </td>
-<td> - </td>
-<td> - </td>
-<td> - </td>
-</tr>
-<tr>
-<td>*Fizyka ciał sztywnych* </td>
-<td> - </td>
-<td> - </td>
+<td> *Bryły kolizyjne*  </td>
+<td> Andrzej </td>
 <td> - </td>
 <td> - </td>
 </tr>
 <tr>
-<td>*Teren* </td>
+<td> - </td>
+<td> *Fizyka ciał sztywnych* </td>
+<td> Andrzej </td>
 <td> - </td>
 <td> - </td>
+</tr>
+<tr>
+<td> - </td>
+<td> *Teren* </td>
+<td> Andrzej </td>
 <td> - </td>
 <td> - </td>
 </tr>
