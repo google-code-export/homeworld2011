@@ -8,8 +8,52 @@ Tabela ma prostą strukturę:
 
 
 = Details =
-
-
+<table>
+<tr><td> *DO ZROBIENIA* </td><td> *ROBIONE* </td><td> *PRZEZ KOGO* </td><td> *ZROBIONE* </td><td> *SPRAWDZIŁ* </td></tr>
+<tr><td>*RENDERING*</td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td>*Kamery* </td><td>  </td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td>*Wyświetlanie modeli* </td><td>  </td></tr>
+<tr><td>*Wyświetlanie animowanych siatek* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td>*Teren * </td><td>  </td></tr>
+<tr><td>*Oświetlenie* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Cienie* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Emitery cząstek* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Decal'e* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_D_ *Efekty wolumetryczne* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_D_ *SSAO* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>Rendering _D_ *Animacja obiektów (z poziomu silnika)* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>Rendering _D_ *Postprocess* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*FIZYKA*</td></tr>
+<tr><td>*Bryły kolizyjne* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Fizyka ciał sztywnych* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Teren* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Reakcja na kolizje (delegaty)* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Testowanie promieni* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Testowanie obszarów* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Kontrolery dodatkowe* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_Ragdoll_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_Rozpadające się obiekty_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*AUDIO*</td></tr>
+<tr><td>*Odgrywanie ambientów* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>*Źródła dźwięków* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_Efekty globalne`*`_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>_Efekty lokalne`*`_</td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>  </td><td>  </td><td> Andrzej </td><td> Input_K_ *Nasłuchiwanie myszy* </td><td> Krzysztof </td></tr>
+<tr><td>  </td><td>  </td><td> Andrzej </td><td> Input_K_ *Nasłuchiwanie klawiatury* </td><td> Krzysztof </td></tr>
+<tr><td> Input _D_ *Mapowanie klawiszy* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td> 11 kwie </td><td> Front End _K_ *Kontrolki* </td><td> Bartosz </td><td>  </td><td>  </td></tr>
+<tr><td> 11 kwie </td><td> Front End _K_ *HUD* </td><td> Bartosz </td><td>  </td><td>  </td></tr>
+<tr><td>  </td><td> Resources _K_ *Przetwarzanie assetów* </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td> Resources _K_ *Serializacja danych* </td><td>  </td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td> Resources _D_ *Profile* </td><td>  </td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td> Time Control _K_ *Zegary* </td><td>  </td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td> Time Control _K_ *Timery* </td><td>  </td></tr>
+<tr><td>  </td><td>  </td><td>  </td><td> Time Control _K_ *Manipulacja Zegarem* </td><td>  </td></tr>
+<tr><td> Events _K_ *Rozsyłanie zdarzeń* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td> Events _K_ *Odbiór bezpośredni* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td> _K_ *Odbiór odroczony* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td> _D_ *Historia zdarzeń* </td><td>  </td><td>  </td><td>  </td><td>  </td></tr>
+ </table>   
 || *DO ZROBIENIA* || *ROBIONE* || *PRZEZ KOGO* || *ZROBIONE* || *SPRAWDZIŁ* ||
 || Rendering Konieczne ||
 ||  ||  ||  || Rendering _K_ *Kamery* ||  ||
