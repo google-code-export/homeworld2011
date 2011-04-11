@@ -1,0 +1,14 @@
+#summary Ta strona służy za tablicę na której odznaczamy co jest w jakim stadium robienia.
+
+= Introduction =
+
+Tabela ma prostą strukturę:
+|| *DO ZROBIENIA* || *ROBIONE* || *PRZEZ KOGO* || *ZROBIONE* || *SPRAWDZIŁ* ||
+||Jeszcze nie zaczęte rzeczy z tabeli w Wymaganiach, lub data rozpoczęcia pracy|| Rzeczy zaczęte, ale nie skończone, lub data zakończenia pracy || Osoba odpowiedzialna za wykonanie tej rzeczy || Rzeczy, które zostały już zrobione lub planowana (mniej więcej) data ukończenia || Osoba która sprawdziła (zarówno review kodu jak i ogólne działanie) daną część.||
+
+
+= Details =
+
+
+|| *DO ZROBIENIA* || *ROBIONE* || *PRZEZ KOGO* || *ZROBIONE* || *SPRAWDZIŁ* ||
+||  ||  ||  ||  ||  ||
