@@ -39,3 +39,16 @@ Tabela ma prostą strukturę:
 ||  ||  || Andrzej || Input_K_ *Nasłuchiwanie myszy* || Krzysztof ||
 ||  ||  || Andrzej || Input_K_ *Nasłuchiwanie klawiatury* || Krzysztof ||
 || Input _D_ *Mapowanie klawiszy* ||  ||  ||  ||  ||
+|| 11 kwie || Front End _K_ *Kontrolki* || Bartosz ||  ||  ||
+|| 11 kwie || Front End _K_ *HUD* || Bartosz ||  ||  ||
+||  || Resources _K_ *Przetwarzanie assetów* ||  ||  ||  ||
+||  ||  ||  || Resources _K_ *Serializacja danych* ||  ||
+||  ||  ||  || Resources _D_ *Profile* ||  ||
+||  ||  ||  || Time Control _K_ *Zegary* ||  ||
+||  ||  ||  || Time Control _K_ *Timery* ||  ||
+||  ||  ||  || Time Control _K_ *Manipulacja Zegarem* ||  ||
+|| Events _K_ *Rozsyłanie zdarzeń* ||  ||  ||  ||  ||
+|| Events _K_ *Odbiór bezpośredni* ||  ||  ||  ||  ||
+|| Events _K_ *Odbiór odroczony* ||  ||  ||  ||  ||
+|| Events _D_ *Historia zdarzeń* ||  ||  ||  ||  ||
+    
