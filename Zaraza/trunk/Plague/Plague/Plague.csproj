@@ -104,22 +104,22 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Nuclex.Input">
-      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\Nuclex.Input.dll</HintPath>
+      <HintPath>.\Nuclex.Input.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Support">
-      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\Nuclex.Support.dll</HintPath>
+      <HintPath>.\Nuclex.Support.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Testing.Xna">
-      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\Nuclex.Testing.Xna.dll</HintPath>
+      <HintPath>.\Nuclex.Testing.Xna.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.UserInterface">
-      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\Nuclex.UserInterface.dll</HintPath>
+      <HintPath>.\Nuclex.UserInterface.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\nunit.framework.dll</HintPath>
+      <HintPath>.\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX.DirectInput">
-      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\SlimDX.DirectInput.dll</HintPath>
+      <HintPath>.\SlimDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -168,12 +168,14 @@
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FreeCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Sunlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
     <Compile Include="Physics\CollisionSkinComponent.cs" />
     <Compile Include="Physics\Components\CylindricalBodyComponent.cs" />
+    <Compile Include="Physics\Components\SphericalBodyComponent.cs" />
     <Compile Include="Physics\Components\SquareBodyComponent.cs" />
     <Compile Include="Physics\Components\TerrainSkinComponent.cs" />
     <Compile Include="Physics\PhysicsComponentFactory.cs" />

@@ -40,6 +40,8 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
 
 
+
+
         /****************************************************************************/
         /// Create Square Body Component
         /****************************************************************************/
@@ -59,6 +61,33 @@ namespace PlagueEngine.Physics
             SquareBodyComponent result = new SquareBodyComponent(gameObject, mass, length, height, width, material, immovable, world);
             return result;
         }
+        /****************************************************************************/
+
+
+
+
+
+
+        /****************************************************************************/
+        /// Create Spherical Body Component
+        /****************************************************************************/
+        public SphericalBodyComponent CreateSphericalBodyComponent(GameObjectInstance gameObject,
+                                    float mass,
+                                    float radius,
+                                    float elasticity,
+                                    float staticRoughness,
+                                    float dynamicRoughness,
+                                    bool immovable,
+                                    Matrix world)
+        {
+            MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
+
+            SphericalBodyComponent result = new SphericalBodyComponent(gameObject, mass, radius, material, immovable, world);
+            return result;
+        }
+        /****************************************************************************/
+
+
 
 
 
