@@ -96,9 +96,11 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "SquareBodyMesh":
                     result = CreateSquareBodyMesh(data);
                     break;
-
                 case "CylindricalBodyMesh":
                     result = CreateCylindricalBodyMesh(data);
+                    break;
+                case "SphericalBodyMesh":
+                    result = CreateSphericalBodyMesh(data);
                     break;
             }
 
@@ -152,6 +154,49 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
 
+
+
+
+        /****************************************************************************/
+        /// Create Spherical Body Mesh
+        /****************************************************************************/
+        public SphericalBodyMesh CreateSphericalBodyMesh(GameObjectInstanceData data)
+        {
+            SphericalBodyMesh result = new SphericalBodyMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            SphericalBodyMeshData sbmdata = (SphericalBodyMeshData)data;
+
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       sbmdata.Model,
+                                                                       sbmdata.Diffuse,
+                                                                       sbmdata.Specular,
+                                                                       sbmdata.Normals,
+                                                                       InstancingMode),
+                        physicsComponentFactory.CreateSphericalBodyComponent(result,
+                        sbmdata.Mass,
+                        sbmdata.Radius,
+                        sbmdata.Elasticity,
+                        sbmdata.StaticRoughness,
+                        sbmdata.DynamicRoughness,
+                        sbmdata.Immovable,
+                        sbmdata.World),
+                        sbmdata.World);
+
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+
+
+
         /****************************************************************************/
         /// Create Square Body Mesh
         /****************************************************************************/
@@ -188,6 +233,8 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
+
+
 
 
         /****************************************************************************/
