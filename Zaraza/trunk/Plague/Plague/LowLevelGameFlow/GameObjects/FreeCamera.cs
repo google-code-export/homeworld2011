@@ -11,6 +11,9 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.TimeControlSystem;
 
+using JigLibX.Geometry;
+using JigLibX.Collision;
+using JigLibX.Physics;
 
 /************************************************************************************/
 /// Plague.LowLevelGameFlow.GameObjects
@@ -37,6 +40,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         // TODO: Zastanowić się, czy da się rozwiązać to lepiej z tym zegarem
         private Clock                     clock                     = TimeControl.CreateClock();
+
+        private float                     mouseX, mouseY;
+        ConstraintWorldPoint              objectController = new ConstraintWorldPoint();
+        ConstraintVelocity                damperController = new ConstraintVelocity();
+        bool                              middleButton = false;
+        float                             camPickDistance = 0;
         /****************************************************************************/
 
 
@@ -63,7 +72,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                                Keys.Up,     Keys.Down, 
                                                                Keys.Right,  Keys.Left);
 
-            this.mouseListenerComponent.SubscribeKeys     (OnMouseKey,  MouseKeyAction.RightClick);
+            this.mouseListenerComponent.SubscribeKeys     (OnMouseKey,  MouseKeyAction.RightClick,MouseKeyAction.LeftClick);
             this.mouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
         }
         /****************************************************************************/
@@ -111,16 +120,75 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
         {
-            if (mouseKeyState.WasPressed())
+            if (mouseKeyState.WasPressed() && mouseKeyAction==MouseKeyAction.RightClick)
             {
                 rotation = true;
                 mouseListenerComponent.LockCursor();
             }
-            else if (mouseKeyState.WasReleased())
+            else if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.RightClick)
             {
                 rotation = false;
                 mouseListenerComponent.UnlockCursor();            
             }
+            
+            
+            
+            if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.LeftClick)
+            {
+                
+                if (middleButton == false)
+                {
+                    CollisionSkin skin;
+                    Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                    Vector3 pos, nor;
+                    float dist;
+                    bool hit = false;
+                    hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
+                    
+                    if (hit)
+                    {
+
+
+                        Vector3 delta = pos - skin.Owner.Position;
+                        delta = Vector3.Transform(delta, Matrix.Transpose(skin.Owner.Orientation));
+
+                        camPickDistance = (cameraComponent.Position - pos).Length();
+
+
+                        skin.Owner.SetActive();
+                        objectController.Destroy();
+                        damperController.Destroy();
+                        objectController.Initialise(skin.Owner, delta, pos);
+                        damperController.Initialise(skin.Owner, ConstraintVelocity.ReferenceFrame.Body, Vector3.Zero, Vector3.Zero);
+                        objectController.EnableConstraint();
+                        damperController.EnableConstraint();
+                    }
+
+
+                    middleButton = true;
+                }
+
+                if (objectController.IsConstraintEnabled && (objectController.Body != null))
+                {
+                    Vector3 delta = objectController.Body.Position - cameraComponent.Position;
+                    Vector3 ray = Physics.PhysicsUlitities.DirectionFromMousePosition(cameraComponent.Projection,cameraComponent.View,mouseX, mouseY);
+                    
+                    Vector3 result = cameraComponent.Position + camPickDistance * ray;
+
+                    
+                    objectController.WorldPosition = result;
+                    objectController.Body.SetActive();
+                }
+            }
+            else if(mouseKeyState.IsUp() && mouseKeyAction == MouseKeyAction.LeftClick)
+            {
+                
+                objectController.DisableConstraint();
+                damperController.DisableConstraint();
+                middleButton = false;
+            }
+         
+            
         }
         /****************************************************************************/
 
@@ -130,6 +198,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnMouseMove(MouseMoveAction mouseMoveAction, ExtendedMouseMovementState mouseMovementState)
         {
+            mouseX = mouseMovementState.Position.X;
+            mouseY = mouseMovementState.Position.Y;
+
             if (rotation && mouseMovementState.Moved)
             {
                 cameraComponent.RotateY(-rotationSpeed * mouseMovementState.Difference.X);

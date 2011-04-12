@@ -60,6 +60,8 @@ namespace PlagueEngine.Rendering
             componentsFactory      = new RenderingComponentsFactory(this);            
             batchedMeshes          = new BatchedMeshes(contentManager, this);
 
+            Physics.PhysicsUlitities.graphics = this.graphics;
+
             MeshComponent.renderer       = this;
             RenderableComponent.renderer = this;
         }

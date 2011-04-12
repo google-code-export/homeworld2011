@@ -100,7 +100,7 @@ namespace PlagueEngine.Rendering.Components
             VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[vertexCount];
 
             float vertexHeight;
-
+            
             for (int z = 0; z < length; z++)            
             {
                 for (int x = 0; x < width; x++)
