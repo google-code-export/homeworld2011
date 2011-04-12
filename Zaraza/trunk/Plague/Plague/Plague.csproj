@@ -103,6 +103,24 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
+    <Reference Include="Nuclex.Input">
+      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\Nuclex.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Support">
+      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\Nuclex.Support.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Testing.Xna">
+      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\Nuclex.Testing.Xna.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.UserInterface">
+      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\Nuclex.UserInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX.DirectInput">
+      <HintPath>..\..\..\NUCLEX\Nuclex.UserInterface.Demo\bin\xna-4.0-x86\Debug\SlimDX.DirectInput.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -123,6 +141,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUI\Components\Button.cs" />
+    <Compile Include="GUI\GUI.cs" />
+    <Compile Include="GUI\GUIComponentsFactory.cs" />
     <Compile Include="HighLevelGameFlow\Level.cs" />
     <Compile Include="HighLevelGameFlow\LevelData.cs" />
     <Compile Include="Input\Components\KeyboardListenerComponent.cs" />
