@@ -240,9 +240,10 @@
             // 
             // propertyGrid2
             // 
+            this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Right;
             this.propertyGrid2.Location = new System.Drawing.Point(0, 63);
             this.propertyGrid2.Name = "propertyGrid2";
-            this.propertyGrid2.Size = new System.Drawing.Size(381, 318);
+            this.propertyGrid2.Size = new System.Drawing.Size(381, 358);
             this.propertyGrid2.TabIndex = 18;
             this.propertyGrid2.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid2_PropertyValueChanged);
             // 

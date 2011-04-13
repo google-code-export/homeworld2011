@@ -113,9 +113,9 @@ namespace PlagueEngine.HighLevelGameFlow
             cbdata.DynamicRoughness = 0.7f;
             cbdata.Elasticity = 0.1f;
             cbdata.StaticRoughness = 0.6f;
-            cbdata.Radius = 1.1f;
-            cbdata.Lenght = 3.1f;
             cbdata.Mass = 1.0f;
+            cbdata.Radius = 1.1f;
+            cbdata.Lenght = 3.3f;
             cbdata.Immovable = false;
 
 

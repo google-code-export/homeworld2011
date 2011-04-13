@@ -11,27 +11,60 @@ using PlagueEngine.Rendering;
 using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
 
-
+/********************************************************************************/
+/// PlagueEngine.LowLevelGameFlow.GameObjects
+/********************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
+
+
+    /********************************************************************************/
+    /// SquareBodyMesh
+    /********************************************************************************/
     class SquareBodyMesh : GameObjectInstance
     {
+
+
+        /********************************************************************************/
+        /// Fields
+        /********************************************************************************/
         MeshComponent meshComponent = null;
         SquareBodyComponent physicsComponent = null;
+        /********************************************************************************/
 
+
+
+        /********************************************************************************/
+        /// Init
+        /********************************************************************************/
         public void Init(MeshComponent meshComponent, SquareBodyComponent physcisComponent, Matrix world)
         {
             this.meshComponent = meshComponent;
             this.physicsComponent = physcisComponent;
             this.World = world;
         }
+        /********************************************************************************/
 
+
+
+
+        /********************************************************************************/
+        /// ReleaseComponents
+        /********************************************************************************/
         public override void ReleaseComponents()
         {
             meshComponent.ReleaseMe();
             physicsComponent.ReleaseMe();
         }
+        /********************************************************************************/
 
+
+
+
+
+        /********************************************************************************/
+        /// GetData
+        /********************************************************************************/
         public override GameObjectInstanceData GetData()
         {
             SquareBodyMeshData data = new SquareBodyMeshData();
@@ -53,9 +86,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Immovable = physicsComponent.Immovable;
 
             return data;
-        }
-    }
+        }   
+        /********************************************************************************/
 
+
+
+    }
+    /********************************************************************************/
+
+
+
+
+    /********************************************************************************/
+    /// SquareBodyMeshData
+    /********************************************************************************/
     [Serializable]
     public class SquareBodyMeshData : GameObjectInstanceData
     {
@@ -99,6 +143,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Collision Skin")]
         public float Height { get; set; }
         /**************************************/
+
+
     }
+    /********************************************************************************/
+
+
 
 }
+/********************************************************************************/
