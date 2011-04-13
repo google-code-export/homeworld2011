@@ -12,7 +12,7 @@ Możemy wyszczególnić rodziny obiektów o wspólnych parametrach. Mówimy wted
 [3Kroki Tworzenie własnego obiektu gry w trzech prostych krokach.]
 
 ----
-== !GameObjectInstance : EventsSender, IEventsReceiver, IDisposable ==
+== !GameObjectInstance : EventsSender, [IEventsReceiver], IDisposable ==
 ===_(namespace: [PlagueEngine].[LowLevelGameFlow])_===
 
 Klasa, której obiekt reprezentuje pojedynczą unikalną instancję obiektu gry. Zawiera ID, nazwę definicji, z której obiekt korzysta, oraz macierz świata obiektu. Obiekty tej klasy są tworzone jedynie przy pomocy fabryki !GameObjectsFactory. Każda klasa obiektu gry dziedziczy po tej klasie. Co więcej klasa !GameObjectInstane jest abstrakcyjna.
