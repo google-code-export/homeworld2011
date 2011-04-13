@@ -19,6 +19,10 @@ texture GTexture;
 texture BTexture;
 texture WeightMap;
 
+bool FogEnabled = false;
+float3 FogColor;
+float2 FogRange;
+
 bool ClipPlaneEnabled = false;
 float4 ClipPlane;
 
@@ -60,6 +64,7 @@ struct VertexShaderOutput
 	float2 UV			 : TEXCOORD0;
 	float4 Normal		 : TEXCOORD1;
 	float3 WorldPosition : TEXCOORD2;
+	float  Depth		 : TEXCOORD3;
 };
 
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
@@ -72,7 +77,8 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 	output.WorldPosition = worldPosition;
 	
 	output.Position		 = mul(worldPosition,ViewProjection);
-	
+	output.Depth		 = output.Position.z;
+
 	return output;
 }
 
@@ -100,6 +106,11 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	if(SunlightEnabled)
 	{
 		output += saturate(dot(normalize(SunlightDirection), normalize(input.Normal))) * SunlightDiffuse * texColor;		
+	}
+
+	if(FogEnabled)
+	{	
+		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
 	}
 
     return float4(output,1);

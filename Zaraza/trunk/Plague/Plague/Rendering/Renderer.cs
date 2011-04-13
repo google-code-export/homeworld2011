@@ -33,9 +33,13 @@ namespace PlagueEngine.Rendering
 
         private  CameraComponent             currentCamera          = null;
         private  SunlightComponent           sunlight               = null;
-        private  Color                       clearColor             = Color.CornflowerBlue;
-        private  Vector3                     ambient                = new Vector3(0.1f, 0.1f, 0.1f);
-
+        
+        private  Color                       clearColor             = Color.FromNonPremultiplied(new Vector4(0.01f,0.01f,0.1f,1));
+        private  Vector3                     ambient                = new Vector3(0.05f, 0.05f, 0.05f);
+        private  Vector3                     fogColor               = new Vector3(0.0f, 0.0f, 0.0f);
+        private  Vector2                     fogRange               = new Vector2(50, 200);
+        private  bool                        fogEnabled             = true;      
+        
         internal BatchedMeshes               batchedMeshes          = null;
         internal DebugDrawer                 debugDrawer            = null;
         /****************************************************************************/
@@ -64,6 +68,7 @@ namespace PlagueEngine.Rendering
 
             MeshComponent.renderer       = this;
             RenderableComponent.renderer = this;
+            fogColor = clearColor.ToVector3();
         }
         /****************************************************************************/
 
@@ -168,6 +173,10 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void Draw()
         {
+            //RasterizerState r = new RasterizerState();
+            //r.FillMode = FillMode.WireFrame;
+            //Device.RasterizerState = r;
+
             if (currentCamera == null) return;
 
             foreach (RenderableComponent renderableComponent in preRender)
@@ -184,6 +193,10 @@ namespace PlagueEngine.Rendering
                 renderableComponent.Effect.Parameters["View"          ].SetValue(currentCamera.View);
                 renderableComponent.Effect.Parameters["Projection"    ].SetValue(currentCamera.Projection);
                 renderableComponent.Effect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
+                
+                renderableComponent.Effect.Parameters["FogEnabled"].SetValue(fogEnabled);
+                renderableComponent.Effect.Parameters["FogColor"].SetValue(fogColor);
+                renderableComponent.Effect.Parameters["FogRange"].SetValue(fogRange);
 
                 if (sunlight != null && sunlight.Enabled)
                 {
@@ -205,6 +218,9 @@ namespace PlagueEngine.Rendering
             batchedMeshes.SetEffectParameter("View",            currentCamera.View);
             batchedMeshes.SetEffectParameter("Projection",      currentCamera.Projection);
             batchedMeshes.SetEffectParameter("ViewProjection",  currentCamera.ViewProjection);
+            batchedMeshes.SetEffectParameter("FogEnabled",      fogEnabled);
+            batchedMeshes.SetEffectParameter("FogColor",        fogColor);
+            batchedMeshes.SetEffectParameter("FogRange",        fogRange);
 
             if (sunlight != null && sunlight.Enabled)
             {

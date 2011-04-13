@@ -22,6 +22,10 @@ float Bias;
 
 float3 Ambient;
 
+bool FogEnabled = false;
+float3 FogColor;
+float2 FogRange;
+
 bool   SunlightEnabled = false;
 float3 SunlightDirection;
 float3 SunlightDiffuse;
@@ -72,6 +76,7 @@ struct VertexShaderOutput
 	float4 ReflectionPosition : TEXCOORD1;
 	float2 NormalMapPosition  : TEXCOORD2;
 	float3 WorldPosition	  : TEXCOORD3;
+	float  Depth			  : TEXCOORD4;
 };
 
 float2 postProjToScreen(float4 position)
@@ -99,6 +104,8 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 	output.NormalMapPosition.y -= Time * WaveSpeed;
 
 	output.WorldPosition = mul(input.Position,World);
+	
+	output.Depth		 = output.Position.z;
 
     return output;
 }
@@ -124,6 +131,11 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	specular = pow(specular, SpecularStrength);
 
 	output += SunlightSpecular * specular;
+
+	if(FogEnabled)
+	{	
+		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
+	}
 
 	return float4(output, 1);
 }
