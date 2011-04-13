@@ -153,7 +153,7 @@ namespace PlagueEngine.HighLevelGameFlow
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
             fcdata.FoV = 60;
             fcdata.ZNear = 0.1f;
-            fcdata.ZFar = 10000;
+            fcdata.ZFar = 250;
             fcdata.ActiveKeyListener = true;
             fcdata.ActiveMouseListener = true;
             gameObjectsFactory.Create(fcdata);
@@ -174,7 +174,7 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.CellSize = 5;
             tdata.TextureTiling = 40;
             tdata.Level = 40;
-            tdata.Color = new Vector3(0.2f, 0.2f, 0.6f);
+            tdata.Color = new Vector3(0.2f, 0.2f, 0.3f);
             tdata.ColorAmount = 0.5f;
             tdata.WaveLength = 0.04f;
             tdata.WaveHeight = 0.02f;
@@ -195,8 +195,8 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Type = typeof(Sunlight);
             sdata.World = Matrix.Identity;
             sdata.Enabled = true;
-            sdata.Diffuse = new Vector3(0.8f, 0.7f, 0.5f);
-            sdata.Specular = new Vector3(0.9f, 0.9f, 0.9f);
+            sdata.Diffuse = new Vector3(0.2f, 0.2f, 0.4f);
+            sdata.Specular = new Vector3(0.4f, 0.4f, 0.8f);
 
             ((Sunlight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(-1,-1,-1);
         }

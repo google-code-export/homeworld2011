@@ -21,6 +21,15 @@ float3 SunlightSpecular;
 
 
 /****************************************************/
+/// Fog
+/****************************************************/
+bool FogEnabled = false;
+float3 FogColor;
+float2 FogRange;
+/****************************************************/
+
+
+/****************************************************/
 /// Clip Plane
 /****************************************************/
 bool ClipPlaneEnabled = false;
@@ -98,7 +107,8 @@ struct VSSimpleOutput
     float4	 Position	   : POSITION0;
 	float2	 UV			   : TEXCOORD0;
 	float3	 WorldPosition : TEXCOORD1;
-	float3	 Normal	       : TEXCOORD2;
+	float    Depth         : TEXCOORD2;
+	float3	 Normal	       : TEXCOORD3;	
 };
 /****************************************************/
 
@@ -111,7 +121,8 @@ struct VSComplexOutput
     float4	 Position	   : POSITION0;
 	float2	 UV			   : TEXCOORD0;
 	float3	 WorldPosition : TEXCOORD1;
-	float3x3 TBN	       : TEXCOORD2;
+	float    Depth         : TEXCOORD2;
+	float3x3 TBN	       : TEXCOORD3;	
 };
 /****************************************************/
 
@@ -131,6 +142,8 @@ VSSimpleOutput VSSimpleFunction(VSSimpleInput input, float4x4 instanceTransform 
 	output.Position		 = mul(worldPosition,ViewProjection);
 
 	output.Normal		 = mul(input.Normal  , world);
+
+	output.Depth		 = output.Position.z;
 
     return output;
 }
@@ -154,6 +167,8 @@ VSComplexOutput VSComplexFunction(VSComplexInput input, float4x4 instanceTransfo
 	output.TBN[0]		 = mul(input.Tangent , world);
 	output.TBN[1]		 = mul(input.Binormal, world);
 	output.TBN[2]		 = mul(input.Normal  , world);
+
+	output.Depth		 = output.Position.z;
 
     return output;
 }
@@ -197,6 +212,11 @@ float4 PSDNFunction(VSComplexOutput input) : COLOR0
 		output += diffuse * diffuseTex;	
 	}
 	
+	if(FogEnabled)
+	{	
+		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
+	}
+
     return float4(output, 1);
 }
 /****************************************************/
@@ -241,8 +261,13 @@ float4 PSDSNFunction(VSComplexOutput input) : COLOR0
 
 		}	
 	}
-		
-    return float4(output, 1);
+	
+	if(FogEnabled)
+	{	
+		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
+	}		
+    
+	return float4(output, 1);
 }
 /****************************************************/
 
@@ -268,6 +293,11 @@ float4 PSDFunction(VSSimpleOutput input) : COLOR0
 
 		output += diffuse * diffuseTex;	
 	}	
+
+	if(FogEnabled)
+	{	
+		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
+	}
 
     return float4(output, 1);
 }
@@ -310,7 +340,12 @@ float4 PSDSFunction(VSSimpleOutput input) : COLOR0
 
 		}	
 	}
-	
+
+	if(FogEnabled)
+	{	
+		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
+	}
+
     return float4(output, 1);
 }
 /****************************************************/

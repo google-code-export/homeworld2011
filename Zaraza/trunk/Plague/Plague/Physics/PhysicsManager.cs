@@ -48,6 +48,7 @@ namespace PlagueEngine.Physics
             
             physicsSystem.SolverType = PhysicsSystem.Solver.Accumulated;
             physicsSystem.EnableFreezing                = true;
+            physicsSystem.IsShockStepEnabled = true;
             physicsSystem.CollisionSystem.UseSweepTests = true;
             
             physicsSystem.NumCollisionIterations           = 10;
@@ -65,10 +66,13 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void Update(float timeStep)
         {
+
             if (timeStep < 1.0f / 60.0f) physicsSystem.Integrate(timeStep);
             else physicsSystem.Integrate(1.0f / 60.0f);
 
             //PhysicsSystem.CurrentPhysicsSystem.Integrate(timeStep);
+
+
             
             foreach (RigidBodyComponent rigidBody in rigidBodies)
             {       
