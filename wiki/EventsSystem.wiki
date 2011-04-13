@@ -13,6 +13,10 @@ System zdarzeń odpowiada za interakcje w grze.
  * EventSniffer
  * IEventsReceiver
 ----
+== Dodatkowe typy ==
+ * `enum Priority{High,Low,Normal}`
+
+----
 == Spis komponentów ==
 
  * EventSnifferComponent
