@@ -11,7 +11,7 @@ System zdarzeń odpowiada za interakcje w grze.
  * Event
  * EventsSender
  * EventsSniffer
- * IEventsReceiver
+ * [IEventsReceiver]
 ----
 == Dodatkowe typy ==
  * `enum Priority{High,Low,Normal}`
