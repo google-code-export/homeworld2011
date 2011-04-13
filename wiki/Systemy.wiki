@@ -9,7 +9,7 @@
    * [TimeControlSystem]
    * [GUI]
    * [Input]
-   * [Events]
+   * [EventsSystem]
    * [LowLevelGameFlow]
    * [HighLevelGameFlow]
    * [Tools]
