@@ -9,8 +9,8 @@ System zdarzeń odpowiada za interakcje w grze.
 
  * EventsSystem
  * Event
- * EventSender
- * EventSniffer
+ * EventsSender
+ * EventsSniffer
  * IEventsReceiver
 ----
 == Dodatkowe typy ==
