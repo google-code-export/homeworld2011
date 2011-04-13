@@ -52,7 +52,7 @@ namespace PlagueEngine.Physics
             body = new Body();            
             skin = new CollisionSkin(body);
             body.CollisionSkin = skin;
-
+            skin.ExternalData = gameObject.ID;
             this.material = material;
 
             body.Immovable = immovable;

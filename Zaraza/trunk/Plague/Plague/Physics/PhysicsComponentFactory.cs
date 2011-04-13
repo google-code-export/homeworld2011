@@ -9,7 +9,7 @@ using JigLibX.Collision;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Resources;
-
+using Microsoft.Xna.Framework.Graphics;
 
 /************************************************************************************/
 ///  PlagueEngine.Physics

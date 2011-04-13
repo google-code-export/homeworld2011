@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Microsoft.Xna.Framework;
 using JigLibX.Physics;
 using JigLibX.Collision;
 using PlagueEngine.Physics;
@@ -32,7 +32,6 @@ namespace PlagueEngine.Physics
         internal List<CollisionSkinComponent>   collisionSkins          = new List<CollisionSkinComponent>();
         internal PhysicsComponentFactory        physicsComponentFactory = null;
         /****************************************************************************/
-        
 
         /****************************************************************************/
         ///  Constructor
@@ -57,6 +56,7 @@ namespace PlagueEngine.Physics
 
             RigidBodyComponent.physicsManager = this;
             CollisionSkinComponent.physicsManager = this;
+            PhysicsUlitities.collisionSystem = physicsSystem.CollisionSystem;
         }
         /****************************************************************************/
 
@@ -78,6 +78,9 @@ namespace PlagueEngine.Physics
             {       
                 rigidBody.Update();
             }
+
+            
+
         }
         /****************************************************************************/
                
