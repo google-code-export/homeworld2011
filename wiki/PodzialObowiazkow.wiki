@@ -279,17 +279,10 @@ Tabela ma prostą strukturę:
 <td> - </td>
 </tr>
 <tr>
-<td>*Odbiór bezpośredni*</td>
-<td> - </td>
-<td> - </td>
-<td> - </td>
-<td> - </td>
-</tr>
-<tr>
-<td> 13 kwie </td>
+<td> 13 kwie rano</td>
 <td> 13 kwie wieczorem </td>
 <td> Krzysztof  </td>
-<td> *Odbiór odroczony* </td>
+<td> *Odbiór zdarzeń* </td>
 <td> - </td>
 </tr>
 <tr>
@@ -298,6 +291,4 @@ Tabela ma prostą strukturę:
 <td> Krzysztof </td>
 <td> _Historia zdarzeń_ </td>
 <td> - </td>
-</tr>
-<tr><th colspan="5"><font color="red">*No, toś Krzysztof nazapierniczał :P*</font></th></tr>
 </table>   
