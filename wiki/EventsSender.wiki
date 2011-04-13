@@ -1,0 +1,23 @@
+#summary Opis klasy EventsSender.
+
+= !EventsSender =
+== _(namespace: [PlagueEngine].[EventsSystem])_ ==
+----
+
+== Opis == 
+
+Klasa mająca możliwość wysyłania zdarzeń. 
+
+=== Zawartość ===
+==== Metody ====
+ * `public void SendEvent(EventArgs eventArgs,Priority priority, params IEventsReceiver[] receivers)`
+
+    wysyła zdarzenie `eventArgs`, o priorytecie `priority` do podanych w trzecim parametrze odbiorców. 
+
+ * `public void SendEvent(EventArgs eventArgs,Priority priority, params uint[] receivers)`
+
+    wysyła zdarzenie `eventArgs`, o priorytecie `priority` do podanych w trzecim parametrze odbiorców, gdzie parametr ten jest ID docelowego gameObject'u.
+
+ * `public void Broadcast(EventArgs eventArgs, Priority priority = Priority.Normal)`
+
+    nadaje zdarzenie do wszystkich nasłuchujących odbiorców.
