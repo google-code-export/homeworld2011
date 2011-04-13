@@ -49,7 +49,7 @@ namespace PlagueEngine.Physics
             : base(gameObject)
         {
             this.mass = mass;
-            body = new Body();
+            body = new Body();            
             skin = new CollisionSkin(body);
             body.CollisionSkin = skin;
 

@@ -370,9 +370,9 @@ namespace PlagueEngine
         /****************************************************************************/
         public static String ToString()
         {
-            return "FPS: "                          + fPS.ToString()                             + 
-                   " | Run Time: "                  + totalElapsedTime.ToString(@"hh\:mm\:ss")   +
-                   " | Allocated Managed Memory: " +  Diagnostics.allocatedMemory.ToString() + " kb";
+            return "FPS: "                 + fPS.ToString()                           + 
+                   " | Run Time: "         + totalElapsedTime.ToString(@"hh\:mm\:ss") +
+                   " | Allocated Memory: " +  Diagnostics.allocatedMemory.ToString()  + " kb";
         }
         /****************************************************************************/
 
