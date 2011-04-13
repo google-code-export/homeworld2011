@@ -20,3 +20,8 @@ System zdarzeń odpowiada za interakcje w grze.
 == Spis komponentów ==
 
  * EventSnifferComponent
+
+----
+== Tworzenie własnych zdarzeń ==
+
+Zdarzenie jest identyfikowane poprzez swoje parametry. Stworzenie nowego rodzaju zdarzenia polega na napisaniu klasy dziedziczącej po EventArgs i dodaniu do niej interesujących nas pól. Jeżeli zdarzenie nie posiada żadnych charakterystycznych pól, to nowa klasa jest pusta, a sam jej typ służy do jej rozpoznania.
