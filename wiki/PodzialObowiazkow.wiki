@@ -126,16 +126,16 @@ Tabela ma prostą strukturę:
 <td> - </td>
 </tr>
 <tr>
-<td>*Testowanie promieni* </td>
 <td> - </td>
-<td> - </td>
+<td> *Testowanie promieni* </td>
+<td> Andrzej </td>
 <td> - </td>
 <td> - </td>
 </tr>
 <tr>
-<td>*Testowanie obszarów* </td>
 <td> - </td>
-<td> - </td>
+<td> *Testowanie obszarów* </td>
+<td> Andrzej </td>
 <td> - </td>
 <td> - </td>
 </tr>
