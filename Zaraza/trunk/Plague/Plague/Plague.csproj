@@ -141,8 +141,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GUI\Components\Button.cs" />
+    <Compile Include="GUI\Components\ButtonComponent.cs" />
     <Compile Include="GUI\GUI.cs" />
+    <Compile Include="GUI\GUIComponent.cs" />
     <Compile Include="GUI\GUIComponentsFactory.cs" />
     <Compile Include="HighLevelGameFlow\Level.cs" />
     <Compile Include="HighLevelGameFlow\LevelData.cs" />

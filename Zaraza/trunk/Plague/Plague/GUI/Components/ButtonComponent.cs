@@ -18,7 +18,7 @@ namespace PlagueEngine.GUI.Components
     /********************************************************************************/
     /// GUI Button Component
     /********************************************************************************/
-    class Button 
+    class ButtonComponent : GUIComponent
     {
         /****************************************************************************/
         /// Fields
@@ -29,19 +29,26 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Button(Screen screen, String text)
+        
+        public ButtonComponent(String text):base(null)
         {
             button = new ButtonControl();
             button.Text = text;
-            button.Bounds = new UniRectangle(new UniScalar(1.0f, -190.0f), new UniScalar(1.0f, -32.0f), 100, 32);
+            button.Bounds = new UniRectangle(new UniScalar(1.0f, -190.0f),
+                                            new UniScalar(1.0f, -32.0f), 100, 32);
             //screen.Desktop.Children.Add(button);  
         }
+        /****************************************************************************/
 
+        /****************************************************************************/
+        /// setDelegate
+        /****************************************************************************/
         public void setDelegate(EventHandler handler)
         {
             button.Pressed += handler;
         }
-
+        /****************************************************************************/
 
     }
+    /********************************************************************************/
 }

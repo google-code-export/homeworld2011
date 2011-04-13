@@ -10,7 +10,7 @@ namespace PlagueEngine.GUI
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        //private Renderer        renderer    = null;
+        private GUI        gui    = null;
         //private ContentManager  content     = null;
         /****************************************************************************/
 
@@ -18,8 +18,9 @@ namespace PlagueEngine.GUI
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public GUIComponentsFactory()
+        public GUIComponentsFactory(GUI gui)
         {
+            this.gui = gui;
             //this.renderer   = renderer;
             //this.content    = renderer.contentManager;
         }
