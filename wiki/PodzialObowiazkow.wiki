@@ -272,8 +272,8 @@ Tabela ma prostą strukturę:
 </tr>
 <tr><th colspan="5"><font color="red">*EVENTS*</font></th></tr>
 <tr>
-<td> 13 kwie </td>
-<td> </td>
+<td> 13 kwie rano </td>
+<td> 13 kwie wieczorem </td>
 <td> Krzysztof </td>
 <td> *Rozsyłanie zdarzeń* </td>
 <td> - </td>
@@ -287,16 +287,17 @@ Tabela ma prostą strukturę:
 </tr>
 <tr>
 <td> 13 kwie </td>
-<td>  </td>
+<td> 13 kwie wieczorem </td>
 <td> Krzysztof  </td>
 <td> *Odbiór odroczony* </td>
 <td> - </td>
 </tr>
 <tr>
-<td> 13 kwie </td>
-<td> - </td>
+<td> 13 kwie rano </td>
+<td> 13 kwie wieczorem </td>
 <td> Krzysztof </td>
 <td> _Historia zdarzeń_ </td>
 <td> - </td>
 </tr>
+<tr><th colspan="5"><font color="red">*No, toś Krzysztof nazapierniczał :P*</font></th></tr>
 </table>   
