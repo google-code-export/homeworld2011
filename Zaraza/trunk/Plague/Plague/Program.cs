@@ -22,9 +22,23 @@ namespace PlagueEngine
         /****************************************************************************/
         static void Main(string[] args)
         {
-            using (Game game = new Game("Zaraza"))
+            using (Game game = new Game("Pyramiden"))
             {
-                game.Run();
+                #if RELEASE
+                try
+                {
+                #endif
+
+                    game.Run();
+                
+                #if RELEASE                
+                }
+                catch
+                {
+                    game.FlushEventsHistory();
+                    throw;
+                }
+                #endif
             }
         }
         /****************************************************************************/

@@ -141,6 +141,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventsHistorian.cs" />
+    <Compile Include="EventsSystem\Event.cs" />
+    <Compile Include="EventsSystem\EventsSniffer.cs" />
+    <Compile Include="EventsSystem\EventsSnifferComponent.cs" />
+    <Compile Include="EventsSystem\IEventsReceiver.cs" />
+    <Compile Include="EventsSystem\EventsSystem.cs" />
+    <Compile Include="EventsSystem\EventsSender.cs" />
     <Compile Include="GUI\Components\ButtonComponent.cs" />
     <Compile Include="GUI\GUI.cs" />
     <Compile Include="GUI\GUIComponent.cs" />

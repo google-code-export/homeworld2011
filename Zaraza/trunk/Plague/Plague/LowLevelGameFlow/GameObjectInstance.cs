@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
 
+using PlagueEngine.EventsSystem;
+
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
 /************************************************************************************/
@@ -14,7 +16,7 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
     /// Game Object Instance
     /********************************************************************************/
-    abstract class GameObjectInstance : IDisposable
+    abstract class GameObjectInstance : EventsSender, IEventsReceiver, IDisposable
     {
 
         /****************************************************************************/
@@ -190,6 +192,30 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// On Event
+        /****************************************************************************/
+        public virtual void OnEvent(EventsSender sender, EventArgs e)
+        {
+            
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get String
+        /****************************************************************************/
+        public override String ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(this.GetType().ToString());
+            builder.Append(" - ");
+            builder.Append(id);
+
+            return builder.ToString();
+        } 
+        /****************************************************************************/
 
     }
     /********************************************************************************/

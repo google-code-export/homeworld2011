@@ -12,6 +12,8 @@ using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input;
 using PlagueEngine.Tools;
 using PlagueEngine.Physics;
+using PlagueEngine.EventsSystem;
+
 
 /************************************************************************************/
 /// PlagueEngine
@@ -30,13 +32,14 @@ namespace PlagueEngine
         /****************************************************************************/
         private String              title               = String.Empty;
         
-        private Renderer            renderer            = null;
-        private ContentManager      contentManager      = null;
-        private Input.Input         input               = null;
-        private GameObjectsFactory  gameObjectsFactory  = null;
-        private PhysicsManager      physicsManager      = null;
-        // TODO: Stworzyæ manager leveli, który automagicznie bêdzie wczytywa³ kolejne levele
-        private Level               testLevel           = null;
+        private Renderer                    renderer           = null;
+        private ContentManager              contentManager     = null;
+        private Input.Input                 input              = null;
+        private GameObjectsFactory          gameObjectsFactory = null;
+        private PhysicsManager              physicsManager     = null;
+        private EventsSystem.EventsSystem   eventsSystem       = null;
+        private EventsHistorian             eventsHistorian    = null;        
+        private Level                       Level              = null;
 
         private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
         /****************************************************************************/
@@ -70,7 +73,13 @@ namespace PlagueEngine
                                                         contentManager.GameObjectsDefinitions,
                                                         physicsManager.physicsComponentFactory);
 
-            renderer.InitDebugDrawer(physicsManager);
+            Level = new Level(gameObjectsFactory);
+            
+            eventsSystem = new EventsSystem.EventsSystem(Level);
+
+            eventsHistorian = new EventsHistorian(20);
+
+            renderer.InitDebugDrawer(physicsManager);                        
         }
         /****************************************************************************/
 
@@ -88,22 +97,17 @@ namespace PlagueEngine
         {
             base.Initialize();
             
-            testLevel = new Level(gameObjectsFactory);
-            
-            testLevel.PutSomeObjects();
+            Level.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             
             //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
             
             renderer.batchedMeshes.CommitMeshTransforms();
-
-
-            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager,renderer);
-            gameObjectEditor.setLevel(testLevel, "TestLevel2.lvl");
-
-
             
+            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager,renderer);
+            gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
+                       
             Diagnostics.PushLog("Initialization complete");
         }   
         /****************************************************************************/
@@ -152,9 +156,13 @@ namespace PlagueEngine
         {
             Diagnostics.Update(gameTime.ElapsedGameTime);
             TimeControl.Update(gameTime.ElapsedGameTime);
-            physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);
+
             input.Update();
-            
+
+            eventsSystem.Update();
+
+            physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);
+                        
             base.Update(gameTime);
         }
         /****************************************************************************/
@@ -240,7 +248,17 @@ namespace PlagueEngine
             }
         }
         /****************************************************************************/
-        
+
+
+        /****************************************************************************/
+        /// Flush Events History
+        /****************************************************************************/
+        public void FlushEventsHistory()
+        {
+            if (eventsHistorian != null) eventsHistorian.Flush();
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/
 

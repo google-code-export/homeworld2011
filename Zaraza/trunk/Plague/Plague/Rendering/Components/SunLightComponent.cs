@@ -61,9 +61,9 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public bool    Enabled       { get { return enabled;                  } }
-        public Vector3 DiffuseColor  { get { return diffuseColor;             } }
-        public Vector3 SpecularColor { get { return specularColor;            } }
+        public bool    Enabled       { get { return enabled;       } set { enabled       = value; } }
+        public Vector3 DiffuseColor  { get { return diffuseColor;  } set { diffuseColor  = value; } }
+        public Vector3 SpecularColor { get { return specularColor; } set { specularColor = value; } }
         
         public Vector3 Direction     
         { 
@@ -72,7 +72,12 @@ namespace PlagueEngine.Rendering.Components
                 Vector3 result = gameObject.World.Forward;
        //         result.Normalize();
                 return result;
-            } 
+            }
+
+            set
+            {
+                gameObject.World.Forward = value;
+            }
         }
         /****************************************************************************/
 

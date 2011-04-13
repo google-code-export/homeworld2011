@@ -195,13 +195,27 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Type = typeof(Sunlight);
             sdata.World = Matrix.Identity;
             sdata.Enabled = true;
-            sdata.Diffuse = new Vector3(0.2f, 0.2f, 0.4f);
-            sdata.Specular = new Vector3(0.4f, 0.4f, 0.8f);
+            sdata.Diffuse = new Vector3(0.5f, 0.5f, 0.7f);
+            sdata.Specular = new Vector3(0.7f, 0.7f, 0.9f);
 
-            ((Sunlight)gameObjectsFactory.Create(sdata)).Direction = new Vector3(-1,-1,-1);
+            Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
+            s.Direction = new Vector3(-1,-1,-1);           
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Get Game Object
+        /****************************************************************************/
+        public Dictionary<uint, GameObjectInstance> GameObjects
+        {
+            get
+            {
+                return gameObjects;
+            }
+        }
+        /****************************************************************************/
+        
     }
     /********************************************************************************/
 
