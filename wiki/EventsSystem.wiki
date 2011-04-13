@@ -1,0 +1,18 @@
+#summary Opis systemu zdarzeń
+= EventsSystem _(namespace: [PlagueEngine].[EventsSystem])_ =
+----
+== Opis ==
+
+System zdarzeń odpowiada za interakcje w grze.
+----
+== Spis klas ==
+
+ * EventsSystem
+ * Event
+ * EventSender
+ * EventSniffer
+ * IEventsReceiver
+----
+== Spis komponentów ==
+
+ * EventSnifferComponent
