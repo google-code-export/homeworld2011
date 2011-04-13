@@ -16,7 +16,7 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
     /// Game Object Instance
     /********************************************************************************/
-    abstract class GameObjectInstance : EventsSender, IEventsReceiver, IDisposable
+    abstract class GameObjectInstance : EventsSender, IEventsReceiver
     {
 
         /****************************************************************************/
@@ -46,7 +46,10 @@ namespace PlagueEngine.LowLevelGameFlow
             }
 
             this.definition = definition;
-            return true;
+
+            Broadcast(new CreateEvent());
+
+            return true;            
         }
         /****************************************************************************/
 
@@ -189,6 +192,17 @@ namespace PlagueEngine.LowLevelGameFlow
             ReleaseID(this.id);
             ReleaseComponents();
             isDisposed = true;
+            Broadcast(new DestroyEvent());
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// IsDisposed
+        /****************************************************************************/
+        public bool IsDisposed()
+        {
+            return isDisposed;
         }
         /****************************************************************************/
 
@@ -209,7 +223,7 @@ namespace PlagueEngine.LowLevelGameFlow
         public override String ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(this.GetType().ToString());
+            builder.Append(this.GetType().Name);
             builder.Append(" - ");
             builder.Append(id);
 
