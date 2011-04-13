@@ -1,0 +1,11 @@
+#summary Opis interfejsu IEventsReceiver.
+
+= !IEventsReceiver=
+== _(namespace: [PlagueEngine].[IEventsReceiver])_ ==
+----
+== Opis == 
+Interfejs pozwalający odbierać zdarzenia. 
+
+=== Zawartość ===
+==== Metody ====
+ * `void OnEvent(EventsSender sender, EventArgs e)`
