@@ -111,7 +111,8 @@ namespace PlagueEngine.EventsSystem
         /// Pass Event
         /****************************************************************************/
         private void PassEvent(Event e)
-        {
+        {            
+
             /***************************/
             // Global Sniffers
             /***************************/
@@ -149,6 +150,8 @@ namespace PlagueEngine.EventsSystem
             
             if (e.Receiver != null)
             {
+                if (e.Receiver.IsDisposed()) return; 
+
                 e.Receiver.OnEvent(e.Sender, e.EventArgs);                
                 
                 /******************************/

@@ -65,7 +65,7 @@ namespace PlagueEngine
 
             if (e != null)
             {
-                builder.Append(e.GetType().ToString());
+                builder.Append(e.GetType().Name);
                 builder.Append(" - ");
                 builder.Append(e.ToString());
             }
@@ -77,7 +77,9 @@ namespace PlagueEngine
                 events.Dequeue();
             }
 
-            //Diagnostics.PushLog(builder.ToString());
+            #if DEBUG
+            Diagnostics.PushLog(builder.ToString());
+            #endif
         }
         /****************************************************************************/
 
