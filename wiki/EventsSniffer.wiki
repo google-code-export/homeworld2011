@@ -1,0 +1,42 @@
+#summary Opis klasy EventsSniffer.
+
+= !EventsSniffer=
+== _(namespace: [PlagueEngine].[EventsSniffer])_ ==
+----
+
+== Opis == 
+
+Abstrakcyjna klasa podsłuchująca emitowane zdarzenia. 
+
+=== Zawartość ===
+==== Metody ====
+ * `public abstract void OnSniffedEvent(EventsSender sender,IEventsReceiver receiver,EventArgs e);`
+
+    Metoda do przeciążenia w klasie pochodnej. Wywoływana jest gdy zostanie przetworzone interesujące nas zdarzenie.
+    sender - obiekt który wysłał event
+    receiver - obiekt ktory jest odbiorcą eventu
+    e - zdarzenie
+
+ * `public void SubscribeAll()`
+
+    obiekt odbiera każde zdarzenie jak zostanie przetworzone.
+
+ * `public void SubscribeReceivers(params IEventsReceiver[] receivers)`
+
+    obiekt odbiera każde zdarzenie przesłane do podanych odbiorców
+
+ * `public void SubscribeReceiverTypes(params Type[] ReceiverTypes)`
+     
+    obiekt odbiera każde zdarzenie przesłane do podanych typów odbiorców.
+
+ * `public void SubscribeSenders(params EventsSender[] senders)`
+ 
+    obiekt odbiera każde zdarzenie przesłane od podanych obiektów.
+
+ * `public void SubscribeSenderTypes(params Type[] SenderTypes)`
+   
+    obiekt odbiera każde zdarzenie przesłane od podanych typów obiektów.
+
+ * `public void SubscribeEvents(params Type[] EventArgsTypes)`
+
+    obiekt odbiera każde przetworzone zdarzenie, o podanym typie
