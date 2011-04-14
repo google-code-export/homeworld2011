@@ -41,6 +41,7 @@ namespace PlagueEngine.Rendering
         private  bool                        fogEnabled             = true;      
         
         internal BatchedMeshes               batchedMeshes          = null;
+        internal BatchedSkinnedMeshes        batchedSkinnedMeshes   = null;
         internal DebugDrawer                 debugDrawer            = null;
         /****************************************************************************/
             
@@ -63,11 +64,14 @@ namespace PlagueEngine.Rendering
             CurrentConfiguration   = config;
             componentsFactory      = new RenderingComponentsFactory(this);            
             batchedMeshes          = new BatchedMeshes(contentManager, this);
+            batchedSkinnedMeshes   = new BatchedSkinnedMeshes(contentManager, this);
 
             Physics.PhysicsUlitities.graphics = this.graphics;
 
-            MeshComponent.renderer       = this;
-            RenderableComponent.renderer = this;
+            MeshComponent.renderer        = this;
+            RenderableComponent.renderer  = this;
+            SkinnedMeshComponent.renderer = this;
+            
             fogColor = clearColor.ToVector3();
         }
         /****************************************************************************/
@@ -171,7 +175,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
-        public void Draw()
+        public void Draw(TimeSpan time)
         {
             //RasterizerState r = new RasterizerState();
             //r.FillMode = FillMode.WireFrame;
@@ -235,6 +239,30 @@ namespace PlagueEngine.Rendering
             }
                         
             batchedMeshes.Draw();
+
+            batchedSkinnedMeshes.Effect.Parameters["Ambient"].SetValue(ambient);
+            batchedSkinnedMeshes.Effect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
+            batchedSkinnedMeshes.Effect.Parameters["View"].SetValue(currentCamera.View);
+            batchedSkinnedMeshes.Effect.Parameters["Projection"].SetValue(currentCamera.Projection);
+            batchedSkinnedMeshes.Effect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
+
+            batchedSkinnedMeshes.Effect.Parameters["FogEnabled"].SetValue(fogEnabled);
+            batchedSkinnedMeshes.Effect.Parameters["FogColor"].SetValue(fogColor);
+            batchedSkinnedMeshes.Effect.Parameters["FogRange"].SetValue(fogRange);
+
+            if (sunlight != null && sunlight.Enabled)
+            {
+                batchedSkinnedMeshes.Effect.Parameters["SunlightEnabled"].SetValue(true);
+                batchedSkinnedMeshes.Effect.Parameters["SunlightDirection"].SetValue(sunlight.Direction);
+                batchedSkinnedMeshes.Effect.Parameters["SunlightDiffuse"].SetValue(sunlight.DiffuseColor);
+                batchedSkinnedMeshes.Effect.Parameters["SunlightSpecular"].SetValue(sunlight.SpecularColor);
+            }
+            else
+            {
+                batchedSkinnedMeshes.Effect.Parameters["SunlightEnabled"].SetValue(false);
+            }
+
+            batchedSkinnedMeshes.Draw(time);
 
             if (debugDrawer != null) debugDrawer.Draw(currentCamera.View,currentCamera.Projection);
         }

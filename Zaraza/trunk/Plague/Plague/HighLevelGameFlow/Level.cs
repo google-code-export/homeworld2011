@@ -199,7 +199,15 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Specular = new Vector3(0.7f, 0.7f, 0.9f);
 
             Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
-            s.Direction = new Vector3(-1,-1,-1);           
+            s.Direction = new Vector3(-1,-1,-1);
+
+
+            StaticSkinnedMeshData ssdata = new StaticSkinnedMeshData();
+            ssdata.Type = typeof(StaticSkinnedMesh);
+            ssdata.Model = "piggy";
+            ssdata.Diffuse = "piggyTex";
+            ssdata.World = Matrix.CreateTranslation(200, 50, 0);
+            gameObjectsFactory.Create(ssdata);
         }
         /****************************************************************************/
 

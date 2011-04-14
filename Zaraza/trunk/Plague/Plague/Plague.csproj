@@ -180,6 +180,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\StaticSkinnedMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Sunlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
     <Compile Include="Physics\CollisionSkinComponent.cs" />
@@ -196,8 +197,10 @@
     <Compile Include="Game.cs" />
     <Compile Include="Rendering\AnimationClip.cs" />
     <Compile Include="Rendering\AnimationPlayer.cs" />
+    <Compile Include="Rendering\BatchedSkinnedMeshes.cs" />
     <Compile Include="Rendering\Components\CameraComponent.cs" />
     <Compile Include="Rendering\Components\MeshComponent.cs" />
+    <Compile Include="Rendering\Components\SkinnedMeshComponent.cs" />
     <Compile Include="Rendering\Components\SunlightComponent.cs" />
     <Compile Include="Rendering\Components\TerrainComponent.cs" />
     <Compile Include="Rendering\Components\WaterSurfaceComponent.cs" />

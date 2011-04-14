@@ -102,6 +102,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "SphericalBodyMesh":
                     result = CreateSphericalBodyMesh(data);
                     break;
+                case "StaticSkinnedMesh":
+                    result = CreateStaticSkinnedMesh(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -440,7 +443,29 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
-       
+
+
+        /****************************************************************************/
+        /// Create Static Skinned Mesh
+        /****************************************************************************/
+        public StaticSkinnedMesh CreateStaticSkinnedMesh(GameObjectInstanceData data)
+        {
+            StaticSkinnedMesh result = new StaticSkinnedMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            StaticSkinnedMeshData sdata = (StaticSkinnedMeshData)data;
+
+            result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
+                                                                              sdata.Model,
+                                                                              sdata.Diffuse,
+                                                                              sdata.Specular,
+                                                                              sdata.Normals),
+                        inputComponentsFactory.CreateKeyboardListenerComponent(result,true),
+                                                                              sdata.World);
+            return result;
+        }
+        /****************************************************************************/
 
         
         /****************************************************************************/

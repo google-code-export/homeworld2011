@@ -4,40 +4,62 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
+using Microsoft.Xna.Framework.Input;
 
-using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
-using PlagueEngine.Rendering;
-using PlagueEngine.Physics;
-using PlagueEngine.Physics.Components;
+using PlagueEngine.Input.Components;
 
 
 /************************************************************************************/
-/// Plague.LowLevelGameFlow.GameObjects
+/// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// StaticMesh
+    /// StaticSkinnedMesh
     /********************************************************************************/
-    class StaticMesh : GameObjectInstance
+    class StaticSkinnedMesh : GameObjectInstance
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        MeshComponent meshComponent = null;
+        SkinnedMeshComponent meshComponent = null;
+        KeyboardListenerComponent keyboard = null;        
         /****************************************************************************/
-       
+
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(MeshComponent meshComponent, Matrix world)
+        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard, Matrix world)
         {
-            this.meshComponent      = meshComponent;
-            this.World              = world;
+            this.meshComponent = meshComponent;
+            this.keyboard      = keyboard;
+            this.World         = world;
+
+            keyboard.SubscibeKeys(OnKey, Keys.Space);            
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Key
+        /****************************************************************************/
+        private void OnKey(Keys key, ExtendedKeyState state)
+        {
+            if (state.WasPressed())
+            {
+                if (meshComponent.AnimationPlayer.CurrentClip == null)
+                {
+                    meshComponent.StartClip("Take 001");
+                }
+                else
+                {
+                    meshComponent.AnimationPlayer.Stop();
+                }
+            }
         }
         /****************************************************************************/
 
@@ -50,53 +72,48 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             meshComponent.ReleaseMe();
         }
         /****************************************************************************/
-        
+
 
         /****************************************************************************/
         /// Get Data
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            StaticMeshData data = new StaticMeshData();
+            StaticSkinnedMeshData data = new StaticSkinnedMeshData();
             GetData(data);
-            data.Model          = meshComponent.Model.Name;
-            data.Diffuse        = (meshComponent.Textures.Diffuse  == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
-            data.Specular       = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
-            data.Normals        = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
+            
+            data.Model    = meshComponent.Model.Name;
+            
+            data.Diffuse  = (meshComponent.Textures.Diffuse  == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
+            data.Specular = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
+            data.Normals  = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
 
-            data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);
-           
             return data;
         }
         /****************************************************************************/
-
 
     }
     /********************************************************************************/
 
 
-
     /********************************************************************************/
-    /// StaticMeshData
+    /// StaticSkinnedMeshData
     /********************************************************************************/
     [Serializable]
-    public class StaticMeshData : GameObjectInstanceData
-    {             
+    public class StaticSkinnedMeshData : GameObjectInstanceData
+    {
         [CategoryAttribute("Model")]
-        public String Model           { get; set; }
+        public String Model    { get; set; }
 
         [CategoryAttribute("Textures")]
-        public String Diffuse         { get; set; }
+        public String Diffuse  { get; set; }
 
         [CategoryAttribute("Textures")]
-        public String Specular        { get; set; }
+        public String Specular { get; set; }
 
         [CategoryAttribute("Textures")]
-        public String Normals         { get; set; }
+        public String Normals  { get; set; }
 
-        [CategoryAttribute("Instancing"),
-        DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
-        public uint   InstancingMode  { get; set; }
     }
     /********************************************************************************/
 
