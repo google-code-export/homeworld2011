@@ -24,9 +24,9 @@ namespace PlagueEngineModelPipeline
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        ContentProcessorContext  context;
-        PlagueEngineModelContent outputModel;
-        bool                     geometryGrabbed = false;
+        private ContentProcessorContext  context;
+        private PlagueEngineModelContent outputModel;
+        private bool                     geometryGrabbed = false;
         /****************************************************************************/
 
 
@@ -49,7 +49,7 @@ namespace PlagueEngineModelPipeline
         /****************************************************************************/
         /// Process Node
         /****************************************************************************/
-        void ProcessNode(NodeContent node)
+        private void ProcessNode(NodeContent node)
         {
             if (geometryGrabbed) return;
 

@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="PlagueEngineModelContent.cs" />
     <Compile Include="PlagueEngineModelProcessor.cs" />
+    <Compile Include="PlagueEngineSkinnedModelContent.cs" />
+    <Compile Include="PlagueEngineSkinnedModelProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

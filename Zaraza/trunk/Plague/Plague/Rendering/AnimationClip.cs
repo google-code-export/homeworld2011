@@ -2,49 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Content;
 
 
 /************************************************************************************/
-/// PlagueEngine.EventsSystem
+/// PlagueEngine.Rendering
 /************************************************************************************/
-namespace PlagueEngine.EventsSystem
+namespace PlagueEngine.Rendering
 {
 
     /********************************************************************************/
-    /// Event
+    /// Animation Clip
     /********************************************************************************/
-    class Event
+    public class AnimationClip
     {
-
-        /****************************************************************************/
-        /// Fields
-        /****************************************************************************/
-        public IEventsReceiver Receiver;
-        public EventsSender    Sender;
-        public EventArgs       EventArgs;
-        /****************************************************************************/
-
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Event(IEventsReceiver receiver, EventsSender sender, EventArgs eventArgs)
+        public AnimationClip(TimeSpan duration, List<Keyframe> keyframes)
         {
-            Receiver  = receiver;
-            Sender    = sender;
-            EventArgs = eventArgs;
+            Duration  = duration;
+            Keyframes = keyframes;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Get Copy
+        /// Constructor (for use only by the XNB deserializer)
         /****************************************************************************/
-        public Event GetCopy()
-        {
-            return new Event(Receiver, Sender, EventArgs);
+        private AnimationClip()
+        { 
         }
-        /****************************************************************************/                     
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        [ContentSerializer]
+        public TimeSpan Duration        { get; private set; }
+        [ContentSerializer]
+        public List<Keyframe> Keyframes { get; private set; }
+        /****************************************************************************/
 
     }
     /********************************************************************************/

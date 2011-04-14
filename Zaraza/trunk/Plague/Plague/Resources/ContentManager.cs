@@ -125,6 +125,17 @@ namespace PlagueEngine.Resources
 
 
         /****************************************************************************/
+        /// Load Skinned Model
+        /****************************************************************************/
+        public PlagueEngineSkinnedModel LoadSkinnedModel(string modelName)
+        {
+            PlagueEngineSkinnedModel result = Load<PlagueEngineSkinnedModel>(models + '\\' + modelName);
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Save Configuration
         /****************************************************************************/        
         public void SaveConfiguration<T>(T configuration)
