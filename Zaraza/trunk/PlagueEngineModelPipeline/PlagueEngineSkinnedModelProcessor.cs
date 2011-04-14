@@ -50,8 +50,8 @@ namespace PlagueEngineModelPipeline
             
             if (skeleton == null) 
                 throw new InvalidContentException("Input skeleton not found.");
-            
-            FlattenTransforms(skeleton);
+
+            //FlattenTransforms(skeleton);
             
             IList<BoneContent> bones = MeshHelper.FlattenSkeleton(skeleton);
             
@@ -143,6 +143,8 @@ namespace PlagueEngineModelPipeline
             if (keyframes.Count == 0)
                 throw new InvalidContentException("Animation has no keyframes.");
 
+            keyframes.Sort(CompareKeyFrameTimes);
+
             return new AnimationClip(animation.Duration, keyframes);
         }                                               
         /****************************************************************************/
@@ -229,8 +231,8 @@ namespace PlagueEngineModelPipeline
                     }
 
                     geometry.Vertices.Channels.Remove("Weights0");
-                    geometry.Vertices.Channels.Add<Vector4>("TextureCoordinate1",boneIndicesChannelData);
-                    geometry.Vertices.Channels.Add<Vector4>("TextureCoordinate2",boneWeightsChannelData);
+                    geometry.Vertices.Channels.Add<Vector4>("BlendIndices0", boneIndicesChannelData);
+                    geometry.Vertices.Channels.Add<Vector4>("BlendWeight0",boneWeightsChannelData);
                     
                     outputModel.VertexBufferContent = geometry.Vertices.CreateVertexBuffer();                    
 

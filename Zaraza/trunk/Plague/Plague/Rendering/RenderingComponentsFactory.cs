@@ -180,6 +180,31 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// Create SkinnedMeshComponent
+        /****************************************************************************/
+        public SkinnedMeshComponent CreateSkinnedMeshComponent(GameObjectInstance gameObject,
+                                                               String modelName,
+                                                               String diffuseMap,
+                                                               String specularMap,
+                                                               String normalMap)
+        {
+            SkinnedMeshComponent result = null;
+            Techniques technique = GuessTechnique(specularMap, normalMap);
+
+            PlagueEngineSkinnedModel model    = renderer.batchedSkinnedMeshes.PickModel(technique, modelName);
+            TexturesPack             textures = renderer.batchedSkinnedMeshes.PickTexturesPack(technique, model, new String[] { diffuseMap, specularMap, normalMap });
+
+            result = new SkinnedMeshComponent(gameObject,
+                                              model,
+                                              textures,
+                                              technique);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Guess Technique
         /****************************************************************************/
         private Techniques GuessTechnique(String specularMap, String normalMap)

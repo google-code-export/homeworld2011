@@ -43,7 +43,7 @@ namespace PlagueEngine
 
         private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
         /****************************************************************************/
-        PlagueEngineSkinnedModel model;
+
 
         /****************************************************************************/
         /// Constructor
@@ -96,9 +96,7 @@ namespace PlagueEngine
         protected override void Initialize()
         {
             base.Initialize();
-
-            model = ContentManager.Load<PlagueEngineSkinnedModel>("piggy");
-            
+          
             Level.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
@@ -125,6 +123,8 @@ namespace PlagueEngine
         protected override void LoadContent()
         {
             renderer.batchedMeshes.LoadEffects();
+            renderer.batchedSkinnedMeshes.LoadEffect();
+
             Diagnostics.PushLog("Loading content complete");
         }
         /****************************************************************************/
@@ -178,9 +178,8 @@ namespace PlagueEngine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         /****************************************************************************/
         protected override void Draw(GameTime gameTime)
-        {
-            
-            renderer.Draw();
+        {            
+            renderer.Draw(gameTime.ElapsedGameTime);
             base.Draw(gameTime);           
         }
         /****************************************************************************/

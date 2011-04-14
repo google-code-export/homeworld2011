@@ -40,6 +40,8 @@ namespace PlagueEngine.Rendering
             boneTransforms  = new Matrix[skinningData.BindPose.Count];
             worldTransforms = new Matrix[skinningData.BindPose.Count];
             skinTransforms  = new Matrix[skinningData.BindPose.Count];
+
+            skinningData.BindPose.CopyTo(boneTransforms);
         }
         /****************************************************************************/
 
@@ -53,6 +55,17 @@ namespace PlagueEngine.Rendering
             currentTime     = TimeSpan.Zero;
             currentKeyframe = 0;
 
+            skinningData.BindPose.CopyTo(boneTransforms);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Stop
+        /****************************************************************************/
+        public void Stop()
+        {
+            currentClip = null;
             skinningData.BindPose.CopyTo(boneTransforms);
         }
         /****************************************************************************/
@@ -102,7 +115,10 @@ namespace PlagueEngine.Rendering
 
                 if (keyframe.Time > currentTime) break;
 
-                boneTransforms[keyframe.Bone] = keyframe.Transform;
+                //if (keyframe.Bone == 2)
+                {
+                    boneTransforms[keyframe.Bone] = keyframe.Transform;
+                }
 
                 currentKeyframe++;
             }
@@ -143,10 +159,11 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public Matrix[] BoneTransforms  { get { return boneTransforms;  } }
-        public Matrix[] WorldTransforms { get { return worldTransforms; } }
-        public Matrix[] SkinTransforms  { get { return skinTransforms;  } }
-        public TimeSpan CurrentTime     { get { return currentTime;     } }
+        public Matrix[]      BoneTransforms  { get { return boneTransforms;  } }
+        public Matrix[]      WorldTransforms { get { return worldTransforms; } }
+        public Matrix[]      SkinTransforms  { get { return skinTransforms;  } }
+        public TimeSpan      CurrentTime     { get { return currentTime;     } }
+        public AnimationClip CurrentClip     { get { return currentClip;     } }
         /****************************************************************************/
 
     }
