@@ -2,49 +2,53 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 
 /************************************************************************************/
-/// PlagueEngine.EventsSystem
+/// PlagueEngine.Rendering
 /************************************************************************************/
-namespace PlagueEngine.EventsSystem
+namespace PlagueEngine.Rendering
 {
 
     /********************************************************************************/
-    /// Event
+    /// Plague Engine Skinned Model
     /********************************************************************************/
-    class Event
+    class PlagueEngineSkinnedModel
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public IEventsReceiver Receiver;
-        public EventsSender    Sender;
-        public EventArgs       EventArgs;
+        public int          TriangleCount;
+        public int          VertexCount;
+        public VertexBuffer VertexBuffer;
+        public IndexBuffer  IndexBuffer;
+        public String       Name;
+        public SkinningData SkinningData;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Constructor
+        /// Constructor (for use only by the XNB deserializer)
         /****************************************************************************/
-        public Event(IEventsReceiver receiver, EventsSender sender, EventArgs eventArgs)
+        private PlagueEngineSkinnedModel()
         {
-            Receiver  = receiver;
-            Sender    = sender;
-            EventArgs = eventArgs;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Get Copy
+        /// Release Me
         /****************************************************************************/
-        public Event GetCopy()
+        public void ReleaseMe()
         {
-            return new Event(Receiver, Sender, EventArgs);
+            VertexBuffer.Dispose();
+            IndexBuffer.Dispose();
         }
-        /****************************************************************************/                     
+        /****************************************************************************/
 
     }
     /********************************************************************************/

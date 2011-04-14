@@ -43,7 +43,7 @@ namespace PlagueEngine
 
         private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
         /****************************************************************************/
-
+        PlagueEngineSkinnedModel model;
 
         /****************************************************************************/
         /// Constructor
@@ -96,6 +96,8 @@ namespace PlagueEngine
         protected override void Initialize()
         {
             base.Initialize();
+
+            model = ContentManager.Load<PlagueEngineSkinnedModel>("piggy");
             
             Level.PutSomeObjects();
 

@@ -2,49 +2,59 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 
 /************************************************************************************/
-/// PlagueEngine.EventsSystem
+/// PlagueEngine.Rendering
 /************************************************************************************/
-namespace PlagueEngine.EventsSystem
+namespace PlagueEngine.Rendering
 {
 
     /********************************************************************************/
-    /// Event
+    /// Skinning Data
     /********************************************************************************/
-    class Event
+    public class SkinningData
     {
-
-        /****************************************************************************/
-        /// Fields
-        /****************************************************************************/
-        public IEventsReceiver Receiver;
-        public EventsSender    Sender;
-        public EventArgs       EventArgs;
-        /****************************************************************************/
-
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Event(IEventsReceiver receiver, EventsSender sender, EventArgs eventArgs)
+        public SkinningData(Dictionary<string, AnimationClip> animationClips,
+                            List<Matrix> bindPose,
+                            List<Matrix> inverseBindPose,
+                            List<int> skeletonHierarchy)
         {
-            Receiver  = receiver;
-            Sender    = sender;
-            EventArgs = eventArgs;
+            AnimationClips    = animationClips;
+            BindPose          = bindPose;
+            InverseBindPose   = inverseBindPose;
+            SkeletonHierarchy = skeletonHierarchy;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Get Copy
+        /// Constructor (for use only by the XNB deserializer)
         /****************************************************************************/
-        public Event GetCopy()
-        {
-            return new Event(Receiver, Sender, EventArgs);
+        private SkinningData()
+        { 
         }
-        /****************************************************************************/                     
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        [ContentSerializer]
+        public Dictionary<String, AnimationClip> AnimationClips { get; private set; }
+        [ContentSerializer]
+        public List<Matrix> BindPose                            { get; private set; }
+        [ContentSerializer]
+        public List<Matrix> InverseBindPose                     { get; private set; }
+        [ContentSerializer]
+        public List<int> SkeletonHierarchy                      { get; private set; }
+        /****************************************************************************/
 
     }
     /********************************************************************************/
