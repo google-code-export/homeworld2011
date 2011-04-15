@@ -229,9 +229,9 @@ namespace PlagueEngine.Rendering
 
                     foreach (SkinnedMeshComponent mesh in container[model][texturePack])
                     {
-                        mesh.AnimationPlayer.Update(time, mesh.GameObject.World);
+                        mesh.Update(time, mesh.GameObject.World);
                         
-                        Matrix[] bones = mesh.AnimationPlayer.SkinTransforms;
+                        Matrix[] bones = mesh.SkinTransforms;
 
                         skinningEffect.Parameters["Bones"].SetValue(bones);
                         skinningEffect.CurrentTechnique.Passes[0].Apply();

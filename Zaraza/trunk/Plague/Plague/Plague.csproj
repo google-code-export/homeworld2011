@@ -196,7 +196,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Rendering\AnimationClip.cs" />
-    <Compile Include="Rendering\AnimationPlayer.cs" />
     <Compile Include="Rendering\BatchedSkinnedMeshes.cs" />
     <Compile Include="Rendering\Components\CameraComponent.cs" />
     <Compile Include="Rendering\Components\MeshComponent.cs" />
@@ -206,6 +205,7 @@
     <Compile Include="Rendering\Components\WaterSurfaceComponent.cs" />
     <Compile Include="Rendering\BatchedMeshes.cs" />
     <Compile Include="Rendering\DebugDrawer.cs" />
+    <Compile Include="Rendering\EventArgs.cs" />
     <Compile Include="Rendering\Keyframe.cs" />
     <Compile Include="Rendering\PlagueEngineModel.cs" />
     <Compile Include="Rendering\PlagueEngineSkinnedModel.cs" />

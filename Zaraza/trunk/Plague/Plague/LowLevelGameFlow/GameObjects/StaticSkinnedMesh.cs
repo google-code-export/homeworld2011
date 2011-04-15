@@ -39,7 +39,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.keyboard      = keyboard;
             this.World         = world;
 
-            keyboard.SubscibeKeys(OnKey, Keys.D0,Keys.D1,Keys.D2);            
+            keyboard.SubscibeKeys(OnKey, Keys.D0,Keys.D1,Keys.D2,Keys.D3,Keys.D4,Keys.D5,Keys.D8,Keys.D9);
+            meshComponent.SubscribeAnimationsEnd("Jump");
         }
         /****************************************************************************/
 
@@ -53,13 +54,47 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 switch (key)
                 {
-                    case Keys.D0: meshComponent.AnimationPlayer.Stop();
+                    case Keys.D0: meshComponent.Stop();
                         break;
-                    case Keys.D1: meshComponent.AnimationPlayer.StartClip("Run");
+                    case Keys.D1: meshComponent.StartClip("Run");
                         break;
-                    case Keys.D2: meshComponent.AnimationPlayer.StartClip("Jump");
+                    case Keys.D2: meshComponent.StartClip("Jump");
+                        break;
+                    case Keys.D3: meshComponent.PlayClip("Run");
+                        break;
+                    case Keys.D4: meshComponent.TimeRatio *= 2;
+                        break;
+                    case Keys.D5: meshComponent.TimeRatio /= 2;
+                        break;
+                    case Keys.D8:
+                        {
+                            if (meshComponent.IsPaused())
+                            {
+                                meshComponent.Resume();
+                            }
+                            else
+                            {
+                                meshComponent.Pause();
+                            }
+                        }
+                        break;
+                    case Keys.D9:
+                        meshComponent.Reset();
                         break;
                 }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Event
+        /****************************************************************************/
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {
+            if (e.GetType().Equals(typeof(Rendering.AnimationEndEvent)))
+            {
+                meshComponent.StartClip("Run");
             }
         }
         /****************************************************************************/
