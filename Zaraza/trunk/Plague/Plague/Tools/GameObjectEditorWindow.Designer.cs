@@ -61,6 +61,8 @@
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
             this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -69,6 +71,8 @@
             this.panel3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -76,7 +80,8 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(3, 44);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tabControl1.Location = new System.Drawing.Point(0, 45);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(389, 447);
@@ -195,9 +200,7 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.buttonCreateDefinitionEdit);
-            this.tabPage3.Controls.Add(this.buttonForceUpdate);
-            this.tabPage3.Controls.Add(this.checkBoxDisableEditing);
+            this.tabPage3.Controls.Add(this.panel5);
             this.tabPage3.Controls.Add(this.propertyGrid2);
             this.tabPage3.Controls.Add(this.panel3);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -209,7 +212,7 @@
             // 
             // buttonCreateDefinitionEdit
             // 
-            this.buttonCreateDefinitionEdit.Location = new System.Drawing.Point(243, 387);
+            this.buttonCreateDefinitionEdit.Location = new System.Drawing.Point(234, 3);
             this.buttonCreateDefinitionEdit.Name = "buttonCreateDefinitionEdit";
             this.buttonCreateDefinitionEdit.Size = new System.Drawing.Size(104, 23);
             this.buttonCreateDefinitionEdit.TabIndex = 20;
@@ -219,7 +222,7 @@
             // 
             // buttonForceUpdate
             // 
-            this.buttonForceUpdate.Location = new System.Drawing.Point(143, 387);
+            this.buttonForceUpdate.Location = new System.Drawing.Point(134, 3);
             this.buttonForceUpdate.Name = "buttonForceUpdate";
             this.buttonForceUpdate.Size = new System.Drawing.Size(94, 23);
             this.buttonForceUpdate.TabIndex = 18;
@@ -230,7 +233,7 @@
             // checkBoxDisableEditing
             // 
             this.checkBoxDisableEditing.AutoSize = true;
-            this.checkBoxDisableEditing.Location = new System.Drawing.Point(42, 391);
+            this.checkBoxDisableEditing.Location = new System.Drawing.Point(33, 7);
             this.checkBoxDisableEditing.Name = "checkBoxDisableEditing";
             this.checkBoxDisableEditing.Size = new System.Drawing.Size(95, 17);
             this.checkBoxDisableEditing.TabIndex = 19;
@@ -240,7 +243,7 @@
             // 
             // propertyGrid2
             // 
-            this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Right;
+            this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid2.Location = new System.Drawing.Point(0, 63);
             this.propertyGrid2.Name = "propertyGrid2";
             this.propertyGrid2.Size = new System.Drawing.Size(381, 358);
@@ -393,7 +396,7 @@
             // 
             // buttonCommitMeshTransforms
             // 
-            this.buttonCommitMeshTransforms.Location = new System.Drawing.Point(18, 13);
+            this.buttonCommitMeshTransforms.Location = new System.Drawing.Point(40, 8);
             this.buttonCommitMeshTransforms.Name = "buttonCommitMeshTransforms";
             this.buttonCommitMeshTransforms.Size = new System.Drawing.Size(147, 23);
             this.buttonCommitMeshTransforms.TabIndex = 4;
@@ -404,7 +407,7 @@
             // checkBoxShowCollisionSkin
             // 
             this.checkBoxShowCollisionSkin.AutoSize = true;
-            this.checkBoxShowCollisionSkin.Location = new System.Drawing.Point(199, 13);
+            this.checkBoxShowCollisionSkin.Location = new System.Drawing.Point(230, 12);
             this.checkBoxShowCollisionSkin.Name = "checkBoxShowCollisionSkin";
             this.checkBoxShowCollisionSkin.Size = new System.Drawing.Size(115, 17);
             this.checkBoxShowCollisionSkin.TabIndex = 5;
@@ -412,14 +415,34 @@
             this.checkBoxShowCollisionSkin.UseVisualStyleBackColor = true;
             this.checkBoxShowCollisionSkin.CheckedChanged += new System.EventHandler(this.checkBoxShowCollisionSkin_CheckedChanged);
             // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.buttonCreateDefinitionEdit);
+            this.panel5.Controls.Add(this.checkBoxDisableEditing);
+            this.panel5.Controls.Add(this.buttonForceUpdate);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel5.Location = new System.Drawing.Point(0, 392);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(381, 29);
+            this.panel5.TabIndex = 21;
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.buttonCommitMeshTransforms);
+            this.panel6.Controls.Add(this.checkBoxShowCollisionSkin);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(389, 492);
+            this.panel6.TabIndex = 22;
+            // 
             // GameObjectEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(389, 492);
-            this.Controls.Add(this.checkBoxShowCollisionSkin);
-            this.Controls.Add(this.buttonCommitMeshTransforms);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.panel6);
             this.Name = "GameObjectEditorWindow";
             this.Text = "Game Object Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GameObjectEditorWindow_FormClosing);
@@ -429,13 +452,15 @@
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -474,6 +499,8 @@
         private System.Windows.Forms.Button buttonSaveAs;
         private System.Windows.Forms.Button buttonCommitMeshTransforms;
         private System.Windows.Forms.CheckBox checkBoxShowCollisionSkin;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Panel panel6;
 
 
     }
