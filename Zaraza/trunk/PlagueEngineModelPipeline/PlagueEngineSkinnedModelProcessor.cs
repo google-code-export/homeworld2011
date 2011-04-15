@@ -343,7 +343,8 @@ namespace PlagueEngineModelPipeline
                     animationClips.Add(clip.Name, new AnimationClip(TimeSpan.FromSeconds(clip.StartFrame * frameDuration),
                                                                     TimeSpan.FromSeconds(clip.EndFrame   * frameDuration),
                                                                     new List<Keyframe>(),
-                                                                    clip.Loop));
+                                                                    clip.Loop,
+                                                                    clip.Name));
                 }
             }
 
