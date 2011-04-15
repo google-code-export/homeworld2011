@@ -23,19 +23,29 @@ namespace PlagueEngine.Rendering.Components
         /// Fields
         /****************************************************************************/
         private SkinningData    skinningData    = null;
-        private AnimationClip   currentClip     = null;
-        private TimeSpan        currentTime     = TimeSpan.Zero;
-        private int             currentKeyframe = 0;
         private bool            pause           = false;
+        private bool            blend           = false;
+        private TimeSpan        blendDuration   = TimeSpan.Zero;
+        private TimeSpan        blendTime       = TimeSpan.Zero;
 
         internal static Renderer renderer = null;
 
         private Techniques technique;
 
-        private Matrix[] boneTransforms;
-        private Matrix[] worldTransforms;
-        private Matrix[] skinTransforms;
-
+        private Matrix[]      boneTransforms;
+        private Matrix[]      worldTransforms;
+        private Matrix[]      skinTransforms;
+        private AnimationClip currentClip     = null;
+        private TimeSpan      currentTime     = TimeSpan.Zero;
+        private int           currentKeyframe = 0;
+        
+        private Matrix[]      boneBlendTransforms;
+        private Matrix[]      worldBlendTransforms;
+        private Matrix[]      skinBlendTransforms;
+        private AnimationClip blendClip     = null;
+        private TimeSpan      blendClipTime = TimeSpan.Zero;
+        private int           blendKeyframe = 0;
+        
         private List<String> subscribedAnimations = new List<String>();
         /****************************************************************************/
         
@@ -57,6 +67,10 @@ namespace PlagueEngine.Rendering.Components
             boneTransforms  = new Matrix[skinningData.BindPose.Count];
             worldTransforms = new Matrix[skinningData.BindPose.Count];
             skinTransforms  = new Matrix[skinningData.BindPose.Count];
+
+            boneBlendTransforms  = new Matrix[skinningData.BindPose.Count];
+            worldBlendTransforms = new Matrix[skinningData.BindPose.Count];
+            skinBlendTransforms  = new Matrix[skinningData.BindPose.Count];
 
             TimeRatio = 1.0f;
 
@@ -85,9 +99,26 @@ namespace PlagueEngine.Rendering.Components
             currentClip = skinningData.AnimationClips[name];
             currentTime = TimeSpan.Zero;
             currentKeyframe = 0;
+            blend = false;
             pause = false;
 
             skinningData.BindPose.CopyTo(boneTransforms);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Blend 
+        /****************************************************************************/
+        public void Blend(String animation, TimeSpan duration)
+        {
+            blend = true;
+            blendDuration   = duration;
+            blendClip       = skinningData.AnimationClips[animation];
+            blendClipTime   = TimeSpan.Zero;
+            blendTime       = TimeSpan.Zero;
+            blendKeyframe   = 0;
+            skinningData.BindPose.CopyTo(boneBlendTransforms);
         }
         /****************************************************************************/
 
@@ -148,6 +179,8 @@ namespace PlagueEngine.Rendering.Components
         public void Stop()
         {
             currentClip = null;
+            blend       = false;
+
             skinningData.BindPose.CopyTo(boneTransforms);
         }
         /****************************************************************************/
@@ -159,6 +192,8 @@ namespace PlagueEngine.Rendering.Components
         public void Reset()
         {
             if (currentClip == null) return;
+
+            blend           = false;
 
             pause           = false;
             currentTime     = TimeSpan.Zero;
@@ -202,6 +237,32 @@ namespace PlagueEngine.Rendering.Components
             UpdateBoneTransforms(time);
             UpdateWorldTransforms(rootTransform);
             UpdateSkinTransforms();
+
+            if (blend)
+            {
+                blendTime += TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio))); ;
+                
+                if (blendTime > blendDuration)
+                {
+                    blend           = false;
+                    currentClip     = blendClip;
+                    currentTime     = blendTime;
+                    currentKeyframe = blendKeyframe;
+                    
+                    return;
+                }
+
+                UpdateBoneBlendTransforms(time);
+                UpdateWorldBlendTransforms(rootTransform);
+                UpdateSkinBlendTransforms();
+
+                float BlendRatio = (float)(blendTime.TotalSeconds / blendDuration.TotalSeconds);
+
+                for (int bone = 0; bone < skinBlendTransforms.Length; bone++)
+                {
+                    skinTransforms[bone] = Matrix.Lerp(skinTransforms[bone],skinBlendTransforms[bone],BlendRatio);
+                }
+            }
         }
         /****************************************************************************/
 
@@ -287,6 +348,92 @@ namespace PlagueEngine.Rendering.Components
             for (int bone = 0; bone < skinTransforms.Length; bone++)
             {
                 skinTransforms[bone] = skinningData.InverseBindPose[bone] * worldTransforms[bone];
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Update Bone Blend Transforms
+        /****************************************************************************/
+        public void UpdateBoneBlendTransforms(TimeSpan time)
+        {
+            if (blendClip == null) return;
+
+            blendClipTime += TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
+
+            /***************/
+            // Looping
+            /***************/
+            if (blendClipTime >= blendClip.Duration)
+            {
+                if (subscribedAnimations.Contains(blendClip.Name))
+                {
+                    gameObject.SendEvent(new AnimationEndEvent(blendClip.Name),
+                                         EventsSystem.Priority.Normal,
+                                         gameObject);
+                }
+
+                if (blendClip.Loop)
+                {
+                    while (blendClipTime >= blendClip.Duration)
+                    {
+                        blendClipTime -= blendClip.Duration;
+                    }
+
+                    blendKeyframe = 0;
+                }
+                else
+                {
+                    blendKeyframe = 0;
+                    blendClip = null;
+                    blendClipTime = TimeSpan.Zero;
+                    return;
+                }
+            }
+            /***************/
+
+            IList<Keyframe> keyframes = blendClip.Keyframes;
+
+            while (blendKeyframe < keyframes.Count)
+            {
+                Keyframe keyframe = keyframes[blendKeyframe];
+
+                if (keyframe.Time > blendClipTime) break;
+
+                boneBlendTransforms[keyframe.Bone] = keyframe.Transform;
+
+                blendKeyframe++;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Update World Transforms
+        /****************************************************************************/
+        public void UpdateWorldBlendTransforms(Matrix rootTransform)
+        {
+            worldBlendTransforms[0] = boneBlendTransforms[0] * rootTransform;
+
+            for (int bone = 1; bone < worldBlendTransforms.Length; bone++)
+            {
+                int parentBone = skinningData.SkeletonHierarchy[bone];
+
+                worldBlendTransforms[bone] = boneBlendTransforms[bone] * worldBlendTransforms[parentBone];
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Update Skin Transforms
+        /****************************************************************************/
+        public void UpdateSkinBlendTransforms()
+        {
+            for (int bone = 0; bone < skinBlendTransforms.Length; bone++)
+            {
+                skinBlendTransforms[bone] = skinningData.InverseBindPose[bone] * worldBlendTransforms[bone];
             }
         }
         /****************************************************************************/

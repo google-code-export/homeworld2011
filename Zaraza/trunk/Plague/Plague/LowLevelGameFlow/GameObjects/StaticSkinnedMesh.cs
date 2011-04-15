@@ -60,7 +60,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         break;
                     case Keys.D2: meshComponent.StartClip("Jump");
                         break;
-                    case Keys.D3: meshComponent.PlayClip("Run");
+                    case Keys.D3: meshComponent.Blend("Run",TimeSpan.FromSeconds(0.5));
                         break;
                     case Keys.D4: meshComponent.TimeRatio *= 2;
                         break;
@@ -94,7 +94,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (e.GetType().Equals(typeof(Rendering.AnimationEndEvent)))
             {
-                meshComponent.StartClip("Run");
+                meshComponent.Blend("Run", TimeSpan.FromSeconds(0.1));
             }
         }
         /****************************************************************************/
