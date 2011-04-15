@@ -39,7 +39,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.keyboard      = keyboard;
             this.World         = world;
 
-            keyboard.SubscibeKeys(OnKey, Keys.Space);            
+            keyboard.SubscibeKeys(OnKey, Keys.D0,Keys.D1,Keys.D2);            
         }
         /****************************************************************************/
 
@@ -51,13 +51,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (state.WasPressed())
             {
-                if (meshComponent.AnimationPlayer.CurrentClip == null)
+                switch (key)
                 {
-                    meshComponent.StartClip("Take 001");
-                }
-                else
-                {
-                    meshComponent.AnimationPlayer.Stop();
+                    case Keys.D0: meshComponent.AnimationPlayer.Stop();
+                        break;
+                    case Keys.D1: meshComponent.StartClip("Run");
+                        break;
+                    case Keys.D2: meshComponent.StartClip("Jump");
+                        break;
                 }
             }
         }

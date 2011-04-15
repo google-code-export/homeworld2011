@@ -20,10 +20,14 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public AnimationClip(TimeSpan duration, List<Keyframe> keyframes)
+        public AnimationClip(TimeSpan start,TimeSpan end, List<Keyframe> keyframes,bool loop)
         {
-            Duration  = duration;
+            StartTime = start;
+            EndTime   = end;
             Keyframes = keyframes;
+            Loop      = loop;
+
+            Duration = EndTime - StartTime;
         }
         /****************************************************************************/
 
@@ -43,7 +47,13 @@ namespace PlagueEngine.Rendering
         [ContentSerializer]
         public TimeSpan Duration        { get; private set; }
         [ContentSerializer]
+        public TimeSpan StartTime       { get; private set; }
+        [ContentSerializer]
+        public TimeSpan EndTime         { get; private set; }
+        [ContentSerializer]
         public List<Keyframe> Keyframes { get; private set; }
+        [ContentSerializer]
+        public bool Loop                { get; private set; }
         /****************************************************************************/
 
     }
