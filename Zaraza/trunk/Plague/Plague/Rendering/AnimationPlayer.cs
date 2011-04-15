@@ -49,9 +49,9 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Start Clip
         /****************************************************************************/
-        public void StartClip(AnimationClip clip)
+        public void StartClip(String name)
         {
-            currentClip     = clip;
+            currentClip     = skinningData.AnimationClips[name];
             currentTime     = TimeSpan.Zero;
             currentKeyframe = 0;
 
@@ -97,13 +97,22 @@ namespace PlagueEngine.Rendering
             /***************/
             if (currentTime >= currentClip.Duration)
             {
-                while (currentTime >= currentClip.Duration)
+                if (currentClip.Loop)
                 {
-                    currentTime -= currentClip.Duration;
-                }
+                    while (currentTime >= currentClip.Duration)
+                    {
+                        currentTime -= currentClip.Duration;
+                    }
 
-                currentKeyframe = 0;
-                skinningData.BindPose.CopyTo(boneTransforms);
+                    currentKeyframe = 0;
+                }
+                else
+                {
+                    currentKeyframe = 0;
+                    currentClip     = null;
+                    currentTime     = TimeSpan.Zero;
+                    return;
+                }            
             }
             /***************/
             
@@ -115,11 +124,8 @@ namespace PlagueEngine.Rendering
 
                 if (keyframe.Time > currentTime) break;
 
-                //if (keyframe.Bone == 2)
-                {
-                    boneTransforms[keyframe.Bone] = keyframe.Transform;
-                }
-
+                boneTransforms[keyframe.Bone] = keyframe.Transform;
+                
                 currentKeyframe++;
             }
         }
