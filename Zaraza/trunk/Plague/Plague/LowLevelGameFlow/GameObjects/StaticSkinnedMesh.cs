@@ -55,9 +55,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     case Keys.D0: meshComponent.AnimationPlayer.Stop();
                         break;
-                    case Keys.D1: meshComponent.StartClip("Run");
+                    case Keys.D1: meshComponent.AnimationPlayer.StartClip("Run");
                         break;
-                    case Keys.D2: meshComponent.StartClip("Jump");
+                    case Keys.D2: meshComponent.AnimationPlayer.StartClip("Jump");
                         break;
                 }
             }
