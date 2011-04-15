@@ -229,10 +229,10 @@ Tabela ma prostą strukturę:
 <tr><th colspan="5"><font color="red">*RESOURCES*</font></th></tr>
 <tr>
 <td> ? </td>
-<td>*Przetwarzanie assetów*</td>
-<td> ? </td>
-<td> ? </td>
-<td> ? </td>
+<td></td>
+<td> Krzysztof </td>
+<td> *Przetwarzanie assetów* </td>
+<td>  </td>
 </tr>
 <tr>
 <td> ? </td>
