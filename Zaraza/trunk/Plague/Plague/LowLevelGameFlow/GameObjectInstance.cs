@@ -307,7 +307,9 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             set
             {
-                World *= Matrix.CreateScale(value);                          
+                Vector3 tmp = World.Translation;
+                World *= Matrix.CreateScale(value);
+                World.Translation = tmp;
             }
             get
             {
@@ -315,6 +317,9 @@ namespace PlagueEngine.LowLevelGameFlow
             }
         }
 
+
+        [CategoryAttribute("Attached to")]
+        public uint ObjectID { get; set; }
 
         /****************************************************************************/
         /// Rotate

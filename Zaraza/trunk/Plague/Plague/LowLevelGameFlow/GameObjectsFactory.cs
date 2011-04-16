@@ -102,8 +102,8 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "SphericalBodyMesh":
                     result = CreateSphericalBodyMesh(data);
                     break;
-                case "StaticSkinnedMesh":
-                    result = CreateStaticSkinnedMesh(data);
+                case "Piggy":
+                    result = CreatePiggy(data);
                     break;
             }
 
@@ -448,19 +448,30 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Static Skinned Mesh
         /****************************************************************************/
-        public StaticSkinnedMesh CreateStaticSkinnedMesh(GameObjectInstanceData data)
+        public Piggy CreatePiggy(GameObjectInstanceData data)
         {
-            StaticSkinnedMesh result = new StaticSkinnedMesh();
+            Piggy result = new Piggy();
 
             if (!DefaultObjectInit(result, data)) return result = null;
 
-            StaticSkinnedMeshData sdata = (StaticSkinnedMeshData)data;
+            PiggyData sdata = (PiggyData)data;
 
             result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
                                                                               sdata.Model,
                                                                               sdata.Diffuse,
                                                                               sdata.Specular,
-                                                                              sdata.Normals),
+                                                                              sdata.Normals,
+                                                                              sdata.TimeRatio,
+                                                                              sdata.CurrentClip,
+                                                                              sdata.CurrentKeyframe,
+                                                                              sdata.CurrentTime,
+                                                                              sdata.Pause,
+                                                                              sdata.Blend,
+                                                                              sdata.BlendClip,
+                                                                              sdata.BlendKeyframe,
+                                                                              sdata.BlendClipTime,
+                                                                              sdata.BlendDuration,
+                                                                              sdata.BlendTime),                                                                              
                         inputComponentsFactory.CreateKeyboardListenerComponent(result,true),
                                                                               sdata.World);
             return result;
