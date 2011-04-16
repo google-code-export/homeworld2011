@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
+using PlagueEngine.Physics.Components;
 
 
 /************************************************************************************/
@@ -26,17 +27,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         SkinnedMeshComponent meshComponent = null;
-        KeyboardListenerComponent keyboard = null;        
+        KeyboardListenerComponent keyboard = null;
+        SquareBodyComponent body = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard, Matrix world)
+        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard,SquareBodyComponent body, Matrix world)
         {
             this.meshComponent = meshComponent;
             this.keyboard      = keyboard;
+            this.body          = body;
             this.World         = world;
 
             keyboard.SubscibeKeys(OnKey, Keys.D0,Keys.D1,Keys.D2,Keys.D3,Keys.D4,Keys.D5,Keys.D8,Keys.D9);
@@ -106,6 +109,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void ReleaseComponents()
         {
             meshComponent.ReleaseMe();
+            body.ReleaseMe();
+            keyboard.ReleaseMe();
         }
         /****************************************************************************/
 
@@ -125,7 +130,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Normals  = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
 
             data.TimeRatio       = meshComponent.TimeRatio;
-            data.CurrentClip     = meshComponent.CurrentClip.Name;
+            data.CurrentClip     = (meshComponent.CurrentClip == null ? String.Empty : meshComponent.CurrentClip.Name);
             data.CurrentTime     = meshComponent.CurrentTime.TotalSeconds;
             data.CurrentKeyframe = meshComponent.CurrentKeyframe;
             data.Pause           = meshComponent.Pause;
@@ -133,9 +138,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Blend         = meshComponent.Blend;
             data.BlendDuration = meshComponent.BlendDuration.TotalSeconds;
             data.BlendTime     = meshComponent.BlendTime.TotalSeconds;
-            data.BlendClip     = meshComponent.BlendClip.Name;
+            data.BlendClip     = (meshComponent.BlendClip == null ? String.Empty : meshComponent.BlendClip.Name);
             data.BlendClipTime = meshComponent.BlendClipTime.TotalSeconds;
             data.BlendKeyframe = meshComponent.BlendKeyframe;
+
+            data.Immovable        = body.Immovable;
+            data.IsEnabled        = body.IsEnabled;
+            data.Elasticity       = body.Elasticity;
+            data.StaticRoughness  = body.StaticRoughness;
+            data.DynamicRoughness = body.DynamicRoughness;
+            data.Mass             = body.Mass;
+
+            data.Length = body.Length;
+            data.Width  = body.Width;
+            data.Height = body.Height;
 
             return data;
         }
@@ -184,7 +200,26 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public double BlendClipTime { get; set; }
         [CategoryAttribute("Animation Blending")]
         public int    BlendKeyframe { get; set; }
-               
+
+        [CategoryAttribute("Physics")]
+        public bool  Immovable        { get; set; }
+        [CategoryAttribute("Physics")]
+        public bool  IsEnabled        { get; set; }
+        [CategoryAttribute("Physics")]
+        public float Elasticity       { get; set; }
+        [CategoryAttribute("Physics")]
+        public float StaticRoughness  { get; set; }
+        [CategoryAttribute("Physics")]
+        public float DynamicRoughness { get; set; }
+        [CategoryAttribute("Physics")]
+        public float Mass             { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float Length           { get; set; }
+        [CategoryAttribute("Collision Skin")]
+        public float Height           { get; set; }
+        [CategoryAttribute("Collision Skin")]
+        public float Width            { get; set; }
     }
     /********************************************************************************/
 

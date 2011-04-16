@@ -207,7 +207,17 @@ namespace PlagueEngine.HighLevelGameFlow
             ssdata.Model = "piggy";
             ssdata.TimeRatio = 1.0f;
             ssdata.Diffuse = "piggyTex";
-            ssdata.World = Matrix.CreateTranslation(200, 50, 0);
+            ssdata.World = Matrix.CreateScale(0.1f);
+            ssdata.World *= Matrix.CreateTranslation(200, 50, 50);            
+            ssdata.Mass = 1;
+            ssdata.StaticRoughness = 1;
+            ssdata.DynamicRoughness = 1;
+            ssdata.Elasticity = 1;
+            ssdata.Length = 1;
+            ssdata.Width = 1;
+            ssdata.Height = 1;
+            ssdata.Immovable = true;
+
             gameObjectsFactory.Create(ssdata);
         }
         /****************************************************************************/

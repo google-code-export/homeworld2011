@@ -317,10 +317,6 @@ namespace PlagueEngine.LowLevelGameFlow
             }
         }
 
-
-        [CategoryAttribute("Attached to")]
-        public uint ObjectID { get; set; }
-
         /****************************************************************************/
         /// Rotate
         /****************************************************************************/
