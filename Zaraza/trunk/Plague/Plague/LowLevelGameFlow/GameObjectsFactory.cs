@@ -473,6 +473,16 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                               sdata.BlendDuration,
                                                                               sdata.BlendTime),                                                                              
                         inputComponentsFactory.CreateKeyboardListenerComponent(result,true),
+                        physicsComponentFactory.CreateSquareBodyComponent(result,
+                                                                          sdata.Mass,
+                                                                          sdata.Length,
+                                                                          sdata.Height,
+                                                                          sdata.Width,
+                                                                          sdata.Elasticity,
+                                                                          sdata.StaticRoughness,
+                                                                          sdata.DynamicRoughness,
+                                                                          sdata.Immovable,
+                                                                          sdata.World),
                                                                               sdata.World);
             return result;
         }
