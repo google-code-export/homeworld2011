@@ -84,7 +84,8 @@ namespace PlagueEngineModelPipeline
             outputModel.SkinningData = new  SkinningData(animationClips,
                                                          bindPose,
                                                          inverseBindPose,
-                                                         skeletonHierarchy);
+                                                         skeletonHierarchy,
+                                                         boneMap);
             
             ProcessNode(input);
             
@@ -178,6 +179,9 @@ namespace PlagueEngineModelPipeline
 
             if (mesh != null)
             {
+
+                outputModel.Name = mesh.Name;                
+
                 MeshHelper.OptimizeForCache(mesh);
                 if (mesh.Geometry.Count != 0)
                 {
@@ -186,8 +190,7 @@ namespace PlagueEngineModelPipeline
                     MeshHelper.CalculateTangentFrames(mesh, VertexChannelNames.TextureCoordinate(0), VertexChannelNames.Tangent(0), VertexChannelNames.Binormal(0));
                     
                     GeometryContent geometry = mesh.Geometry[0];
-
-                    outputModel.Name                = geometry.Name;                    
+                                        
                     outputModel.TriangleCount       = geometry.Indices.Count / 3;
                     outputModel.VertexCount         = geometry.Vertices.VertexCount;                    
                     outputModel.IndexCollection     = geometry.Indices;

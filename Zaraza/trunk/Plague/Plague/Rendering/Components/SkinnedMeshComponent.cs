@@ -23,10 +23,6 @@ namespace PlagueEngine.Rendering.Components
         /// Fields
         /****************************************************************************/
         private SkinningData    skinningData    = null;
-        private bool            pause           = false;
-        private bool            blend           = false;
-        private TimeSpan        blendDuration   = TimeSpan.Zero;
-        private TimeSpan        blendTime       = TimeSpan.Zero;
 
         internal static Renderer renderer = null;
 
@@ -35,16 +31,10 @@ namespace PlagueEngine.Rendering.Components
         private Matrix[]      boneTransforms;
         private Matrix[]      worldTransforms;
         private Matrix[]      skinTransforms;
-        private AnimationClip currentClip     = null;
-        private TimeSpan      currentTime     = TimeSpan.Zero;
-        private int           currentKeyframe = 0;
         
         private Matrix[]      boneBlendTransforms;
         private Matrix[]      worldBlendTransforms;
         private Matrix[]      skinBlendTransforms;
-        private AnimationClip blendClip     = null;
-        private TimeSpan      blendClipTime = TimeSpan.Zero;
-        private int           blendKeyframe = 0;
         
         private List<String> subscribedAnimations = new List<String>();
         /****************************************************************************/
@@ -53,10 +43,21 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public SkinnedMeshComponent(GameObjectInstance gameObject,
+        public SkinnedMeshComponent(GameObjectInstance       gameObject,
                                     PlagueEngineSkinnedModel model,
-                                    TexturesPack textures,
-                                    Techniques technique)
+                                    TexturesPack             textures,
+                                    Techniques               technique,
+                                    float                    timeRatio,
+                                    String                   currentClip,
+                                    int                      currentKeyframe,
+                                    TimeSpan                 currentTime,
+                                    bool                     pause,
+                                    bool                     blend,
+                                    String                   blendClip,
+                                    int                      blendKeyframe,
+                                    TimeSpan                 blendClipTime,
+                                    TimeSpan                 blendDuration,
+                                    TimeSpan                 blendTime)
             : base(gameObject)
         {
             Model          = model;
@@ -72,7 +73,19 @@ namespace PlagueEngine.Rendering.Components
             worldBlendTransforms = new Matrix[skinningData.BindPose.Count];
             skinBlendTransforms  = new Matrix[skinningData.BindPose.Count];
 
-            TimeRatio = 1.0f;
+            TimeRatio = timeRatio;
+
+            if (!String.IsNullOrEmpty(currentClip)) CurrentClip = skinningData.AnimationClips[currentClip];
+            if (!String.IsNullOrEmpty(blendClip))   BlendClip   = skinningData.AnimationClips[blendClip];
+
+            CurrentKeyframe = currentKeyframe;
+            CurrentTime     = currentTime;
+            BlendKeyframe   = blendKeyframe;
+            BlendClipTime   = blendClipTime;
+            BlendTime       = blendTime;
+            BlendDuration   = blendDuration;
+            Pause           = pause;
+            Blend           = blend;
 
             skinningData.BindPose.CopyTo(boneTransforms);   
 
@@ -96,11 +109,11 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void StartClip(String name)
         {
-            currentClip = skinningData.AnimationClips[name];
-            currentTime = TimeSpan.Zero;
-            currentKeyframe = 0;
-            blend = false;
-            pause = false;
+            CurrentClip     = skinningData.AnimationClips[name];
+            CurrentTime     = TimeSpan.Zero;
+            CurrentKeyframe = 0;
+            Blend           = false;
+            Pause           = false;
 
             skinningData.BindPose.CopyTo(boneTransforms);
         }
@@ -110,14 +123,14 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Blend 
         /****************************************************************************/
-        public void Blend(String animation, TimeSpan duration)
+        public void BlendTo(String animation, TimeSpan duration)
         {
-            blend = true;
-            blendDuration   = duration;
-            blendClip       = skinningData.AnimationClips[animation];
-            blendClipTime   = TimeSpan.Zero;
-            blendTime       = TimeSpan.Zero;
-            blendKeyframe   = 0;
+            Blend           = true;
+            BlendDuration   = duration;
+            BlendClip       = skinningData.AnimationClips[animation];
+            BlendClipTime   = TimeSpan.Zero;
+            BlendTime       = TimeSpan.Zero;
+            BlendKeyframe   = 0;
             skinningData.BindPose.CopyTo(boneBlendTransforms);
         }
         /****************************************************************************/
@@ -128,16 +141,16 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void PlayClip(String name)
         {
-            if (currentClip != null)
+            if (CurrentClip != null)
             {
-                pause = false;
+                Pause = false;
 
-                if (currentClip.Name.Equals(name)) return;
+                if (CurrentClip.Name.Equals(name)) return;
             }
 
-            currentClip     = skinningData.AnimationClips[name];
-            currentTime     = TimeSpan.Zero;
-            currentKeyframe = 0;
+            CurrentClip     = skinningData.AnimationClips[name];
+            CurrentTime     = TimeSpan.Zero;
+            CurrentKeyframe = 0;
             skinningData.BindPose.CopyTo(boneTransforms);
         }
         /****************************************************************************/
@@ -146,9 +159,9 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Pause
         /****************************************************************************/
-        public void Pause()
+        public void PauseClip()
         {
-            pause = true;
+            Pause = true;
         }
         /****************************************************************************/
 
@@ -158,7 +171,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public bool IsPaused()
         {
-            return pause;
+            return Pause;
         }
         /****************************************************************************/
 
@@ -168,7 +181,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void Resume()
         {
-            pause = false;
+            Pause = false;
         }
         /****************************************************************************/
 
@@ -178,8 +191,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void Stop()
         {
-            currentClip = null;
-            blend       = false;
+            CurrentClip = null;
+            Blend       = false;
 
             skinningData.BindPose.CopyTo(boneTransforms);
         }
@@ -191,13 +204,13 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void Reset()
         {
-            if (currentClip == null) return;
+            if (CurrentClip == null) return;
 
-            blend           = false;
+            Blend           = false;
 
-            pause           = false;
-            currentTime     = TimeSpan.Zero;
-            currentKeyframe = 0;
+            Pause           = false;
+            CurrentTime     = TimeSpan.Zero;
+            CurrentKeyframe = 0;
 
             skinningData.BindPose.CopyTo(boneTransforms);
         }
@@ -232,22 +245,22 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void Update(TimeSpan time, Matrix rootTransform)
         {
-            if (pause) return;
+            if (Pause) return;
 
             UpdateBoneTransforms(time);
             UpdateWorldTransforms(rootTransform);
             UpdateSkinTransforms();
 
-            if (blend)
+            if (Blend)
             {
-                blendTime += TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio))); ;
+                BlendTime += TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio))); ;
                 
-                if (blendTime > blendDuration)
+                if (BlendTime > BlendDuration)
                 {
-                    blend           = false;
-                    currentClip     = blendClip;
-                    currentTime     = blendTime;
-                    currentKeyframe = blendKeyframe;
+                    Blend           = false;
+                    CurrentClip     = BlendClip;
+                    CurrentTime     = BlendTime;
+                    CurrentKeyframe = BlendKeyframe;
                     
                     return;
                 }
@@ -256,7 +269,7 @@ namespace PlagueEngine.Rendering.Components
                 UpdateWorldBlendTransforms(rootTransform);
                 UpdateSkinBlendTransforms();
 
-                float BlendRatio = (float)(blendTime.TotalSeconds / blendDuration.TotalSeconds);
+                float BlendRatio = (float)(BlendTime.TotalSeconds / BlendDuration.TotalSeconds);
 
                 for (int bone = 0; bone < skinBlendTransforms.Length; bone++)
                 {
@@ -272,52 +285,52 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void UpdateBoneTransforms(TimeSpan time)
         {
-            if (currentClip == null) return;
+            if (CurrentClip == null) return;
 
-            currentTime += TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
+            CurrentTime += TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
 
             /***************/
             // Looping
             /***************/
-            if (currentTime >= currentClip.Duration)
+            if (CurrentTime >= CurrentClip.Duration)
             {
-                if (subscribedAnimations.Contains(currentClip.Name))
+                if (subscribedAnimations.Contains(CurrentClip.Name))
                 {
-                    gameObject.SendEvent(new AnimationEndEvent(currentClip.Name), 
+                    gameObject.SendEvent(new AnimationEndEvent(CurrentClip.Name), 
                                          EventsSystem.Priority.Normal, 
                                          gameObject);
                 }
 
-                if (currentClip.Loop)
+                if (CurrentClip.Loop)
                 {
-                    while (currentTime >= currentClip.Duration)
+                    while (CurrentTime >= CurrentClip.Duration)
                     {
-                        currentTime -= currentClip.Duration;
+                        CurrentTime -= CurrentClip.Duration;
                     }
 
-                    currentKeyframe = 0;
+                    CurrentKeyframe = 0;
                 }
                 else
                 {
-                    currentKeyframe = 0;
-                    currentClip = null;
-                    currentTime = TimeSpan.Zero;
+                    CurrentKeyframe = 0;
+                    CurrentClip = null;
+                    CurrentTime = TimeSpan.Zero;
                     return;
                 }
             }
             /***************/
 
-            IList<Keyframe> keyframes = currentClip.Keyframes;
+            IList<Keyframe> keyframes = CurrentClip.Keyframes;
 
-            while (currentKeyframe < keyframes.Count)
+            while (CurrentKeyframe < keyframes.Count)
             {
-                Keyframe keyframe = keyframes[currentKeyframe];
+                Keyframe keyframe = keyframes[CurrentKeyframe];
 
-                if (keyframe.Time > currentTime) break;
+                if (keyframe.Time > CurrentTime) break;
 
                 boneTransforms[keyframe.Bone] = keyframe.Transform;
 
-                currentKeyframe++;
+                CurrentKeyframe++;
             }
         }
         /****************************************************************************/
@@ -358,52 +371,52 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void UpdateBoneBlendTransforms(TimeSpan time)
         {
-            if (blendClip == null) return;
+            if (BlendClip == null) return;
 
-            blendClipTime += TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
+            BlendClipTime += TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
 
             /***************/
             // Looping
             /***************/
-            if (blendClipTime >= blendClip.Duration)
+            if (BlendClipTime >= BlendClip.Duration)
             {
-                if (subscribedAnimations.Contains(blendClip.Name))
+                if (subscribedAnimations.Contains(BlendClip.Name))
                 {
-                    gameObject.SendEvent(new AnimationEndEvent(blendClip.Name),
+                    gameObject.SendEvent(new AnimationEndEvent(BlendClip.Name),
                                          EventsSystem.Priority.Normal,
                                          gameObject);
                 }
 
-                if (blendClip.Loop)
+                if (BlendClip.Loop)
                 {
-                    while (blendClipTime >= blendClip.Duration)
+                    while (BlendClipTime >= BlendClip.Duration)
                     {
-                        blendClipTime -= blendClip.Duration;
+                        BlendClipTime -= BlendClip.Duration;
                     }
 
-                    blendKeyframe = 0;
+                    BlendKeyframe = 0;
                 }
                 else
                 {
-                    blendKeyframe = 0;
-                    blendClip = null;
-                    blendClipTime = TimeSpan.Zero;
+                    BlendKeyframe = 0;
+                    BlendClip     = null;
+                    BlendClipTime = TimeSpan.Zero;
                     return;
                 }
             }
             /***************/
 
-            IList<Keyframe> keyframes = blendClip.Keyframes;
+            IList<Keyframe> keyframes = BlendClip.Keyframes;
 
-            while (blendKeyframe < keyframes.Count)
+            while (BlendKeyframe < keyframes.Count)
             {
-                Keyframe keyframe = keyframes[blendKeyframe];
+                Keyframe keyframe = keyframes[BlendKeyframe];
 
-                if (keyframe.Time > blendClipTime) break;
+                if (keyframe.Time > BlendClipTime) break;
 
                 boneBlendTransforms[keyframe.Bone] = keyframe.Transform;
 
-                blendKeyframe++;
+                BlendKeyframe++;
             }
         }
         /****************************************************************************/
@@ -442,15 +455,22 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public Matrix[]      BoneTransforms  { get { return boneTransforms;  } }
-        public Matrix[]      WorldTransforms { get { return worldTransforms; } }
         public Matrix[]      SkinTransforms  { get { return skinTransforms;  } }
-        public TimeSpan      CurrentTime     { get { return currentTime;     } }
-        public AnimationClip CurrentClip     { get { return currentClip;     } }
 
         public PlagueEngineSkinnedModel Model           { get; private set; }
-        public TexturesPack             Textures        { get; private set; }
-        public float                    TimeRatio       { get; set; }
+        public TexturesPack             Textures        { get; private set; }        
+        public bool                     Pause           { get; private set; }
+        public bool                     Blend           { get; private set; }
+        public TimeSpan                 BlendDuration   { get; private set; }
+        public TimeSpan                 BlendTime       { get; private set; }
+        public AnimationClip            CurrentClip     { get; private set; }
+        public TimeSpan                 CurrentTime     { get; private set; }
+        public int                      CurrentKeyframe { get; private set; }
+        public AnimationClip            BlendClip       { get; private set; }
+        public TimeSpan                 BlendClipTime   { get; private set; }
+        public int                      BlendKeyframe   { get; private set; }
+
+        public float TimeRatio { get; set; }
         /****************************************************************************/
 
     }

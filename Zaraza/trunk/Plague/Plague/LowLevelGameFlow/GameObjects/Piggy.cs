@@ -19,7 +19,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// StaticSkinnedMesh
     /********************************************************************************/
-    class StaticSkinnedMesh : GameObjectInstance
+    class Piggy : GameObjectInstance
     {
 
         /****************************************************************************/
@@ -60,7 +60,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         break;
                     case Keys.D2: meshComponent.StartClip("Jump");
                         break;
-                    case Keys.D3: meshComponent.Blend("Run",TimeSpan.FromSeconds(0.5));
+                    case Keys.D3: meshComponent.BlendTo("Run",TimeSpan.FromSeconds(0.5));
                         break;
                     case Keys.D4: meshComponent.TimeRatio *= 2;
                         break;
@@ -74,7 +74,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             }
                             else
                             {
-                                meshComponent.Pause();
+                                meshComponent.PauseClip();
                             }
                         }
                         break;
@@ -94,7 +94,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (e.GetType().Equals(typeof(Rendering.AnimationEndEvent)))
             {
-                meshComponent.Blend("Run", TimeSpan.FromSeconds(0.1));
+                meshComponent.BlendTo("Run", TimeSpan.FromSeconds(0.1));
             }
         }
         /****************************************************************************/
@@ -115,7 +115,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            StaticSkinnedMeshData data = new StaticSkinnedMeshData();
+            PiggyData data = new PiggyData();
             GetData(data);
             
             data.Model    = meshComponent.Model.Name;
@@ -123,6 +123,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Diffuse  = (meshComponent.Textures.Diffuse  == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
             data.Specular = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
             data.Normals  = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
+
+            data.TimeRatio       = meshComponent.TimeRatio;
+            data.CurrentClip     = meshComponent.CurrentClip.Name;
+            data.CurrentTime     = meshComponent.CurrentTime.TotalSeconds;
+            data.CurrentKeyframe = meshComponent.CurrentKeyframe;
+            data.Pause           = meshComponent.Pause;
+
+            data.Blend         = meshComponent.Blend;
+            data.BlendDuration = meshComponent.BlendDuration.TotalSeconds;
+            data.BlendTime     = meshComponent.BlendTime.TotalSeconds;
+            data.BlendClip     = meshComponent.BlendClip.Name;
+            data.BlendClipTime = meshComponent.BlendClipTime.TotalSeconds;
+            data.BlendKeyframe = meshComponent.BlendKeyframe;
 
             return data;
         }
@@ -136,20 +149,42 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// StaticSkinnedMeshData
     /********************************************************************************/
     [Serializable]
-    public class StaticSkinnedMeshData : GameObjectInstanceData
+    public class PiggyData : GameObjectInstanceData
     {
         [CategoryAttribute("Model")]
         public String Model    { get; set; }
 
         [CategoryAttribute("Textures")]
         public String Diffuse  { get; set; }
-
         [CategoryAttribute("Textures")]
         public String Specular { get; set; }
-
         [CategoryAttribute("Textures")]
         public String Normals  { get; set; }
 
+        [CategoryAttribute("Animation")]
+        public float  TimeRatio       { get; set; }
+        [CategoryAttribute("Animation")]
+        public String CurrentClip     { get; set; }
+        [CategoryAttribute("Animation")]
+        public double CurrentTime     { get; set; }
+        [CategoryAttribute("Animation")]
+        public int    CurrentKeyframe { get; set; }
+        [CategoryAttribute("Animation")]
+        public bool   Pause           { get; set; }
+
+        [CategoryAttribute("Animation Blending")]
+        public bool   Blend         { get; set; }
+        [CategoryAttribute("Animation Blending")]
+        public double BlendDuration { get; set; }
+        [CategoryAttribute("Animation Blending")]
+        public double BlendTime     { get; set; }
+        [CategoryAttribute("Animation Blending")]
+        public String BlendClip     { get; set; }
+        [CategoryAttribute("Animation Blending")]
+        public double BlendClipTime { get; set; }
+        [CategoryAttribute("Animation Blending")]
+        public int    BlendKeyframe { get; set; }
+               
     }
     /********************************************************************************/
 

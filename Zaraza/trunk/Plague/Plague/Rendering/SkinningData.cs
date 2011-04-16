@@ -24,12 +24,14 @@ namespace PlagueEngine.Rendering
         public SkinningData(Dictionary<string, AnimationClip> animationClips,
                             List<Matrix> bindPose,
                             List<Matrix> inverseBindPose,
-                            List<int> skeletonHierarchy)
+                            List<int> skeletonHierarchy,
+                            Dictionary<String, int> boneMap)
         {
             AnimationClips    = animationClips;
             BindPose          = bindPose;
             InverseBindPose   = inverseBindPose;
             SkeletonHierarchy = skeletonHierarchy;
+            BoneMap           = boneMap;
         }
         /****************************************************************************/
 
@@ -54,6 +56,8 @@ namespace PlagueEngine.Rendering
         public List<Matrix> InverseBindPose                     { get; private set; }
         [ContentSerializer]
         public List<int> SkeletonHierarchy                      { get; private set; }
+        [ContentSerializer]
+        public Dictionary<String, int> BoneMap                  { get; private set; }
         /****************************************************************************/
 
     }

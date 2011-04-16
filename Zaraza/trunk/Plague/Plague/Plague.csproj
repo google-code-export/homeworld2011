@@ -180,7 +180,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
-    <Compile Include="LowLevelGameFlow\GameObjects\StaticSkinnedMesh.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Piggy.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Sunlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
     <Compile Include="Physics\CollisionSkinComponent.cs" />

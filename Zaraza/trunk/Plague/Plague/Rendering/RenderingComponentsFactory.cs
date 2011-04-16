@@ -183,10 +183,21 @@ namespace PlagueEngine.Rendering
         /// Create SkinnedMeshComponent
         /****************************************************************************/
         public SkinnedMeshComponent CreateSkinnedMeshComponent(GameObjectInstance gameObject,
-                                                               String modelName,
-                                                               String diffuseMap,
-                                                               String specularMap,
-                                                               String normalMap)
+                                                               String             modelName,
+                                                               String             diffuseMap,
+                                                               String             specularMap,
+                                                               String             normalMap,
+                                                               float              timeRatio       = 1.0f,
+                                                               String             currentClip     = null,
+                                                               int                currentKeyframe = 0,
+                                                               double             currentTime     = 0,
+                                                               bool               pause           = false,
+                                                               bool               blend           = false,
+                                                               String             blendClip       = null,
+                                                               int                blendKeyframe   = 0,
+                                                               double             blendClipTime   = 0,
+                                                               double             blendDuration   = 0,
+                                                               double             blendTime       = 0)
         {
             SkinnedMeshComponent result = null;
             Techniques technique = GuessTechnique(specularMap, normalMap);
@@ -197,7 +208,18 @@ namespace PlagueEngine.Rendering
             result = new SkinnedMeshComponent(gameObject,
                                               model,
                                               textures,
-                                              technique);
+                                              technique,
+                                              timeRatio,
+                                              currentClip,
+                                              currentKeyframe,
+                                              TimeSpan.FromSeconds(currentTime),
+                                              pause,
+                                              blend,
+                                              blendClip,
+                                              blendKeyframe,
+                                              TimeSpan.FromSeconds(blendClipTime),
+                                              TimeSpan.FromSeconds(blendDuration),
+                                              TimeSpan.FromSeconds(blendTime));
 
             return result;
         }

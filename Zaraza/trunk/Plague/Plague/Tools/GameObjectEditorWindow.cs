@@ -244,11 +244,11 @@ namespace PlagueEngine.Tools
             gameObjectClassNames.Add(SquareBodyMesh);
 
 
-            gameObjectsClassName StaticSkinnedMesh = new gameObjectsClassName();
-            StaticSkinnedMesh.className = "StaticSkinnedMesh";
-            StaticSkinnedMesh.ClassType = typeof(StaticSkinnedMesh);
-            StaticSkinnedMesh.dataClassType = typeof(StaticSkinnedMeshData);
-            gameObjectClassNames.Add(StaticSkinnedMesh);
+            gameObjectsClassName Piggy = new gameObjectsClassName();
+            Piggy.className = "Piggy";
+            Piggy.ClassType = typeof(Piggy);
+            Piggy.dataClassType = typeof(PiggyData);
+            gameObjectClassNames.Add(Piggy);
 
         }
         /********************************************************************************/

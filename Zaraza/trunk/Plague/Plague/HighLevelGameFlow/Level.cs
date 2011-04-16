@@ -202,9 +202,10 @@ namespace PlagueEngine.HighLevelGameFlow
             s.Direction = new Vector3(-1,-1,-1);
 
 
-            StaticSkinnedMeshData ssdata = new StaticSkinnedMeshData();
-            ssdata.Type = typeof(StaticSkinnedMesh);
+            PiggyData ssdata = new PiggyData();
+            ssdata.Type = typeof(Piggy);
             ssdata.Model = "piggy";
+            ssdata.TimeRatio = 1.0f;
             ssdata.Diffuse = "piggyTex";
             ssdata.World = Matrix.CreateTranslation(200, 50, 0);
             gameObjectsFactory.Create(ssdata);
