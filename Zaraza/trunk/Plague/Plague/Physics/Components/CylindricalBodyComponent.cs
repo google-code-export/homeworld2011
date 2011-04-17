@@ -86,8 +86,10 @@ namespace PlagueEngine.Physics.Components
             Body.SetBodyInertia(Ixx, Iyy, Izz);
             /***************************************/
 
-
+            Diagnostics.PushLog("PRZED 1:" +world.ToString());
             Matrix dummyWorld = world;
+
+            
 
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
             dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);

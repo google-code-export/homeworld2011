@@ -245,7 +245,7 @@ namespace PlagueEngine.LowLevelGameFlow
         public Type     Type            = null;
         public String   Definition      = String.Empty;
         public Matrix   World           = Matrix.Identity;
-        
+
         public String definition
         {
             get { return this.Definition; }
@@ -259,6 +259,9 @@ namespace PlagueEngine.LowLevelGameFlow
 
             set { this.World.Translation = value; }
         }
+
+
+
 
         [CategoryAttribute("Rotation")]
         public float Roll
@@ -303,19 +306,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
         }
 
-        public Vector3 Scale
-        {
-            set
-            {
-                Vector3 tmp = World.Translation;
-                World *= Matrix.CreateScale(value);
-                World.Translation = tmp;
-            }
-            get
-            {
-                return new Vector3(1,1,1);
-            }
-        }
+
 
         /****************************************************************************/
         /// Rotate
