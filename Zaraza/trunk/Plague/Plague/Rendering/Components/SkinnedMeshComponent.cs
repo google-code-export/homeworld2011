@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 using PlagueEngine.LowLevelGameFlow;
-
+using PlagueEngineSkinning;
 
 /************************************************************************************/
 /// PlagueEngine.Rendering.Components

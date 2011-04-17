@@ -2,33 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
 
 /************************************************************************************/
-/// PlagueEngine.Rendering
+/// PlagueEngineModelPipeline
 /************************************************************************************/
-namespace PlagueEngine.Rendering
+namespace PlagueEngineSkinning
 {
 
     /********************************************************************************/
-    /// Animation Clip
+    /// Keyframe
     /********************************************************************************/
-    public class AnimationClip
+    public class Keyframe
     {
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public AnimationClip(TimeSpan start,TimeSpan end, List<Keyframe> keyframes,bool loop,String name)
+        public Keyframe(int bone, TimeSpan time, Matrix transform)
         {
-            StartTime = start;
-            EndTime   = end;
-            Keyframes = keyframes;
-            Loop      = loop;
-            Name      = name;
-
-            Duration = EndTime - StartTime;
+            Bone      = bone;
+            Time      = time;
+            Transform = transform;
         }
         /****************************************************************************/
 
@@ -36,7 +34,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Constructor (for use only by the XNB deserializer)
         /****************************************************************************/
-        private AnimationClip()
+        private Keyframe()
         { 
         }
         /****************************************************************************/
@@ -46,17 +44,11 @@ namespace PlagueEngine.Rendering
         /// Properties
         /****************************************************************************/
         [ContentSerializer]
-        public TimeSpan Duration        { get; private set; }
+        public int Bone         { get; private set; }
         [ContentSerializer]
-        public TimeSpan StartTime       { get; private set; }
+        public TimeSpan Time    { get; private set; }
         [ContentSerializer]
-        public TimeSpan EndTime         { get; private set; }
-        [ContentSerializer]
-        public List<Keyframe> Keyframes { get; private set; }
-        [ContentSerializer]
-        public bool Loop                { get; private set; }
-        [ContentSerializer]
-        public String Name              { get; private set; }        
+        public Matrix Transform { get; private set; }
         /****************************************************************************/
 
     }

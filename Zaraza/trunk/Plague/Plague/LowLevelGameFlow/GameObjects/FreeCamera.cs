@@ -183,7 +183,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     objectController.Body.SetActive();
                 }
             }
-            else if(mouseKeyState.IsUp() && mouseKeyAction == MouseKeyAction.LeftClick)
+            else if(mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
                 
                 objectController.DisableConstraint();

@@ -1,37 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
 
 /************************************************************************************/
-/// PlagueEngine.Rendering
+/// PlagueEngineModelPipeline
 /************************************************************************************/
-namespace PlagueEngine.Rendering
+namespace PlagueEngineSkinning
 {
 
     /********************************************************************************/
-    /// Skinning Data
+    /// Animation Clip
     /********************************************************************************/
-    public class SkinningData
+    public class AnimationClip
     {
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public SkinningData(Dictionary<string, AnimationClip> animationClips,
-                            List<Matrix> bindPose,
-                            List<Matrix> inverseBindPose,
-                            List<int> skeletonHierarchy,
-                            Dictionary<String, int> boneMap)
+        public AnimationClip(TimeSpan start,TimeSpan end, List<Keyframe> keyframes,bool loop,String name)
         {
-            AnimationClips    = animationClips;
-            BindPose          = bindPose;
-            InverseBindPose   = inverseBindPose;
-            SkeletonHierarchy = skeletonHierarchy;
-            BoneMap           = boneMap;
+            StartTime = start;
+            EndTime   = end;
+            Keyframes = keyframes;
+            Loop      = loop;
+            Name      = name;
+
+            Duration = EndTime - StartTime;
         }
         /****************************************************************************/
 
@@ -39,7 +35,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Constructor (for use only by the XNB deserializer)
         /****************************************************************************/
-        private SkinningData()
+        private AnimationClip()
         { 
         }
         /****************************************************************************/
@@ -49,15 +45,17 @@ namespace PlagueEngine.Rendering
         /// Properties
         /****************************************************************************/
         [ContentSerializer]
-        public Dictionary<String, AnimationClip> AnimationClips { get; private set; }
+        public TimeSpan Duration        { get; private set; }
         [ContentSerializer]
-        public List<Matrix> BindPose                            { get; private set; }
+        public TimeSpan StartTime       { get; private set; }
         [ContentSerializer]
-        public List<Matrix> InverseBindPose                     { get; private set; }
+        public TimeSpan EndTime         { get; private set; }
         [ContentSerializer]
-        public List<int> SkeletonHierarchy                      { get; private set; }
+        public List<Keyframe> Keyframes { get; private set; }
         [ContentSerializer]
-        public Dictionary<String, int> BoneMap                  { get; private set; }
+        public bool Loop                { get; private set; }
+        [ContentSerializer]
+        public String Name              { get; private set; }        
         /****************************************************************************/
 
     }

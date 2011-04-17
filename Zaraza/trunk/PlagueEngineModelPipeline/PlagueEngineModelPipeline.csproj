@@ -38,6 +38,9 @@
       <Private>False</Private>
       <SpecificVersion>true</SpecificVersion>
     </Reference>
+    <Reference Include="PlagueEngineSkinning">
+      <HintPath>..\PlagueEngineSkinning\bin\x86\Debug\PlagueEngineSkinning.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -57,12 +60,6 @@
     <Compile Include="PlagueEngineSkinnedModelContent.cs" />
     <Compile Include="PlagueEngineSkinnedModelProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Plague\Plague\Plague.csproj">
-      <Project>{86FB9119-956C-4A99-B699-B7F89A99D4AA}</Project>
-      <Name>Plague</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.ContentPipelineExtensions.targets" />
