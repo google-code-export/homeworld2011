@@ -33,6 +33,7 @@ namespace PlagueEngine.Rendering
         private bool                      enabled        = false;
         private bool                      selectiveDrawing = false;
         private uint                      gameObjectID;
+        private bool                      drawHeightmapSkin = false;
         /****************************************************************************/
 
 
@@ -63,6 +64,31 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// EnableHeightmapDrawing
+        /****************************************************************************/
+        public void EnableHeightmapDrawing()
+        {
+            drawHeightmapSkin = true;
+        }
+        /****************************************************************************/
+
+
+
+
+
+        /****************************************************************************/
+        /// DisableHeightmapDrawing
+        /****************************************************************************/
+        public void DisableHeightmapDrawing()
+        {
+            drawHeightmapSkin = false;
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
         /// StopSelectiveDrawing
         /****************************************************************************/
         public void StopSelectiveDrawing()
@@ -80,8 +106,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void Draw(Matrix view,Matrix projection)
         {
-            
-            
+
             basicEffect = new BasicEffect(renderer.Device);
 
             this.basicEffect.AmbientLightColor = Vector3.One;
@@ -89,13 +114,29 @@ namespace PlagueEngine.Rendering
             this.basicEffect.Projection = projection;
             this.basicEffect.VertexColorEnabled = true;
 
-
-            foreach (CollisionSkinComponent skin in physicsManager.collisionSkins)
+            if (selectiveDrawing)
             {
-                if (enabled || (!enabled &&  selectiveDrawing && ((uint)(skin.Skin.ExternalData) == gameObjectID)))
+                if (physicsManager.rigidBodies.ContainsKey(gameObjectID))
                 {
-                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(skin.Skin));
-                    basicEffect.World = skin.GameObject.World;
+                    RigidBodyComponent rbc = physicsManager.rigidBodies[gameObjectID];
+                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(rbc.Skin));
+                    Matrix skinWorld = rbc.Body.Orientation;
+                    skinWorld.Translation = rbc.Body.Position;
+                    basicEffect.World = skinWorld;
+                    basicEffect.CurrentTechnique.Passes[0].Apply();
+                    renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
+                                                                            vertexData.ToArray(),
+                                                                            0,
+                                                                            vertexData.Count - 1);
+                    vertexData.Clear();
+                }
+                else if (physicsManager.collisionSkins.ContainsKey(gameObjectID))
+                {
+                    CollisionSkinComponent csc = physicsManager.collisionSkins[gameObjectID];
+                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(csc.Skin));
+                    Matrix skinWorld = csc.Skin.NewOrient;
+                    skinWorld.Translation = csc.Skin.NewPosition;
+                    basicEffect.World = skinWorld;
                     basicEffect.CurrentTechnique.Passes[0].Apply();
                     renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
                                                                             vertexData.ToArray(),
@@ -106,19 +147,42 @@ namespace PlagueEngine.Rendering
             }
 
 
-            foreach (RigidBodyComponent body in physicsManager.rigidBodies)
+            if (!enabled) return;
+
+
+
+            foreach (CollisionSkinComponent skin in physicsManager.collisionSkins.Values)
             {
-                if (enabled || (!enabled && selectiveDrawing && ((uint)(body.Skin.ExternalData) == gameObjectID)))
-                {
-                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(body.Skin));
-                    basicEffect.World = body.GameObject.World;
+                
+                    if(skin.GetType().Equals(typeof(Physics.Components.TerrainSkinComponent)) && drawHeightmapSkin)
+                    {
+                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(skin.Skin));
+                    basicEffect.World = skin.GameObject.World;
                     basicEffect.CurrentTechnique.Passes[0].Apply();
                     renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
                                                                             vertexData.ToArray(),
                                                                             0,
                                                                             vertexData.Count - 1);
                     vertexData.Clear();
-                }
+                    }
+                
+            }
+
+
+            foreach (RigidBodyComponent body in physicsManager.rigidBodies.Values)
+            {
+               
+                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(body.Skin));
+                    Matrix skinWorld = body.Body.Orientation;
+                    skinWorld.Translation = body.Body.Position;
+                    basicEffect.World = skinWorld;
+                    basicEffect.CurrentTechnique.Passes[0].Apply();
+                    renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
+                                                                            vertexData.ToArray(),
+                                                                            0,
+                                                                            vertexData.Count - 1);
+                    vertexData.Clear();
+                
             }
 
         }

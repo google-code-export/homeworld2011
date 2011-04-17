@@ -27,11 +27,11 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         ///  Fields
         /****************************************************************************/
-        private  PhysicsSystem                  physicsSystem           = null;
-        internal List<RigidBodyComponent>       rigidBodies             = new List<RigidBodyComponent>();
-        internal List<CollisionSkinComponent>   collisionSkins          = new List<CollisionSkinComponent>();
-        internal List<PhysicsController>        controllers              = new List<PhysicsController>();
-        internal PhysicsComponentFactory        physicsComponentFactory = null;
+        private  PhysicsSystem                              physicsSystem            = null;
+        internal Dictionary<uint, RigidBodyComponent>       rigidBodies              = new Dictionary<uint, RigidBodyComponent>();
+        internal Dictionary<uint, CollisionSkinComponent>   collisionSkins           = new Dictionary<uint, CollisionSkinComponent>();
+        internal List<PhysicsController>                    controllers              = new List<PhysicsController>();
+        internal PhysicsComponentFactory                    physicsComponentFactory  = null;
         /****************************************************************************/
 
         /****************************************************************************/
@@ -76,7 +76,7 @@ namespace PlagueEngine.Physics
 
 
             
-            foreach (RigidBodyComponent rigidBody in rigidBodies)
+            foreach (RigidBodyComponent rigidBody in rigidBodies.Values)
             {       
                 rigidBody.Update();
             }

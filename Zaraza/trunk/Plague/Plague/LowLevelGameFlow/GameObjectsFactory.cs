@@ -144,7 +144,11 @@ namespace PlagueEngine.LowLevelGameFlow
                         sbmdata.StaticRoughness,
                         sbmdata.DynamicRoughness,
                         sbmdata.Immovable,
-                        sbmdata.World),
+                        sbmdata.World,
+                        sbmdata.Translation,
+                        sbmdata.SkinYaw,
+                        sbmdata.SkinPitch,
+                        sbmdata.SkinRoll),
                         sbmdata.World);
 
 
@@ -182,7 +186,11 @@ namespace PlagueEngine.LowLevelGameFlow
                         sbmdata.StaticRoughness,
                         sbmdata.DynamicRoughness,
                         sbmdata.Immovable,
-                        sbmdata.World),
+                        sbmdata.World,
+                        sbmdata.Translation,
+                        sbmdata.SkinYaw,
+                        sbmdata.SkinPitch,
+                        sbmdata.SkinRoll),
                         sbmdata.World);
 
 
@@ -220,7 +228,11 @@ namespace PlagueEngine.LowLevelGameFlow
                         sbmdata.StaticRoughness,
                         sbmdata.DynamicRoughness,
                         sbmdata.Immovable,
-                        sbmdata.World),
+                        sbmdata.World,
+                        sbmdata.Translation,
+                        sbmdata.SkinYaw,
+                        sbmdata.SkinPitch,
+                        sbmdata.SkinRoll),
                         sbmdata.World);
 
 
@@ -482,7 +494,11 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           sdata.StaticRoughness,
                                                                           sdata.DynamicRoughness,
                                                                           sdata.Immovable,
-                                                                          sdata.World),
+                                                                          sdata.World,
+                                                                          sdata.Translation,
+                                                                          sdata.SkinYaw,
+                                                                          sdata.SkinPitch,
+                                                                          sdata.SkinRoll),
                                                                               sdata.World);
             return result;
         }

@@ -148,7 +148,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.StaticRoughness  = body.StaticRoughness;
             data.DynamicRoughness = body.DynamicRoughness;
             data.Mass             = body.Mass;
-
+            data.Translation      = body.SkinTranslation;
+            data.SkinPitch        = body.Pitch;
+            data.SkinRoll         = body.Roll;
+            data.SkinYaw          = body.Yaw;
+                
             data.Length = body.Length;
             data.Width  = body.Width;
             data.Height = body.Height;
@@ -216,10 +220,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float Length           { get; set; }
+
         [CategoryAttribute("Collision Skin")]
         public float Height           { get; set; }
+
         [CategoryAttribute("Collision Skin")]
         public float Width            { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public Vector3 Translation { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float SkinYaw { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float SkinPitch { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float SkinRoll { get; set; }
     }
     /********************************************************************************/
 

@@ -119,7 +119,7 @@
       <HintPath>.\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PlagueEngineSkinning">
-      <HintPath>..\..\PlagueEngineSkinning\bin\x86\Debug\PlagueEngineSkinning.dll</HintPath>
+      <HintPath>..\..\PlagueEngineSkinning\bin\x86\Release\PlagueEngineSkinning.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX.DirectInput">
       <HintPath>.\SlimDX.DirectInput.dll</HintPath>

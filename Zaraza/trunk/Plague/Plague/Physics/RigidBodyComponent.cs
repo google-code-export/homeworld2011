@@ -36,6 +36,10 @@ namespace PlagueEngine.Physics
         internal static PhysicsManager physicsManager;
         private float mass;
         private MaterialProperties material;
+        private Vector3 translation = Vector3.Zero;
+        private float yaw;
+        private float pitch;
+        private float roll;
         /****************************************************************************/
 
 
@@ -45,7 +49,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public RigidBodyComponent(GameObjectInstance gameObject, float mass, bool immovable,MaterialProperties material)
+        public RigidBodyComponent(GameObjectInstance gameObject, float mass, bool immovable, MaterialProperties material, Vector3 translation,float yaw,float pitch,float roll)
             : base(gameObject)
         {
             this.mass = mass;
@@ -54,11 +58,13 @@ namespace PlagueEngine.Physics
             body.CollisionSkin = skin;
             skin.ExternalData = gameObject.ID;
             this.material = material;
-
+            this.translation = translation;
             body.Immovable = immovable;
+            this.yaw = yaw;
+            this.pitch = pitch;
+            this.roll = roll;
 
-    
-            physicsManager.rigidBodies.Add(this);
+            physicsManager.rigidBodies.Add(gameObject.ID, this);
         }
         /****************************************************************************/
 
@@ -73,7 +79,24 @@ namespace PlagueEngine.Physics
         {
             
             gameObject.World=body.Orientation;
-            gameObject.World.Translation=body.Position;
+
+            Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(-roll));
+            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+
+            quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Right, MathHelper.ToRadians(-pitch));
+            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+
+            quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Forward, MathHelper.ToRadians(-yaw));
+            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+
+            gameObject.World.Translation=body.Position - translation;
+            
         }
         /****************************************************************************/
 
@@ -137,7 +160,7 @@ namespace PlagueEngine.Physics
         {
             body.DisableBody();
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(skin);
-            physicsManager.rigidBodies.Remove(this);
+            physicsManager.rigidBodies.Remove(this.gameObject.ID);
         }
         /****************************************************************************/
 
@@ -183,6 +206,10 @@ namespace PlagueEngine.Physics
 
         public Body Body { get { return this.body; } }
         public CollisionSkin Skin { get { return this.skin; } }
+        public Vector3 SkinTranslation { get { return this.translation; } }
+        public float Yaw { get { return this.yaw; } }
+        public float Pitch { get { return this.pitch; } }
+        public float Roll { get { return this.roll; } }
         /****************************************************************************/
 
 

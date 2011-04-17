@@ -31,6 +31,7 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         private float radius;
         private float length;
+        private Vector3 scale;
         /****************************************************************************/
 
 
@@ -43,8 +44,12 @@ namespace PlagueEngine.Physics.Components
                             float length,
                             MaterialProperties material,
                             bool immovable,
-                            Matrix world)
-            : base(gameObject, mass, immovable, material)
+                            Matrix world,
+                            Vector3 skinTranslation,
+                            float yaw,
+                            float pitch,
+                            float roll)
+            : base(gameObject, mass, immovable, material, skinTranslation, yaw, pitch, roll)
         {
 
             this.radius = radius;
@@ -81,7 +86,28 @@ namespace PlagueEngine.Physics.Components
             Body.SetBodyInertia(Ixx, Iyy, Izz);
             /***************************************/
 
-            MoveTo(world);
+
+            Matrix dummyWorld = world;
+
+            Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
+            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
+            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
+            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
+
+            quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Right, MathHelper.ToRadians(pitch));
+            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
+            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
+            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
+
+            quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Up, MathHelper.ToRadians(roll));
+            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
+            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
+            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
+            scale = new Vector3(dummyWorld.M11, dummyWorld.M22, dummyWorld.M33);
+
+            dummyWorld.Translation += skinTranslation;
+            
+            MoveTo(dummyWorld);
             Enable();            
         }
         /****************************************************************************/

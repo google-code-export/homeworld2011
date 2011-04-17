@@ -29,7 +29,7 @@ namespace PlagueEngine.Physics
             skin = new CollisionSkin();
             this.material = material;           
             skin.ExternalData = gameObject.ID;
-            physicsManager.collisionSkins.Add(this);
+            physicsManager.collisionSkins.Add(gameObject.ID,this);
         }
 
 
@@ -62,7 +62,7 @@ namespace PlagueEngine.Physics
         public override void ReleaseMe()
         {
             if (isEnabled) Disable();
-            physicsManager.collisionSkins.Remove(this);
+            physicsManager.collisionSkins.Remove(gameObject.ID);
         }
         /****************************************************************************/
 

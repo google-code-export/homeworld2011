@@ -60,11 +60,12 @@
             this.buttonDelete = new System.Windows.Forms.Button();
             this.buttonNew = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
-            this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
-            this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
-            this.panel6 = new System.Windows.Forms.Panel();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.checkBoxGamePaused = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
+            this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -98,7 +99,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(381, 463);
+            this.tabPage1.Size = new System.Drawing.Size(381, 466);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Create GameObject";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -108,7 +109,7 @@
             this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid1.Location = new System.Drawing.Point(3, 62);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(375, 369);
+            this.propertyGrid1.Size = new System.Drawing.Size(375, 372);
             this.propertyGrid1.TabIndex = 16;
             this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged_1);
             // 
@@ -176,7 +177,7 @@
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.buttonCreateDefinition);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 431);
+            this.panel1.Location = new System.Drawing.Point(3, 434);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(375, 29);
             this.panel1.TabIndex = 14;
@@ -330,7 +331,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(381, 463);
+            this.tabPage2.Size = new System.Drawing.Size(381, 466);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Level";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -342,7 +343,7 @@
             this.listBoxLevelNames.Location = new System.Drawing.Point(3, 3);
             this.listBoxLevelNames.Margin = new System.Windows.Forms.Padding(15);
             this.listBoxLevelNames.Name = "listBoxLevelNames";
-            this.listBoxLevelNames.Size = new System.Drawing.Size(375, 428);
+            this.listBoxLevelNames.Size = new System.Drawing.Size(375, 431);
             this.listBoxLevelNames.TabIndex = 6;
             // 
             // panel4
@@ -353,7 +354,7 @@
             this.panel4.Controls.Add(this.buttonNew);
             this.panel4.Controls.Add(this.buttonSave);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(3, 431);
+            this.panel4.Location = new System.Drawing.Point(3, 434);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(375, 29);
             this.panel4.TabIndex = 5;
@@ -408,37 +409,9 @@
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 
-            // buttonCommitMeshTransforms
-            // 
-            this.buttonCommitMeshTransforms.Location = new System.Drawing.Point(8, 14);
-            this.buttonCommitMeshTransforms.Name = "buttonCommitMeshTransforms";
-            this.buttonCommitMeshTransforms.Size = new System.Drawing.Size(147, 23);
-            this.buttonCommitMeshTransforms.TabIndex = 4;
-            this.buttonCommitMeshTransforms.Text = "Commit Mesh Transforms";
-            this.buttonCommitMeshTransforms.UseVisualStyleBackColor = true;
-            this.buttonCommitMeshTransforms.Click += new System.EventHandler(this.buttonCommitMeshTransforms_Click);
-            // 
-            // checkBoxShowCollisionSkin
-            // 
-            this.checkBoxShowCollisionSkin.AutoSize = true;
-            this.checkBoxShowCollisionSkin.Location = new System.Drawing.Point(258, 18);
-            this.checkBoxShowCollisionSkin.Name = "checkBoxShowCollisionSkin";
-            this.checkBoxShowCollisionSkin.Size = new System.Drawing.Size(115, 17);
-            this.checkBoxShowCollisionSkin.TabIndex = 5;
-            this.checkBoxShowCollisionSkin.Text = "Show collision skin";
-            this.checkBoxShowCollisionSkin.UseVisualStyleBackColor = true;
-            this.checkBoxShowCollisionSkin.CheckedChanged += new System.EventHandler(this.checkBoxShowCollisionSkin_CheckedChanged);
-            // 
-            // panel6
-            // 
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(0, 0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(389, 492);
-            this.panel6.TabIndex = 22;
-            // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.checkBox1);
             this.tabPage4.Controls.Add(this.checkBoxGamePaused);
             this.tabPage4.Controls.Add(this.checkBoxShowCollisionSkin);
             this.tabPage4.Controls.Add(this.buttonCommitMeshTransforms);
@@ -452,13 +425,53 @@
             // checkBoxGamePaused
             // 
             this.checkBoxGamePaused.AutoSize = true;
-            this.checkBoxGamePaused.Location = new System.Drawing.Point(258, 50);
+            this.checkBoxGamePaused.Location = new System.Drawing.Point(204, 90);
             this.checkBoxGamePaused.Name = "checkBoxGamePaused";
             this.checkBoxGamePaused.Size = new System.Drawing.Size(92, 17);
             this.checkBoxGamePaused.TabIndex = 6;
             this.checkBoxGamePaused.Text = "Game paused";
             this.checkBoxGamePaused.UseVisualStyleBackColor = true;
             this.checkBoxGamePaused.CheckedChanged += new System.EventHandler(this.checkBoxGamePaused_CheckedChanged);
+            // 
+            // checkBoxShowCollisionSkin
+            // 
+            this.checkBoxShowCollisionSkin.AutoSize = true;
+            this.checkBoxShowCollisionSkin.Location = new System.Drawing.Point(204, 20);
+            this.checkBoxShowCollisionSkin.Name = "checkBoxShowCollisionSkin";
+            this.checkBoxShowCollisionSkin.Size = new System.Drawing.Size(115, 17);
+            this.checkBoxShowCollisionSkin.TabIndex = 5;
+            this.checkBoxShowCollisionSkin.Text = "Show collision skin";
+            this.checkBoxShowCollisionSkin.UseVisualStyleBackColor = true;
+            this.checkBoxShowCollisionSkin.CheckedChanged += new System.EventHandler(this.checkBoxShowCollisionSkin_CheckedChanged);
+            // 
+            // buttonCommitMeshTransforms
+            // 
+            this.buttonCommitMeshTransforms.Location = new System.Drawing.Point(8, 14);
+            this.buttonCommitMeshTransforms.Name = "buttonCommitMeshTransforms";
+            this.buttonCommitMeshTransforms.Size = new System.Drawing.Size(147, 23);
+            this.buttonCommitMeshTransforms.TabIndex = 4;
+            this.buttonCommitMeshTransforms.Text = "Commit Mesh Transforms";
+            this.buttonCommitMeshTransforms.UseVisualStyleBackColor = true;
+            this.buttonCommitMeshTransforms.Click += new System.EventHandler(this.buttonCommitMeshTransforms_Click);
+            // 
+            // panel6
+            // 
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(389, 492);
+            this.panel6.TabIndex = 22;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(204, 54);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(167, 17);
+            this.checkBox1.TabIndex = 7;
+            this.checkBox1.Text = "Show heightmap collision skin";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // GameObjectEditorWindow
             // 
@@ -529,6 +542,7 @@
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.CheckBox checkBoxGamePaused;
+        private System.Windows.Forms.CheckBox checkBox1;
 
 
     }
