@@ -45,9 +45,9 @@ namespace PlagueEngine
             StringBuilder builder = new StringBuilder();
 
             builder.Append(Diagnostics.RunTime.ToString(@"hh\:mm\:ss"));
-            
+
             builder.Append(": ");
-            
+
             builder.Append("Sender: ");
             builder.Append(sender.ToString());
             builder.Append(";");

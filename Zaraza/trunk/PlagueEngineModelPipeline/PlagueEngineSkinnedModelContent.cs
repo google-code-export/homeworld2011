@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
-using PlagueEngine.Rendering;
+using PlagueEngineSkinning;
 
 /************************************************************************************/
 /// Plague Engine Model Pipeline
