@@ -40,6 +40,7 @@ namespace PlagueEngine.Physics
         private float yaw;
         private float pitch;
         private float roll;
+       
         /****************************************************************************/
 
 
@@ -63,6 +64,7 @@ namespace PlagueEngine.Physics
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
+         
 
             physicsManager.rigidBodies.Add(gameObject.ID, this);
         }
@@ -79,7 +81,7 @@ namespace PlagueEngine.Physics
         {
             
             gameObject.World=body.Orientation;
-
+           
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(-roll));
             gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
             gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
@@ -94,9 +96,11 @@ namespace PlagueEngine.Physics
             gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
             gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
             gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+            
+
 
             gameObject.World.Translation=body.Position - translation;
-            
+    
         }
         /****************************************************************************/
 

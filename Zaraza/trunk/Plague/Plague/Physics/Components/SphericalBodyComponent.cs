@@ -58,6 +58,7 @@ namespace PlagueEngine.Physics.Components
             Vector3 com = SetMass();
 
             Matrix dummyWorld = world;
+
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
             dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
