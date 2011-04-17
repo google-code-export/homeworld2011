@@ -43,7 +43,7 @@ namespace PlagueEngine
 
         private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
 
-        public bool                         gameStopped        =false;
+        public bool                         gameStopped        = false;
         /****************************************************************************/
 
 
@@ -158,16 +158,17 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Update(GameTime gameTime)
         {
-            if (!gameStopped)
-            {
+ 
                 Diagnostics.Update(gameTime.ElapsedGameTime);
                 TimeControl.Update(gameTime.ElapsedGameTime);
 
                 input.Update();
 
                 eventsSystem.Update();
-
-                physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);
+                if (!gameStopped)
+                {
+               
+                physicsManager.Update(((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond));
 
                 base.Update(gameTime);
             }

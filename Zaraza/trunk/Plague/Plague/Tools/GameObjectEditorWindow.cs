@@ -497,6 +497,7 @@ namespace PlagueEngine.Tools
                         
                         this.currentLevel.LoadLevel(contentManager.LoadLevel(this.currentLevelName));
                         LoadFilteredID(null,null);
+                        renderer.debugDrawer.DisableHeightmapDrawing();
                        
                     }
                     catch (Exception ex)
@@ -520,6 +521,7 @@ namespace PlagueEngine.Tools
         {
             bool NewCanceled = false;
           
+
             if (!levelSaved)
             {
                 DialogResult result = MessageBox.Show("Save level?", "Notification", MessageBoxButtons.YesNoCancel);
@@ -568,7 +570,8 @@ namespace PlagueEngine.Tools
 
             if (!NewCanceled)
             {
-                
+                renderer.debugDrawer.DisableHeightmapDrawing();
+
                 LevelNameMessageBox box2 = new LevelNameMessageBox("New level name:");
                 bool newName;
                 do
@@ -1167,6 +1170,27 @@ namespace PlagueEngine.Tools
         {
             this.game.gameStopped = checkBoxGamePaused.Checked;
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            
+
+            if (checkBox1.Checked)
+            {
+                foreach (GameObjectInstance gameObject in factory.GameObjects.Values)
+                {
+                    if (gameObject.GetType().Equals(typeof(Terrain)))
+                    {
+                        renderer.debugDrawer.EnableHeightmapDrawing();
+                    }
+                }
+            }
+            else
+            {
+                renderer.debugDrawer.DisableHeightmapDrawing();
+            }
+        }
+
 
 
 

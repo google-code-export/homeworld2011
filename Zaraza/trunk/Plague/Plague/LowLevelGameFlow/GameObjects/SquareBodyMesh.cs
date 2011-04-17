@@ -84,6 +84,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Width = physicsComponent.Width;
             data.Height = physicsComponent.Height;
             data.Immovable = physicsComponent.Immovable;
+            data.Translation = physicsComponent.SkinTranslation;
+            data.SkinPitch = physicsComponent.Pitch;
+            data.SkinRoll = physicsComponent.Roll;
+            data.SkinYaw = physicsComponent.Yaw;
 
             return data;
         }   
@@ -142,9 +146,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float Height { get; set; }
-        /**************************************/
 
+        [CategoryAttribute("Collision Skin")]
+        public Vector3 Translation { get; set; }
 
+        [CategoryAttribute("Collision Skin")]
+        public float SkinYaw { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float SkinPitch { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float SkinRoll { get; set; }
     }
     /********************************************************************************/
 

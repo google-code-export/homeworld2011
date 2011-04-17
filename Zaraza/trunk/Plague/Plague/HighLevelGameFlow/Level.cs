@@ -104,8 +104,8 @@ namespace PlagueEngine.HighLevelGameFlow
 
 
 
-            SquareBodyMeshData cbdata = new SquareBodyMeshData();
-            cbdata.Type = (typeof(SquareBodyMesh));
+            CylindricalBodyMeshData cbdata = new CylindricalBodyMeshData();
+            cbdata.Type = (typeof(CylindricalBodyMesh));
             cbdata.Model = "Barrel";
             cbdata.Diffuse = "Barrel_diffuse";
             cbdata.Specular = "Barrel_specular";
@@ -114,11 +114,10 @@ namespace PlagueEngine.HighLevelGameFlow
             cbdata.Elasticity = 0.1f;
             cbdata.StaticRoughness = 0.6f;
             cbdata.Mass = 1.0f;
-            cbdata.Width = 3.3f;
-            cbdata.Height = 3.3f;
+            cbdata.Radius = 1.1f;
             cbdata.Lenght = 3.3f;
             cbdata.Immovable = false;
-
+           
 
             for (int i = 0; i < 5; i++)
             {
@@ -208,16 +207,16 @@ namespace PlagueEngine.HighLevelGameFlow
             ssdata.Model = "piggy";
             ssdata.TimeRatio = 1.0f;
             ssdata.Diffuse = "piggyTex";
-            ssdata.World = Matrix.CreateScale(0.1f);
-            ssdata.World *= Matrix.CreateTranslation(200, 50, 50);
+            ssdata.World *= Matrix.CreateTranslation(200, 100, 50);
+            
             ssdata.Mass = 1;
-            ssdata.StaticRoughness = 1;
-            ssdata.DynamicRoughness = 1;
-            ssdata.Elasticity = 1;
-            ssdata.Length = 1;
-            ssdata.Width = 1;
-            ssdata.Height = 1;
-            ssdata.Immovable = true;
+            ssdata.StaticRoughness = 0.1f;
+            ssdata.DynamicRoughness = 0.1f;
+            ssdata.Elasticity = 0.1f;
+            ssdata.Length = 66;
+            ssdata.Width = 66;
+            ssdata.Height = 66;
+            ssdata.Immovable = false;
 
             gameObjectsFactory.Create(ssdata);
         }

@@ -54,11 +54,15 @@ namespace PlagueEngine.Physics
                                     float staticRoughness,
                                     float dynamicRoughness, 
                                     bool immovable,
-                                    Matrix world)
+                                    Matrix world,
+                                    Vector3 skinTranslation,
+                                    float skinYaw,
+                                    float skinPitch,
+                                    float skinRoll)
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            SquareBodyComponent result = new SquareBodyComponent(gameObject, mass, length, height, width, material, immovable, world);
+            SquareBodyComponent result = new SquareBodyComponent(gameObject, mass, length, height, width, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
             return result;
         }
         /****************************************************************************/
@@ -78,11 +82,15 @@ namespace PlagueEngine.Physics
                                     float staticRoughness,
                                     float dynamicRoughness,
                                     bool immovable,
-                                    Matrix world)
+                                    Matrix world,
+                                    Vector3 skinTranslation,
+                                    float skinYaw,
+                                    float skinPitch,
+                                    float skinRoll)
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            SphericalBodyComponent result = new SphericalBodyComponent(gameObject, mass, radius, material, immovable, world);
+            SphericalBodyComponent result = new SphericalBodyComponent(gameObject, mass, radius, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
             return result;
         }
         /****************************************************************************/
@@ -133,11 +141,15 @@ namespace PlagueEngine.Physics
                                     float staticRoughness,
                                     float dynamicRoughness, 
                                     bool immovable,
-                                    Matrix world)
+                                    Matrix world,
+                                    Vector3 skinTranslation,
+                                    float skinYaw,
+                                    float skinPitch,
+                                    float skinRoll)
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            CylindricalBodyComponent result = new CylindricalBodyComponent(gameObject, mass, radius, length, material, immovable, world);
+            CylindricalBodyComponent result = new CylindricalBodyComponent(gameObject, mass, radius, length, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
             return result;
         }
             /********************************************************************************/
