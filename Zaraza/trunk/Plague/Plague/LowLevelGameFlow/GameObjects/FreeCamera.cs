@@ -10,6 +10,7 @@ using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.TimeControlSystem;
+using PlagueEngine.EventsSystem;
 
 using JigLibX.Geometry;
 using JigLibX.Collision;
@@ -162,6 +163,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         damperController.Initialise(skin.Owner, ConstraintVelocity.ReferenceFrame.Body, Vector3.Zero, Vector3.Zero);
                         objectController.EnableConstraint();
                         damperController.EnableConstraint();
+
+                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)skin.ExternalData));
                     }
 
 
@@ -186,6 +189,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 objectController.DisableConstraint();
                 damperController.DisableConstraint();
                 middleButton = false;
+                this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
             }
          
             

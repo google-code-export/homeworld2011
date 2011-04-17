@@ -189,6 +189,7 @@
     <Compile Include="Physics\Components\SquareBodyComponent.cs" />
     <Compile Include="Physics\Components\TerrainSkinComponent.cs" />
     <Compile Include="Physics\PhysicsComponentFactory.cs" />
+    <Compile Include="Physics\PhysicsController.cs" />
     <Compile Include="Physics\PhysicsManager.cs" />
     <Compile Include="Physics\PhysicsUlitities.cs" />
     <Compile Include="Physics\RigidBodyComponent.cs" />

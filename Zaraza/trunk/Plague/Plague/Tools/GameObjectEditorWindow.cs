@@ -20,8 +20,9 @@ using PlagueEngine.Input;
 using PlagueEngine.Input.Components;
 using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering;
-
-
+using PlagueEngine.EventsSystem;
+using PlagueEngine.Input;
+using PlagueEngine;
 /********************************************************************************/
 /// PlagueEngine.Tools
 /********************************************************************************/
@@ -33,6 +34,45 @@ namespace PlagueEngine.Tools
     /********************************************************************************/
     partial class GameObjectEditorWindow : Form
     {
+
+
+        /********************************************************************************/
+        /// DummySniffer
+        /********************************************************************************/
+        class DummySniffer : EventsSniffer
+        {
+            GameObjectEditorWindow editor = null;
+
+            public DummySniffer(GameObjectEditorWindow editor)
+            {
+                this.editor = editor;
+                SubscribeAll();
+                SubscribeEvents(typeof(LowLevelGameFlow.GameObjectReleased), typeof(LowLevelGameFlow.GameObjectClicked));
+            }
+
+            public override void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
+            {
+                if (e.GetType().Equals(typeof(LowLevelGameFlow.GameObjectClicked)))
+                {
+                    editor.ShowGameObjectProperties(  ((LowLevelGameFlow.GameObjectClicked)e).gameObjectID);
+                    
+                    editor.renderer.debugDrawer.StartSelectiveDrawing(((LowLevelGameFlow.GameObjectClicked)e).gameObjectID);
+
+       
+                }
+
+                if (e.GetType().Equals(typeof(LowLevelGameFlow.GameObjectReleased)))
+                {
+                    editor.renderer.debugDrawer.StopSelectiveDrawing();
+                }
+
+            }
+
+        }
+
+        /********************************************************************************/
+
+
 
 
         /********************************************************************************/
@@ -68,6 +108,8 @@ namespace PlagueEngine.Tools
         private ContentManager contentManager = null;
         private GameObjectsFactory factory = null;
         private Renderer renderer = null;
+        private Input.Input input=null;
+        private Game game = null;
 
         private gameObjectsClassName currentClassName = null;
         private GameObjectInstanceData currentObject = null;
@@ -85,6 +127,9 @@ namespace PlagueEngine.Tools
 
         //pola do zakladki edytuj
         private GameObjectInstanceData currentEditGameObject = null;
+
+
+        private DummySniffer sniffer = null;
         /********************************************************************************/
 
 
@@ -93,13 +138,16 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,Renderer renderer)
+        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,Renderer renderer,Input.Input input,Game game)
         {
             InitializeComponent();
             FillClassNames();
             this.factory = factory;
             this.contentManager = contentManager;
             this.renderer = renderer;
+            this.input = input;
+            this.sniffer = new DummySniffer(this);
+            this.game = game;
 
 
             foreach (var gameObject in gameObjectClassNames)
@@ -117,6 +165,28 @@ namespace PlagueEngine.Tools
             LoadFilters();
         }
         /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        /// ShowGameObjectProperties
+        /********************************************************************************/
+        public void ShowGameObjectProperties(uint gameObjectID)
+        {
+            currentEditGameObject = factory.GameObjects[gameObjectID].GetData();
+            currentEditGameObject.Position = currentEditGameObject.World.Translation;
+            propertyGrid2.SelectedObject = currentEditGameObject;
+            comboBoxFilterId.SelectedIndex = 0;
+            comboboxGameObjectId.SelectedItem = gameObjectID.ToString();
+
+
+            
+        }
+        /********************************************************************************/
+
+
+
 
 
 
@@ -1056,10 +1126,17 @@ namespace PlagueEngine.Tools
             }
         }
 
+
+
+
         private void buttonCommitMeshTransforms_Click(object sender, EventArgs e)
         {
             renderer.batchedMeshes.CommitMeshTransforms();
         }
+
+
+
+
 
         private void checkBoxShowCollisionSkin_CheckedChanged(object sender, EventArgs e)
         {
@@ -1071,6 +1148,24 @@ namespace PlagueEngine.Tools
             {
                 renderer.debugDrawer.Disable();
             }
+        }
+
+
+
+
+        private void GameObjectEditorWindow_Activated(object sender, EventArgs e)
+        {
+            input.enabled = false;
+        }
+
+        private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
+        {
+            input.enabled = true;
+        }
+
+        private void checkBoxGamePaused_CheckedChanged(object sender, EventArgs e)
+        {
+            this.game.gameStopped = checkBoxGamePaused.Checked;
         }
 
 

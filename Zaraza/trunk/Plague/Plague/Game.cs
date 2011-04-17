@@ -26,7 +26,7 @@ namespace PlagueEngine
     /********************************************************************************/
     public class Game : Microsoft.Xna.Framework.Game
     {
-
+        
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
@@ -42,6 +42,8 @@ namespace PlagueEngine
         private Level                       Level              = null;
 
         private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
+
+        public bool                         gameStopped        =false;
         /****************************************************************************/
 
 
@@ -105,7 +107,7 @@ namespace PlagueEngine
             
             renderer.batchedMeshes.CommitMeshTransforms();
             
-            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager,renderer);
+            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager,renderer,input,this);
             gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
                        
             Diagnostics.PushLog("Initialization complete");
@@ -156,16 +158,19 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Update(GameTime gameTime)
         {
-            Diagnostics.Update(gameTime.ElapsedGameTime);
-            TimeControl.Update(gameTime.ElapsedGameTime);
+            if (!gameStopped)
+            {
+                Diagnostics.Update(gameTime.ElapsedGameTime);
+                TimeControl.Update(gameTime.ElapsedGameTime);
 
-            input.Update();
+                input.Update();
 
-            eventsSystem.Update();
+                eventsSystem.Update();
 
-            physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);
-                        
-            base.Update(gameTime);
+                physicsManager.Update((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond);
+
+                base.Update(gameTime);
+            }
         }
         /****************************************************************************/
 

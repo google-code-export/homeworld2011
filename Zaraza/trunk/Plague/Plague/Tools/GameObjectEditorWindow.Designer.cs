@@ -41,9 +41,10 @@
             this.button1 = new System.Windows.Forms.Button();
             this.buttonCreateDefinition = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.panel5 = new System.Windows.Forms.Panel();
             this.buttonCreateDefinitionEdit = new System.Windows.Forms.Button();
-            this.buttonForceUpdate = new System.Windows.Forms.Button();
             this.checkBoxDisableEditing = new System.Windows.Forms.CheckBox();
+            this.buttonForceUpdate = new System.Windows.Forms.Button();
             this.propertyGrid2 = new System.Windows.Forms.PropertyGrid();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
@@ -61,18 +62,19 @@
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
             this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
-            this.panel5 = new System.Windows.Forms.Panel();
             this.panel6 = new System.Windows.Forms.Panel();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.checkBoxGamePaused = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel6.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -80,11 +82,12 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tabControl1.Location = new System.Drawing.Point(0, 45);
+            this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(389, 447);
+            this.tabControl1.Size = new System.Drawing.Size(389, 492);
             this.tabControl1.TabIndex = 3;
             // 
             // tabPage1
@@ -95,7 +98,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(381, 421);
+            this.tabPage1.Size = new System.Drawing.Size(381, 463);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Create GameObject";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -105,7 +108,7 @@
             this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid1.Location = new System.Drawing.Point(3, 62);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(375, 327);
+            this.propertyGrid1.Size = new System.Drawing.Size(375, 369);
             this.propertyGrid1.TabIndex = 16;
             this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged_1);
             // 
@@ -173,7 +176,7 @@
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.buttonCreateDefinition);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 389);
+            this.panel1.Location = new System.Drawing.Point(3, 431);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(375, 29);
             this.panel1.TabIndex = 14;
@@ -205,10 +208,21 @@
             this.tabPage3.Controls.Add(this.panel3);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(381, 421);
+            this.tabPage3.Size = new System.Drawing.Size(381, 466);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Edit GameObject";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.buttonCreateDefinitionEdit);
+            this.panel5.Controls.Add(this.checkBoxDisableEditing);
+            this.panel5.Controls.Add(this.buttonForceUpdate);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel5.Location = new System.Drawing.Point(0, 437);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(381, 29);
+            this.panel5.TabIndex = 21;
             // 
             // buttonCreateDefinitionEdit
             // 
@@ -219,16 +233,6 @@
             this.buttonCreateDefinitionEdit.Text = "Create definition";
             this.buttonCreateDefinitionEdit.UseVisualStyleBackColor = true;
             this.buttonCreateDefinitionEdit.Click += new System.EventHandler(this.buttonCreateDefinitionEdit_Click);
-            // 
-            // buttonForceUpdate
-            // 
-            this.buttonForceUpdate.Location = new System.Drawing.Point(134, 3);
-            this.buttonForceUpdate.Name = "buttonForceUpdate";
-            this.buttonForceUpdate.Size = new System.Drawing.Size(94, 23);
-            this.buttonForceUpdate.TabIndex = 18;
-            this.buttonForceUpdate.Text = "Force update";
-            this.buttonForceUpdate.UseVisualStyleBackColor = true;
-            this.buttonForceUpdate.Click += new System.EventHandler(this.buttonForceUpdate_Click);
             // 
             // checkBoxDisableEditing
             // 
@@ -241,12 +245,22 @@
             this.checkBoxDisableEditing.UseVisualStyleBackColor = true;
             this.checkBoxDisableEditing.CheckedChanged += new System.EventHandler(this.checkBoxDisableEditing_CheckedChanged);
             // 
+            // buttonForceUpdate
+            // 
+            this.buttonForceUpdate.Location = new System.Drawing.Point(134, 3);
+            this.buttonForceUpdate.Name = "buttonForceUpdate";
+            this.buttonForceUpdate.Size = new System.Drawing.Size(94, 23);
+            this.buttonForceUpdate.TabIndex = 18;
+            this.buttonForceUpdate.Text = "Force update";
+            this.buttonForceUpdate.UseVisualStyleBackColor = true;
+            this.buttonForceUpdate.Click += new System.EventHandler(this.buttonForceUpdate_Click);
+            // 
             // propertyGrid2
             // 
             this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid2.Location = new System.Drawing.Point(0, 63);
             this.propertyGrid2.Name = "propertyGrid2";
-            this.propertyGrid2.Size = new System.Drawing.Size(381, 358);
+            this.propertyGrid2.Size = new System.Drawing.Size(381, 403);
             this.propertyGrid2.TabIndex = 18;
             this.propertyGrid2.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid2_PropertyValueChanged);
             // 
@@ -316,7 +330,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(381, 421);
+            this.tabPage2.Size = new System.Drawing.Size(381, 463);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Level";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -328,7 +342,7 @@
             this.listBoxLevelNames.Location = new System.Drawing.Point(3, 3);
             this.listBoxLevelNames.Margin = new System.Windows.Forms.Padding(15);
             this.listBoxLevelNames.Name = "listBoxLevelNames";
-            this.listBoxLevelNames.Size = new System.Drawing.Size(375, 386);
+            this.listBoxLevelNames.Size = new System.Drawing.Size(375, 428);
             this.listBoxLevelNames.TabIndex = 6;
             // 
             // panel4
@@ -339,7 +353,7 @@
             this.panel4.Controls.Add(this.buttonNew);
             this.panel4.Controls.Add(this.buttonSave);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(3, 389);
+            this.panel4.Location = new System.Drawing.Point(3, 431);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(375, 29);
             this.panel4.TabIndex = 5;
@@ -396,7 +410,7 @@
             // 
             // buttonCommitMeshTransforms
             // 
-            this.buttonCommitMeshTransforms.Location = new System.Drawing.Point(40, 8);
+            this.buttonCommitMeshTransforms.Location = new System.Drawing.Point(8, 14);
             this.buttonCommitMeshTransforms.Name = "buttonCommitMeshTransforms";
             this.buttonCommitMeshTransforms.Size = new System.Drawing.Size(147, 23);
             this.buttonCommitMeshTransforms.TabIndex = 4;
@@ -407,7 +421,7 @@
             // checkBoxShowCollisionSkin
             // 
             this.checkBoxShowCollisionSkin.AutoSize = true;
-            this.checkBoxShowCollisionSkin.Location = new System.Drawing.Point(230, 12);
+            this.checkBoxShowCollisionSkin.Location = new System.Drawing.Point(258, 18);
             this.checkBoxShowCollisionSkin.Name = "checkBoxShowCollisionSkin";
             this.checkBoxShowCollisionSkin.Size = new System.Drawing.Size(115, 17);
             this.checkBoxShowCollisionSkin.TabIndex = 5;
@@ -415,26 +429,36 @@
             this.checkBoxShowCollisionSkin.UseVisualStyleBackColor = true;
             this.checkBoxShowCollisionSkin.CheckedChanged += new System.EventHandler(this.checkBoxShowCollisionSkin_CheckedChanged);
             // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.buttonCreateDefinitionEdit);
-            this.panel5.Controls.Add(this.checkBoxDisableEditing);
-            this.panel5.Controls.Add(this.buttonForceUpdate);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel5.Location = new System.Drawing.Point(0, 392);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(381, 29);
-            this.panel5.TabIndex = 21;
-            // 
             // panel6
             // 
-            this.panel6.Controls.Add(this.buttonCommitMeshTransforms);
-            this.panel6.Controls.Add(this.checkBoxShowCollisionSkin);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel6.Location = new System.Drawing.Point(0, 0);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(389, 492);
             this.panel6.TabIndex = 22;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.checkBoxGamePaused);
+            this.tabPage4.Controls.Add(this.checkBoxShowCollisionSkin);
+            this.tabPage4.Controls.Add(this.buttonCommitMeshTransforms);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(381, 466);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Game Properites";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxGamePaused
+            // 
+            this.checkBoxGamePaused.AutoSize = true;
+            this.checkBoxGamePaused.Location = new System.Drawing.Point(258, 50);
+            this.checkBoxGamePaused.Name = "checkBoxGamePaused";
+            this.checkBoxGamePaused.Size = new System.Drawing.Size(92, 17);
+            this.checkBoxGamePaused.TabIndex = 6;
+            this.checkBoxGamePaused.Text = "Game paused";
+            this.checkBoxGamePaused.UseVisualStyleBackColor = true;
+            this.checkBoxGamePaused.CheckedChanged += new System.EventHandler(this.checkBoxGamePaused_CheckedChanged);
             // 
             // GameObjectEditorWindow
             // 
@@ -444,7 +468,9 @@
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.panel6);
             this.Name = "GameObjectEditorWindow";
-            this.Text = "Game Object Editor";
+            this.Text = "Game-Object-Editor";
+            this.Activated += new System.EventHandler(this.GameObjectEditorWindow_Activated);
+            this.Deactivate += new System.EventHandler(this.GameObjectEditorWindow_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GameObjectEditorWindow_FormClosing);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -452,14 +478,14 @@
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -501,6 +527,8 @@
         private System.Windows.Forms.CheckBox checkBoxShowCollisionSkin;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.CheckBox checkBoxGamePaused;
 
 
     }

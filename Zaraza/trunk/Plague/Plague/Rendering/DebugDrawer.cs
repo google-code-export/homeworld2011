@@ -31,6 +31,8 @@ namespace PlagueEngine.Rendering
         private Renderer                  renderer       = null;
         private PhysicsManager            physicsManager = null;
         private bool                      enabled        = false;
+        private bool                      selectiveDrawing = false;
+        private uint                      gameObjectID;
         /****************************************************************************/
 
 
@@ -47,13 +49,39 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
 
 
+
+        /****************************************************************************/
+        /// StartSelectiveDrawing
+        /****************************************************************************/
+        public void StartSelectiveDrawing(uint gameObjectID)
+        {
+          selectiveDrawing=true;
+          this.gameObjectID=gameObjectID;
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// StopSelectiveDrawing
+        /****************************************************************************/
+        public void StopSelectiveDrawing()
+        {
+            selectiveDrawing = false;
+        }
+        /****************************************************************************/
+
+
+
+
+
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
         public void Draw(Matrix view,Matrix projection)
         {
-            if (!enabled) return;
-
+            
+            
             basicEffect = new BasicEffect(renderer.Device);
 
             this.basicEffect.AmbientLightColor = Vector3.One;
@@ -64,28 +92,33 @@ namespace PlagueEngine.Rendering
 
             foreach (CollisionSkinComponent skin in physicsManager.collisionSkins)
             {
-                
-                AddShape(BodyRenderExtensions.GetLocalSkinWireframe(skin.Skin));
-                basicEffect.World = skin.GameObject.World;
-                basicEffect.CurrentTechnique.Passes[0].Apply();
-                renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
-                                                                        vertexData.ToArray(),
-                                                                        0,
-                                                                        vertexData.Count - 1);
-                vertexData.Clear();
+                if (enabled || (!enabled &&  selectiveDrawing && ((uint)(skin.Skin.ExternalData) == gameObjectID)))
+                {
+                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(skin.Skin));
+                    basicEffect.World = skin.GameObject.World;
+                    basicEffect.CurrentTechnique.Passes[0].Apply();
+                    renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
+                                                                            vertexData.ToArray(),
+                                                                            0,
+                                                                            vertexData.Count - 1);
+                    vertexData.Clear();
+                }
             }
 
 
             foreach (RigidBodyComponent body in physicsManager.rigidBodies)
             {
-                AddShape(BodyRenderExtensions.GetLocalSkinWireframe(body.Skin));
-                basicEffect.World = body.GameObject.World;
-                basicEffect.CurrentTechnique.Passes[0].Apply();
-                renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
-                                                                        vertexData.ToArray(),
-                                                                        0,
-                                                                        vertexData.Count - 1);
-                vertexData.Clear();
+                if (enabled || (!enabled && selectiveDrawing && ((uint)(body.Skin.ExternalData) == gameObjectID)))
+                {
+                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(body.Skin));
+                    basicEffect.World = body.GameObject.World;
+                    basicEffect.CurrentTechnique.Passes[0].Apply();
+                    renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
+                                                                            vertexData.ToArray(),
+                                                                            0,
+                                                                            vertexData.Count - 1);
+                    vertexData.Clear();
+                }
             }
 
         }

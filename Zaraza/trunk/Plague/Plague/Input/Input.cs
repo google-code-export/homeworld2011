@@ -128,6 +128,7 @@ namespace PlagueEngine.Input
         private KeyboardState          oldKeyboardState;
         private MouseState             oldMouseState;
         private int                    cursorLock;
+        public bool                    enabled = true;
         /****************************************************************************/
 
 
@@ -280,8 +281,11 @@ namespace PlagueEngine.Input
         /****************************************************************************/
         public void Update()
         {
-            CheckKeyboard();
-            CheckMouse();
+            if (enabled)
+            {
+                CheckKeyboard();
+                CheckMouse();
+            }
         }
         /****************************************************************************/
 

@@ -30,6 +30,7 @@ namespace PlagueEngine.Physics
         private  PhysicsSystem                  physicsSystem           = null;
         internal List<RigidBodyComponent>       rigidBodies             = new List<RigidBodyComponent>();
         internal List<CollisionSkinComponent>   collisionSkins          = new List<CollisionSkinComponent>();
+        internal List<PhysicsController>        controllers              = new List<PhysicsController>();
         internal PhysicsComponentFactory        physicsComponentFactory = null;
         /****************************************************************************/
 
@@ -57,6 +58,7 @@ namespace PlagueEngine.Physics
             RigidBodyComponent.physicsManager = this;
             CollisionSkinComponent.physicsManager = this;
             PhysicsUlitities.collisionSystem = physicsSystem.CollisionSystem;
+            PhysicsController.physicsManager = this;
         }
         /****************************************************************************/
 
@@ -79,6 +81,10 @@ namespace PlagueEngine.Physics
                 rigidBody.Update();
             }
 
+            foreach (PhysicsController controller in controllers)
+            {
+                controller.UpdateController(timeStep);
+            }
             
 
         }
