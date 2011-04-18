@@ -11,26 +11,98 @@ using JigLibX.Physics;
 using JigLibX.Math;
 using PlagueEngine.LowLevelGameFlow;
 
+
+/****************************************************************************/
+/// PlagueEngine.Physics
+/****************************************************************************/
 namespace PlagueEngine.Physics
 {
-
+    /****************************************************************************/
+    /// CollisionSkinComponent
+    /****************************************************************************/
     class CollisionSkinComponent : GameObjectComponent
     {
+        /****************************************************************************/
+        /// Fields
+        /****************************************************************************/
         protected CollisionSkin skin = null;
-
         private MaterialProperties material;
         private bool isEnabled = false;
-
         internal static PhysicsManager physicsManager = null;
+        private Vector3 translation = Vector3.Zero;
+        private float yaw;
+        private float pitch;
+        private float roll;
+        private List<Type> gameObjectTypes = new List<Type>();
+        /****************************************************************************/
 
-        public CollisionSkinComponent(GameObjectInstance gameObject, MaterialProperties material)
+
+
+        /****************************************************************************/
+        /// Constructor
+        /****************************************************************************/
+        public CollisionSkinComponent(GameObjectInstance gameObject, MaterialProperties material, Vector3 translation, float yaw, float pitch, float roll)
             : base(gameObject)
         {
             skin = new CollisionSkin();
             this.material = material;           
             skin.ExternalData = gameObject;
+            this.translation = translation;
+            this.yaw = yaw;
+            this.pitch = pitch;
+            this.roll = roll;
             physicsManager.collisionSkins.Add(gameObject.ID,this);
         }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Handle Collision Detection
+        /****************************************************************************/
+        private bool HandleCollisionDetection(CollisionSkin owner, CollisionSkin collidee)
+        {
+
+            if (gameObjectTypes.Contains(collidee.ExternalData.GetType()))
+            {
+
+
+                this.GameObject.SendEvent(
+                    new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                    EventsSystem.Priority.Normal,
+                    this.GameObject);
+
+            }
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Subscribe Collision Event
+        /****************************************************************************/
+        public void SubscribeCollisionEvent(params Type[] gameObjectTypes)
+        {
+            this.gameObjectTypes.AddRange(gameObjectTypes);
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Cancel Subscribe Collision Event
+        /****************************************************************************/
+        public void CancelSubscribeCollisionEvent(params Type[] gameObjectTypes)
+        {
+            foreach (Type gameObjectType in gameObjectTypes)
+            {
+                this.gameObjectTypes.Remove(gameObjectType);
+            }
+        }
+        /****************************************************************************/
 
 
 
@@ -76,6 +148,10 @@ namespace PlagueEngine.Physics
         public float DynamicRoughness { get { return material.DynamicRoughness; } }
 
         public CollisionSkin Skin { get { return skin; } }
+        public Vector3 SkinTranslation { get { return this.translation; } }
+        public float Yaw { get { return this.yaw; } }
+        public float Pitch { get { return this.pitch; } }
+        public float Roll { get { return this.roll; } }
         /****************************************************************************/
     }
 }

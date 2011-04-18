@@ -145,7 +145,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     float dist;
                     bool hit = false;
                     hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
-                    
+                    if (skin != null)
+                    {
+
+                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
+                    }
                     if (hit)
                     {
 
@@ -164,7 +168,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         objectController.EnableConstraint();
                         damperController.EnableConstraint();
 
-                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
                     }
 
 
@@ -174,18 +177,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (objectController.IsConstraintEnabled && (objectController.Body != null))
                 {
                     Vector3 delta = objectController.Body.Position - cameraComponent.Position;
-                    Vector3 ray = Physics.PhysicsUlitities.DirectionFromMousePosition(cameraComponent.Projection,cameraComponent.View,mouseX, mouseY);
-                    
+                    Vector3 ray = Physics.PhysicsUlitities.DirectionFromMousePosition(cameraComponent.Projection, cameraComponent.View, mouseX, mouseY);
+
                     Vector3 result = cameraComponent.Position + camPickDistance * ray;
 
-                    
+
                     objectController.WorldPosition = result;
                     objectController.Body.SetActive();
                 }
             }
             else if(mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
-                
+
                 objectController.DisableConstraint();
                 damperController.DisableConstraint();
                 middleButton = false;

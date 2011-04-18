@@ -31,7 +31,6 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         private float radius;
         private float length;
-        private Vector3 scale;
         /****************************************************************************/
 
 
@@ -106,7 +105,6 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
-            scale = new Vector3(dummyWorld.M11, dummyWorld.M22, dummyWorld.M33);
 
             dummyWorld.Translation += skinTranslation;
             
@@ -114,22 +112,12 @@ namespace PlagueEngine.Physics.Components
             Enable();
 
 
-            SubscribeCollisionEvent(typeof(CylindricalBodyMesh));
         }
         /****************************************************************************/
 
 
 
-        /****************************************************************************/
-        /// On Event
-        /****************************************************************************/
-        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
-        {
-            
-                Diagnostics.PushLog(e.ToString());
-           
-        }
-        /****************************************************************************/
+
 
 
         /****************************************************************************/

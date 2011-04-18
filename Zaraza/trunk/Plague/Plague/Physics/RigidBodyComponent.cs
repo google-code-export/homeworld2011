@@ -83,10 +83,10 @@ namespace PlagueEngine.Physics
             {
 
 
-                ((GameObjectInstance)(owner.ExternalData)).SendEvent(
+                this.GameObject.SendEvent(
                     new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
-                    EventsSystem.Priority.Normal, 
-                    (GameObjectInstance)(skin.ExternalData));
+                    EventsSystem.Priority.Normal,
+                    this.GameObject);
                
             }
 

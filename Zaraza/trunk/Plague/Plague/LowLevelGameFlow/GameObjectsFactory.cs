@@ -105,6 +105,15 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "Piggy":
                     result = CreatePiggy(data);
                     break;
+                case "SquareSkinMesh":
+                    result = CreateSquareSkinMesh(data);
+                    break;
+                case "SphericalSkinMesh":
+                    result = CreateSphericalSkinMesh(data);
+                    break;
+                case "CylindricalSkinMesh":
+                    result = CreateCylindricalSkinMesh(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -378,6 +387,120 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Create Cylindrical Skin Mesh
+        /****************************************************************************/
+        private CylindricalSkinMesh CreateCylindricalSkinMesh(GameObjectInstanceData data)
+        {
+            CylindricalSkinMesh result = new CylindricalSkinMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            CylindricalSkinMeshData tdata = (CylindricalSkinMeshData)data;
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                            tdata.Model,
+                                                                            tdata.Diffuse,
+                                                                            tdata.Specular,
+                                                                            tdata.Normals,
+                                                                            Renderer.UIntToInstancingMode(tdata.InstancingMode)),
+                        physicsComponentFactory.CreateCylindricalSkinComponent(result,
+            tdata.Elasticity,
+            tdata.StaticRoughness,
+            tdata.DynamicRoughness,
+            tdata.World,
+            tdata.Lenght,
+            tdata.Radius,
+            tdata.Translation,
+            tdata.Yaw,
+            tdata.Pitch,
+            tdata.Roll),
+                        tdata.World);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+
+
+        /****************************************************************************/
+        /// Create Square Skin Mesh
+        /****************************************************************************/
+        private SquareSkinMesh CreateSquareSkinMesh(GameObjectInstanceData data)
+        {
+            SquareSkinMesh result = new SquareSkinMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            SquareSkinMeshData tdata = (SquareSkinMeshData)data;
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                            tdata.Model,
+                                                                            tdata.Diffuse,
+                                                                            tdata.Specular,
+                                                                            tdata.Normals,
+                                                                            Renderer.UIntToInstancingMode(tdata.InstancingMode)), 
+                        physicsComponentFactory.CreateSquareSkinComponent(result,
+            tdata.Elasticity,
+            tdata.StaticRoughness,
+            tdata.DynamicRoughness,
+            tdata.World,
+            tdata.Lenght,
+            tdata.Height,
+            tdata.Width,
+            tdata.Translation,
+            tdata.Yaw,
+            tdata.Pitch,
+            tdata.Roll),
+                        tdata.World);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Create Spherical Skin Mesh
+        /****************************************************************************/
+        private SphericalSkinMesh CreateSphericalSkinMesh(GameObjectInstanceData data)
+        {
+            SphericalSkinMesh result = new SphericalSkinMesh();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            SphericalSkinMeshData tdata = (SphericalSkinMeshData)data;
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                            tdata.Model,
+                                                                            tdata.Diffuse,
+                                                                            tdata.Specular,
+                                                                            tdata.Normals,
+                                                                            Renderer.UIntToInstancingMode(tdata.InstancingMode)),
+                        physicsComponentFactory.CreateSphericalSkinComponent(result,
+            tdata.Elasticity,
+            tdata.StaticRoughness,
+            tdata.DynamicRoughness,
+            tdata.World,
+            tdata.Radius,
+            tdata.Translation,
+            tdata.Yaw,
+            tdata.Pitch,
+            tdata.Roll),
+                        tdata.World);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+
 
 
         /****************************************************************************/

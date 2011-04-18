@@ -153,17 +153,19 @@ namespace PlagueEngine.Rendering
 
             foreach (CollisionSkinComponent skin in physicsManager.collisionSkins.Values)
             {
-                
-                    if(skin.GetType().Equals(typeof(Physics.Components.TerrainSkinComponent)) && drawHeightmapSkin)
+
+                if ((skin.GetType().Equals(typeof(Physics.Components.TerrainSkinComponent)) && drawHeightmapSkin) || (!skin.GetType().Equals(typeof(Physics.Components.TerrainSkinComponent))))
                     {
-                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(skin.Skin));
-                    basicEffect.World = skin.GameObject.World;
-                    basicEffect.CurrentTechnique.Passes[0].Apply();
-                    renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
-                                                                            vertexData.ToArray(),
-                                                                            0,
-                                                                            vertexData.Count - 1);
-                    vertexData.Clear();
+                        AddShape(BodyRenderExtensions.GetLocalSkinWireframe(skin.Skin));
+                        Matrix skinWorld = skin.Skin.NewOrient;
+                        skinWorld.Translation = skin.Skin.NewPosition;
+                        basicEffect.World = skinWorld;
+                        basicEffect.CurrentTechnique.Passes[0].Apply();
+                        renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
+                                                                                vertexData.ToArray(),
+                                                                                0,
+                                                                                vertexData.Count - 1);
+                        vertexData.Clear();
                     }
                 
             }

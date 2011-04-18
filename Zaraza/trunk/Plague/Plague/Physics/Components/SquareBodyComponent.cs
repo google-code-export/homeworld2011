@@ -32,7 +32,9 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-
+        private float length; 
+        private float height;
+        private float width; 
         /****************************************************************************/
 
 
@@ -53,9 +55,9 @@ namespace PlagueEngine.Physics.Components
                                     float roll)
             : base(gameObject, mass, immovable, material, skinTranslation,yaw,pitch,roll)
         {
-            Length = length;
-            Width = width;
-            Height = height;
+            this.length = length;
+            this.width = width;
+            this.height = height;
 
             Box box = new Box(Vector3.Zero, Matrix.Identity, new Vector3(length, height, width));
 
@@ -96,9 +98,10 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public float Length { get; private set; }
-        public float Height { get; private set; }
-        public float Width  { get; private set; }
+        public float Length { get { return length; } }
+        public float Height { get { return height; } }
+        public float Width  { get { return width; } }
+        /****************************************************************************/
 
     }
     /****************************************************************************/
