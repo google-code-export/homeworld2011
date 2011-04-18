@@ -11,58 +11,45 @@ using PlagueEngine.Rendering;
 using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
 
-
 /********************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
 /********************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
+
     /********************************************************************************/
-    /// CylindricalBodyMesh
+    /// SquareSkinMesh
     /********************************************************************************/
-    class CylindricalBodyMesh : GameObjectInstance
+    class SquareSkinMesh : GameObjectInstance
     {
+
 
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
         MeshComponent meshComponent = null;
-        CylindricalBodyComponent physicsComponent = null;
+        SquareSkinComponent physicsComponent = null;
         /********************************************************************************/
-
 
 
 
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(MeshComponent meshComponent, CylindricalBodyComponent physcisComponent, Matrix world)
+        public void Init(MeshComponent meshComponent, SquareSkinComponent physcisComponent, Matrix world)
         {
             this.meshComponent = meshComponent;
             this.physicsComponent = physcisComponent;
             this.World = world;
-
-
-            physcisComponent.SubscribeCollisionEvent(typeof(CylindricalBodyMesh));
         }
         /********************************************************************************/
 
 
 
-        /****************************************************************************/
-        /// On Event
-        /****************************************************************************/
-        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
-        {
-
-            
-
-        }
-        /****************************************************************************/
 
         /********************************************************************************/
-        /// Release Components
+        /// ReleaseComponents
         /********************************************************************************/
         public override void ReleaseComponents()
         {
@@ -74,12 +61,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
 
+
         /********************************************************************************/
         /// GetData
         /********************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            CylindricalBodyMeshData data = new CylindricalBodyMeshData();
+            SquareSkinMeshData data = new SquareSkinMeshData();
             GetData(data);
             data.Model = meshComponent.Model.Name;
             data.Diffuse = (meshComponent.Textures.Diffuse == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
@@ -88,13 +76,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);
 
-            data.Mass = physicsComponent.Mass;
             data.Elasticity = physicsComponent.Elasticity;
             data.StaticRoughness = physicsComponent.StaticRoughness;
             data.DynamicRoughness = physicsComponent.DynamicRoughness;
             data.Lenght = physicsComponent.Length;
-            data.Radius = physicsComponent.Radius;
-            data.Immovable = physicsComponent.Immovable;
+            data.Width = physicsComponent.Width;
+            data.Height = physicsComponent.Height;
             data.Translation = physicsComponent.SkinTranslation;
             data.SkinPitch = physicsComponent.Pitch;
             data.SkinRoll = physicsComponent.Roll;
@@ -110,11 +97,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
 
 
+
+
     /********************************************************************************/
-    /// CylindricalBodyMeshData
+    /// SquareSkinMeshData
     /********************************************************************************/
     [Serializable]
-    public class CylindricalBodyMeshData : GameObjectInstanceData
+    public class SquareSkinMeshData : GameObjectInstanceData
     {
         [CategoryAttribute("Model")]
         public String Model { get; set; }
@@ -133,9 +122,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public uint InstancingMode { get; set; }
 
         [CategoryAttribute("Physics")]
-        public float Mass { get; set; }
-
-        [CategoryAttribute("Physics")]
         public float Elasticity { get; set; }
 
         [CategoryAttribute("Physics")]
@@ -144,14 +130,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Physics")]
         public float DynamicRoughness { get; set; }
 
-        [CategoryAttribute("Physics")]
-        public bool Immovable { get; set; }
-
-        [CategoryAttribute("Collision Skin")]
-        public float Radius { get; set; }
-
         [CategoryAttribute("Collision Skin")]
         public float Lenght { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float Width { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float Height { get; set; }
 
         [CategoryAttribute("Collision Skin")]
         public Vector3 Translation { get; set; }
@@ -164,7 +150,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
-
     }
     /********************************************************************************/
 

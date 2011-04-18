@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 using JigLibX.Geometry;
 using JigLibX.Collision;
 using JigLibX.Physics;
 using JigLibX.Math;
+using JigLibX.Utils;
+
 using PlagueEngine.LowLevelGameFlow;
-using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 
 
@@ -21,41 +22,45 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 namespace PlagueEngine.Physics.Components
 {
 
+
     /****************************************************************************/
-    /// SphericalBodyComponent
+    /// SquareSkinComponent
     /****************************************************************************/
-    class SphericalBodyComponent : RigidBodyComponent
+    class SquareSkinComponent : CollisionSkinComponent
     {
+
 
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private float radius;
+        private float length;
+        private float height;
+        private float width;
         /****************************************************************************/
-
 
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public SphericalBodyComponent(GameObjectInstance gameObject,
-                            float mass,
-                            float radius,
-                            MaterialProperties material,
-                            bool immovable,
-                            Matrix world,
-                            Vector3 skinTranslation,
-                            float yaw,
-                            float pitch,
-                            float roll)
-            : base(gameObject, mass, immovable, material, skinTranslation,yaw,pitch,roll)
-    {
-            this.radius = radius;
-            Sphere sphere = new Sphere(Vector3.Zero, radius);
-            Skin.AddPrimitive(sphere, material);
-            Vector3 com = SetMass();
+        public SquareSkinComponent(GameObjectInstance gameObject,
+                                    Matrix world,
+                                    float length,
+                                    float height,
+                                    float width,
+                                    MaterialProperties material,
+                                    Vector3 skinTranslation,
+                                    float yaw,
+                                    float pitch,
+                                    float roll)
+            : base(gameObject, material, skinTranslation, yaw, pitch, roll)
+        {
+
+            this.length = length;
+            this.width = width;
+            this.height = height;
+
 
             Matrix dummyWorld = world;
 
@@ -73,31 +78,31 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
+
+            skinTranslation.X -= length / 2;
+            skinTranslation.Y -= height / 2;
+            skinTranslation.Z -= width / 2;
             dummyWorld.Translation += skinTranslation;
-            MoveTo(dummyWorld);
-            Skin.ApplyLocalTransform(new Transform(-com, Matrix.Identity));
-            Enable();
-
-
             
-    }
+            Box box = new Box(dummyWorld.Translation, dummyWorld, new Vector3(length, height, width));
+
+            Skin.AddPrimitive(box, material);
+            Enable();
+        }
         /****************************************************************************/
-
-
-
- 
 
 
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public float Radius { get; set; }
+        public float Length { get { return length; } }
+        public float Height { get { return height; } }
+        public float Width { get { return width; } }
         /****************************************************************************/
-
-
 
     }
     /****************************************************************************/
+
 
 
 

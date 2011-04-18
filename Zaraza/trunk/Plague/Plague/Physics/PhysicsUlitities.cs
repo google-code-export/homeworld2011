@@ -173,7 +173,7 @@ namespace PlagueEngine.Physics
     {
         public override bool ConsiderSkin(CollisionSkin skin0)
         {
-            if (skin0.Owner != null && !skin0.Owner.Immovable)
+            if (skin0 != null)
                 return true;
             else
                 return false;

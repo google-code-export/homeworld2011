@@ -104,28 +104,56 @@ namespace PlagueEngine.HighLevelGameFlow
 
 
 
-            CylindricalBodyMeshData cbdata = new CylindricalBodyMeshData();
-            cbdata.Type = (typeof(CylindricalBodyMesh));
-            cbdata.Model = "Barrel";
-            cbdata.Diffuse = "Barrel_diffuse";
-            cbdata.Specular = "Barrel_specular";
-            cbdata.Normals = "Barrel_normals";
-            cbdata.DynamicRoughness = 0.7f;
-            cbdata.Elasticity = 0.1f;
-            cbdata.StaticRoughness = 0.6f;
-            cbdata.Mass = 1.0f;
-            cbdata.Radius = 1.1f;
-            cbdata.Lenght = 3.3f;
-            cbdata.Immovable = false;
+            //CylindricalSkinMeshData cbdata = new CylindricalSkinMeshData();
+            //cbdata.Type = (typeof(CylindricalSkinMesh));
+            //cbdata.Model = "Barrel";
+            //cbdata.Diffuse = "Barrel_diffuse";
+            //cbdata.Specular = "Barrel_specular";
+            //cbdata.Normals = "Barrel_normals";
+            //cbdata.DynamicRoughness = 0.7f;
+            //cbdata.Elasticity = 0.1f;
+            //cbdata.StaticRoughness = 0.6f;
+            //cbdata.Radius = 1.1f;
+            //cbdata.Lenght = 3.3f;
             
+
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    for (int j = 0; j < 5; j++)
+            //    {
+            //        cbdata.World = Matrix.CreateTranslation(190 + i * 5.5f, 60, 30 + j * 4.5f);
+                 
+            //        gameObjectsFactory.Create(cbdata);
+
+            //    }
+            //}
+
+
+
+
+
+            CylindricalBodyMeshData dddtata = new CylindricalBodyMeshData();
+            dddtata.Type = (typeof(CylindricalBodyMesh));
+            dddtata.Model = "Barrel";
+            dddtata.Diffuse = "Barrel_diffuse";
+            dddtata.Specular = "Barrel_specular";
+            dddtata.Normals = "Barrel_normals";
+            dddtata.DynamicRoughness = 0.7f;
+            dddtata.Elasticity = 0.1f;
+            dddtata.StaticRoughness = 0.6f;
+            dddtata.Radius = 1.1f;
+            dddtata.Lenght = 3.3f;
+            dddtata.Immovable = false;
+            dddtata.InstancingMode = 3;
+            dddtata.Mass = 1;
 
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 5; j++)
                 {
-                    cbdata.World = Matrix.CreateTranslation(190 + i * 5.5f, 60, 30 + j * 4.5f);
-                 
-                    gameObjectsFactory.Create(cbdata);
+                    dddtata.World = Matrix.CreateTranslation(190 + i * 5.5f, 77, 30 + j * 4.5f);
+
+                    gameObjectsFactory.Create(dddtata);
 
                 }
             }
@@ -219,7 +247,7 @@ namespace PlagueEngine.HighLevelGameFlow
             ssdata.Height = 66;
             ssdata.Immovable = false;
 
-            gameObjectsFactory.Create(ssdata);
+            //gameObjectsFactory.Create(ssdata);
         }
         /****************************************************************************/
 

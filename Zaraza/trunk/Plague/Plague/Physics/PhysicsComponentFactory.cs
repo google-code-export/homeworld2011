@@ -129,6 +129,114 @@ namespace PlagueEngine.Physics
 
 
 
+
+
+        /****************************************************************************/
+        /// Create Square Skin Component
+        /****************************************************************************/
+        public SquareSkinComponent CreateSquareSkinComponent(GameObjectInstance gameObject,
+                                                                float elasticity,
+                                                                float staticRoughness,
+                                                                float dynamicRoughness,
+                                                                Matrix world,
+                                                                float length,
+                                                                float height,
+                                                                float width,
+                                                                Vector3 skinTranslation,
+                                                                float yaw,
+                                                                float pitch, 
+                                                                float roll)
+        {
+            MaterialProperties material = new MaterialProperties(elasticity,
+                                                                staticRoughness,
+                                                                dynamicRoughness);
+
+            SquareSkinComponent result = new SquareSkinComponent(gameObject,
+                                                                 world,
+                                                                 length,
+                                                                 height,
+                                                                 width,
+                                                                 material,
+                                                                 skinTranslation,
+                                                                 yaw,
+                                                                 pitch,
+                                                                 roll);
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+
+
+        /****************************************************************************/
+        /// Create Square Skin Component
+        /****************************************************************************/
+        public SphericalSkinComponent CreateSphericalSkinComponent(GameObjectInstance gameObject,
+                                                                float elasticity,
+                                                                float staticRoughness,
+                                                                float dynamicRoughness,
+                                                                Matrix world,
+                                                                float radius,
+                                                                Vector3 skinTranslation,
+                                                                float yaw,
+                                                                float pitch,
+                                                                float roll)
+        {
+            MaterialProperties material = new MaterialProperties(elasticity,
+                                                                staticRoughness,
+                                                                dynamicRoughness);
+
+            SphericalSkinComponent result = new SphericalSkinComponent(gameObject,
+                                                                 world,
+                                                                 radius,
+                                                                 material,
+                                                                 skinTranslation,
+                                                                 yaw,
+                                                                 pitch,
+                                                                 roll);
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+
+
+        /****************************************************************************/
+        /// Create Cylindrical Skin Component
+        /****************************************************************************/
+        public CylindricalSkinComponent CreateCylindricalSkinComponent(GameObjectInstance gameObject,
+                                                                float elasticity,
+                                                                float staticRoughness,
+                                                                float dynamicRoughness,
+                                                                Matrix world,
+                                                                float length,
+                                                                float radius,
+                                                                Vector3 skinTranslation,
+                                                                float yaw,
+                                                                float pitch,
+                                                                float roll)
+        {
+            MaterialProperties material = new MaterialProperties(elasticity,
+                                                                staticRoughness,
+                                                                dynamicRoughness);
+
+            CylindricalSkinComponent result = new CylindricalSkinComponent(gameObject,
+                                                                 world,
+                                                                 length,
+                                                                 radius,
+                                                                 material,
+                                                                 skinTranslation,
+                                                                 yaw,
+                                                                 pitch,
+                                                                 roll);
+            return result;
+        }
+        /****************************************************************************/
+
+
+
            
         /****************************************************************************/
         /// Create Cylidrical Body Component

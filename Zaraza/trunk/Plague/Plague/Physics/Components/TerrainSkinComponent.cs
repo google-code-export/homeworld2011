@@ -39,7 +39,7 @@ namespace PlagueEngine.Physics.Components
                                     float height,
                                     float scale,
                                     MaterialProperties material)
-            : base(gameObject, material)
+            : base(gameObject, material,Vector3.Zero,0,0,0)
         {
             Color[] heightMapData = new Color[heightMap.Width * heightMap.Height];
             heightMap.GetData<Color>(heightMapData);
