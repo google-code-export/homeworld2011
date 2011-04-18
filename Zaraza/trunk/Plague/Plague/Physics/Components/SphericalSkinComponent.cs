@@ -35,6 +35,7 @@ namespace PlagueEngine.Physics.Components
         /// Fields
         /****************************************************************************/
         private float radius;
+        private Body body;
         /****************************************************************************/
 
 
@@ -54,16 +55,21 @@ namespace PlagueEngine.Physics.Components
         {
 
             this.radius = radius;
-
-
+            body = new Body();
+            skin = new CollisionSkin(body);
+            skin.ExternalData = gameObject;
+            body.CollisionSkin = skin;
+            body.Immovable = true;
             Matrix dummyWorld = world;
 
 
             dummyWorld.Translation += skinTranslation;
 
-            Sphere sphere = new Sphere(dummyWorld.Translation, radius);
+            Sphere sphere = new Sphere(Vector3.Zero, radius);
 
             Skin.AddPrimitive(sphere, material);
+            body.MoveTo(dummyWorld.Translation, dummyWorld);
+            body.EnableBody();
             Enable();
         }
         /****************************************************************************/

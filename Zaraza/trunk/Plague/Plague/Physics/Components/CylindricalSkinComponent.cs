@@ -77,22 +77,29 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Translation += skinTranslation;
 
 
-            Capsule middle = new Capsule(dummyWorld.Translation, Matrix.Identity, radius, length - 2.0f * radius);
-
             float sideLength = 2.0f * radius / (float)Math.Sqrt(2.0d);
 
             Vector3 sides = new Vector3(-0.5f * sideLength, -0.5f * sideLength, -radius);
 
-            Box supply0 = new Box(dummyWorld.Translation+sides, Matrix.Identity, new Vector3(sideLength, sideLength, length));
+            Box supply0 = new Box(dummyWorld.Translation + sides, dummyWorld, new Vector3(sideLength, sideLength, length));
 
             Box supply1 = new Box(dummyWorld.Translation + Vector3.Transform(sides, Matrix.CreateRotationZ(MathHelper.PiOver4)),
-                Matrix.CreateRotationZ(MathHelper.PiOver4), new Vector3(sideLength, sideLength, length));
+                Matrix.CreateRotationZ(MathHelper.PiOver4)*dummyWorld, new Vector3(sideLength, sideLength, length));
+
+            Box supply2 = new Box(dummyWorld.Translation +Vector3.Transform(sides, Matrix.CreateRotationZ(MathHelper.PiOver4/2)),
+              Matrix.CreateRotationZ(MathHelper.PiOver4/2)* dummyWorld , new Vector3(sideLength, sideLength, length));
 
 
-            Skin.AddPrimitive(middle, material);
+            Box supply3 = new Box(dummyWorld.Translation + Vector3.Transform(sides, Matrix.CreateRotationZ(-MathHelper.PiOver4 / 2)),
+            Matrix.CreateRotationZ(-MathHelper.PiOver4 / 2)* dummyWorld, new Vector3(sideLength, sideLength, length));
+
+
+            Skin.AddPrimitive(supply3, material);
+            Skin.AddPrimitive(supply2, material);
             Skin.AddPrimitive(supply0, material);
             Skin.AddPrimitive(supply1, material);
 
+         
             Enable();
 
 
