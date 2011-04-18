@@ -415,9 +415,9 @@ namespace PlagueEngine.LowLevelGameFlow
             tdata.Lenght,
             tdata.Radius,
             tdata.Translation,
-            tdata.Yaw,
-            tdata.Pitch,
-            tdata.Roll),
+            tdata.SkinYaw,
+            tdata.SkinPitch,
+            tdata.SkinRoll),
                         tdata.World);
 
             return result;
@@ -454,9 +454,9 @@ namespace PlagueEngine.LowLevelGameFlow
             tdata.Height,
             tdata.Width,
             tdata.Translation,
-            tdata.Yaw,
-            tdata.Pitch,
-            tdata.Roll),
+            tdata.SkinYaw,
+            tdata.SkinPitch,
+            tdata.SkinRoll),
                         tdata.World);
 
             return result;
@@ -489,9 +489,9 @@ namespace PlagueEngine.LowLevelGameFlow
             tdata.World,
             tdata.Radius,
             tdata.Translation,
-            tdata.Yaw,
-            tdata.Pitch,
-            tdata.Roll),
+            tdata.SkinYaw,
+            tdata.SkinPitch,
+            tdata.SkinRoll),
                         tdata.World);
 
             return result;

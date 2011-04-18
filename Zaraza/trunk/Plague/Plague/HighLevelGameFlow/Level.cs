@@ -104,29 +104,29 @@ namespace PlagueEngine.HighLevelGameFlow
 
 
 
-            //CylindricalSkinMeshData cbdata = new CylindricalSkinMeshData();
-            //cbdata.Type = (typeof(CylindricalSkinMesh));
-            //cbdata.Model = "Barrel";
-            //cbdata.Diffuse = "Barrel_diffuse";
-            //cbdata.Specular = "Barrel_specular";
-            //cbdata.Normals = "Barrel_normals";
-            //cbdata.DynamicRoughness = 0.7f;
-            //cbdata.Elasticity = 0.1f;
-            //cbdata.StaticRoughness = 0.6f;
-            //cbdata.Radius = 1.1f;
-            //cbdata.Lenght = 3.3f;
-            
+            SphericalSkinMeshData cbdata = new SphericalSkinMeshData();
+            cbdata.Type = (typeof(SphericalSkinMesh));
+            cbdata.Model = "Barrel";
+            cbdata.Diffuse = "Barrel_diffuse";
+            cbdata.Specular = "Barrel_specular";
+            cbdata.Normals = "Barrel_normals";
+            cbdata.DynamicRoughness = 0.7f;
+            cbdata.Elasticity = 0.1f;
+            cbdata.StaticRoughness = 0.6f;
+            cbdata.Radius = 1.1f;
 
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    for (int j = 0; j < 5; j++)
-            //    {
-            //        cbdata.World = Matrix.CreateTranslation(190 + i * 5.5f, 60, 30 + j * 4.5f);
-                 
-            //        gameObjectsFactory.Create(cbdata);
 
-            //    }
-            //}
+            cbdata.Translation = new Vector3(0, 5, 0);
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    cbdata.World = Matrix.CreateTranslation(190 + i * 5.5f, 60, 30 + j * 4.5f);
+
+                    gameObjectsFactory.Create(cbdata);
+
+                }
+            }
 
 
 
