@@ -164,7 +164,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         objectController.EnableConstraint();
                         damperController.EnableConstraint();
 
-                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)skin.ExternalData));
+                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
                     }
 
 

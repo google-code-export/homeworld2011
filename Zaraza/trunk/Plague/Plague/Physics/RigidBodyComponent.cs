@@ -40,7 +40,8 @@ namespace PlagueEngine.Physics
         private float yaw;
         private float pitch;
         private float roll;
-       
+
+        private List<Type> gameObjectTypes = new List<Type>();
         /****************************************************************************/
 
 
@@ -57,19 +58,67 @@ namespace PlagueEngine.Physics
             body = new Body();            
             skin = new CollisionSkin(body);
             body.CollisionSkin = skin;
-            skin.ExternalData = gameObject.ID;
+            skin.ExternalData = gameObject;
             this.material = material;
             this.translation = translation;
             body.Immovable = immovable;
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
-         
+
 
             physicsManager.rigidBodies.Add(gameObject.ID, this);
+            skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Handle Collision Detection
+        /****************************************************************************/
+        private bool HandleCollisionDetection(CollisionSkin owner, CollisionSkin collidee)
+        {
+            
+            if( gameObjectTypes.Contains( collidee.ExternalData.GetType() ) )
+            {
+
+
+                ((GameObjectInstance)(owner.ExternalData)).SendEvent(
+                    new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                    EventsSystem.Priority.Normal, 
+                    (GameObjectInstance)(skin.ExternalData));
+               
+            }
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Subscribe Collision Event
+        /****************************************************************************/
+        public void SubscribeCollisionEvent(params Type[] gameObjectTypes)
+        {
+            this.gameObjectTypes.AddRange(gameObjectTypes);
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Cancel Subscribe Collision Event
+        /****************************************************************************/
+        public void CancelSubscribeCollisionEvent(params Type[] gameObjectTypes)
+        {
+            foreach (Type gameObjectType in gameObjectTypes)
+            {
+                this.gameObjectTypes.Remove(gameObjectType);
+            }
+        }
+        /****************************************************************************/
 
 
 
@@ -96,8 +145,6 @@ namespace PlagueEngine.Physics
             gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
             gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
             gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
-            
-
 
             gameObject.World.Translation=body.Position - translation;
     

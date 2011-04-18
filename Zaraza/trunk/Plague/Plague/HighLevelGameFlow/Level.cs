@@ -117,18 +117,19 @@ namespace PlagueEngine.HighLevelGameFlow
             cbdata.Radius = 1.1f;
             cbdata.Lenght = 3.3f;
             cbdata.Immovable = false;
-           
+            
 
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 5; j++)
                 {
                     cbdata.World = Matrix.CreateTranslation(190 + i * 5.5f, 60, 30 + j * 4.5f);
+                 
                     gameObjectsFactory.Create(cbdata);
 
                 }
             }
-
+            
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
             //lcdata.position = new Vector3(-200, 300, -200);
