@@ -12,7 +12,7 @@ using JigLibX.Collision;
 using JigLibX.Physics;
 using JigLibX.Math;
 using PlagueEngine.LowLevelGameFlow;
-
+using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 /****************************************************************************/
 /// PlagueEngine.Physics.Components
@@ -86,8 +86,9 @@ namespace PlagueEngine.Physics.Components
             Body.SetBodyInertia(Ixx, Iyy, Izz);
             /***************************************/
 
-            Diagnostics.PushLog("PRZED 1:" +world.ToString());
+           
             Matrix dummyWorld = world;
+          
 
             
 
@@ -110,12 +111,25 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Translation += skinTranslation;
             
             MoveTo(dummyWorld);
-            Enable();            
+            Enable();
+
+
+            SubscribeCollisionEvent(typeof(CylindricalBodyMesh));
         }
         /****************************************************************************/
 
 
 
+        /****************************************************************************/
+        /// On Event
+        /****************************************************************************/
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {
+            
+                Diagnostics.PushLog(e.ToString());
+           
+        }
+        /****************************************************************************/
 
 
         /****************************************************************************/

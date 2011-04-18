@@ -11,7 +11,7 @@ using JigLibX.Collision;
 using JigLibX.Physics;
 using JigLibX.Math;
 using PlagueEngine.LowLevelGameFlow;
-
+using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 
 
@@ -24,7 +24,7 @@ namespace PlagueEngine.Physics.Components
     /****************************************************************************/
     /// SphericalBodyComponent
     /****************************************************************************/
-    class SphericalBodyComponent:RigidBodyComponent
+    class SphericalBodyComponent : RigidBodyComponent
     {
 
 
@@ -77,12 +77,25 @@ namespace PlagueEngine.Physics.Components
             MoveTo(dummyWorld);
             Skin.ApplyLocalTransform(new Transform(-com, Matrix.Identity));
             Enable();
+
+
+            
     }
         /****************************************************************************/
 
 
 
-
+        /****************************************************************************/
+        /// On Event
+        /****************************************************************************/
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {
+            if (e.GetType().Equals(typeof(Physics.CollisionEvent)))
+            {
+                Diagnostics.PushLog(e.ToString());
+            }
+        }
+        /****************************************************************************/
 
 
 

@@ -28,7 +28,7 @@ namespace PlagueEngine.Physics
         {
             skin = new CollisionSkin();
             this.material = material;           
-            skin.ExternalData = gameObject.ID;
+            skin.ExternalData = gameObject;
             physicsManager.collisionSkins.Add(gameObject.ID,this);
         }
 
