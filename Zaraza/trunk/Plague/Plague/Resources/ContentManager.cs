@@ -62,13 +62,16 @@ namespace PlagueEngine.Resources
             //LoadGameObjectsDefinitions();
 
             GameObjectDefinition god = new GameObjectDefinition();
-            god.Name = "Rusty Barrel";
+            god.Name            = "Rusty Barrel";
             god.GameObjectClass = "StaticMesh";
-            god.Properties.Add("Model", "Barrel");
-            god.Properties.Add("Diffuse", "Barrel_diffuse");
+            
+            god.Properties.Add("Model",    "Barrel");
+            god.Properties.Add("Diffuse",  "Barrel_diffuse");
             god.Properties.Add("Specular", "Barrel_specular");
-            god.Properties.Add("Normals", "Barrel_normals");
+            god.Properties.Add("Normals",  "Barrel_normals");
+            
             god.Properties.Add("InstancingMode", Renderer.InstancingModeToUInt(InstancingModes.DynamicInstancing));
+            
             gameObjectsDefinitions.Add(god.Name, god);
 
             SaveGameObjectsDefinitions();
@@ -119,6 +122,7 @@ namespace PlagueEngine.Resources
         public PlagueEngineModel LoadModel(string modelName)
         {
             PlagueEngineModel result = Load<PlagueEngineModel>(models + '\\' + modelName);
+            result.Name = modelName;
             return result;
         }
         /****************************************************************************/
