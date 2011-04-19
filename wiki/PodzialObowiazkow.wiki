@@ -99,30 +99,30 @@ Tabela ma prostą strukturę:
 <tr><th colspan="5"><font color="red">*FIZYKA*</font></th></tr>
 <tr>
 <td> - </td>
-<td> *Bryły kolizyjne*  </td>
+<td> -  </td>
 <td> Andrzej </td>
-<td> - </td>
+<td> *Bryły kolizyjne* </td>
 <td> - </td>
 </tr>
 <tr>
 <td> - </td>
+<td> - </td>
+<td> Andrzej </td>
 <td> *Fizyka ciał sztywnych* </td>
-<td> Andrzej </td>
-<td> - </td>
 <td> - </td>
 </tr>
 <tr>
 <td> - </td>
-<td>  </td>
+<td> - </td>
 <td> Andrzej/Krzysztof </td>
 <td> *Teren* </td>
 <td> - </td>
 </tr>
 <tr>
-<td>*Reakcja na kolizje (delegaty)* </td>
 <td> - </td>
 <td> - </td>
-<td> - </td>
+<td> Andrzej </td>
+<td> *Reakcja na kolizje (delegaty)* </td>
 <td> - </td>
 </tr>
 <tr>
@@ -134,9 +134,9 @@ Tabela ma prostą strukturę:
 </tr>
 <tr>
 <td> - </td>
-<td> *Testowanie obszarów* </td>
-<td> Andrzej </td>
 <td> - </td>
+<td> Andrzej </td>
+<td> *Testowanie obszarów* </td>
 <td> - </td>
 </tr>
 <tr>
