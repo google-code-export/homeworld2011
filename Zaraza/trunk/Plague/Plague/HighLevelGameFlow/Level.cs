@@ -156,7 +156,7 @@ namespace PlagueEngine.HighLevelGameFlow
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
             fcdata.FoV = 60;
             fcdata.ZNear = 0.1f;
-            fcdata.ZFar = 250;
+            fcdata.ZFar = 11250;
             fcdata.ActiveKeyListener = true;
             fcdata.ActiveMouseListener = true;
             gameObjectsFactory.Create(fcdata);

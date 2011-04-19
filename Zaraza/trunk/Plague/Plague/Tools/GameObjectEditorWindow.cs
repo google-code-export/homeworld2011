@@ -163,6 +163,7 @@ namespace PlagueEngine.Tools
             loadLevelNames();
             LoadAllObjectsId();
             LoadFilters();
+            checkBoxShowCollisionSkin.Checked = renderer.debugDrawer.IsEnabled;
         }
         /********************************************************************************/
 

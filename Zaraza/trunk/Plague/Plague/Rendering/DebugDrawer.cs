@@ -104,8 +104,9 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
-        public void Draw(Matrix view,Matrix projection)
+        public void Draw(Matrix view, Matrix projection)
         {
+            if (!enabled) return;
 
             basicEffect = new BasicEffect(renderer.Device);
 
@@ -150,14 +151,14 @@ namespace PlagueEngine.Rendering
             }
 
 
-            if (!enabled) return;
 
 
-
-            foreach (CollisionSkinComponent skin in physicsManager.collisionSkins.Values)
+            if (!selectiveDrawing)
             {
+                foreach (CollisionSkinComponent skin in physicsManager.collisionSkins.Values)
+                {
 
-                if ((skin.GetType().Equals(typeof(Physics.Components.TerrainSkinComponent)) && drawHeightmapSkin) || (!skin.GetType().Equals(typeof(Physics.Components.TerrainSkinComponent))))
+                    if ((skin.GetType().Equals(typeof(Physics.Components.TerrainSkinComponent)) && drawHeightmapSkin) || (!skin.GetType().Equals(typeof(Physics.Components.TerrainSkinComponent))))
                     {
                         AddShape(BodyRenderExtensions.GetLocalSkinWireframe(skin.Skin));
                         Matrix skinWorld = skin.Skin.NewOrient;
@@ -170,13 +171,13 @@ namespace PlagueEngine.Rendering
                                                                                 vertexData.Count - 1);
                         vertexData.Clear();
                     }
-                
-            }
+
+                }
 
 
-            foreach (RigidBodyComponent body in physicsManager.rigidBodies.Values)
-            {
-               
+                foreach (RigidBodyComponent body in physicsManager.rigidBodies.Values)
+                {
+
                     AddShape(BodyRenderExtensions.GetLocalSkinWireframe(body.Skin));
                     Matrix skinWorld = body.Body.Orientation;
                     skinWorld.Translation = body.Body.Position;
@@ -187,9 +188,10 @@ namespace PlagueEngine.Rendering
                                                                             0,
                                                                             vertexData.Count - 1);
                     vertexData.Clear();
-                
-            }
 
+                }
+
+            }
         }
         /****************************************************************************/
 
@@ -225,6 +227,18 @@ namespace PlagueEngine.Rendering
             enabled = false;
         }
         /****************************************************************************/
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public bool IsEnabled
+        {
+            get { return enabled; }
+        }
+        /****************************************************************************/
+
+
+
         
     }
     /********************************************************************************/
