@@ -10,7 +10,10 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Rendering;
 using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
+using PlagueEngine.Input.Components;
+using PlagueEngine.Input;
 
+using Microsoft.Xna.Framework.Input;
 
 /********************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -29,6 +32,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         MeshComponent meshComponent = null;
         CylindricalBodyComponent physicsComponent = null;
+
+        PhysicsController controller = null;
+        KeyboardListenerComponent keyboardListener= null;
         /********************************************************************************/
 
 
@@ -42,11 +48,37 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.meshComponent = meshComponent;
             this.physicsComponent = physcisComponent;
             this.World = world;
-
-
+            controller = new PhysicsController(physcisComponent.Body);
+            keyboardListener = new KeyboardListenerComponent(this, true);
+            keyboardListener.SubscibeKeys(OnKey, Keys.Y, Keys.H);
             physcisComponent.SubscribeCollisionEvent(typeof(CylindricalBodyMesh));
+            physcisComponent.DontCollideWithGameObjectsType(typeof(CylindricalBodyMesh));
         }
         /********************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// On Key
+        /****************************************************************************/
+        private void OnKey(Keys key, ExtendedKeyState state)
+        {
+            if (state.WasPressed())
+            {
+                switch (key)
+                {
+                    case Keys.Y:
+                        controller.MoveToPoint( Vector3.Up*100, true);
+                        break;
+                    case Keys.H:
+
+                        controller.MoveToPoint(World.Translation - Vector3.Forward, true);
+                        break;
+                }
+            }
+        }
+        /****************************************************************************/
 
 
 
