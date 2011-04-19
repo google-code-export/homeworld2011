@@ -38,7 +38,7 @@ namespace PlagueEngine.Rendering
         private  Vector3                     ambient                = new Vector3(0.05f, 0.05f, 0.05f);
         private  Vector3                     fogColor               = new Vector3(0.0f, 0.0f, 0.0f);
         private  Vector2                     fogRange               = new Vector2(50, 200);
-        private  bool                        fogEnabled             = false;      
+        private  bool                        fogEnabled             = true;      
         
         internal BatchedMeshes               batchedMeshes          = null;
         internal BatchedSkinnedMeshes        batchedSkinnedMeshes   = null;
@@ -264,7 +264,9 @@ namespace PlagueEngine.Rendering
 
             batchedSkinnedMeshes.Draw(time);
 
-            if (debugDrawer != null) debugDrawer.Draw(currentCamera.View,currentCamera.Projection);
+
+
+            //if (debugDrawer != null) debugDrawer.Draw(currentCamera.View,currentCamera.Projection);
         }
         /****************************************************************************/
 

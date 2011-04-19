@@ -133,7 +133,8 @@ namespace PlagueEngine.Rendering
                 }
                 else if (physicsManager.collisionSkins.ContainsKey(gameObjectID))
                 {
-                    if ((physicsManager.collisionSkins[gameObjectID].GetType().Equals(typeof(Physics.Components.TerrainSkinComponent)) && drawHeightmapSkin) || (!physicsManager.collisionSkins[gameObjectID].GetType().Equals(typeof(Physics.Components.TerrainSkinComponent))))
+                    if (( physicsManager.collisionSkins[gameObjectID].GetType().Equals(typeof(Physics.Components.TerrainSkinComponent)) && drawHeightmapSkin) || 
+                        (!physicsManager.collisionSkins[gameObjectID].GetType().Equals(typeof(Physics.Components.TerrainSkinComponent))))
                     {
                         CollisionSkinComponent csc = physicsManager.collisionSkins[gameObjectID];
                         AddShape(BodyRenderExtensions.GetLocalSkinWireframe(csc.Skin));

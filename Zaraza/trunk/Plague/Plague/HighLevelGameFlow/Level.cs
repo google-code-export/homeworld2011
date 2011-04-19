@@ -100,12 +100,6 @@ namespace PlagueEngine.HighLevelGameFlow
         public void PutSomeObjects()
         {
 
-
-
-
-
-
-
             CylindricalBodyMeshData dddtata = new CylindricalBodyMeshData();
             dddtata.Type = (typeof(CylindricalBodyMesh));
             dddtata.Model = "Barrel";
