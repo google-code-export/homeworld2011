@@ -32,6 +32,7 @@ namespace PlagueEngine.Physics
         private Vector3 localTorque = Vector3.Zero;
 
         private ConstraintWorldPoint constraintPoint = new ConstraintWorldPoint();
+        private ConstraintVelocity constraintVelocity = new ConstraintVelocity();
         /****************************************************************************/
 
 
@@ -58,6 +59,51 @@ namespace PlagueEngine.Physics
         {
             DisableController();
             physicsManager.controllers.Remove(this);
+        }
+        /****************************************************************************/
+
+
+
+
+
+        /****************************************************************************/
+        /// Set Veolicty
+        /****************************************************************************/
+        public void SetVelocity(Vector3 velocity,Vector3 angularVelocty,bool local)
+        {
+            if (!constraintVelocity.IsConstraintEnabled)
+            {
+                constraintVelocity.DisableConstraint();
+                constraintVelocity.Destroy();
+                if (local)
+                {
+                    constraintVelocity.Initialise(body, ConstraintVelocity.ReferenceFrame.Body, velocity, angularVelocty);
+
+                }
+                else
+                {
+                    constraintVelocity.Initialise(body, ConstraintVelocity.ReferenceFrame.World, velocity, angularVelocty);
+
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+
+
+
+
+
+        /****************************************************************************/
+        /// Disable Veolicty
+        /****************************************************************************/
+        public void DisableVelocity()
+        {
+            body.RemoveConstraint(constraintVelocity);
+            constraintVelocity.DisableConstraint();
+            constraintVelocity.Destroy();
+
         }
         /****************************************************************************/
 
@@ -104,9 +150,9 @@ namespace PlagueEngine.Physics
 
 
         /****************************************************************************/
-        /// AddWorldForce
+        /// SetWorldForce
         /****************************************************************************/
-        public void AddWorldForce(Vector3 force)
+        public void SetWorldForce(Vector3 force)
         {
             this.worldForce = force;
         }
@@ -128,9 +174,9 @@ namespace PlagueEngine.Physics
 
 
         /****************************************************************************/
-        /// AddWorldTorque
+        /// SetWorldTorque
         /****************************************************************************/
-        public void AddWorldTorque(Vector3 torque)
+        public void SetWorldTorque(Vector3 torque)
         {
             this.worldTorque = torque;
         }
@@ -153,9 +199,9 @@ namespace PlagueEngine.Physics
 
 
         /****************************************************************************/
-        /// AddLocalForce
+        /// SetLocalForce
         /****************************************************************************/
-        public void AddLocalForce(Vector3 force)
+        public void SetLocalForce(Vector3 force)
         {
             this.localForce = force;
         }
@@ -177,9 +223,9 @@ namespace PlagueEngine.Physics
 
 
         /****************************************************************************/
-        /// AddLocalTorque
+        /// SetLocalTorque
         /****************************************************************************/
-        public void AddLocalTorque(Vector3 torque)
+        public void SetLocalTorque(Vector3 torque)
         {
             this.localTorque = torque;
         }

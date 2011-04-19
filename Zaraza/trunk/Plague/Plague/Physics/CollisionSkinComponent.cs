@@ -33,7 +33,7 @@ namespace PlagueEngine.Physics
         private float yaw;
         private float pitch;
         private float roll;
-        private List<Type> gameObjectTypes = new List<Type>();
+        private List<Type> subscribedGameObjectTypesEvents = new List<Type>();
         /****************************************************************************/
 
 
@@ -63,7 +63,7 @@ namespace PlagueEngine.Physics
         private bool HandleCollisionDetection(CollisionSkin owner, CollisionSkin collidee)
         {
 
-            if (gameObjectTypes.Contains(collidee.ExternalData.GetType()))
+            if (subscribedGameObjectTypesEvents.Contains(collidee.ExternalData.GetType()))
             {
 
 
@@ -85,7 +85,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SubscribeCollisionEvent(params Type[] gameObjectTypes)
         {
-            this.gameObjectTypes.AddRange(gameObjectTypes);
+            this.subscribedGameObjectTypesEvents.AddRange(gameObjectTypes);
         }
         /****************************************************************************/
 
@@ -99,7 +99,7 @@ namespace PlagueEngine.Physics
         {
             foreach (Type gameObjectType in gameObjectTypes)
             {
-                this.gameObjectTypes.Remove(gameObjectType);
+                this.subscribedGameObjectTypesEvents.Remove(gameObjectType);
             }
         }
         /****************************************************************************/

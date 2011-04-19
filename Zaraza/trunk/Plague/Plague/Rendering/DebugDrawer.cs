@@ -132,17 +132,20 @@ namespace PlagueEngine.Rendering
                 }
                 else if (physicsManager.collisionSkins.ContainsKey(gameObjectID))
                 {
-                    CollisionSkinComponent csc = physicsManager.collisionSkins[gameObjectID];
-                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(csc.Skin));
-                    Matrix skinWorld = csc.Skin.NewOrient;
-                    skinWorld.Translation = csc.Skin.NewPosition;
-                    basicEffect.World = skinWorld;
-                    basicEffect.CurrentTechnique.Passes[0].Apply();
-                    renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
-                                                                            vertexData.ToArray(),
-                                                                            0,
-                                                                            vertexData.Count - 1);
-                    vertexData.Clear();
+                    if ((physicsManager.collisionSkins[gameObjectID].GetType().Equals(typeof(Physics.Components.TerrainSkinComponent)) && drawHeightmapSkin) || (!physicsManager.collisionSkins[gameObjectID].GetType().Equals(typeof(Physics.Components.TerrainSkinComponent))))
+                    {
+                        CollisionSkinComponent csc = physicsManager.collisionSkins[gameObjectID];
+                        AddShape(BodyRenderExtensions.GetLocalSkinWireframe(csc.Skin));
+                        Matrix skinWorld = csc.Skin.NewOrient;
+                        skinWorld.Translation = csc.Skin.NewPosition;
+                        basicEffect.World = skinWorld;
+                        basicEffect.CurrentTechnique.Passes[0].Apply();
+                        renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
+                                                                                vertexData.ToArray(),
+                                                                                0,
+                                                                                vertexData.Count - 1);
+                        vertexData.Clear();
+                    }
                 }
             }
 

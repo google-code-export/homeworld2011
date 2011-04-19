@@ -41,7 +41,9 @@ namespace PlagueEngine.Physics
         private float pitch;
         private float roll;
 
-        private List<Type> gameObjectTypes = new List<Type>();
+        private List<Type> subscribedGameObjectTypesEvents = new List<Type>();
+        private List<Type> gameObjectsTypeToColide = new List<Type>();
+        private List<Type> gameObjectsTypeToNotColide = new List<Type>();
         /****************************************************************************/
 
 
@@ -78,8 +80,8 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         private bool HandleCollisionDetection(CollisionSkin owner, CollisionSkin collidee)
         {
-            
-            if( gameObjectTypes.Contains( collidee.ExternalData.GetType() ) )
+
+            if (subscribedGameObjectTypesEvents.Contains(collidee.ExternalData.GetType()))
             {
 
 
@@ -90,7 +92,72 @@ namespace PlagueEngine.Physics
                
             }
 
-            return true;
+
+
+            if (gameObjectsTypeToNotColide.Contains(collidee.ExternalData.GetType()))
+            {
+                return false;
+            }
+
+            if (gameObjectsTypeToColide.Count == 0) return true;
+
+            if (gameObjectsTypeToColide.Contains(collidee.ExternalData.GetType()))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// CollideWithGameObjectsType
+        /****************************************************************************/
+        public void CollideWithGameObjectsType(params Type[] gameObjectTypes)
+        {
+            this.gameObjectsTypeToColide.AddRange(gameObjectTypes);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CancelCollisionWithGameObjectsType
+        /****************************************************************************/
+        public void CancelCollisionWithGameObjectsType(params Type[] gameObjectTypes)
+        {
+            foreach (Type gameObjectType in gameObjectTypes)
+            {
+                this.gameObjectsTypeToColide.Remove(gameObjectType);
+            }
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// DontCollideWithGameObjectsType
+        /****************************************************************************/
+        public void DontCollideWithGameObjectsType(params Type[] gameObjectTypes)
+        {
+            this.gameObjectsTypeToNotColide.AddRange(gameObjectTypes);
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// CancelNoCollisionWithGameObjectsType
+        /****************************************************************************/
+        public void CancelNoCollisionWithGameObjectsType(params Type[] gameObjectTypes)
+        {
+            foreach (Type gameObjectType in gameObjectTypes)
+            {
+                this.gameObjectsTypeToNotColide.Remove(gameObjectType);
+            }
         }
         /****************************************************************************/
 
@@ -101,7 +168,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SubscribeCollisionEvent(params Type[] gameObjectTypes)
         {
-            this.gameObjectTypes.AddRange(gameObjectTypes);
+            this.subscribedGameObjectTypesEvents.AddRange(gameObjectTypes);
         }
         /****************************************************************************/
 
@@ -115,7 +182,7 @@ namespace PlagueEngine.Physics
         {
             foreach (Type gameObjectType in gameObjectTypes)
             {
-                this.gameObjectTypes.Remove(gameObjectType);
+                this.subscribedGameObjectTypesEvents.Remove(gameObjectType);
             }
         }
         /****************************************************************************/
