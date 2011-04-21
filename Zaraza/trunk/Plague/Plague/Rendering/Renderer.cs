@@ -266,7 +266,7 @@ namespace PlagueEngine.Rendering
 
 
 
-            //if (debugDrawer != null) debugDrawer.Draw(currentCamera.View,currentCamera.Projection);
+            if (debugDrawer != null) debugDrawer.Draw(currentCamera.View,currentCamera.Projection);
         }
         /****************************************************************************/
 

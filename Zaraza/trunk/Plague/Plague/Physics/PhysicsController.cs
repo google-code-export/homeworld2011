@@ -71,21 +71,25 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SetVelocity(Vector3 velocity,Vector3 angularVelocty,bool local)
         {
-            if (!constraintVelocity.IsConstraintEnabled)
+            if (constraintVelocity.IsConstraintEnabled)
             {
                 constraintVelocity.DisableConstraint();
                 constraintVelocity.Destroy();
+            }
+
+
                 if (local)
                 {
                     constraintVelocity.Initialise(body, ConstraintVelocity.ReferenceFrame.Body, velocity, angularVelocty);
+                    constraintVelocity.EnableConstraint();
 
                 }
                 else
                 {
                     constraintVelocity.Initialise(body, ConstraintVelocity.ReferenceFrame.World, velocity, angularVelocty);
-
+                    constraintVelocity.EnableConstraint();
                 }
-            }
+            
         }
         /****************************************************************************/
 
@@ -124,10 +128,12 @@ namespace PlagueEngine.Physics
             if (localPoint)
             {
                 constraintPoint.Initialise(body, Vector3.Zero, pointPosition + body.Position);
+                constraintPoint.EnableConstraint();
             }
             else
             {
                 constraintPoint.Initialise(body, Vector3.Zero, pointPosition);
+                constraintPoint.EnableConstraint();
             }
 
         }
