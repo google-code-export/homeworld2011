@@ -141,9 +141,9 @@ Tabela ma prostą strukturę:
 </tr>
 <tr>
 <td> - </td>
-<td> *Kontrolery dodatkowe* </td>
-<td> Andrzej </td>
 <td> - </td>
+<td> Andrzej </td>
+<td> *Kontrolery dodatkowe* </td>
 <td> - </td>
 </tr>
 <tr>
