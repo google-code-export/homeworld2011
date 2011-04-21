@@ -22,16 +22,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// CylindricalBodyMesh
+    /// MovingBarrel
     /********************************************************************************/
-    class CylindricalBodyMesh : GameObjectInstance
+    class MovingBarrel : GameObjectInstance
     {
 
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
         MeshComponent meshComponent = null;
-        CylindricalBodyComponent physicsComponent = null;
+        SquareBodyComponent physicsComponent = null;
+
+        PhysicsController controller = null;
+        KeyboardListenerComponent keyboardListener = null;
+
+        bool forward = false;
+        bool backward = false;
         /********************************************************************************/
 
 
@@ -40,17 +46,51 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(MeshComponent meshComponent, CylindricalBodyComponent physcisComponent, Matrix world)
+        public void Init(MeshComponent meshComponent, SquareBodyComponent physcisComponent, Matrix world)
         {
             this.meshComponent = meshComponent;
             this.physicsComponent = physcisComponent;
             this.World = world;
-
+            keyboardListener = new KeyboardListenerComponent(this, true);
+            keyboardListener.SubscibeKeys(OnKey, Keys.Y, Keys.H);
+            controller = new PhysicsController(physcisComponent.Body);
         }
         /********************************************************************************/
 
 
+        public void OnKey(Keys key, ExtendedKeyState state)
+        {
+            if (key == Keys.Y && state.IsDown())
+            {
+                forward = true;
+                controller.MoveToPoint(Vector3.Forward+Vector3.Down, true);
+            }
+            else if(key==Keys.Y && state.IsUp())
+            {
+                forward = false;
+                
+            }
 
+
+            if (key == Keys.H && state.IsDown())
+            {
+                backward = true;
+                controller.MoveToPoint(Vector3.Backward + Vector3.Down, true);
+            }
+            else if (key == Keys.H && state.IsUp())
+            {
+                backward = false;
+            }
+
+
+            if (!backward && !forward)
+            {
+                //controller.DisableMoveToPoint();
+
+                //controller.SetVelocity(Vector3.Zero, Vector3.Zero, true);
+            }
+
+        }
 
 
 
@@ -73,7 +113,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            CylindricalBodyMeshData data = new CylindricalBodyMeshData();
+            MovingBarrelData data = new MovingBarrelData();
             GetData(data);
             data.Model = meshComponent.Model.Name;
             data.Diffuse = (meshComponent.Textures.Diffuse == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
@@ -87,7 +127,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.StaticRoughness = physicsComponent.StaticRoughness;
             data.DynamicRoughness = physicsComponent.DynamicRoughness;
             data.Lenght = physicsComponent.Length;
-            data.Radius = physicsComponent.Radius;
+            data.Height = physicsComponent.Height;
+            data.Width = physicsComponent.Width;
             data.Immovable = physicsComponent.Immovable;
             data.Translation = physicsComponent.SkinTranslation;
             data.SkinPitch = physicsComponent.Pitch;
@@ -108,7 +149,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// CylindricalBodyMeshData
     /********************************************************************************/
     [Serializable]
-    public class CylindricalBodyMeshData : GameObjectInstanceData
+    public class MovingBarrelData : GameObjectInstanceData
     {
         [CategoryAttribute("Model")]
         public String Model { get; set; }
@@ -142,10 +183,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool Immovable { get; set; }
 
         [CategoryAttribute("Collision Skin")]
-        public float Radius { get; set; }
+        public float Height { get; set; }
 
         [CategoryAttribute("Collision Skin")]
         public float Lenght { get; set; }
+
+
+        [CategoryAttribute("Collision Skin")]
+        public float Width { get; set; }
+
 
         [CategoryAttribute("Collision Skin")]
         public Vector3 Translation { get; set; }

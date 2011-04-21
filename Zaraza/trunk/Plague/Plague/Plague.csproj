@@ -181,6 +181,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FreeCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\MovingBarrel.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareBodyMesh.cs" />

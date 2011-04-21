@@ -100,32 +100,27 @@ namespace PlagueEngine.HighLevelGameFlow
         public void PutSomeObjects()
         {
 
-            CylindricalBodyMeshData dddtata = new CylindricalBodyMeshData();
-            dddtata.Type = (typeof(CylindricalBodyMesh));
+            MovingBarrelData dddtata = new MovingBarrelData();
+            dddtata.Type = (typeof(MovingBarrel));
             dddtata.Model = "Barrel";
             dddtata.Diffuse = "Barrel_diffuse";
             dddtata.Specular = "Barrel_specular";
             dddtata.Normals = "Barrel_normals";
-            dddtata.DynamicRoughness = 0.7f;
+            dddtata.DynamicRoughness = 0.5f;
             dddtata.Elasticity = 0.1f;
-            dddtata.StaticRoughness = 0.6f;
-            dddtata.Radius = 1.1f;
+            dddtata.StaticRoughness = 0.5f;
+            dddtata.Height = 3.3f;
             dddtata.Lenght = 3.3f;
+            dddtata.Width = 3.3f;
             dddtata.Immovable = false;
             dddtata.InstancingMode = 3;
             dddtata.Mass = 1;
-
-            for (int i = 0; i < 5; i++)
-            {
-                for (int j = 0; j < 5; j++)
-                {
-                    dddtata.World = Matrix.CreateTranslation(190 + i * 5.5f, 77, 30 + j * 4.5f);
-
+            
+        
+                    dddtata.World = Matrix.CreateTranslation(245 , 54, 35);
+                    dddtata.Pitch = 90;
                     gameObjectsFactory.Create(dddtata);
 
-                }
-            }
-            
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
             //lcdata.position = new Vector3(-200, 300, -200);
@@ -143,8 +138,8 @@ namespace PlagueEngine.HighLevelGameFlow
             
             FreeCameraData fcdata = new FreeCameraData();
             fcdata.Type = typeof(FreeCamera);
-            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(190,  80, 10),
-                                                             new Vector3(  200,   10,   70), 
+            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240,  80, 10),
+                                                             new Vector3(  240,   10,   70), 
                                                              new Vector3(  0,   1,   0)));
             fcdata.MovementSpeed = 0.05f;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;

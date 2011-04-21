@@ -114,6 +114,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "CylindricalSkinMesh":
                     result = CreateCylindricalSkinMesh(data);
                     break;
+                case "MovingBarrel":
+                    result = CreateMovingBarrel(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -124,7 +127,56 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+
+
+        /****************************************************************************/
+        /// Create Cylindrical Body Mesh
+        /****************************************************************************/
+        public MovingBarrel CreateMovingBarrel(GameObjectInstanceData data)
+        {
+            MovingBarrel result = new MovingBarrel();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            MovingBarrelData sbmdata = (MovingBarrelData)data;
+
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       sbmdata.Model,
+                                                                       sbmdata.Diffuse,
+                                                                       sbmdata.Specular,
+                                                                       sbmdata.Normals,
+                                                                       InstancingMode),
+                        physicsComponentFactory.CreateSquareBodyComponent(result,
+                        sbmdata.Mass,
+                        sbmdata.Lenght,
+                        sbmdata.Width,
+                        sbmdata.Width,
+                        sbmdata.Elasticity,
+                        sbmdata.StaticRoughness,
+                        sbmdata.DynamicRoughness,
+                        sbmdata.Immovable,
+                        sbmdata.World,
+                        sbmdata.Translation,
+                        sbmdata.SkinYaw,
+                        sbmdata.SkinPitch,
+                        sbmdata.SkinRoll),
+                        sbmdata.World);
+
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+
+
                 
+
         /****************************************************************************/
         /// Create Cylindrical Body Mesh
         /****************************************************************************/
