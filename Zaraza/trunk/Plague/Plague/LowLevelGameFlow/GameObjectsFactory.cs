@@ -10,6 +10,7 @@ using PlagueEngine.Input;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
+using PlagueEngine.GUI;
 
 
 /************************************************************************************/
@@ -30,6 +31,7 @@ namespace PlagueEngine.LowLevelGameFlow
         private RenderingComponentsFactory               renderingComponentsFactory = null;
         private InputComponentsFactory                   inputComponentsFactory     = null;
         private PhysicsComponentFactory                  physicsComponentFactory    = null;
+        private GUIComponentsFactory                     guiComponentsFactory        = null;
         private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;
         
         private Dictionary<uint, GameObjectInstance>     gameObjects                = null;
@@ -41,11 +43,13 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public GameObjectsFactory(RenderingComponentsFactory               renderingComponentsFactory,
                                   InputComponentsFactory                   inputComponentsFactory,
+                                  GUIComponentsFactory                     guiComponentsFactory,
                                   Dictionary<String, GameObjectDefinition> gameObjectsDefinitions,
                                   PhysicsComponentFactory physicsComponentFactory)
         {
             this.renderingComponentsFactory = renderingComponentsFactory;
             this.inputComponentsFactory     = inputComponentsFactory;
+            this.guiComponentsFactory       = guiComponentsFactory;
             this.gameObjectsDefinitions     = gameObjectsDefinitions;
             this.physicsComponentFactory    = physicsComponentFactory;
         }
@@ -117,6 +121,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "MovingBarrel":
                     result = CreateMovingBarrel(data);
                     break;
+                case "MenuButton":
+                    result = CreateMenuButton(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -126,8 +133,6 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
-
-
 
 
         /****************************************************************************/
@@ -169,13 +174,8 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return result;
         }
-        /****************************************************************************/
+        /****************************************************************************/    
 
-
-
-
-
-                
 
         /****************************************************************************/
         /// Create Cylindrical Body Mesh
@@ -216,8 +216,6 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
-
-
 
 
         /****************************************************************************/
@@ -441,7 +439,6 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
-
         /****************************************************************************/
         /// Create Cylindrical Skin Mesh
         /****************************************************************************/
@@ -475,9 +472,6 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
-
-
-
 
 
         /****************************************************************************/
@@ -516,7 +510,6 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
-
         /****************************************************************************/
         /// Create Spherical Skin Mesh
         /****************************************************************************/
@@ -549,10 +542,6 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
-
-
-
-
 
 
         /****************************************************************************/
@@ -679,7 +668,20 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+        /****************************************************************************/
+        /// Create Menu Button
+        /****************************************************************************/
+        private MenuButton CreateMenuButton(GameObjectInstanceData data)
+        {
+            MenuButton result = new MenuButton();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+            //TODO: uzupełnić logikę, bo pewnie będzie konieczne dodatkowe tworzenie
+            return result;
+        }
+        /****************************************************************************/
         
+
         /****************************************************************************/
         /// Default Object Init
         /****************************************************************************/

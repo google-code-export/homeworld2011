@@ -69,9 +69,8 @@
     <StartupObject>PlagueEngine.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JigLibX, Version=0.3.1.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\JigLibX.dll</HintPath>
+    <Reference Include="JigLibX">
+      <HintPath>..\JigLibX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
@@ -176,6 +175,7 @@
     <Compile Include="LowLevelGameFlow\GameObjectDefinition.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\MenuButton.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\EventArgs.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalSkinMesh.cs" />

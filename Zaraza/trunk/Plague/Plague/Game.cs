@@ -13,7 +13,7 @@ using PlagueEngine.Input;
 using PlagueEngine.Tools;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
-
+using PlagueEngine.GUI;
 
 /************************************************************************************/
 /// PlagueEngine
@@ -31,7 +31,8 @@ namespace PlagueEngine
         /// Fields
         /****************************************************************************/
         private String              title               = String.Empty;
-        
+
+        private GUI.GUI                     gui                = null;
         private Renderer                    renderer           = null;
         private ContentManager              contentManager     = null;
         private Input.Input                 input              = null;
@@ -67,11 +68,13 @@ namespace PlagueEngine
             input          = new Input.Input(this);
 
             InitRenderer();
+            InitGUI();
 
             physicsManager = new PhysicsManager(contentManager);
 
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
-                                                        input.ComponentsFactory,                                        
+                                                        input.ComponentsFactory,
+                                                        gui.ComponentsFactory,
                                                         contentManager.GameObjectsDefinitions,
                                                         physicsManager.physicsComponentFactory);
 
@@ -186,6 +189,7 @@ namespace PlagueEngine
         protected override void Draw(GameTime gameTime)
         {            
             renderer.Draw(gameTime.ElapsedGameTime);
+            gui.Draw(gameTime);
             base.Draw(gameTime);           
         }
         /****************************************************************************/
@@ -240,6 +244,16 @@ namespace PlagueEngine
                 contentManager.SaveConfiguration(defaultRenderConfig);
             }
             renderer = new Renderer(this, renderConfig);
+        }
+        /****************************************************************************/
+
+        /****************************************************************************/
+        /// Init GUI
+        /****************************************************************************/
+        private void InitGUI()
+        {
+            //TODO: metoda szcz¹tkowa, pewnie bêdzie wymagaæ rozszerzenia.
+            gui = new GUI.GUI(this, Services);
         }
         /****************************************************************************/
 

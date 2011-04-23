@@ -24,6 +24,7 @@ namespace PlagueEngine.GUI.Components
         /// Fields
         /****************************************************************************/
         public ButtonControl button {  get; private set; }
+        public static GuiManager manager { get; set; }
         /****************************************************************************/
         
         /****************************************************************************/
