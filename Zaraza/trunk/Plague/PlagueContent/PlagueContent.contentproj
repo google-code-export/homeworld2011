@@ -155,24 +155,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\piggy.FBX">
-      <Name>piggy</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
-      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
-      <ProcessorParameters_AnimationClip1>Run</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1End>29</ProcessorParameters_AnimationClip1End>
-      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
-      <ProcessorParameters_AnimationClip2>Jump</ProcessorParameters_AnimationClip2>
-      <ProcessorParameters_AnimationClip2Start>30</ProcessorParameters_AnimationClip2Start>
-      <ProcessorParameters_AnimationClip2End>40</ProcessorParameters_AnimationClip2End>
-      <ProcessorParameters_AnimationClip3>Idle</ProcessorParameters_AnimationClip3>
-      <ProcessorParameters_AnimationClip3Start>41</ProcessorParameters_AnimationClip3Start>
-      <ProcessorParameters_AnimationClip3End>42</ProcessorParameters_AnimationClip3End>
-      <ProcessorParameters_AnimationClip3Loop>True</ProcessorParameters_AnimationClip3Loop>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Effects\SkinningEffect.fx">
       <Name>SkinningEffect</Name>
       <Importer>EffectImporter</Importer>

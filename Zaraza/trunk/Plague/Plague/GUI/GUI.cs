@@ -20,20 +20,26 @@ namespace PlagueEngine.GUI
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private GuiManager manager = null;
-        private GUIComponentsFactory componentsFactory = null;
+        private GuiManager Manager = null;
+        public GUIComponentsFactory ComponentsFactory = null;
         /****************************************************************************/
         
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public GUI(Game game)
+        public GUI(Game game, GameServiceContainer Services)
         {
             //this.game         = game;
-            componentsFactory = new GUIComponentsFactory(this);
+            ComponentsFactory = new GUIComponentsFactory(this);
+            Manager = new GuiManager(Services);
             
             //GUIComponent.gui = this;
         }
-        /****************************************************************************/           
+        /****************************************************************************/
+
+        internal void Draw(GameTime gameTime)
+        {
+            Manager.Draw(gameTime);
+        }
     }
 }
