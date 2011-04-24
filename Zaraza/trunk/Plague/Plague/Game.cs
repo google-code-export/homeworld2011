@@ -254,6 +254,7 @@ namespace PlagueEngine
         {
             //TODO: metoda szcz¹tkowa, pewnie bêdzie wymagaæ rozszerzenia.
             gui = new GUI.GUI(this, Services);
+            gui.Initialize(GraphicsDevice);
         }
         /****************************************************************************/
 

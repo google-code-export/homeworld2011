@@ -31,16 +31,30 @@ namespace PlagueEngine.GUI.Components
         /// Constructor
         /****************************************************************************/
         
-        public ButtonComponent(String text):base(null)
+        public ButtonComponent():base(null)
         {
             button = new ButtonControl();
-            button.Text = text;
-            button.Bounds = new UniRectangle(new UniScalar(1.0f, -190.0f),
-                                            new UniScalar(1.0f, -32.0f), 100, 32);
-            //screen.Desktop.Children.Add(button);  
+              
         }
         /****************************************************************************/
 
+        /****************************************************************************/
+        /// initialize
+        /****************************************************************************/
+        public bool Initialize(String text)
+        {
+            if (button != null && manager!=null)
+            {
+                button.Text = text;
+                button.Bounds = new UniRectangle(new UniScalar(1.0f, -190.0f),
+                                            new UniScalar(1.0f, -32.0f), 100, 32);
+                manager.Screen.Desktop.Children.Add(this.button);
+                return true;
+            }
+            return false;
+        }
+        /****************************************************************************/
+        
         /****************************************************************************/
         /// setDelegate
         /****************************************************************************/
@@ -49,7 +63,15 @@ namespace PlagueEngine.GUI.Components
             button.Pressed += handler;
         }
         /****************************************************************************/
-
+        
+        /****************************************************************************/
+        /// Release Me 
+        /****************************************************************************/
+        public override void ReleaseMe()
+        {   
+            gui.Manager.Screen.Desktop.Children.Remove(this.button);
+        }
+        /****************************************************************************/
     }
     /********************************************************************************/
 }
