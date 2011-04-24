@@ -40,7 +40,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             this.buttonComponent = buttonComponent;
             this.World = world;
-            keyboardListener = new KeyboardListenerComponent(this, true);
+            //keyboardListener = new KeyboardListenerComponent(this, true);
             //keyboardListener.SubscibeKeys(OnKey, Keys.Y, Keys.H);
             
         }
@@ -52,7 +52,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override void ReleaseComponents()
         {
-           //TODO: zdecydować co się zrobi z releaseComponents
+            this.buttonComponent.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -84,6 +84,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class MenuButtonData : GameObjectInstanceData
     {
+        [CategoryAttribute("Text"),
+        DescriptionAttribute("Button's text / label")]
+        public String Text { get; set; }
+
         [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
         public uint InstancingMode { get; set; }

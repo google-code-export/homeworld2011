@@ -676,7 +676,11 @@ namespace PlagueEngine.LowLevelGameFlow
             MenuButton result = new MenuButton();
 
             if (!DefaultObjectInit(result, data)) return result = null;
-            //TODO: uzupełnić logikę, bo pewnie będzie konieczne dodatkowe tworzenie
+
+            MenuButtonData sdata = (MenuButtonData) data;
+
+            result.Init(guiComponentsFactory.createButtonComponent(sdata.Text), sdata.World);
+            //TODO: sprawdzić, czy to już wszystko dla buttona.
             return result;
         }
         /****************************************************************************/
