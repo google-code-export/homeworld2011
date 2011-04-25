@@ -226,6 +226,14 @@ Tabela ma prostą strukturę:
 <td> ? </td>
 <td> ? </td>
 </tr>
+<tr>
+<td> _Lokalizacja_ </td>
+<td> ? </td>
+<td> ? </td>
+<td> ? </td>
+<td> ? </td>
+</tr>
+<tr>
 <tr><th colspan="5"><font color="red">*RESOURCES*</font></th></tr>
 <tr>
 <td> ? </td>
