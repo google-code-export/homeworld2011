@@ -123,6 +123,7 @@ namespace PlagueEngine.LowLevelGameFlow
                     break;
                 case "MenuButton":
                     result = CreateMenuButton(data);
+                    Diagnostics.PushLog("Menu Button created!!!");
                     break;
             }
 
@@ -680,7 +681,12 @@ namespace PlagueEngine.LowLevelGameFlow
 
             MenuButtonData sdata = (MenuButtonData) data;
 
-            result.Init(guiComponentsFactory.createButtonComponent(sdata.Text), sdata.World);
+            result.Init(guiComponentsFactory.createButtonComponent(sdata.Text,
+                                                                   sdata.Vertical,
+                                                                   sdata.Horizontal,
+                                                                   sdata.Size,
+                                                                   null),
+                                                                        sdata.World);
             //TODO: sprawdzić, czy to już wszystko dla buttona.
             return result;
         }

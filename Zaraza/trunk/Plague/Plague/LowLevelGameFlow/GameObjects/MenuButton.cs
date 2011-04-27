@@ -24,10 +24,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         ButtonComponent buttonComponent = null;
         
-        KeyboardListenerComponent keyboardListener = null;
+        //TODO: wywalić zbedne komenty
+        //KeyboardListenerComponent keyboardListener = null;
 
-        bool forward = false;
-        bool backward = false;
+        //bool forward = false;
+        //bool backward = false;
         /********************************************************************************/
 
 
@@ -64,10 +65,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            MovingBarrelData data = new MovingBarrelData();
+            MenuButtonData data = new MenuButtonData();
             GetData(data);
             //TODO: uzupełnić GO buttona
-
+            data.Text = this.buttonComponent.button.Text;
             return data;
         }
         /********************************************************************************/
@@ -87,6 +88,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Text"),
         DescriptionAttribute("Button's text / label")]
         public String Text { get; set; }
+
+        [CategoryAttribute("Bounds"),
+        DescriptionAttribute("Vertical bounds of the button (first pair)")]
+        public Vector2 Vertical { get; set; }
+
+        [CategoryAttribute("Bounds"),
+        DescriptionAttribute("Horizontal bounds of the button (second pair)")]
+        public Vector2 Horizontal { get; set; }
+
+        [CategoryAttribute("Bounds"),
+        DescriptionAttribute("Actual size of the button (third pair)")]
+        public Vector2 Size { get; set; }
 
         [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]

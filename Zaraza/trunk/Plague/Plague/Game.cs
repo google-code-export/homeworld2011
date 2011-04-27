@@ -166,6 +166,8 @@ namespace PlagueEngine
                 TimeControl.Update(gameTime.ElapsedGameTime);
 
                 input.Update();
+                //TODO: sprawdziæ czy konieczne i usun¹æ jeœli niepotrzebne
+                gui.Manager.Update(gameTime);
 
                 eventsSystem.Update();
                 if (!gameStopped)
@@ -254,7 +256,8 @@ namespace PlagueEngine
         {
             //TODO: metoda szcz¹tkowa, pewnie bêdzie wymagaæ rozszerzenia.
             gui = new GUI.GUI(this, Services);
-            gui.Initialize(GraphicsDevice);
+            gui.Initialize(renderer.Device);
+            //this.Components.Add(gui.Manager);
         }
         /****************************************************************************/
 

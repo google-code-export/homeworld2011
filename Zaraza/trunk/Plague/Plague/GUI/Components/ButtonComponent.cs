@@ -24,7 +24,7 @@ namespace PlagueEngine.GUI.Components
         /// Fields
         /****************************************************************************/
         public ButtonControl button {  get; private set; }
-        public static GuiManager manager { get; set; }
+        //public static GuiManager manager { get; set; }
         /****************************************************************************/
         
         /****************************************************************************/
@@ -41,20 +41,27 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// initialize
         /****************************************************************************/
-        public bool Initialize(String text)
+        public bool Initialize(String text, UniRectangle bounds)
         {
-            if (button != null && manager!=null)
+            if (button != null && gui!=null)
             {
                 button.Text = text;
-                button.Bounds = new UniRectangle(new UniScalar(1.0f, -190.0f),
-                                            new UniScalar(1.0f, -32.0f), 100, 32);
-                manager.Screen.Desktop.Children.Add(this.button);
+                button.Bounds = new UniRectangle(
+      new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -40.0f), 80, 24
+    );//bounds;
+                Diagnostics.PushLog("Button component initialized successfully");
                 return true;
             }
+            Diagnostics.PushLog("Button component wasn't initialized");
             return false;
         }
         /****************************************************************************/
-        
+
+        public override void register()
+        {
+            gui.window.Children.Add(this.button);
+        }
+
         /****************************************************************************/
         /// setDelegate
         /****************************************************************************/
