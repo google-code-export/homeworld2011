@@ -21,7 +21,6 @@ using PlagueEngine.Input.Components;
 using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering;
 using PlagueEngine.EventsSystem;
-using PlagueEngine.Input;
 using PlagueEngine;
 /********************************************************************************/
 /// PlagueEngine.Tools
@@ -320,6 +319,12 @@ namespace PlagueEngine.Tools
             Creature.ClassType = typeof(Creature);
             Creature.dataClassType = typeof(CreatureData);
             gameObjectClassNames.Add(Creature);
+
+            gameObjectsClassName MenuButton = new gameObjectsClassName();
+            MenuButton.className = "MenuButton";
+            MenuButton.ClassType = typeof(MenuButton);
+            MenuButton.dataClassType = typeof(MenuButtonData);
+            gameObjectClassNames.Add(MenuButton);
 
         }
         /********************************************************************************/
