@@ -100,6 +100,7 @@ namespace PlagueEngine.Rendering.Components
         public override void ReleaseMe()
         {
             renderer.batchedSkinnedMeshes.RemoveSkinnedMeshComponent(technique, this);
+            base.ReleaseMe();
         }
         /****************************************************************************/
 

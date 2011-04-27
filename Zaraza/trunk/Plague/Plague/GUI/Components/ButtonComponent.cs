@@ -77,6 +77,7 @@ namespace PlagueEngine.GUI.Components
         public override void ReleaseMe()
         {   
             gui.Manager.Screen.Desktop.Children.Remove(this.button);
+            base.ReleaseMe();
         }
         /****************************************************************************/
     }

@@ -135,6 +135,7 @@ namespace PlagueEngine.Physics
         {
             if (isEnabled) Disable();
             physicsManager.collisionSkins.Remove(gameObject.ID);
+            base.ReleaseMe();
         }
         /****************************************************************************/
 

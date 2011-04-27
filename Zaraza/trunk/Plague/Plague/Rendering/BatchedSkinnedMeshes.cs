@@ -207,6 +207,8 @@ namespace PlagueEngine.Rendering
             Draw(diffNorm);
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseSpecularNormalTechnique"];
             Draw(diffSpecNorm);
+
+            DeltaTime = TimeSpan.Zero;
         }
         /****************************************************************************/
 
@@ -250,6 +252,27 @@ namespace PlagueEngine.Rendering
         public void LoadEffect()
         {
             skinningEffect = content.LoadEffect("SkinningEffect");
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Set Clip Plane
+        /****************************************************************************/
+        public void SetClipPlane(Vector4 plane)
+        {
+            skinningEffect.Parameters["ClipPlaneEnabled"].SetValue(true);
+            skinningEffect.Parameters["ClipPlane"].SetValue(plane);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Disable Clip Plane
+        /****************************************************************************/
+        public void DisableClipPlane()
+        {
+            skinningEffect.Parameters["ClipPlaneEnabled"].SetValue(false);
         }
         /****************************************************************************/
 

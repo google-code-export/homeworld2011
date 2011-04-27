@@ -54,6 +54,7 @@ namespace PlagueEngine.Rendering.Components
         public override void ReleaseMe()
         {
             if (renderer.Sunlight == this) renderer.Sunlight = null;
+            base.ReleaseMe();
         }
         /****************************************************************************/
 

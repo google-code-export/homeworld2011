@@ -244,7 +244,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void ReleaseComponents()
         {
             cameraComponent.ReleaseMe();
-            keyboardListenerComponent.ReleaseMe();        
+            keyboardListenerComponent.ReleaseMe();
+            mouseListenerComponent.ReleaseMe();
         }
         /****************************************************************************/
 

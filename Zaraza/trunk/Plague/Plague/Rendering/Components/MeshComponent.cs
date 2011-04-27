@@ -58,7 +58,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            renderer.batchedMeshes.RemoveMeshComponent(instancingMode, technique, this);            
+            renderer.batchedMeshes.RemoveMeshComponent(instancingMode, technique, this);
+            base.ReleaseMe();
         }
         /****************************************************************************/
 

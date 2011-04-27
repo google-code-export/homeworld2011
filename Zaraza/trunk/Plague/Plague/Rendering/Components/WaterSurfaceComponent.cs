@@ -170,8 +170,13 @@ namespace PlagueEngine.Rendering.Components
         public override void PreRender(CameraComponent camera)
         {
             if (camera.Position.Y < this.surfacePosition) return;
+
+            renderer.renderableComponents.Remove(this);
+
             RenderReflection(camera);
-            RenderRefraction(camera);            
+            RenderRefraction(camera);
+
+            renderer.renderableComponents.Add(this);
         }
         /****************************************************************************/
 
@@ -180,7 +185,7 @@ namespace PlagueEngine.Rendering.Components
         /// Render Reflection
         /****************************************************************************/
         public void RenderReflection(CameraComponent camera)
-        {
+        {            
             Matrix reflectedView           = reflectionMatrix * camera.View;
             Matrix reflectedViewProjection = reflectedView    * camera.Projection;
             
@@ -191,31 +196,9 @@ namespace PlagueEngine.Rendering.Components
             RasterizerState defaultRasterizerState = device.RasterizerState;
             device.RasterizerState = rasterizerState;
             device.SetRenderTarget(reflectionMap);
-            device.Clear(renderer.ClearColor);
-
-            foreach (RenderableComponent renderableComponent in renderer.renderableComponents)
-            {
-                if (renderableComponent != this && renderableComponent.Effect != null)
-                {
-                    renderableComponent.SetClipPlane(clipPlane);
-                    renderableComponent.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
-                    renderableComponent.Effect.Parameters["View"]          .SetValue(reflectedView);
-                    renderableComponent.Effect.Parameters["Projection"]    .SetValue(camera.Projection);
-                    renderableComponent.Effect.Parameters["ViewProjection"].SetValue(reflectedViewProjection);
-                    renderableComponent.Draw();
-                    renderableComponent.DisableClipPlane();
-                }
-            }
-
-            renderer.batchedMeshes.SetEffectParameter("CameraPosition", camera.Position);
-            renderer.batchedMeshes.SetEffectParameter("View", reflectedView);
-            renderer.batchedMeshes.SetEffectParameter("Projection", camera.Projection);
-            renderer.batchedMeshes.SetEffectParameter("ViewProjection", reflectedViewProjection);
-            renderer.batchedMeshes.SetEffectParameter("ClipPlaneEnabled", true);
-            renderer.batchedMeshes.SetEffectParameter("ClipPlane", clipPlane);
-            renderer.batchedMeshes.Draw();
-            renderer.batchedMeshes.SetEffectParameter("ClipPlaneEnabled", false);
             
+            renderer.Render(camera.Position, reflectedView, camera.Projection, reflectedViewProjection, true, clipPlane);
+
             device.SetRenderTarget(null);
             device.RasterizerState = defaultRasterizerState;
 
@@ -232,32 +215,10 @@ namespace PlagueEngine.Rendering.Components
             Vector4 clipPlane = new Vector4(0, -1, 0, surfacePosition + clipPlaneAdjustment);
 
             device.SetRenderTarget(refractionMap);
-            device.Clear(renderer.ClearColor);
 
-            foreach (RenderableComponent renderableComponent in renderer.renderableComponents)
-            {
-                if (renderableComponent != this && renderableComponent.Effect != null)
-                {
-                    renderableComponent.SetClipPlane(clipPlane);
-                    renderableComponent.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
-                    renderableComponent.Effect.Parameters["View"]          .SetValue(camera.View);
-                    renderableComponent.Effect.Parameters["Projection"]    .SetValue(camera.Projection);
-                    renderableComponent.Effect.Parameters["ViewProjection"].SetValue(camera.ViewProjection);
-                    renderableComponent.Draw();
-                    renderableComponent.DisableClipPlane();
-                }
-            }
+            renderer.Render(camera.Position, camera.View, camera.Projection, camera.ViewProjection, true, clipPlane);
 
-            renderer.batchedMeshes.SetEffectParameter("CameraPosition", camera.Position);
-            renderer.batchedMeshes.SetEffectParameter("View", camera.View);
-            renderer.batchedMeshes.SetEffectParameter("Projection", camera.Projection);
-            renderer.batchedMeshes.SetEffectParameter("ViewProjection", camera.ViewProjection);
-            renderer.batchedMeshes.SetEffectParameter("ClipPlaneEnabled", true);
-            renderer.batchedMeshes.SetEffectParameter("ClipPlane", clipPlane);
-            renderer.batchedMeshes.Draw();
-            renderer.batchedMeshes.SetEffectParameter("ClipPlaneEnabled", false);
             device.SetRenderTarget(null);
-
             effect.Parameters["RefractionMap"].SetValue(refractionMap);
         }
         /****************************************************************************/

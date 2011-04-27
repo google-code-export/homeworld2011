@@ -69,8 +69,6 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void SetClipPlane(Vector4 plane)
         {
-            if (effect == null) return;
-
             effect.Parameters["ClipPlaneEnabled"].SetValue(true);
             effect.Parameters["ClipPlane"].SetValue(plane);
         }
@@ -82,8 +80,6 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void DisableClipPlane()
         {
-            if (effect == null) return;
-
             effect.Parameters["ClipPlaneEnabled"].SetValue(false);
         }
         /****************************************************************************/
@@ -131,6 +127,7 @@ namespace PlagueEngine.Rendering
         {
             renderer.ReleaseRenderableComponent(this);
             if (preRender) renderer.ReleasePreRenderComponent(this);
+            base.ReleaseMe();
         }
         /****************************************************************************/
 
