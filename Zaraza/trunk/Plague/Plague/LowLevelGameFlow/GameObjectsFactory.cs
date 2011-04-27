@@ -106,8 +106,8 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "SphericalBodyMesh":
                     result = CreateSphericalBodyMesh(data);
                     break;
-                case "Piggy":
-                    result = CreatePiggy(data);
+                case "Creature":
+                    result = CreateCreature(data);
                     break;
                 case "SquareSkinMesh":
                     result = CreateSquareSkinMesh(data);
@@ -624,13 +624,13 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Static Skinned Mesh
         /****************************************************************************/
-        public Piggy CreatePiggy(GameObjectInstanceData data)
+        public Creature CreateCreature(GameObjectInstanceData data)
         {
-            Piggy result = new Piggy();
+            Creature result = new Creature();
 
             if (!DefaultObjectInit(result, data)) return result = null;
 
-            PiggyData sdata = (PiggyData)data;
+            CreatureData sdata = (CreatureData)data;
 
             result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
                                                                               sdata.Model,
@@ -647,23 +647,24 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                               sdata.BlendKeyframe,
                                                                               sdata.BlendClipTime,
                                                                               sdata.BlendDuration,
-                                                                              sdata.BlendTime),                                                                              
-                        inputComponentsFactory.CreateKeyboardListenerComponent(result,true),
-                        physicsComponentFactory.CreateSquareBodyComponent(result,
-                                                                          sdata.Mass,
-                                                                          sdata.Length,
-                                                                          sdata.Height,
-                                                                          sdata.Width,
-                                                                          sdata.Elasticity,
-                                                                          sdata.StaticRoughness,
-                                                                          sdata.DynamicRoughness,
-                                                                          sdata.Immovable,
-                                                                          sdata.World,
-                                                                          sdata.Translation,
-                                                                          sdata.SkinYaw,
-                                                                          sdata.SkinPitch,
-                                                                          sdata.SkinRoll),
+                                                                              sdata.BlendTime),
+                        inputComponentsFactory.CreateKeyboardListenerComponent(result, true),
                                                                               sdata.World);
+                        //physicsComponentFactory.CreateSquareBodyComponent(result,
+                        //                                                  sdata.Mass,
+                        //                                                  sdata.Length,
+                        //                                                  sdata.Height,
+                        //                                                  sdata.Width,
+                        //                                                  sdata.Elasticity,
+                        //                                                  sdata.StaticRoughness,
+                        //                                                  sdata.DynamicRoughness,
+                        //                                                  sdata.Immovable,
+                        //                                                  sdata.World,
+                        //                                                  sdata.Translation,
+                        //                                                  sdata.SkinYaw,
+                        //                                                  sdata.SkinPitch,
+                        //                                                  sdata.SkinRoll),
+                        //                                                      sdata.World);
             return result;
         }
         /****************************************************************************/

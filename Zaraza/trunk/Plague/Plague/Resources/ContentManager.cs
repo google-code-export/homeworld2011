@@ -134,6 +134,7 @@ namespace PlagueEngine.Resources
         public PlagueEngineSkinnedModel LoadSkinnedModel(string modelName)
         {
             PlagueEngineSkinnedModel result = Load<PlagueEngineSkinnedModel>(models + '\\' + modelName);
+            result.Name = modelName;
             return result;
         }
         /****************************************************************************/

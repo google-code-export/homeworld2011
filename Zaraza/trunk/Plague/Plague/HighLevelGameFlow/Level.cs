@@ -194,23 +194,25 @@ namespace PlagueEngine.HighLevelGameFlow
             s.Direction = new Vector3(-1,-1,-1);
 
 
-            PiggyData ssdata = new PiggyData();
-            ssdata.Type = typeof(Piggy);
-            ssdata.Model = "piggy";
+            CreatureData ssdata = new CreatureData();
+            ssdata.Type = typeof(Creature);
+            ssdata.Model = "FleshCreature";
             ssdata.TimeRatio = 1.0f;
-            ssdata.Diffuse = "piggyTex";
-            ssdata.World *= Matrix.CreateTranslation(200, 100, 50);
-            
-            ssdata.Mass = 1;
-            ssdata.StaticRoughness = 0.1f;
-            ssdata.DynamicRoughness = 0.1f;
-            ssdata.Elasticity = 0.1f;
-            ssdata.Length = 66;
-            ssdata.Width = 66;
-            ssdata.Height = 66;
-            ssdata.Immovable = false;
+            ssdata.Diffuse = "flesh_diffuse";
+            ssdata.Normals = "flesh_normals";
+            ssdata.World *= Matrix.CreateTranslation(200, 50, 0);
+            gameObjectsFactory.Create(ssdata);
 
-            //gameObjectsFactory.Create(ssdata);
+            //ssdata.Mass = 1;
+            //ssdata.StaticRoughness = 0.1f;
+            //ssdata.DynamicRoughness = 0.1f;
+            //ssdata.Elasticity = 0.1f;
+            //ssdata.Length = 66;
+            //ssdata.Width = 66;
+            //ssdata.Height = 66;
+            //ssdata.Immovable = false;
+
+            
         }
         /****************************************************************************/
 

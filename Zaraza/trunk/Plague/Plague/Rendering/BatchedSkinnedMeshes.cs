@@ -33,7 +33,7 @@ namespace PlagueEngine.Rendering
         private ContentManager content  = null;
         private Renderer       renderer = null;
 
-        private Effect skinningEffect = null;
+        private Effect skinningEffect = null;        
         /****************************************************************************/
 
 
@@ -197,16 +197,16 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw (0)
         /****************************************************************************/
-        public void Draw(TimeSpan time)
-        {
+        public void Draw()
+        {            
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseTechnique"];
-            Draw(diff,time);
+            Draw(diff);
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseSpecularTechnique"];
-            Draw(diffSpec,time);
+            Draw(diffSpec);
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseNormalTechnique"];
-            Draw(diffNorm,time);
+            Draw(diffNorm);
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseSpecularNormalTechnique"];
-            Draw(diffSpecNorm,time);
+            Draw(diffSpecNorm);
         }
         /****************************************************************************/
 
@@ -214,7 +214,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw (1)
         /****************************************************************************/
-        private void Draw(Dictionary<PlagueEngineSkinnedModel, Dictionary<TexturesPack, List<SkinnedMeshComponent>>> container, TimeSpan time)
+        private void Draw(Dictionary<PlagueEngineSkinnedModel, Dictionary<TexturesPack, List<SkinnedMeshComponent>>> container)
         {
             foreach (PlagueEngineSkinnedModel model in container.Keys)
             {
@@ -229,7 +229,7 @@ namespace PlagueEngine.Rendering
 
                     foreach (SkinnedMeshComponent mesh in container[model][texturePack])
                     {
-                        mesh.Update(time, mesh.GameObject.World);
+                        mesh.Update(DeltaTime, mesh.GameObject.World);
                         
                         Matrix[] bones = mesh.SkinTransforms;
 
@@ -255,9 +255,10 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
-        /// Effect
+        /// Properties
         /****************************************************************************/
-        public Effect Effect { get { return skinningEffect; } }
+        public Effect   Effect    { get { return skinningEffect; } }
+        public TimeSpan DeltaTime { get; set; }
         /****************************************************************************/
 
     }
