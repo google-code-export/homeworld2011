@@ -263,18 +263,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\miesniak.FBX">
-      <Name>miesniak</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
-      <ProcessorParameters_AnimationClip1>Run</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1Start>26</ProcessorParameters_AnimationClip1Start>
-      <ProcessorParameters_AnimationClip1End>50</ProcessorParameters_AnimationClip1End>
-      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
-      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\FleshCreature.FBX">
       <Name>FleshCreature</Name>
       <Importer>FbxImporter</Importer>

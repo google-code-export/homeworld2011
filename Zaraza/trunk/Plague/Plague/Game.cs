@@ -14,6 +14,7 @@ using PlagueEngine.Tools;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.GUI;
+using Nuclex.Input;
 
 /************************************************************************************/
 /// PlagueEngine
@@ -68,10 +69,10 @@ namespace PlagueEngine
             input          = new Input.Input(this);
 
             InitRenderer();
-            InitGUI();
 
+            gui = new GUI.GUI(this, Services);
+            
             physicsManager = new PhysicsManager(contentManager);
-
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,
                                                         gui.ComponentsFactory,
@@ -84,7 +85,8 @@ namespace PlagueEngine
 
             eventsHistorian = new EventsHistorian(20);
 
-            renderer.InitDebugDrawer(physicsManager);                        
+            renderer.InitDebugDrawer(physicsManager);
+                    
         }
         /****************************************************************************/
 
@@ -101,7 +103,8 @@ namespace PlagueEngine
         protected override void Initialize()
         {
             base.Initialize();
-          
+            InitGUI();
+            
             Level.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
@@ -246,6 +249,8 @@ namespace PlagueEngine
                 contentManager.SaveConfiguration(defaultRenderConfig);
             }
             renderer = new Renderer(this, renderConfig);
+
+            
         }
         /****************************************************************************/
 
@@ -254,9 +259,10 @@ namespace PlagueEngine
         /****************************************************************************/
         private void InitGUI()
         {
+            GraphicsDevice.Reset();
             //TODO: metoda szcz¹tkowa, pewnie bêdzie wymagaæ rozszerzenia.
-            gui = new GUI.GUI(this, Services);
-            gui.Initialize(renderer.Device);
+            InputManager input = new InputManager(Services, Window.Handle);
+            gui.Initialize(GraphicsDevice);
             //this.Components.Add(gui.Manager);
         }
         /****************************************************************************/
