@@ -33,18 +33,22 @@ namespace PlagueEngine.GUI
             //this.game         = game;
             ComponentsFactory = new GUIComponentsFactory(this);
             Manager = new GuiManager(Services);
-            
             //GUIComponent.gui = this;
         }
         /****************************************************************************/
 
+        public void onDisposing(object o, EventArgs ea)
+        {
+            GraphicsDevice gd = (GraphicsDevice)o;
+            Viewport viewport = gd.Viewport;
+            Screen mainScreen = new Screen(viewport.Width, viewport.Height);
+            this.Manager.Screen = mainScreen;
+        }
+
         public void Initialize(GraphicsDevice GraphicsDevice)
         {
             GUIComponent.gui = this;
-            
-            //TODO: FIXME!!! naprawić wykładanie się wskutek niezainicjalizowania Nuclex.Inputa  FIXME!!!
-            //this.Manager.Initialize();
-            
+            //GraphicsDevice.DeviceReset += onDisposing;
             this.Manager.DrawOrder = 1000;
             Viewport viewport = GraphicsDevice.Viewport;
             Screen mainScreen = new Screen(viewport.Width, viewport.Height);
@@ -59,7 +63,9 @@ namespace PlagueEngine.GUI
               new UniScalar(0.1f, 0.0f), new UniScalar(0.1f, 0.0f), // x and y = 10%
               new UniScalar(0.8f, 0.0f), new UniScalar(0.8f, 0.0f) // width and height = 80%
             );
-
+            //TODO: FIXME!!! naprawić wykładanie się wskutek niezainicjalizowania Nuclex.Inputa  FIXME!!!
+            this.Manager.Initialize();
+            
             window = new WindowControl();
             window.Bounds = new UniRectangle(100.0f, 100.0f, 512.0f, 384.0f);
 
@@ -80,5 +86,6 @@ namespace PlagueEngine.GUI
         {
             Manager.Draw(gameTime);
         }
+
     }
 }
