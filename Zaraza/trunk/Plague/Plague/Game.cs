@@ -194,7 +194,7 @@ namespace PlagueEngine
         protected override void Draw(GameTime gameTime)
         {            
             renderer.Draw(gameTime.ElapsedGameTime);
-            gui.Draw(gameTime);
+            //gui.Draw(gameTime);
             base.Draw(gameTime);           
         }
         /****************************************************************************/

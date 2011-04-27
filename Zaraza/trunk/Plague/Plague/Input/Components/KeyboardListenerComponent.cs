@@ -73,6 +73,7 @@ namespace PlagueEngine.Input.Components
         public override void ReleaseMe()
         {
             input.ReleaseKeyboardListenerComponent(this);
+            base.ReleaseMe();
         }
         /****************************************************************************/
 

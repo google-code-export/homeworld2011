@@ -386,6 +386,7 @@ namespace PlagueEngine.Rendering.Components
         public override void ReleaseMe()
         {
             if (renderer.CurrentCamera == this) renderer.CurrentCamera = null;
+            base.ReleaseMe();
         }
         /****************************************************************************/
 

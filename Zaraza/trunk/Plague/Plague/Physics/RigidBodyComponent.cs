@@ -279,6 +279,7 @@ namespace PlagueEngine.Physics
             body.DisableBody();
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(skin);
             physicsManager.rigidBodies.Remove(this.gameObject.ID);
+            base.ReleaseMe();
         }
         /****************************************************************************/
 

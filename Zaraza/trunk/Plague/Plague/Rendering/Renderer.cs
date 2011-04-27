@@ -59,7 +59,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public Renderer(Game game,RenderConfig config)
         {
-            graphics               = new GraphicsDeviceManager(game);
+            graphics               = new GraphicsDeviceManager(game);           
             contentManager         = game.ContentManager;           
             CurrentConfiguration   = config;
             componentsFactory      = new RenderingComponentsFactory(this);            
@@ -72,7 +72,7 @@ namespace PlagueEngine.Rendering
             RenderableComponent.renderer  = this;
             SkinnedMeshComponent.renderer = this;
             
-            fogColor = clearColor.ToVector3();
+            fogColor = clearColor.ToVector3();            
         }
         /****************************************************************************/
 
@@ -147,26 +147,27 @@ namespace PlagueEngine.Rendering
             
             set
             {
-                graphics.PreferredDepthStencilFormat    = depthFormat;
-                graphics.PreferredBackBufferFormat      = surfaceFormat;
+                graphics.PreferredDepthStencilFormat = depthFormat;
+                graphics.PreferredBackBufferFormat = surfaceFormat;
 
-                graphics.PreferredBackBufferHeight      = value.Height;
-                graphics.PreferredBackBufferWidth       = value.Width;
-                graphics.PreferMultiSampling            = value.Multisampling;
-                graphics.IsFullScreen                   = value.FullScreen;
+                graphics.PreferredBackBufferHeight = value.Height;
+                graphics.PreferredBackBufferWidth = value.Width;
+                graphics.PreferMultiSampling = value.Multisampling;
+                graphics.IsFullScreen = value.FullScreen;
                 graphics.SynchronizeWithVerticalRetrace = value.VSync;
 
                 graphics.ApplyChanges();
+
                 if (currentCamera != null) currentCamera.Aspect = Device.Viewport.AspectRatio;
 
                 Diagnostics.PushLog("Presentation Parameters Changed" +
-                                    ". Resolution: "    + Device.PresentationParameters.BackBufferWidth.ToString()    +
-                                    " x "               + Device.PresentationParameters.BackBufferHeight.ToString()   + 
-                                    " x "               + Device.PresentationParameters.BackBufferFormat.ToString()   + 
-                                    " x "               + Device.PresentationParameters.DepthStencilFormat.ToString() +
-                                    ". Multisampling: " + Device.PresentationParameters.MultiSampleCount.ToString()   +
-                                    ". Fullscreen: "    + Device.PresentationParameters.IsFullScreen.ToString()       +
-                                    ". VSync: "         + graphics.SynchronizeWithVerticalRetrace.ToString());
+                                    ". Resolution: " + Device.PresentationParameters.BackBufferWidth.ToString() +
+                                    " x " + Device.PresentationParameters.BackBufferHeight.ToString() +
+                                    " x " + Device.PresentationParameters.BackBufferFormat.ToString() +
+                                    " x " + Device.PresentationParameters.DepthStencilFormat.ToString() +
+                                    ". Multisampling: " + Device.PresentationParameters.MultiSampleCount.ToString() +
+                                    ". Fullscreen: " + Device.PresentationParameters.IsFullScreen.ToString() +
+                                    ". VSync: " + graphics.SynchronizeWithVerticalRetrace.ToString());
             }
         }
         /****************************************************************************/
@@ -177,10 +178,6 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void Draw(TimeSpan time)
         {
-            //RasterizerState r = new RasterizerState();
-            //r.FillMode = FillMode.WireFrame;
-            //Device.RasterizerState = r;
-
             batchedSkinnedMeshes.DeltaTime = time;
 
             if (currentCamera == null) return;
@@ -190,7 +187,12 @@ namespace PlagueEngine.Rendering
                 renderableComponent.PreRender(currentCamera);
             }
 
-            Render();
+            Render( currentCamera.Position,
+                    currentCamera.View,
+                    currentCamera.Projection,
+                    currentCamera.ViewProjection,
+                    false,
+                    Vector4.Zero);
         }
         /****************************************************************************/
 
@@ -198,17 +200,21 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Render
         /****************************************************************************/
-        internal void Render()
+        internal void Render(Vector3 cameraPosition,Matrix view,Matrix projection,Matrix viewProjection,bool clipping,Vector4 clipPlane)
         {
             Device.Clear(clearColor);
 
+
+            /************************************/
+            /// Renderable Components
+            /************************************/
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
                 renderableComponent.Effect.Parameters["Ambient"].SetValue(ambient);
-                renderableComponent.Effect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
-                renderableComponent.Effect.Parameters["View"].SetValue(currentCamera.View);
-                renderableComponent.Effect.Parameters["Projection"].SetValue(currentCamera.Projection);
-                renderableComponent.Effect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
+                renderableComponent.Effect.Parameters["CameraPosition"].SetValue(cameraPosition);
+                renderableComponent.Effect.Parameters["View"].SetValue(view);
+                renderableComponent.Effect.Parameters["Projection"].SetValue(projection);
+                renderableComponent.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
 
                 renderableComponent.Effect.Parameters["FogEnabled"].SetValue(fogEnabled);
                 renderableComponent.Effect.Parameters["FogColor"].SetValue(fogColor);
@@ -226,14 +232,23 @@ namespace PlagueEngine.Rendering
                     renderableComponent.Effect.Parameters["SunlightEnabled"].SetValue(false);
                 }
 
+                if (clipping) renderableComponent.SetClipPlane(clipPlane);
+                                
                 renderableComponent.Draw();
-            }
 
+                if (clipping) renderableComponent.DisableClipPlane();
+            }
+            /************************************/
+
+
+            /************************************/
+            /// Batched Meshes
+            /************************************/
             batchedMeshes.SetEffectParameter("Ambient", ambient);
-            batchedMeshes.SetEffectParameter("CameraPosition", currentCamera.Position);
-            batchedMeshes.SetEffectParameter("View", currentCamera.View);
-            batchedMeshes.SetEffectParameter("Projection", currentCamera.Projection);
-            batchedMeshes.SetEffectParameter("ViewProjection", currentCamera.ViewProjection);
+            batchedMeshes.SetEffectParameter("CameraPosition", cameraPosition);
+            batchedMeshes.SetEffectParameter("View", view);
+            batchedMeshes.SetEffectParameter("Projection", projection);
+            batchedMeshes.SetEffectParameter("ViewProjection", viewProjection);
             batchedMeshes.SetEffectParameter("FogEnabled", fogEnabled);
             batchedMeshes.SetEffectParameter("FogColor", fogColor);
             batchedMeshes.SetEffectParameter("FogRange", fogRange);
@@ -250,13 +265,23 @@ namespace PlagueEngine.Rendering
                 batchedMeshes.SetEffectParameter("SunlightEnabled", false);
             }
 
+
+            if (clipping) batchedMeshes.SetClipPlane(clipPlane);
+
             batchedMeshes.Draw();
 
+            if (clipping) batchedMeshes.DisableClipPlane();
+            /************************************/
+
+
+            /************************************/
+            /// Batched Skinned Meshes
+            /************************************/
             batchedSkinnedMeshes.Effect.Parameters["Ambient"].SetValue(ambient);
-            batchedSkinnedMeshes.Effect.Parameters["CameraPosition"].SetValue(currentCamera.Position);
-            batchedSkinnedMeshes.Effect.Parameters["View"].SetValue(currentCamera.View);
-            batchedSkinnedMeshes.Effect.Parameters["Projection"].SetValue(currentCamera.Projection);
-            batchedSkinnedMeshes.Effect.Parameters["ViewProjection"].SetValue(currentCamera.ViewProjection);
+            batchedSkinnedMeshes.Effect.Parameters["CameraPosition"].SetValue(cameraPosition);
+            batchedSkinnedMeshes.Effect.Parameters["View"].SetValue(view);
+            batchedSkinnedMeshes.Effect.Parameters["Projection"].SetValue(projection);
+            batchedSkinnedMeshes.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
 
             batchedSkinnedMeshes.Effect.Parameters["FogEnabled"].SetValue(fogEnabled);
             batchedSkinnedMeshes.Effect.Parameters["FogColor"].SetValue(fogColor);
@@ -274,9 +299,20 @@ namespace PlagueEngine.Rendering
                 batchedSkinnedMeshes.Effect.Parameters["SunlightEnabled"].SetValue(false);
             }
 
+            if (clipping) batchedSkinnedMeshes.SetClipPlane(clipPlane);
+
             batchedSkinnedMeshes.Draw();
-            
+
+            if (clipping) batchedSkinnedMeshes.DisableClipPlane();
+            /************************************/
+
+
+            /************************************/
+            /// Debug Drawer
+            /************************************/
             if (debugDrawer != null) debugDrawer.Draw(currentCamera.View, currentCamera.Projection);
+            /************************************/
+
         }
         /****************************************************************************/
 

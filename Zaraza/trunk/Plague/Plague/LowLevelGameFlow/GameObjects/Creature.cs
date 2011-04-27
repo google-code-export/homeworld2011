@@ -44,6 +44,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             keyboard.SubscibeKeys(OnKey, Keys.D0,Keys.D1,Keys.D2,Keys.D3,Keys.D4,Keys.D5,Keys.D8,Keys.D9);
             meshComponent.SubscribeAnimationsEnd("Attack");
+            
+            meshComponent.StartClip("Idle");
         }
         /****************************************************************************/
 
@@ -61,9 +63,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         break;
                     case Keys.D1: meshComponent.StartClip("Idle");
                         break;
-                    case Keys.D2: meshComponent.BlendTo("Attack", TimeSpan.FromSeconds(0.3));
+                    case Keys.D2: meshComponent.BlendTo("Attack", TimeSpan.FromSeconds(0.5));
                         break;
-                    case Keys.D3: meshComponent.BlendTo("Walk",TimeSpan.FromSeconds(0.3));
+                    case Keys.D3: meshComponent.BlendTo("Walk",TimeSpan.FromSeconds(0.5));
                         break;
                     case Keys.D4: meshComponent.TimeRatio *= 2;
                         break;
@@ -97,7 +99,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (e.GetType().Equals(typeof(Rendering.AnimationEndEvent)))
             {
-                meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.03));
+                meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.05));
             }
         }
         /****************************************************************************/
