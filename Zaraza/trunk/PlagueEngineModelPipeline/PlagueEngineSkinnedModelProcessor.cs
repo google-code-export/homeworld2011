@@ -198,13 +198,26 @@ namespace PlagueEngineModelPipeline
                     List<Vector4> boneIndicesChannelData = new List<Vector4>();
                     List<Vector4> boneWeightsChannelData = new List<Vector4>();
 
+
+                    int vertextID = 0;
                     foreach (BoneWeightCollection boneWeightCollection in geometry.Vertices.Channels["Weights0"])
                     {
                         if (boneWeightCollection.Count > 4)
-                            throw new InvalidContentException("More than 4 weights attached to single vertex");
+                        {
+                            String boneNames = String.Empty;
+                            foreach (BoneWeight weight in boneWeightCollection)
+                            {
+                                boneNames += weight.BoneName + ": " + weight.Weight.ToString() + "\n";
+                            }
+
+                            throw new InvalidContentException("More than 4 weights attached to single vertex. " +
+                                                               "#" + vertextID + ".\n" +
+                                                               boneNames);                        
+                        }
+
 
                         if (boneWeightCollection.Count == 0)
-                            throw new InvalidContentException("No weights attached to vertex");
+                            throw new InvalidContentException("No weights attached to vertex. #" + vertextID + ".");
 
                         Vector4 boneIndices = new Vector4(0);
                         Vector4 boneWeights = new Vector4(0);
@@ -234,6 +247,7 @@ namespace PlagueEngineModelPipeline
 
                         boneIndicesChannelData.Add(boneIndices);
                         boneWeightsChannelData.Add(boneWeights);
+                        vertextID++;
                     }
 
                     geometry.Vertices.Channels.Remove("Weights0");

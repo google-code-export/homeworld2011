@@ -262,6 +262,51 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\miesniak.FBX">
+      <Name>miesniak</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+      <ProcessorParameters_AnimationClip1>Run</ProcessorParameters_AnimationClip1>
+      <ProcessorParameters_AnimationClip1Start>26</ProcessorParameters_AnimationClip1Start>
+      <ProcessorParameters_AnimationClip1End>50</ProcessorParameters_AnimationClip1End>
+      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
+      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\FleshCreature.FBX">
+      <Name>FleshCreature</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
+      <ProcessorParameters_AnimationClip1>Idle</ProcessorParameters_AnimationClip1>
+      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
+      <ProcessorParameters_AnimationClip1Start>103</ProcessorParameters_AnimationClip1Start>
+      <ProcessorParameters_AnimationClip1End>165</ProcessorParameters_AnimationClip1End>
+      <ProcessorParameters_AnimationClip2>Walk</ProcessorParameters_AnimationClip2>
+      <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
+      <ProcessorParameters_AnimationClip2Start>27</ProcessorParameters_AnimationClip2Start>
+      <ProcessorParameters_AnimationClip2End>59</ProcessorParameters_AnimationClip2End>
+      <ProcessorParameters_AnimationClip3>Attack</ProcessorParameters_AnimationClip3>
+      <ProcessorParameters_AnimationClip3Start>64</ProcessorParameters_AnimationClip3Start>
+      <ProcessorParameters_AnimationClip3End>94</ProcessorParameters_AnimationClip3End>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\flesh_diffuse.tga">
+      <Name>flesh_diffuse</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\flesh_normals.tga">
+      <Name>flesh_normals</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

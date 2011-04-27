@@ -18,9 +18,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// StaticSkinnedMesh
+    /// Creature
     /********************************************************************************/
-    class Piggy : GameObjectInstance
+    class Creature : GameObjectInstance
     {
 
         /****************************************************************************/
@@ -28,22 +28,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         SkinnedMeshComponent meshComponent = null;
         KeyboardListenerComponent keyboard = null;
-        SquareBodyComponent body = null;
+        //SquareBodyComponent body = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard,SquareBodyComponent body, Matrix world)
+        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard,/*SquareBodyComponent body,*/ Matrix world)
         {
             this.meshComponent = meshComponent;
             this.keyboard      = keyboard;
-            this.body          = body;
+            //this.body          = body;
             this.World         = world;
 
             keyboard.SubscibeKeys(OnKey, Keys.D0,Keys.D1,Keys.D2,Keys.D3,Keys.D4,Keys.D5,Keys.D8,Keys.D9);
-            meshComponent.SubscribeAnimationsEnd("Jump");
+            meshComponent.SubscribeAnimationsEnd("Attack");
         }
         /****************************************************************************/
 
@@ -59,11 +59,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     case Keys.D0: meshComponent.Stop();
                         break;
-                    case Keys.D1: meshComponent.StartClip("Run");
+                    case Keys.D1: meshComponent.StartClip("Idle");
                         break;
-                    case Keys.D2: meshComponent.StartClip("Jump");
+                    case Keys.D2: meshComponent.BlendTo("Attack", TimeSpan.FromSeconds(0.3));
                         break;
-                    case Keys.D3: meshComponent.BlendTo("Run",TimeSpan.FromSeconds(0.5));
+                    case Keys.D3: meshComponent.BlendTo("Walk",TimeSpan.FromSeconds(0.3));
                         break;
                     case Keys.D4: meshComponent.TimeRatio *= 2;
                         break;
@@ -97,7 +97,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (e.GetType().Equals(typeof(Rendering.AnimationEndEvent)))
             {
-                meshComponent.BlendTo("Run", TimeSpan.FromSeconds(0.1));
+                meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.03));
             }
         }
         /****************************************************************************/
@@ -109,7 +109,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void ReleaseComponents()
         {
             meshComponent.ReleaseMe();
-            body.ReleaseMe();
+            //body.ReleaseMe();
             keyboard.ReleaseMe();
         }
         /****************************************************************************/
@@ -120,7 +120,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            PiggyData data = new PiggyData();
+            CreatureData data = new CreatureData();
             GetData(data);
             
             data.Model    = meshComponent.Model.Name;
@@ -142,20 +142,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.BlendClipTime = meshComponent.BlendClipTime.TotalSeconds;
             data.BlendKeyframe = meshComponent.BlendKeyframe;
 
-            data.Immovable        = body.Immovable;
-            data.IsEnabled        = body.IsEnabled;
-            data.Elasticity       = body.Elasticity;
-            data.StaticRoughness  = body.StaticRoughness;
-            data.DynamicRoughness = body.DynamicRoughness;
-            data.Mass             = body.Mass;
-            data.Translation      = body.SkinTranslation;
-            data.SkinPitch        = body.Pitch;
-            data.SkinRoll         = body.Roll;
-            data.SkinYaw          = body.Yaw;
+            //data.Immovable        = body.Immovable;
+            //data.IsEnabled        = body.IsEnabled;
+            //data.Elasticity       = body.Elasticity;
+            //data.StaticRoughness  = body.StaticRoughness;
+            //data.DynamicRoughness = body.DynamicRoughness;
+            //data.Mass             = body.Mass;
+            //data.Translation      = body.SkinTranslation;
+            //data.SkinPitch        = body.Pitch;
+            //data.SkinRoll         = body.Roll;
+            //data.SkinYaw          = body.Yaw;
                 
-            data.Length = body.Length;
-            data.Width  = body.Width;
-            data.Height = body.Height;
+            //data.Length = body.Length;
+            //data.Width  = body.Width;
+            //data.Height = body.Height;
 
             return data;
         }
@@ -169,7 +169,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// StaticSkinnedMeshData
     /********************************************************************************/
     [Serializable]
-    public class PiggyData : GameObjectInstanceData
+    public class CreatureData : GameObjectInstanceData
     {
         [CategoryAttribute("Model")]
         public String Model    { get; set; }

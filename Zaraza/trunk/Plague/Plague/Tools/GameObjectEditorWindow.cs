@@ -315,11 +315,11 @@ namespace PlagueEngine.Tools
             gameObjectClassNames.Add(SquareBodyMesh);
 
 
-            gameObjectsClassName Piggy = new gameObjectsClassName();
-            Piggy.className = "Piggy";
-            Piggy.ClassType = typeof(Piggy);
-            Piggy.dataClassType = typeof(PiggyData);
-            gameObjectClassNames.Add(Piggy);
+            gameObjectsClassName Creature = new gameObjectsClassName();
+            Creature.className = "Creature";
+            Creature.ClassType = typeof(Creature);
+            Creature.dataClassType = typeof(CreatureData);
+            gameObjectClassNames.Add(Creature);
 
         }
         /********************************************************************************/
