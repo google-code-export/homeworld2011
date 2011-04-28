@@ -73,6 +73,7 @@ namespace PlagueEngineModelPipeline
                     outputModel.VertexCount         = geometry.Vertices.VertexCount;
                     outputModel.IndexCollection     = geometry.Indices;
                     outputModel.VertexBufferContent = geometry.Vertices.CreateVertexBuffer();
+                    outputModel.BoundingBox         = BoundingBox.CreateFromPoints(geometry.Vertices.Positions);
 
                     geometryGrabbed = true;
                     return;

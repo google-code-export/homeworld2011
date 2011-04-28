@@ -254,7 +254,8 @@ namespace PlagueEngineModelPipeline
                     geometry.Vertices.Channels.Add<Vector4>("BlendIndices0", boneIndicesChannelData);
                     geometry.Vertices.Channels.Add<Vector4>("BlendWeight0",boneWeightsChannelData);
                     
-                    outputModel.VertexBufferContent = geometry.Vertices.CreateVertexBuffer();                    
+                    outputModel.VertexBufferContent = geometry.Vertices.CreateVertexBuffer();
+                    outputModel.BoundingBox = BoundingBox.CreateFromPoints(geometry.Vertices.Positions);
 
                     geometryGrabbed = true;
                     return;

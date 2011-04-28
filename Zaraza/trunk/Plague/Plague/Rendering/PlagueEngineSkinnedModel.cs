@@ -29,6 +29,7 @@ namespace PlagueEngine.Rendering
         public IndexBuffer  IndexBuffer;
         public String       Name;
         public SkinningData SkinningData;
+        public BoundingBox  BoundingBox;
         /****************************************************************************/
 
 

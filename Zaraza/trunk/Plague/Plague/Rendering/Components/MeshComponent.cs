@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna;
 
 using PlagueEngine.LowLevelGameFlow;
 
@@ -30,6 +31,7 @@ namespace PlagueEngine.Rendering.Components
         
         private Techniques technique;
         private readonly InstancingModes instancingMode;
+        private Vector3[] corners = new Vector3[8];
         /****************************************************************************/
 
 
@@ -65,11 +67,25 @@ namespace PlagueEngine.Rendering.Components
 
 
         /****************************************************************************/
+        /// Bounding Box
+        /****************************************************************************/
+        public BoundingBox BoundingBox 
+        {
+            get
+            {                
+                Vector3.Transform(model.BoundingBox.GetCorners().ToArray(), ref gameObject.World, corners);
+                return BoundingBox.CreateFromPoints(corners);
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public PlagueEngineModel Model          { get { return model;          } }
+        public PlagueEngineModel Model          { get { return model; } }
         public TexturesPack      Textures       { get { return textures;       } }
-        public InstancingModes   InstancingMode { get { return instancingMode; } }
+        public InstancingModes   InstancingMode { get { return instancingMode; } }        
         /****************************************************************************/
 
     }

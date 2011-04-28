@@ -42,6 +42,9 @@ namespace PlagueEngine.Rendering.Components
         private Texture2D    bTexture       = null;
         private Texture2D    weightMap      = null;
         private float        textureTiling  = 0;
+
+        private Vector3[]    objectSpaceBBCorners = null;
+        private Vector3[]    BBCorners            = new Vector3[8];
         /****************************************************************************/
 
 
@@ -117,6 +120,11 @@ namespace PlagueEngine.Rendering.Components
                     vertices[(z * width) + x].TextureCoordinate = new Vector2((float)x/width ,(float)z/length);
                 }
             }
+
+            objectSpaceBBCorners = BoundingBox.CreateFromPoints(new Vector3[] { new Vector3(width * cellSize,height,length * cellSize),
+                                                                                new Vector3(0,0,0) }
+                                                               ).GetCorners();
+            
 
             int[] indices = new int[indexCount];
 
@@ -230,6 +238,17 @@ namespace PlagueEngine.Rendering.Components
             vertexBuffer.Dispose();
             indexBuffer.Dispose();
             base.ReleaseMe();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// FrustrumInteresction
+        /****************************************************************************/
+        public override bool FrustrumInteresction(BoundingFrustum frustrum)
+        {
+            Vector3.Transform(objectSpaceBBCorners,ref gameObject.World, BBCorners);
+            return frustrum.Intersects(BoundingBox.CreateFromPoints(BBCorners));       
         }
         /****************************************************************************/
 

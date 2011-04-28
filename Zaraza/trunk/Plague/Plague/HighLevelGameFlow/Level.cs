@@ -113,7 +113,7 @@ namespace PlagueEngine.HighLevelGameFlow
             dddtata.Lenght = 3.3f;
             dddtata.Width = 3.3f;
             dddtata.Immovable = false;
-            dddtata.InstancingMode = 3;
+            dddtata.InstancingMode = 1;
             dddtata.Mass = 1;
             
         
@@ -165,17 +165,6 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.Height = 60;
             tdata.CellSize = 5;
             tdata.TextureTiling = 40;
-            tdata.Level = 40;
-            tdata.Color = new Vector3(0.2f, 0.2f, 0.3f);
-            tdata.ColorAmount = 0.5f;
-            tdata.WaveLength = 0.04f;
-            tdata.WaveHeight = 0.02f;
-            tdata.WaveSpeed = 0.1f;
-            tdata.NormalMap = "normalmap";
-            tdata.WTextureTiling = 250;
-            tdata.Bias = 0.4f;
-            tdata.SpecularStength = 500;
-            tdata.ClipPlaneAdjustment = 0.1f;
 
             tdata.Elasticity = 0.1f;
             tdata.StaticRoughness = 0.9f;

@@ -396,13 +396,15 @@ namespace PlagueEngine.Rendering
 
                     foreach (MeshComponent mesh in container[model][texturesPack])
                     {
+                        if (!renderer.CurrentCamera.Frustrum.Intersects(mesh.BoundingBox)) continue;
+                         
                         noInstancingEffect.Parameters["World"].SetValue(mesh.GameObject.World);
                         noInstancingEffect.CurrentTechnique.Passes[0].Apply();
 
                         renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, model.VertexCount, 0, model.TriangleCount);
                     }
                 }
-            }
+            }            
         }
         /****************************************************************************/
 
@@ -473,10 +475,13 @@ namespace PlagueEngine.Rendering
                         int i = 0;
                         foreach (MeshComponent mesh in instancesData.DynamicMeshes)
                         {
+                            if (!renderer.CurrentCamera.Frustrum.Intersects(mesh.BoundingBox)) continue;
+
                             transforms[i++] = mesh.GameObject.World;
                         }
+                        if (i == 0) continue;
 
-                        instancesData.DynamicInstances.SetData(transforms, 0, instancesData.DynamicMeshes.Count, SetDataOptions.Discard);
+                        instancesData.DynamicInstances.SetData(transforms, 0, i, SetDataOptions.Discard);
 
                         renderer.Device.SetVertexBuffers(vertexBufferBinding,
                                                          new VertexBufferBinding(instancesData.DynamicInstances, 0, 1));
@@ -487,7 +492,7 @@ namespace PlagueEngine.Rendering
                                                                 model.VertexCount,
                                                                 0,
                                                                 model.TriangleCount,
-                                                                instancesData.DynamicMeshes.Count);
+                                                                i);
                     }
                     /*************************/
 

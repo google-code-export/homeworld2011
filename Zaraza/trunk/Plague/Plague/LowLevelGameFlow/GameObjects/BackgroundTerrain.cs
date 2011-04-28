@@ -6,7 +6,6 @@ using System.ComponentModel;
 using Microsoft.Xna.Framework;
 
 using PlagueEngine.Rendering.Components;
-using PlagueEngine.Physics.Components;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -15,28 +14,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// Terrain
+    /// BackgroundTerrain
     /********************************************************************************/
-    class Terrain : GameObjectInstance
+    class BackgroundTerrain : GameObjectInstance
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private TerrainComponent        terrainComponent     = null;
-        private TerrainSkinComponent    terrainSkinComponent = null;
+        private TerrainComponent        terrainComponent     = null;        
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(TerrainComponent      terrainComponent,
-                         TerrainSkinComponent terrainSkinComponent,
-                         Matrix world)
+        public void Init(TerrainComponent      terrainComponent,Matrix world)
         {
-            this.terrainComponent     = terrainComponent;
-            this.terrainSkinComponent = terrainSkinComponent;
+            this.terrainComponent     = terrainComponent;            
             this.World                = world;
         }
         /****************************************************************************/
@@ -47,8 +42,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            terrainComponent.ReleaseMe();
-            terrainSkinComponent.ReleaseMe();
+            terrainComponent.ReleaseMe();            
         }
         /****************************************************************************/
 
@@ -58,7 +52,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            TerrainData data = new TerrainData();
+            BackgroundTerrainData data = new BackgroundTerrainData();
             GetData(data);
 
             data.Width          = terrainComponent.Width;
@@ -74,10 +68,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.WeightMap      = terrainComponent.WeightMap;
             data.TextureTiling  = terrainComponent.TextureTiling;
 
-            data.Elasticity = terrainSkinComponent.Elasticity;
-            data.StaticRoughness = terrainSkinComponent.StaticRoughness;
-            data.DynamicRoughness = terrainSkinComponent.DynamicRoughness;
-
             return data;
         }
         /****************************************************************************/
@@ -87,10 +77,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
     /********************************************************************************/
-    /// Terrain Data
+    /// Background Terrain Data
     /********************************************************************************/
     [Serializable]
-    public class TerrainData : GameObjectInstanceData
+    public class BackgroundTerrainData : GameObjectInstanceData
     {
 
         /****************************************************************************/
@@ -119,14 +109,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public String WeightMap     { get; set; }
         [CategoryAttribute("Textures")]
         public float TextureTiling  { get; set; }
-
-        [CategoryAttribute("Physics")]
-        public float Elasticity { get; set; }
-        [CategoryAttribute("Physics")]
-        public float StaticRoughness { get; set; }
-        [CategoryAttribute("Physics")]
-        public float DynamicRoughness { get; set; }
-
         /****************************************************************************/
 
     }

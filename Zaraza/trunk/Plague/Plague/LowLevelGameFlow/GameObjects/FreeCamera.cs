@@ -76,6 +76,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.mouseListenerComponent.SubscribeKeys     (OnMouseKey,  MouseKeyAction.RightClick,MouseKeyAction.LeftClick);
             this.mouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
+
+            cameraComponent.ForceUpdate();
         }
         /****************************************************************************/
 

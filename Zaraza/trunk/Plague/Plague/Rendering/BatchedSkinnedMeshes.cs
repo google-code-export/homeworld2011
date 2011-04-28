@@ -231,7 +231,16 @@ namespace PlagueEngine.Rendering
 
                     foreach (SkinnedMeshComponent mesh in container[model][texturePack])
                     {
-                        mesh.Update(DeltaTime, mesh.GameObject.World);
+                        if (!renderer.CurrentCamera.Frustrum.Intersects(mesh.BoundingBox))
+                        {
+                            if (mesh.Blend) mesh.UpdateBoneBlendTransforms(DeltaTime);
+                            else mesh.UpdateBoneTransforms(DeltaTime);
+                            continue;
+                        }
+                        else
+                        {
+                            mesh.Update(DeltaTime, mesh.GameObject.World);
+                        }
                         
                         Matrix[] bones = mesh.SkinTransforms;
 
