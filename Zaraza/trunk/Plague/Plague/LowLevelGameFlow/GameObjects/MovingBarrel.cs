@@ -52,7 +52,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.physicsComponent = physcisComponent;
             this.World = world;
             keyboardListener = new KeyboardListenerComponent(this, true);
-            keyboardListener.SubscibeKeys(OnKey, Keys.Y, Keys.H);
+            keyboardListener.SubscibeKeys(OnKey, Keys.Y, Keys.H,Keys.G,Keys.J);
             controller = new PhysicsController(physcisComponent.Body);
         }
         /********************************************************************************/
@@ -63,33 +63,42 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (key == Keys.Y && state.IsDown())
             {
                 forward = true;
-                controller.MoveToPoint(Vector3.Forward+Vector3.Down, true);
+                controller.MoveForward(10.0f);
             }
-            else if(key==Keys.Y && state.IsUp())
-            {
-                forward = false;
-                
-            }
-
 
             if (key == Keys.H && state.IsDown())
             {
                 backward = true;
-                controller.MoveToPoint(Vector3.Backward + Vector3.Down, true);
+                controller.MoveBackward(10.0f);
             }
-            else if (key == Keys.H && state.IsUp())
+
+
+            if (key == Keys.G && state.IsDown())
+            {
+                controller.Rotate(1);
+            }
+
+            if (key == Keys.J && state.IsDown())
+            {
+                controller.Rotate(-1);
+            }
+            if (key == Keys.Y && state.IsUp())
+            {
+                forward = false;
+              
+            }
+
+            if (key == Keys.H && state.IsUp())
             {
                 backward = false;
+
             }
 
 
-            if (!backward && !forward)
+            if (!forward && !backward)
             {
-                //controller.DisableMoveToPoint();
-
-                //controller.SetVelocity(Vector3.Zero, Vector3.Zero, true);
+                controller.StopMoving();
             }
-
         }
 
 

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 
 
-
 using Microsoft.Xna.Framework;
 
 using JigLibX.Geometry;
@@ -14,6 +13,8 @@ using JigLibX.Math;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 
+
+
 /****************************************************************************/
 /// PlagueEngine.Physics.Components
 /****************************************************************************/
@@ -21,10 +22,11 @@ namespace PlagueEngine.Physics.Components
 {
 
     /****************************************************************************/
-    /// CylindricalBodyComponent
+    /// SphericalBodyComponent
     /****************************************************************************/
-    class CylindricalBodyComponent : RigidBodyComponent
+    class CapsuleBodyComponent : RigidBodyComponent
     {
+
 
         /****************************************************************************/
         /// Fields
@@ -34,10 +36,12 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
 
 
+
+
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public CylindricalBodyComponent(GameObjectInstance gameObject,
+        public CapsuleBodyComponent(GameObjectInstance gameObject,
                             float mass,
                             float radius,
                             float length,
@@ -56,18 +60,8 @@ namespace PlagueEngine.Physics.Components
 
             Capsule middle = new Capsule(Vector3.Zero, Matrix.Identity, radius, length - 2.0f * radius);
 
-            float sideLength = 2.0f * radius / (float)Math.Sqrt(2.0d);
-
-            Vector3 sides = new Vector3(-0.5f * sideLength, -0.5f * sideLength, -radius);
-
-            Box supply0 = new Box(sides, Matrix.Identity, new Vector3(sideLength, sideLength, length));
-
-            Box supply1 = new Box(Vector3.Transform(sides, Matrix.CreateRotationZ(MathHelper.PiOver4)),
-                Matrix.CreateRotationZ(MathHelper.PiOver4), new Vector3(sideLength, sideLength, length));
-
             Skin.AddPrimitive(middle, material);
-            Skin.AddPrimitive(supply0, material);
-            Skin.AddPrimitive(supply1, material);
+
 
             Skin.ApplyLocalTransform(new Transform(-SetMass(), Matrix.Identity));
 
@@ -85,11 +79,11 @@ namespace PlagueEngine.Physics.Components
             Body.SetBodyInertia(Ixx, Iyy, Izz);
             /***************************************/
 
-           
-            Matrix dummyWorld = world;
-          
 
-            
+            Matrix dummyWorld = world;
+
+
+
 
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
             dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
@@ -107,13 +101,14 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
 
             dummyWorld.Translation += skinTranslation;
-            
+
             MoveTo(dummyWorld);
             Enable();
 
 
         }
         /****************************************************************************/
+
 
 
 

@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 
 using PlagueEngine.Resources;
 using PlagueEngine.Rendering.Components;
-
+using PlagueEngine.Input.Components;
 
 /************************************************************************************/
 /// PlagueEngine.Rendering
@@ -38,7 +38,7 @@ namespace PlagueEngine.Rendering
         private  Vector3                     ambient                = new Vector3(0.05f, 0.05f, 0.05f);
         private  Vector3                     fogColor               = new Vector3(0.0f, 0.0f, 0.0f);
         private  Vector2                     fogRange               = new Vector2(50, 200);
-        private  bool                        fogEnabled             = true;      
+        private  bool                        fogEnabled             = false;      
         
         internal BatchedMeshes               batchedMeshes          = null;
         internal BatchedSkinnedMeshes        batchedSkinnedMeshes   = null;
@@ -71,7 +71,9 @@ namespace PlagueEngine.Rendering
             MeshComponent.renderer        = this;
             RenderableComponent.renderer  = this;
             SkinnedMeshComponent.renderer = this;
-            
+            ExtendedMouseMovementState.display = graphics.GraphicsDevice.DisplayMode;
+
+
             fogColor = clearColor.ToVector3();            
         }
         /****************************************************************************/

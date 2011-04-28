@@ -200,19 +200,19 @@ namespace PlagueEngine.HighLevelGameFlow
             ssdata.TimeRatio = 1.0f;
             ssdata.Diffuse = "flesh_diffuse";
             ssdata.Normals = "flesh_normals";
-            ssdata.World *= Matrix.CreateTranslation(200, 50, 0);
+            ssdata.World *= Matrix.CreateTranslation(245, 56, 30);
+
+
+            ssdata.Mass = 1;
+            ssdata.StaticRoughness = 0.1f;
+            ssdata.DynamicRoughness = 0.1f;
+            ssdata.Elasticity = 0.1f;
+            ssdata.Length = 5;
+            ssdata.Radius = 1;
+            ssdata.Immovable = false;
+            ssdata.SkinPitch = 90;
+            ssdata.Translation = new Vector3(0, 2.2f, 0);
             gameObjectsFactory.Create(ssdata);
-
-            //ssdata.Mass = 1;
-            //ssdata.StaticRoughness = 0.1f;
-            //ssdata.DynamicRoughness = 0.1f;
-            //ssdata.Elasticity = 0.1f;
-            //ssdata.Length = 66;
-            //ssdata.Width = 66;
-            //ssdata.Height = 66;
-            //ssdata.Immovable = false;
-
-            
         }
         /****************************************************************************/
 

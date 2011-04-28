@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 /****************************************************************************/
 /// PlagueEngine.Input.Components
 /****************************************************************************/
@@ -24,6 +25,7 @@ namespace PlagueEngine.Input.Components
         private bool moved; //zmiana w x,y,z
         private bool scrolled;//zmiana w z, tj bylo scrollniecie:D
         private float scrollDifference;//zmiana wartosci scrolla
+        internal static DisplayMode display = null;
         /****************************************************************************/
 
 
@@ -76,6 +78,26 @@ namespace PlagueEngine.Input.Components
             get { return this.scrolled; }
         }
         /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// is on window
+        /****************************************************************************/
+        public bool IsOnWindow
+        {
+            get 
+            {
+                if (position.X < 0 || position.Y < 0 || position.X > display.Width || position.Y > display.Height)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+        /****************************************************************************/
+
 
 
 
