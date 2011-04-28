@@ -329,6 +329,18 @@ namespace PlagueEngine.Tools
             MenuButton.dataClassType = typeof(MenuButtonData);
             gameObjectClassNames.Add(MenuButton);
 
+            gameObjectsClassName BackgroundTerrain = new gameObjectsClassName();
+            BackgroundTerrain.className = "BackgroundTerrain";
+            BackgroundTerrain.ClassType = typeof(BackgroundTerrain);
+            BackgroundTerrain.dataClassType = typeof(BackgroundTerrainData);
+            gameObjectClassNames.Add(BackgroundTerrain);
+
+            gameObjectsClassName WaterSurface = new gameObjectsClassName();
+            WaterSurface.className = "WaterSurface";
+            WaterSurface.ClassType = typeof(WaterSurface);
+            WaterSurface.dataClassType = typeof(WaterSurfaceData);
+            gameObjectClassNames.Add(WaterSurface);
+
         }
         /********************************************************************************/
 

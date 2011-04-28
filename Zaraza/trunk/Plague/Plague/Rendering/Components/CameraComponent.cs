@@ -48,7 +48,17 @@ namespace PlagueEngine.Rendering.Components
             this.zFar       = zFar;
             this.aspect     = renderer.Device.Viewport.AspectRatio;
 
-            ComputeProjectionMatrix();
+            ComputeProjectionMatrix();            
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Compute Frustrum
+        /****************************************************************************/
+        private void ComputeFrustrum()
+        {
+            Frustrum = new BoundingFrustum(ViewProjection);
         }
         /****************************************************************************/
 
@@ -213,6 +223,7 @@ namespace PlagueEngine.Rendering.Components
         private void ComputeProjectionMatrix()
         {
             projection = Matrix.CreatePerspectiveFieldOfView(FoV, aspect, ZNear, ZFar);
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -226,6 +237,8 @@ namespace PlagueEngine.Rendering.Components
             gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
             gameObject.World.Right   = Vector3.Transform(gameObject.World.Right,   quaternion);
             gameObject.World.Up      = Vector3.Transform(gameObject.World.Up,      quaternion);
+
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -295,7 +308,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveForward(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Forward * step);             
+            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Forward * step);
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -305,7 +319,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveUp(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Up * step * -1);            
+            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Up * step * -1);
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -315,7 +330,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveRight(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Right * step);         
+            gameObject.World *= Matrix.CreateTranslation(gameObject.World.Right * step);
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -325,7 +341,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveX(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(step, 0, 0);    
+            gameObject.World *= Matrix.CreateTranslation(step, 0, 0);
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -336,6 +353,7 @@ namespace PlagueEngine.Rendering.Components
         public void MoveY(float step)
         {
             gameObject.World *= Matrix.CreateTranslation(0, step * -1, 0);
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -345,7 +363,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void MoveZ(float step)
         {
-            gameObject.World *= Matrix.CreateTranslation(0, 0, step);           
+            gameObject.World *= Matrix.CreateTranslation(0, 0, step);
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -356,6 +375,7 @@ namespace PlagueEngine.Rendering.Components
         public void LookAt(ref Vector3 position, ref Vector3 target, ref Vector3 up)
         {
             gameObject.World = Matrix.Invert(Matrix.CreateLookAt(position, target, up));
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -366,6 +386,7 @@ namespace PlagueEngine.Rendering.Components
         public void LookAt(Vector3 position,Vector3 target,Vector3 up)
         {
             gameObject.World = Matrix.Invert(Matrix.CreateLookAt(position, target, up));
+            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -388,6 +409,24 @@ namespace PlagueEngine.Rendering.Components
             if (renderer.CurrentCamera == this) renderer.CurrentCamera = null;
             base.ReleaseMe();
         }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Force Update
+        /****************************************************************************/
+        public void ForceUpdate()
+        {
+            ComputeProjectionMatrix();
+            ComputeFrustrum();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Frustrum 
+        /****************************************************************************/
+        public BoundingFrustum Frustrum { get; private set; }
         /****************************************************************************/
 
     }

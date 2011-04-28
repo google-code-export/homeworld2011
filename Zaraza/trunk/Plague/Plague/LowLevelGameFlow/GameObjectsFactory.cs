@@ -125,6 +125,12 @@ namespace PlagueEngine.LowLevelGameFlow
                     result = CreateMenuButton(data);
                     Diagnostics.PushLog("Menu Button created!!!");
                     break;
+                case "BackgroundTerrain":
+                    result = CreateBackgroundTerrain(data);
+                    break;
+                case "WaterSurface":
+                    result = CreateWaterSurface(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -569,21 +575,6 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             tdata.CellSize,
                                                                             tdata.TextureTiling),
 
-                        renderingComponentsFactory.CreateWaterSurfaceComponent(result,
-                                                                            tdata.Width  * tdata.CellSize,
-                                                                            tdata.Length * tdata.CellSize,
-                                                                            tdata.Level,
-                                                                            tdata.Color,
-                                                                            tdata.ColorAmount,
-                                                                            tdata.WaveLength,
-                                                                            tdata.WaveHeight,
-                                                                            tdata.WaveSpeed,
-                                                                            tdata.NormalMap,
-                                                                            tdata.Bias,
-                                                                            tdata.WTextureTiling,
-                                                                            tdata.ClipPlaneAdjustment,
-                                                                            tdata.SpecularStength),
-
                          physicsComponentFactory.CreateTerrainSkinComponent(result,
                                                                             tdata.HeightMap,
                                                                             tdata.Width,
@@ -594,6 +585,36 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             tdata.StaticRoughness,
                                                                             tdata.DynamicRoughness),
 
+                                                                            tdata.World);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create Background Terrain
+        /****************************************************************************/
+        private BackgroundTerrain CreateBackgroundTerrain(GameObjectInstanceData data)
+        {
+            BackgroundTerrain result = new BackgroundTerrain();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            BackgroundTerrainData tdata = (BackgroundTerrainData)data;
+
+            result.Init(renderingComponentsFactory.CreateTerrainComponent(result,
+                                                                            tdata.HeightMap,
+                                                                            tdata.BaseTexture,
+                                                                            tdata.RTexture,
+                                                                            tdata.GTexture,
+                                                                            tdata.BTexture,
+                                                                            tdata.WeightMap,
+                                                                            tdata.Width,
+                                                                            tdata.Length,
+                                                                            tdata.Height,
+                                                                            tdata.CellSize,
+                                                                            tdata.TextureTiling),                        
                                                                             tdata.World);
 
             return result;
@@ -706,6 +727,36 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Create Water Surface
+        /****************************************************************************/
+        private WaterSurface CreateWaterSurface(GameObjectInstanceData data)
+        {
+            WaterSurface result = new WaterSurface();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            WaterSurfaceData tdata = (WaterSurfaceData)data;
+
+            result.World = tdata.World;
+            result.Init(renderingComponentsFactory.CreateWaterSurfaceComponent(result,
+                                                                            tdata.Width,
+                                                                            tdata.Length,
+                                                                            0,
+                                                                            tdata.Color,
+                                                                            tdata.ColorAmount,
+                                                                            tdata.WaveLength,
+                                                                            tdata.WaveHeight,
+                                                                            tdata.WaveSpeed,
+                                                                            tdata.NormalMap,
+                                                                            tdata.Bias,
+                                                                            tdata.WTextureTiling,
+                                                                            tdata.ClipPlaneAdjustment,
+                                                                            tdata.SpecularStength));
+            return result;
+        }
+        /****************************************************************************/
 
     }
     /********************************************************************************/    

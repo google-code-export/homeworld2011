@@ -27,6 +27,7 @@ namespace PlagueEngine.Rendering
         public VertexBuffer VertexBuffer;
         public IndexBuffer  IndexBuffer;
         public String       Name;
+        public BoundingBox  BoundingBox;
         /****************************************************************************/
 
 

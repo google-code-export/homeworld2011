@@ -70,12 +70,12 @@ namespace PlagueEngine
 
             InitRenderer();
 
-            gui = new GUI.GUI(this, Services);
+            //gui = new GUI.GUI(this, Services);
             
             physicsManager = new PhysicsManager(contentManager);
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,
-                                                        gui.ComponentsFactory,
+                                                        null,
                                                         contentManager.GameObjectsDefinitions,
                                                         physicsManager.physicsComponentFactory);
 
@@ -103,7 +103,7 @@ namespace PlagueEngine
         protected override void Initialize()
         {
             base.Initialize();
-            InitGUI();
+            //InitGUI();
             
             Level.PutSomeObjects();
 
@@ -170,7 +170,7 @@ namespace PlagueEngine
 
                 input.Update();
                 //TODO: sprawdziæ czy konieczne i usun¹æ jeœli niepotrzebne
-                gui.Manager.Update(gameTime);
+                //gui.Manager.Update(gameTime);
 
                 eventsSystem.Update();
                 if (!gameStopped)

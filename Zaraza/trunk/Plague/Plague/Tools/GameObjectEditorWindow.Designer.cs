@@ -61,11 +61,11 @@
             this.buttonNew = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBoxGamePaused = new System.Windows.Forms.CheckBox();
             this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
             this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -160,6 +160,7 @@
             this.gameObjectsName.Location = new System.Drawing.Point(85, 6);
             this.gameObjectsName.Name = "gameObjectsName";
             this.gameObjectsName.Size = new System.Drawing.Size(282, 21);
+            this.gameObjectsName.Sorted = true;
             this.gameObjectsName.TabIndex = 3;
             this.gameObjectsName.SelectedIndexChanged += new System.EventHandler(this.FillNames);
             // 
@@ -169,6 +170,7 @@
             this.ComboboxDefinitions.Location = new System.Drawing.Point(85, 32);
             this.ComboboxDefinitions.Name = "ComboboxDefinitions";
             this.ComboboxDefinitions.Size = new System.Drawing.Size(255, 21);
+            this.ComboboxDefinitions.Sorted = true;
             this.ComboboxDefinitions.TabIndex = 10;
             this.ComboboxDefinitions.SelectedIndexChanged += new System.EventHandler(this.ComboboxDefinitions_SelectedIndexChanged);
             // 
@@ -303,6 +305,7 @@
             this.comboBoxFilterId.Location = new System.Drawing.Point(91, 3);
             this.comboBoxFilterId.Name = "comboBoxFilterId";
             this.comboBoxFilterId.Size = new System.Drawing.Size(282, 21);
+            this.comboBoxFilterId.Sorted = true;
             this.comboBoxFilterId.TabIndex = 15;
             this.comboBoxFilterId.SelectedIndexChanged += new System.EventHandler(this.LoadFilteredID);
             // 
@@ -422,6 +425,17 @@
             this.tabPage4.Text = "Game Properites";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(204, 54);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(167, 17);
+            this.checkBox1.TabIndex = 7;
+            this.checkBox1.Text = "Show heightmap collision skin";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // checkBoxGamePaused
             // 
             this.checkBoxGamePaused.AutoSize = true;
@@ -461,17 +475,6 @@
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(389, 492);
             this.panel6.TabIndex = 22;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(204, 54);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(167, 17);
-            this.checkBox1.TabIndex = 7;
-            this.checkBox1.Text = "Show heightmap collision skin";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // GameObjectEditorWindow
             // 

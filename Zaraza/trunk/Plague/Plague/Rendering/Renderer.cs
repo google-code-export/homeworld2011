@@ -35,7 +35,7 @@ namespace PlagueEngine.Rendering
         private  SunlightComponent           sunlight               = null;
         
         private  Color                       clearColor             = Color.FromNonPremultiplied(new Vector4(0.01f,0.01f,0.1f,1));
-        private  Vector3                     ambient                = new Vector3(0.05f, 0.05f, 0.05f);
+        private  Vector3                     ambient                = new Vector3(0.2f, 0.2f, 0.2f);
         private  Vector3                     fogColor               = new Vector3(0.0f, 0.0f, 0.0f);
         private  Vector2                     fogRange               = new Vector2(50, 200);
         private  bool                        fogEnabled             = false;      
@@ -186,6 +186,7 @@ namespace PlagueEngine.Rendering
 
             foreach (RenderableComponent renderableComponent in preRender)
             {
+                if (!renderableComponent.FrustrumInteresction(CurrentCamera.Frustrum)) continue;
                 renderableComponent.PreRender(currentCamera);
             }
 
@@ -195,6 +196,7 @@ namespace PlagueEngine.Rendering
                     currentCamera.ViewProjection,
                     false,
                     Vector4.Zero);
+
         }
         /****************************************************************************/
 
@@ -212,6 +214,8 @@ namespace PlagueEngine.Rendering
             /************************************/
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
+                if (!renderableComponent.FrustrumInteresction(CurrentCamera.Frustrum)) continue;
+
                 renderableComponent.Effect.Parameters["Ambient"].SetValue(ambient);
                 renderableComponent.Effect.Parameters["CameraPosition"].SetValue(cameraPosition);
                 renderableComponent.Effect.Parameters["View"].SetValue(view);

@@ -191,7 +191,7 @@ namespace PlagueEngine.Rendering.Components
             
             effect.Parameters["ReflectedView"].SetValue(reflectedView);
 
-            Vector4 clipPlane = new Vector4(0, 1, 0, -surfacePosition + clipPlaneAdjustment);
+            Vector4 clipPlane = new Vector4(0, 1, 0, surfacePosition + clipPlaneAdjustment);
 
             RasterizerState defaultRasterizerState = device.RasterizerState;
             device.RasterizerState = rasterizerState;
@@ -239,6 +239,16 @@ namespace PlagueEngine.Rendering.Components
             effect.Parameters["WaveSpeed"]       .SetValue(waveSpeed);
             effect.Parameters["Bias"]            .SetValue(bias);
             effect.Parameters["SpecularStrength"].SetValue(specularStrength);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Frustrum Interesction
+        /****************************************************************************/
+        public override bool FrustrumInteresction(BoundingFrustum frustrum)
+        {
+            return (frustrum.Intersects(new Plane(0, 1, 0, surfacePosition)) == PlaneIntersectionType.Intersecting);
         }
         /****************************************************************************/
 

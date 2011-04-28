@@ -37,6 +37,7 @@ namespace PlagueEngine.Rendering.Components
         private Matrix[]      skinBlendTransforms;
         
         private List<String> subscribedAnimations = new List<String>();
+        private Vector3[] corners = new Vector3[8];
         /****************************************************************************/
         
 
@@ -448,6 +449,20 @@ namespace PlagueEngine.Rendering.Components
             for (int bone = 0; bone < skinBlendTransforms.Length; bone++)
             {
                 skinBlendTransforms[bone] = skinningData.InverseBindPose[bone] * worldBlendTransforms[bone];
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Bounding Box
+        /****************************************************************************/
+        public BoundingBox BoundingBox
+        {
+            get
+            {
+                Vector3.Transform(Model.BoundingBox.GetCorners().ToArray(), ref gameObject.World, corners);
+                return BoundingBox.CreateFromPoints(corners);
             }
         }
         /****************************************************************************/
