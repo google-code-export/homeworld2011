@@ -35,9 +35,6 @@ namespace PlagueEngine.Physics
         private ConstraintVelocity constraintVelocity = new ConstraintVelocity();
 
 
-        private float dt;
-        private bool forward = false;
-        private bool backward = false;
         /****************************************************************************/
 
 
@@ -78,9 +75,8 @@ namespace PlagueEngine.Physics
 
         public void StopMoving()
         {
-            body.DesiredVelocity = new Vector3();
+            body.DesiredVelocity = new Vector3(0,0,0);
             
-            dt = 0;
             //body.Controllable = false;
         }
 

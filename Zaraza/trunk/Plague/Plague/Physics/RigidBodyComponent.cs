@@ -369,7 +369,7 @@ namespace PlagueEngine.Physics
                 AngularVelocity = Vector3.Zero;
 
                 DesiredOrientation = this.Orientation;
-                Orientation = this.Orientation;
+         
 
                 DesiredVelocity = Vector3.Transform(DesiredVelocity, DesiredOrientation);
                 Vector3 deltaVel = DesiredVelocity - Velocity;
@@ -379,8 +379,9 @@ namespace PlagueEngine.Physics
                 deltaVel *= 10.0f;
 
 
-                float forceFactor = 2000.0f;
+                float forceFactor = 90.0f;
                 AddWorldForce(deltaVel * Mass * dt * forceFactor);
+                //AddBodyForce(DesiredVelocity*3 * Mass * dt * forceFactor);
 
             }
       
