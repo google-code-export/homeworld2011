@@ -174,12 +174,15 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         public void ShowGameObjectProperties(uint gameObjectID)
         {
-            currentEditGameObject = factory.GameObjects[gameObjectID].GetData();
-            currentEditGameObject.Position = currentEditGameObject.World.Translation;
-            propertyGrid2.SelectedObject = currentEditGameObject;
-            comboBoxFilterId.SelectedIndex = 0;
-            comboboxGameObjectId.SelectedItem = gameObjectID.ToString();
+            if (factory.GameObjects.ContainsKey(gameObjectID))
+            {
 
+                currentEditGameObject = factory.GameObjects[gameObjectID].GetData();
+                currentEditGameObject.Position = currentEditGameObject.World.Translation;
+                propertyGrid2.SelectedObject = currentEditGameObject;
+                comboBoxFilterId.SelectedIndex = 0;
+                comboboxGameObjectId.SelectedItem = gameObjectID.ToString();
+            }
 
             
         }

@@ -28,18 +28,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         SkinnedMeshComponent meshComponent = null;
         KeyboardListenerComponent keyboard = null;
-        //SquareBodyComponent body = null;
+        CapsuleBodyComponent body = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard,/*SquareBodyComponent body,*/ Matrix world)
+        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard,CapsuleBodyComponent body, Matrix world)
         {
             this.meshComponent = meshComponent;
             this.keyboard      = keyboard;
-            //this.body          = body;
+            this.body          = body;
             this.World         = world;
 
             keyboard.SubscibeKeys(OnKey, Keys.D0,Keys.D1,Keys.D2,Keys.D3,Keys.D4,Keys.D5,Keys.D8,Keys.D9);
@@ -111,7 +111,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void ReleaseComponents()
         {
             meshComponent.ReleaseMe();
-            //body.ReleaseMe();
+            body.ReleaseMe();
             keyboard.ReleaseMe();
         }
         /****************************************************************************/
@@ -144,20 +144,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.BlendClipTime = meshComponent.BlendClipTime.TotalSeconds;
             data.BlendKeyframe = meshComponent.BlendKeyframe;
 
-            //data.Immovable        = body.Immovable;
-            //data.IsEnabled        = body.IsEnabled;
-            //data.Elasticity       = body.Elasticity;
-            //data.StaticRoughness  = body.StaticRoughness;
-            //data.DynamicRoughness = body.DynamicRoughness;
-            //data.Mass             = body.Mass;
-            //data.Translation      = body.SkinTranslation;
-            //data.SkinPitch        = body.Pitch;
-            //data.SkinRoll         = body.Roll;
-            //data.SkinYaw          = body.Yaw;
-                
-            //data.Length = body.Length;
-            //data.Width  = body.Width;
-            //data.Height = body.Height;
+            data.Immovable = body.Immovable;
+            data.IsEnabled = body.IsEnabled;
+            data.Elasticity = body.Elasticity;
+            data.StaticRoughness = body.StaticRoughness;
+            data.DynamicRoughness = body.DynamicRoughness;
+            data.Mass = body.Mass;
+            data.Translation = body.SkinTranslation;
+            data.SkinPitch = body.Pitch;
+            data.SkinRoll = body.Roll;
+            data.SkinYaw = body.Yaw;
+
+            data.Radius = body.Radius;
+            data.Length = body.Length;
 
             return data;
         }
@@ -224,10 +223,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float Length           { get; set; }
 
         [CategoryAttribute("Collision Skin")]
-        public float Height           { get; set; }
-
-        [CategoryAttribute("Collision Skin")]
-        public float Width            { get; set; }
+        public float Radius           { get; set; }
 
         [CategoryAttribute("Collision Skin")]
         public Vector3 Translation { get; set; }

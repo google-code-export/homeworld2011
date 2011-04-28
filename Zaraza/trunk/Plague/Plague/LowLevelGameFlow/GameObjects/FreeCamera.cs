@@ -43,6 +43,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Clock                     clock                     = TimeControl.CreateClock();
 
         private float                     mouseX, mouseY;
+        private bool                      isOnWindow = false;
         ConstraintWorldPoint              objectController = new ConstraintWorldPoint();
         ConstraintVelocity                damperController = new ConstraintVelocity();
         bool                              middleButton = false;
@@ -137,7 +138,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
                 
-                if (middleButton == false)
+                if (middleButton == false && isOnWindow)
                 {
                     CollisionSkin skin;
                     Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
@@ -207,7 +208,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             mouseX = mouseMovementState.Position.X;
             mouseY = mouseMovementState.Position.Y;
-
+            isOnWindow = mouseMovementState.IsOnWindow;
             if (rotation && mouseMovementState.Moved)
             {
                 cameraComponent.RotateY(-rotationSpeed * mouseMovementState.Difference.X);

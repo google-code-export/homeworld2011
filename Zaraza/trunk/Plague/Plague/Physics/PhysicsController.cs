@@ -24,7 +24,7 @@ namespace PlagueEngine.Physics
         /// Fields
         /****************************************************************************/
         internal static PhysicsManager physicsManager;
-        private Body body;
+        private BodyExtended body;
         private Vector3 worldForce = Vector3.Zero;
         private Vector3 worldTorque = Vector3.Zero;
 
@@ -33,6 +33,11 @@ namespace PlagueEngine.Physics
 
         private ConstraintWorldPoint constraintPoint = new ConstraintWorldPoint();
         private ConstraintVelocity constraintVelocity = new ConstraintVelocity();
+
+
+        private float dt;
+        private bool forward = false;
+        private bool backward = false;
         /****************************************************************************/
 
 
@@ -43,7 +48,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public PhysicsController(Body body)
         {
-            this.body = body;
+            this.body = (BodyExtended)body;
             physicsManager.controllers.Add(this);
             EnableController();
         }
@@ -65,7 +70,30 @@ namespace PlagueEngine.Physics
 
 
 
+        public void MoveForward(float dt)
+        {
+            body.Controllable = true;
+            body.DesiredVelocity = new Vector3(1,0,0) * dt;
+        }
 
+        public void StopMoving()
+        {
+            body.DesiredVelocity = new Vector3();
+            
+            dt = 0;
+            //body.Controllable = false;
+        }
+
+        public void MoveBackward(float dt)
+        {
+            body.Controllable = true;
+            body.DesiredVelocity = new Vector3(-1,0,0) * dt;
+        }
+
+        public void Rotate(float dt)
+        {
+            body.Orientation *= Matrix.CreateRotationY(MathHelper.ToRadians(dt));
+        }
         /****************************************************************************/
         /// Set Veolicty
         /****************************************************************************/

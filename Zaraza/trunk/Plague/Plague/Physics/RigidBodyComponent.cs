@@ -31,7 +31,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Body body;
+        private BodyExtended body;
         private CollisionSkin skin;
         internal static PhysicsManager physicsManager;
         private float mass;
@@ -53,11 +53,11 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public RigidBodyComponent(GameObjectInstance gameObject, float mass, bool immovable, MaterialProperties material, Vector3 translation,float yaw,float pitch,float roll)
+        public RigidBodyComponent(GameObjectInstance gameObject, float mass, bool immovable, MaterialProperties material, Vector3 translation,float yaw,float pitch,float roll )
             : base(gameObject)
         {
             this.mass = mass;
-            body = new Body();            
+            body = new BodyExtended();            
             skin = new CollisionSkin(body);
             body.CollisionSkin = skin;
             skin.ExternalData = gameObject;
@@ -67,8 +67,7 @@ namespace PlagueEngine.Physics
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
-
-
+            
             physicsManager.rigidBodies.Add(gameObject.ID, this);
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
         }
@@ -197,7 +196,7 @@ namespace PlagueEngine.Physics
         {
             
             gameObject.World=body.Orientation;
-           
+        
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(-roll));
             gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
             gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
@@ -213,8 +212,10 @@ namespace PlagueEngine.Physics
             gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
             gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
 
-            gameObject.World.Translation=body.Position - translation;
-    
+            Vector3 t = Vector3.Transform(translation, gameObject.World);
+
+
+            gameObject.World.Translation = body.Position - t;
         }
         /****************************************************************************/
 
@@ -337,7 +338,55 @@ namespace PlagueEngine.Physics
     }
     /****************************************************************************/
 
+    class BodyExtended : Body
+    {
 
+        public BodyExtended()
+            : base()
+        {
+            DesiredVelocity = Vector3.Zero;
+            DesiredOrientation = this.Orientation;
+            Controllable = false;
+            AllowFreezing = false;
+        }
+        public bool Controllable { get; set; }
+        public Vector3 DesiredVelocity { get; set; }
+        public Matrix DesiredOrientation { get; set; }
+
+       
+
+        public override void AddExternalForces(float dt)
+        {
+            ClearForces();
+
+
+            if (Controllable)
+            {
+                this.AllowFreezing = false;
+                this.EnableBody();
+
+
+                AngularVelocity = Vector3.Zero;
+
+                DesiredOrientation = this.Orientation;
+                Orientation = this.Orientation;
+
+                DesiredVelocity = Vector3.Transform(DesiredVelocity, DesiredOrientation);
+                Vector3 deltaVel = DesiredVelocity - Velocity;
+
+
+                deltaVel.Y = 0.0f;
+                deltaVel *= 10.0f;
+
+
+                float forceFactor = 2000.0f;
+                AddWorldForce(deltaVel * Mass * dt * forceFactor);
+
+            }
+      
+            AddGravityToExternalForce();
+        }
+    }
 
 }
 /****************************************************************************/
