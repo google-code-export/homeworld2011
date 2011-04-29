@@ -41,9 +41,9 @@ Tabela ma prostą strukturę:
 <td> ? </td>
 </tr>
 <tr>
-<td>*Oświetlenie* </td>
-<td> - </td>
-<td> - </td>
+<td> </td>
+<td> *Oświetlenie* </td>
+<td> Krzysztof </td>
 <td> - </td>
 <td> - </td>
 </tr>
@@ -299,4 +299,5 @@ Tabela ma prostą strukturę:
 <td> Krzysztof </td>
 <td> _Historia zdarzeń_ </td>
 <td> - </td>
+</tr>
 </table>   
