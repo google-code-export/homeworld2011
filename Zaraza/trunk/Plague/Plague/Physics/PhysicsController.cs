@@ -65,12 +65,46 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
 
 
+        public void MoveUp(float dt)
+        {
+            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+            body.Controllable = true;
+            body.DesiredVelocity = Vector3.Up * dt;
+        }
 
+        public void MoveDown(float dt)
+        {
+            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+            body.Controllable = true;
+            body.DesiredVelocity = Vector3.Down * dt;
+        }
+        public void MoveLeft(float dt)
+        {
+            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+            body.Controllable = true;
+            body.DesiredVelocity = Vector3.Left * dt;
+        }
+
+        public void MoveRight(float dt)
+        {
+            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+            body.Controllable = true;
+            body.DesiredVelocity = Vector3.Right * dt;
+        }
+
+        public void MoveBackward(float dt)
+        {
+            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+            body.Controllable = true;
+            body.DesiredVelocity = Vector3.Backward * dt;
+        }
 
         public void MoveForward(float dt)
         {
+            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+
             body.Controllable = true;
-            body.DesiredVelocity = new Vector3(1,0,0) * dt;
+            body.DesiredVelocity = Vector3.Forward * dt;
         }
 
         public void StopMoving()
@@ -80,15 +114,25 @@ namespace PlagueEngine.Physics
             //body.Controllable = false;
         }
 
-        public void MoveBackward(float dt)
+        public bool IsControlEnabled
+        {
+            get { return body.Controllable; }
+        }
+        public void DisableControl()
+        {
+            body.Controllable = false;
+        }
+
+        public void EnableControl()
         {
             body.Controllable = true;
-            body.DesiredVelocity = new Vector3(-1,0,0) * dt;
+            body.SetUpOrientationForController();
         }
+
 
         public void Rotate(float dt)
         {
-            body.Orientation *= Matrix.CreateRotationY(MathHelper.ToRadians(dt));
+            body.DesiredOrientation *= Matrix.CreateRotationY(MathHelper.ToRadians(dt));
         }
         /****************************************************************************/
         /// Set Veolicty

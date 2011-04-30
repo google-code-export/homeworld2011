@@ -100,26 +100,26 @@ namespace PlagueEngine.HighLevelGameFlow
         public void PutSomeObjects()
         {
 
-            MovingBarrelData dddtata = new MovingBarrelData();
-            dddtata.Type = (typeof(MovingBarrel));
-            dddtata.Model = "Barrel";
-            dddtata.Diffuse = "Barrel_diffuse";
-            dddtata.Specular = "Barrel_specular";
-            dddtata.Normals = "Barrel_normals";
-            dddtata.DynamicRoughness = 0.5f;
-            dddtata.Elasticity = 0.1f;
-            dddtata.StaticRoughness = 0.5f;
-            dddtata.Height = 3.3f;
-            dddtata.Lenght = 3.3f;
-            dddtata.Width = 3.3f;
-            dddtata.Immovable = false;
-            dddtata.InstancingMode = 1;
-            dddtata.Mass = 1;
+            //MovingBarrelData dddtata = new MovingBarrelData();
+            //dddtata.Type = (typeof(MovingBarrel));
+            //dddtata.Model = "Barrel";
+            //dddtata.Diffuse = "Barrel_diffuse";
+            //dddtata.Specular = "Barrel_specular";
+            //dddtata.Normals = "Barrel_normals";
+            //dddtata.DynamicRoughness = 0.5f;
+            //dddtata.Elasticity = 0.1f;
+            //dddtata.StaticRoughness = 0.5f;
+            //dddtata.Height = 3.3f;
+            //dddtata.Lenght = 3.3f;
+            //dddtata.Width = 3.3f;
+            //dddtata.Immovable = false;
+            //dddtata.InstancingMode = 1;
+            //dddtata.Mass = 1;
             
         
-                    dddtata.World = Matrix.CreateTranslation(245 , 54, 35);
-                    dddtata.Pitch = 90;
-                    gameObjectsFactory.Create(dddtata);
+            //        dddtata.World = Matrix.CreateTranslation(245 , 54, 35);
+            //        dddtata.Pitch = 90;
+            //        gameObjectsFactory.Create(dddtata);
 
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
