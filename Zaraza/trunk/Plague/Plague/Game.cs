@@ -101,10 +101,10 @@ namespace PlagueEngine
         /// </summary>
         /****************************************************************************/
         protected override void Initialize()
-        {
-            base.Initialize();
+        {            
             //InitGUI();
-            
+            renderer.InitDeferredHelpers();
+
             Level.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
@@ -115,7 +115,9 @@ namespace PlagueEngine
             
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager,renderer,input,this);
             gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
-                       
+            
+            
+            base.Initialize();              
             Diagnostics.PushLog("Initialization complete");
         }   
         /****************************************************************************/
@@ -130,8 +132,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void LoadContent()
         {
-            renderer.batchedMeshes.LoadEffects();
-            renderer.batchedSkinnedMeshes.LoadEffect();
+            renderer.LoadEffects();
 
             Diagnostics.PushLog("Loading content complete");
         }

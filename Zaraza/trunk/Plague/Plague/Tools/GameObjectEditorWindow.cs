@@ -341,6 +341,17 @@ namespace PlagueEngine.Tools
             WaterSurface.dataClassType = typeof(WaterSurfaceData);
             gameObjectClassNames.Add(WaterSurface);
 
+            gameObjectsClassName PointLight = new gameObjectsClassName();
+            PointLight.className = "PointLight";
+            PointLight.ClassType = typeof(PointLight);
+            PointLight.dataClassType = typeof(PointLightData);
+            gameObjectClassNames.Add(PointLight);
+
+            gameObjectsClassName GlowStick = new gameObjectsClassName();
+            GlowStick.className = "GlowStick";
+            GlowStick.ClassType = typeof(GlowStick);
+            GlowStick.dataClassType = typeof(GlowStickData);
+            gameObjectClassNames.Add(GlowStick);
         }
         /********************************************************************************/
 

@@ -12,35 +12,6 @@ float4x4 Bones[MaxBones];
 
 
 /****************************************************/
-/// Sunlight
-/****************************************************/
-float3 Ambient;
-
-bool   SunlightEnabled = false;
-float3 SunlightDirection;
-float3 SunlightDiffuse;
-float3 SunlightSpecular;
-/****************************************************/
-
-
-/****************************************************/
-/// Fog
-/****************************************************/
-bool FogEnabled = false;
-float3 FogColor;
-float2 FogRange;
-/****************************************************/
-
-
-/****************************************************/
-/// Clip Plane
-/****************************************************/
-bool ClipPlaneEnabled = false;
-float4 ClipPlane;
-/****************************************************/
-
-
-/****************************************************/
 /// Diffuse Map
 /****************************************************/
 texture DiffuseMap;
@@ -114,7 +85,7 @@ struct VSSimpleOutput
     float4	 Position	   : POSITION0;
 	float2	 UV			   : TEXCOORD0;
 	float3	 WorldPosition : TEXCOORD1;
-	float    Depth         : TEXCOORD3;
+	float2   Depth         : TEXCOORD3;
 	float3	 Normal	       : TEXCOORD2;	
 };
 /****************************************************/
@@ -128,7 +99,7 @@ struct VSComplexOutput
     float4	 Position	   : POSITION0;
 	float2	 UV			   : TEXCOORD0;
 	float3	 WorldPosition : TEXCOORD1;
-	float    Depth         : TEXCOORD2;
+	float2   Depth         : TEXCOORD2;
 	float3x3 TBN	       : TEXCOORD3;	
 };
 /****************************************************/
@@ -155,7 +126,8 @@ VSSimpleOutput VSSimpleFunction(VSSimpleInput input)
 	output.Position		 = mul(worldPosition,ViewProjection);
 
 	output.Normal		 = mul(input.Normal  ,skinTransform);
-	output.Depth		 = output.Position.z;
+	output.Depth.x		 = output.Position.z;
+	output.Depth.y		 = output.Position.w;
     
 	return output;
 }
@@ -186,7 +158,8 @@ VSComplexOutput VSComplexFunction(VSComplexInput input)
 	output.TBN[1]		 = mul(input.Binormal, skinTransform);
 	output.TBN[2]		 = mul(input.Normal  , skinTransform);
 
-	output.Depth		 = output.Position.z;
+	output.Depth.x		 = output.Position.z;
+	output.Depth.y		 = output.Position.w;
 
     return output;
 }
@@ -194,48 +167,35 @@ VSComplexOutput VSComplexFunction(VSComplexInput input)
 
 
 /****************************************************/
-/// ClipMe
+/// PixelShaderOutput
 /****************************************************/
-void ClipMe(float3 worldPosition)
+struct PixelShaderOutput
 {
-	if (ClipPlaneEnabled)
-	{
-		clip(dot(float4(worldPosition, 1), ClipPlane));		
-	}
-}
+	float4 Color  : COLOR0;
+	float4 Normal : COLOR1;
+	float4 Depth  : COLOR2;
+};
 /****************************************************/
 
 
 /****************************************************/
 /// Pixel Shader Diffuse Normal Function
 /****************************************************/
-float4 PSDNFunction(VSComplexOutput input) : COLOR0
+PixelShaderOutput PSDNFunction(VSComplexOutput input)
 {
-	ClipMe(input.WorldPosition);
-	 
-	float3 diffuseTex = tex2D(DiffuseMapSampler,input.UV);
-	float3 output = Ambient * diffuseTex;
+	PixelShaderOutput output;
 
-	if(SunlightEnabled)
-	{
-		float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
-	 
-		normal = normalize(mul(normal,input.TBN));		
-
-		float3 lightDirection = -normalize(SunlightDirection);
+	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 	
-		float NdotL = saturate(dot(normal,lightDirection));
-		float3 diffuse = NdotL * SunlightDiffuse;
+	float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
+	
+	normal = normalize(mul(normal,input.TBN));				
 
-		output = diffuse * diffuseTex;	
-	}
-
-	if(FogEnabled)
-	{	
-		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
-	}
-
-    return float4(output, 1);
+	output.Color  = float4(texColor,0);
+	output.Normal = float4(0.5f * (normal + 1.0f),0.0f);
+	output.Depth  = input.Depth.x / input.Depth.y;
+	
+    return output;
 }
 /****************************************************/
 
@@ -243,48 +203,23 @@ float4 PSDNFunction(VSComplexOutput input) : COLOR0
 /****************************************************/
 /// Pixel Shader Diffuse Specular Normal Function
 /****************************************************/
-float4 PSDSNFunction(VSComplexOutput input) : COLOR0
+PixelShaderOutput PSDSNFunction(VSComplexOutput input) : COLOR0
 {
-	ClipMe(input.WorldPosition);
+	PixelShaderOutput output;
 
-	float3 diffuseTex = tex2D(DiffuseMapSampler,input.UV);
-	float3 output = Ambient * diffuseTex;
+	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 
-	if(SunlightEnabled)
-	{
-		float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
-	 
-		normal = normalize(mul(normal,input.TBN));	
+	float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
 
-		float3 lightDirection = -normalize(SunlightDirection);
-	
-		float NdotL = saturate(dot(normal,lightDirection));
-		float3 diffuse = NdotL * SunlightDiffuse;
+	normal = normalize(mul(normal,input.TBN));	
 
-		output += diffuse * diffuseTex;	
+	float2 specular = tex2D(SpecularMapSampler,input.UV);
 
-		if(NdotL > 0)
-		{	
-			float4 specularColor = tex2D(SpecularMapSampler,input.UV);
-
-			float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
-	
-			float3 reflectionVector = reflect(lightDirection,normal);
-			float  specularValue	= dot(normalize(reflectionVector), viewDirection);
-	
-			specularValue = pow(specularValue, specularColor.a * 100);
+	output.Color  = float4(texColor,specular.g);
+	output.Normal = float4(0.5f * (normal + 1.0f),specular.r);
+	output.Depth  = input.Depth.x / input.Depth.y;
 		
-			output += specularValue * specularColor.rgb * SunlightSpecular;
-
-		}	
-	}
-
-	if(FogEnabled)
-	{	
-		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
-	}
-
-    return float4(output, 1);
+	return output;
 }
 /****************************************************/
 
@@ -292,31 +227,19 @@ float4 PSDSNFunction(VSComplexOutput input) : COLOR0
 /****************************************************/
 /// Pixel Shader Diffuse Function
 /****************************************************/
-float4 PSDFunction(VSSimpleOutput input) : COLOR0
+PixelShaderOutput PSDFunction(VSSimpleOutput input) : COLOR0
 {
-	ClipMe(input.WorldPosition);
+	PixelShaderOutput output;
 
-	float3 diffuseTex = tex2D(DiffuseMapSampler,input.UV);
-	float3 output = Ambient * diffuseTex;
-
-	if(SunlightEnabled)
-	{
-		float3 normal = normalize(input.Normal);		
-
-		float3 lightDirection = -normalize(SunlightDirection);
+	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 	
-		float NdotL = saturate(dot(normal,lightDirection));
-		float3 diffuse = NdotL * SunlightDiffuse;
+	float3 normal = normalize(input.Normal);		
 
-		output += diffuse * diffuseTex;		
-	}
+	output.Color  = float4(texColor,0);
+	output.Normal = float4(0.5f * (normal + 1.0f),0.0f);
+	output.Depth  = input.Depth.x / input.Depth.y;
 	
-	if(FogEnabled)
-	{	
-		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
-	}
-
-    return float4(output, 1);
+	return output;
 }
 /****************************************************/
 
@@ -324,46 +247,21 @@ float4 PSDFunction(VSSimpleOutput input) : COLOR0
 /****************************************************/
 /// Pixel Shader Diffuse Specular Function
 /****************************************************/
-float4 PSDSFunction(VSSimpleOutput input) : COLOR0
+PixelShaderOutput PSDSFunction(VSSimpleOutput input) : COLOR0
 {
-	ClipMe(input.WorldPosition);
+	PixelShaderOutput output;
 
-	float3 diffuseTex = tex2D(DiffuseMapSampler,input.UV);
-	float3 output = Ambient * diffuseTex;
+	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 
-	if(SunlightEnabled)
-	{
-		float3 normal = normalize(input.Normal);		
-
-		float3 lightDirection = -normalize(SunlightDirection);
+	float3 normal = normalize(input.Normal);		
 	
-		float NdotL = saturate(dot(normal,lightDirection));
-		float3 diffuse = NdotL * SunlightDiffuse;
-
-		output += diffuse * diffuseTex;	
-
-		if(NdotL > 0)
-		{	
-			float4 specularColor = tex2D(SpecularMapSampler,input.UV);
-
-			float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
+	float2 specular = tex2D(SpecularMapSampler,input.UV);
 	
-			float3 reflectionVector = reflect(lightDirection,normal);
-			float  specularValue	= dot(normalize(reflectionVector), viewDirection);
-	
-			specularValue = pow(specularValue, specularColor.a * 100);
+	output.Color  = float4(texColor,specular.g);
+	output.Normal = float4(0.5f * (normal + 1.0f),specular.r);
+	output.Depth  = input.Depth.x / input.Depth.y;
 		
-			output += specularValue * specularColor.rgb * SunlightSpecular;
-
-		}	
-	}
-
-	if(FogEnabled)
-	{	
-		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
-	}
-
-    return float4(output, 1);
+	return output;
 }
 /****************************************************/
 

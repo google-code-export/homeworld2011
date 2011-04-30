@@ -227,6 +227,29 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// CreatePointLightComponent
+        /****************************************************************************/
+        public PointLightComponent CreatePointLightComponent(GameObjectInstance gameObject,
+                                                            bool enabled,
+                                                            Vector3 color,
+                                                            float radius,
+                                                            float linearAttenuation,
+                                                            float quadraticAttenuation,
+                                                            Vector3 localPosition)
+        {
+            PointLightComponent result = new PointLightComponent(gameObject,
+                                                                 enabled,
+                                                                 color,
+                                                                 radius,
+                                                                 linearAttenuation,
+                                                                 quadraticAttenuation,
+                                                                 localPosition);
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Guess Technique
         /****************************************************************************/
         private Techniques GuessTechnique(String specularMap, String normalMap)

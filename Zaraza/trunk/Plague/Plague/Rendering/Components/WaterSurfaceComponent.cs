@@ -197,7 +197,7 @@ namespace PlagueEngine.Rendering.Components
             device.RasterizerState = rasterizerState;
             device.SetRenderTarget(reflectionMap);
             
-            renderer.Render(camera.Position, reflectedView, camera.Projection, reflectedViewProjection, true, clipPlane);
+            //renderer.Render(camera.Position, reflectedView, camera.Projection, reflectedViewProjection, true, clipPlane);
 
             device.SetRenderTarget(null);
             device.RasterizerState = defaultRasterizerState;
@@ -216,7 +216,7 @@ namespace PlagueEngine.Rendering.Components
 
             device.SetRenderTarget(refractionMap);
 
-            renderer.Render(camera.Position, camera.View, camera.Projection, camera.ViewProjection, true, clipPlane);
+            //renderer.Render(camera.Position, camera.View, camera.Projection, camera.ViewProjection, true, clipPlane);
 
             device.SetRenderTarget(null);
             effect.Parameters["RefractionMap"].SetValue(refractionMap);
