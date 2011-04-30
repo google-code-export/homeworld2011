@@ -180,8 +180,8 @@ namespace PlagueEngine.Tools
                 currentEditGameObject = factory.GameObjects[gameObjectID].GetData();
                 currentEditGameObject.Position = currentEditGameObject.World.Translation;
                 propertyGrid2.SelectedObject = currentEditGameObject;
-                comboBoxFilterId.SelectedIndex = 0;
-                comboboxGameObjectId.SelectedItem = gameObjectID.ToString();
+
+                comboboxGameObjectId.SelectedIndex=(int)(gameObjectID-1);
             }
 
             

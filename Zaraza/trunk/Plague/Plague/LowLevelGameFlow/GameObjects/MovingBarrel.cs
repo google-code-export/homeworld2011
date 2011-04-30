@@ -53,7 +53,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.World = world;
             keyboardListener = new KeyboardListenerComponent(this, true);
             keyboardListener.SubscibeKeys(OnKey, Keys.Y, Keys.H,Keys.G,Keys.J);
-            controller = new PhysicsController(physcisComponent.Body);
+            controller = new PhysicsController(physcisComponent);
         }
         /********************************************************************************/
 

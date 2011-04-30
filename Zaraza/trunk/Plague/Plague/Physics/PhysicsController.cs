@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 
 using JigLibX.Physics;
 
-
 /****************************************************************************/
 /// PlagueEngine.Physics
 /****************************************************************************/
@@ -24,6 +23,7 @@ namespace PlagueEngine.Physics
         /// Fields
         /****************************************************************************/
         internal static PhysicsManager physicsManager;
+        private RigidBodyComponent rigidBodyComponent;
         private BodyExtended body;
         private Vector3 worldForce = Vector3.Zero;
         private Vector3 worldTorque = Vector3.Zero;
@@ -34,7 +34,6 @@ namespace PlagueEngine.Physics
         private ConstraintWorldPoint constraintPoint = new ConstraintWorldPoint();
         private ConstraintVelocity constraintVelocity = new ConstraintVelocity();
 
-
         /****************************************************************************/
 
 
@@ -43,9 +42,10 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public PhysicsController(Body body)
+        public PhysicsController(RigidBodyComponent rigidBodyComponent)
         {
-            this.body = (BodyExtended)body;
+            this.rigidBodyComponent = rigidBodyComponent;
+            body = (BodyExtended)rigidBodyComponent.Body;
             physicsManager.controllers.Add(this);
             EnableController();
         }
@@ -70,6 +70,7 @@ namespace PlagueEngine.Physics
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
             body.DesiredVelocity = Vector3.Up * dt;
+            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
 
         public void MoveDown(float dt)
@@ -77,12 +78,14 @@ namespace PlagueEngine.Physics
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
             body.DesiredVelocity = Vector3.Down * dt;
+            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
         public void MoveLeft(float dt)
         {
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
             body.DesiredVelocity = Vector3.Left * dt;
+            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
 
         public void MoveRight(float dt)
@@ -90,6 +93,7 @@ namespace PlagueEngine.Physics
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
             body.DesiredVelocity = Vector3.Right * dt;
+            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
 
         public void MoveBackward(float dt)
@@ -97,6 +101,7 @@ namespace PlagueEngine.Physics
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
             body.DesiredVelocity = Vector3.Backward * dt;
+            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
 
         public void MoveForward(float dt)
@@ -105,6 +110,7 @@ namespace PlagueEngine.Physics
 
             body.Controllable = true;
             body.DesiredVelocity = Vector3.Forward * dt;
+            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
 
         public void StopMoving()
@@ -112,6 +118,8 @@ namespace PlagueEngine.Physics
             body.DesiredVelocity = new Vector3(0,0,0);
             
             //body.Controllable = false;
+
+            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
 
         public bool IsControlEnabled

@@ -355,6 +355,11 @@ namespace PlagueEngine.Physics
         public bool OrientationSetuped = false;
 
 
+        public void TransformDesiredVelocity(float yaw,float pitch,float roll)
+        {
+           DesiredVelocity= Vector3.Transform(DesiredVelocity, Matrix.CreateFromYawPitchRoll(yaw, pitch, roll));
+        }
+
         public void SetUpOrientationForController()
         {
             DesiredOrientation = this.Orientation;
@@ -362,7 +367,7 @@ namespace PlagueEngine.Physics
         }
 
 
-
+        
         public override void AddExternalForces(float dt)
         {
             ClearForces();

@@ -53,7 +53,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             keyboard.SubscibeKeys(OnKey, Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D8, Keys.D9, Keys.Y, Keys.H, Keys.G, Keys.J, Keys.P);
             meshComponent.SubscribeAnimationsEnd("Attack");
-            controller = new PhysicsController(body.Body);
+            controller = new PhysicsController(body);
             controller.EnableControl();
             meshComponent.StartClip("Idle");
         }
@@ -97,14 +97,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 
                 forward = true;
-                controller.MoveUp(5.0f);
+                controller.MoveForward(5.0f);
                 
             }
 
             if (key == Keys.H && state.IsDown())
             {
                 backward = true;
-                controller.MoveDown(5.0f);
+                controller.MoveBackward(5.0f);
                 
             }
 
