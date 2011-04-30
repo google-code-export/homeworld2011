@@ -54,6 +54,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             keyboard.SubscibeKeys(OnKey, Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D8, Keys.D9, Keys.Y, Keys.H, Keys.G, Keys.J, Keys.P);
             meshComponent.SubscribeAnimationsEnd("Attack");
             controller = new PhysicsController(body.Body);
+            controller.EnableControl();
             meshComponent.StartClip("Idle");
         }
         /****************************************************************************/
@@ -64,6 +65,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
+
+
+            if (key == Keys.Y && state.WasPressed())
+            {
+                if(meshComponent.CurrentClip.Name!="Walk")
+                meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
+            }
+
+
+            if (key == Keys.H && state.WasPressed())
+            {
+                if (meshComponent.CurrentClip.Name != "Walk")
+                meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
+            }
+
+
             if (key == Keys.P && state.IsDown())
             {
                 if (controller.IsControlEnabled)
@@ -78,15 +95,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             if (key == Keys.Y && state.IsDown())
             {
+                
                 forward = true;
-                controller.MoveUp(10.0f);
+                controller.MoveUp(5.0f);
+                
             }
 
             if (key == Keys.H && state.IsDown())
             {
-                
                 backward = true;
-                controller.MoveDown(10.0f);
+                controller.MoveDown(5.0f);
+                
             }
 
 
@@ -115,6 +134,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (!forward && !backward)
             {
                 controller.StopMoving();
+                if (meshComponent.CurrentClip.Name != "Idle")
+                {
+                    meshComponent.StartClip("Idle");
+                    //meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.5));
+                }
             }
 
 
