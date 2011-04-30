@@ -347,13 +347,21 @@ namespace PlagueEngine.Physics
             DesiredVelocity = Vector3.Zero;
             DesiredOrientation = this.Orientation;
             Controllable = false;
-            AllowFreezing = false;
+           
         }
-        public bool Controllable { get; set; }
-        public Vector3 DesiredVelocity { get; set; }
-        public Matrix DesiredOrientation { get; set; }
+        public bool Controllable;
+        public Vector3 DesiredVelocity;
+        public Matrix DesiredOrientation;
+        public bool OrientationSetuped = false;
 
-       
+
+        public void SetUpOrientationForController()
+        {
+            DesiredOrientation = this.Orientation;
+            OrientationSetuped = true;
+        }
+
+
 
         public override void AddExternalForces(float dt)
         {
@@ -368,10 +376,10 @@ namespace PlagueEngine.Physics
 
                 AngularVelocity = Vector3.Zero;
 
-                DesiredOrientation = this.Orientation;
-         
+                this.Orientation = DesiredOrientation;
 
-                DesiredVelocity = Vector3.Transform(DesiredVelocity, DesiredOrientation);
+
+                DesiredVelocity = Vector3.Transform(DesiredVelocity, this.Orientation);
                 Vector3 deltaVel = DesiredVelocity - Velocity;
 
 

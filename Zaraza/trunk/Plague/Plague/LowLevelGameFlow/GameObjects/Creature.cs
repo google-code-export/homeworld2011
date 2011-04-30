@@ -6,10 +6,15 @@ using Microsoft.Xna.Framework;
 using System.ComponentModel;
 using Microsoft.Xna.Framework.Input;
 
+using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
-using PlagueEngine.Input.Components;
+using PlagueEngine.Rendering;
+using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
+using PlagueEngine.Input.Components;
+using PlagueEngine.Input;
 
+using Microsoft.Xna.Framework.Input;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -29,6 +34,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         SkinnedMeshComponent meshComponent = null;
         KeyboardListenerComponent keyboard = null;
         CapsuleBodyComponent body = null;
+        PhysicsController controller = null;
+
+        bool forward = false;
+        bool backward = false;
         /****************************************************************************/
 
 
@@ -42,9 +51,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.body          = body;
             this.World         = world;
 
-            keyboard.SubscibeKeys(OnKey, Keys.D0,Keys.D1,Keys.D2,Keys.D3,Keys.D4,Keys.D5,Keys.D8,Keys.D9);
+            keyboard.SubscibeKeys(OnKey, Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D8, Keys.D9, Keys.Y, Keys.H, Keys.G, Keys.J, Keys.P);
             meshComponent.SubscribeAnimationsEnd("Attack");
-            
+            controller = new PhysicsController(body.Body);
             meshComponent.StartClip("Idle");
         }
         /****************************************************************************/
@@ -55,6 +64,60 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
+            if (key == Keys.P && state.IsDown())
+            {
+                if (controller.IsControlEnabled)
+                {
+
+                    controller.DisableControl();
+                }
+                else
+                {
+                    controller.EnableControl();
+                }
+            }
+            if (key == Keys.Y && state.IsDown())
+            {
+                forward = true;
+                controller.MoveUp(10.0f);
+            }
+
+            if (key == Keys.H && state.IsDown())
+            {
+                
+                backward = true;
+                controller.MoveDown(10.0f);
+            }
+
+
+            if (key == Keys.G && state.IsDown())
+            {
+                controller.Rotate(1);
+            }
+
+            if (key == Keys.J && state.IsDown())
+            {
+                controller.Rotate(-1);
+            }
+            if (key == Keys.Y && state.IsUp())
+            {
+                forward = false;
+
+            }
+
+            if (key == Keys.H && state.IsUp())
+            {
+                backward = false;
+
+            }
+
+
+            if (!forward && !backward)
+            {
+                controller.StopMoving();
+            }
+
+
             if (state.WasPressed())
             {
                 switch (key)
