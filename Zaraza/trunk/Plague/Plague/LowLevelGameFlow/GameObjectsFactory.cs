@@ -131,6 +131,12 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "WaterSurface":
                     result = CreateWaterSurface(data);
                     break;
+                case "PointLight":
+                    result = CreatePointLight(data);
+                    break;
+                case "GlowStick":
+                    result = CreateGlowStick(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -754,6 +760,93 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             tdata.WTextureTiling,
                                                                             tdata.ClipPlaneAdjustment,
                                                                             tdata.SpecularStength));
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create Point Light
+        /****************************************************************************/
+        private PointLight CreatePointLight(GameObjectInstanceData data)
+        {
+            PointLight result = new PointLight();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            PointLightData pdata = (PointLightData)data;
+
+            result.Init(renderingComponentsFactory.CreatePointLightComponent(result,
+                                                                             pdata.Enabled,
+                                                                             pdata.Color,
+                                                                             pdata.LightRadius,
+                                                                             pdata.LinearAttenuation,
+                                                                             pdata.QuadraticAttenuation,
+                                                                             Vector3.Zero),
+                        physicsComponentFactory.CreateSphericalBodyComponent(result,
+                                                                             pdata.Mass,
+                                                                             pdata.Radius,
+                                                                             pdata.Elasticity,
+                                                                             pdata.StaticRoughness,
+                                                                             pdata.DynamicRoughness,
+                                                                             pdata.Immovable,
+                                                                             pdata.World,
+                                                                             pdata.Translation,
+                                                                             pdata.SkinYaw,
+                                                                             pdata.SkinPitch,
+                                                                             pdata.SkinRoll),
+                                                                             pdata.World);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateGlowStick
+        /****************************************************************************/
+        public GlowStick CreateGlowStick(GameObjectInstanceData data)
+        {
+            GlowStick result = new GlowStick();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            GlowStickData gdata = (GlowStickData)data;
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       "GlowStick",
+                                                                       gdata.Texture,
+                                                                       "GlowStick_Specular",
+                                                                       "GlowStick_Normals",
+                                                                       Renderer.UIntToInstancingMode(gdata.InstancingMode)),
+                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
+                                                                               gdata.Mass,
+                                                                               0.08f,
+                                                                               1.0f,
+                                                                               gdata.Elasticity,
+                                                                               gdata.StaticRoughness,
+                                                                               gdata.DynamicRoughness,
+                                                                               gdata.Immovable,
+                                                                               gdata.World,
+                                                                               Vector3.Zero,
+                                                                               0,
+                                                                               90,
+                                                                               0),
+                        renderingComponentsFactory.CreatePointLightComponent(result,
+                                                                             gdata.Enabled,
+                                                                             gdata.Color,
+                                                                             2,
+                                                                             0,
+                                                                             10,
+                                                                             new Vector3(0,0.5f,0)),
+                        renderingComponentsFactory.CreatePointLightComponent(result,
+                                                                             gdata.Enabled,
+                                                                             gdata.Color,
+                                                                             2,
+                                                                             0,
+                                                                             10,
+                                                                             new Vector3(0, -0.5f, 0)),
+                                                                             gdata.World);
             return result;
         }
         /****************************************************************************/

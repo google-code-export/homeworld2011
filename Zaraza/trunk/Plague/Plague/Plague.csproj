@@ -176,6 +176,7 @@
     <Compile Include="LowLevelGameFlow\GameObjectInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\GlowStick.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MenuButton.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\EventArgs.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\FreeCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MovingBarrel.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\PointLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareBodyMesh.cs" />
@@ -213,6 +215,7 @@
     <Compile Include="Rendering\BatchedSkinnedMeshes.cs" />
     <Compile Include="Rendering\Components\CameraComponent.cs" />
     <Compile Include="Rendering\Components\MeshComponent.cs" />
+    <Compile Include="Rendering\Components\PointLightComponent.cs" />
     <Compile Include="Rendering\Components\SkinnedMeshComponent.cs" />
     <Compile Include="Rendering\Components\SunlightComponent.cs" />
     <Compile Include="Rendering\Components\TerrainComponent.cs" />
@@ -222,6 +225,7 @@
     <Compile Include="Rendering\EventArgs.cs" />
     <Compile Include="Rendering\PlagueEngineModel.cs" />
     <Compile Include="Rendering\PlagueEngineSkinnedModel.cs" />
+    <Compile Include="Rendering\Quad.cs" />
     <Compile Include="Rendering\RenderableComponent.cs" />
     <Compile Include="Rendering\RenderingComponentsFactory.cs" />
     <Compile Include="Rendering\RenderConfig.cs" />

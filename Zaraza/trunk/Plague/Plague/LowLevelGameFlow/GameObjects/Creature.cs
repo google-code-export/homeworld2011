@@ -56,6 +56,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             controller = new PhysicsController(body);
             controller.EnableControl();
             meshComponent.StartClip("Idle");
+            
         }
         /****************************************************************************/
 

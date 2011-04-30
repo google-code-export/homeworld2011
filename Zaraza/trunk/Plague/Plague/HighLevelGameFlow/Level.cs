@@ -99,7 +99,6 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         public void PutSomeObjects()
         {
-
             //MovingBarrelData dddtata = new MovingBarrelData();
             //dddtata.Type = (typeof(MovingBarrel));
             //dddtata.Model = "Barrel";
@@ -138,19 +137,18 @@ namespace PlagueEngine.HighLevelGameFlow
             
             FreeCameraData fcdata = new FreeCameraData();
             fcdata.Type = typeof(FreeCamera);
-            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240,  80, 10),
-                                                             new Vector3(  240,   10,   70), 
-                                                             new Vector3(  0,   1,   0)));
+            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
+                                                             new Vector3(240, 10, 70), 
+                                                             new Vector3(  0,  1,  0)));
             fcdata.MovementSpeed = 0.05f;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
             fcdata.FoV = 60;
-            fcdata.ZNear = 0.1f;
-            fcdata.ZFar = 11250;
+            fcdata.ZNear = 1f;
+            fcdata.ZFar = 100;
             fcdata.ActiveKeyListener = true;
             fcdata.ActiveMouseListener = true;
             gameObjectsFactory.Create(fcdata);
-
-
+            
             TerrainData tdata = new TerrainData();
             tdata.Type = typeof(Terrain);
             tdata.World = Matrix.CreateTranslation(0,0,0);
@@ -165,7 +163,6 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.Height = 60;
             tdata.CellSize = 5;
             tdata.TextureTiling = 40;
-
             tdata.Elasticity = 0.1f;
             tdata.StaticRoughness = 0.9f;
             tdata.DynamicRoughness = 0.9f;
@@ -182,7 +179,6 @@ namespace PlagueEngine.HighLevelGameFlow
             Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
             s.Direction = new Vector3(-1,-1,-1);
 
-
             CreatureData ssdata = new CreatureData();
             ssdata.Type = typeof(Creature);
             ssdata.Model = "FleshCreature";
@@ -190,11 +186,9 @@ namespace PlagueEngine.HighLevelGameFlow
             ssdata.Diffuse = "flesh_diffuse";
             ssdata.Normals = "flesh_normals";
             ssdata.World *= Matrix.CreateTranslation(245, 56, 30);
-
-
-            ssdata.Mass = 1;
-            ssdata.StaticRoughness = 0.1f;
-            ssdata.DynamicRoughness = 0.1f;
+            ssdata.Mass = 60;
+            ssdata.StaticRoughness = 1f;
+            ssdata.DynamicRoughness = 1f;
             ssdata.Elasticity = 0.1f;
             ssdata.Length = 5;
             ssdata.Radius = 1;
@@ -202,6 +196,50 @@ namespace PlagueEngine.HighLevelGameFlow
             ssdata.SkinPitch = 90;
             ssdata.Translation = new Vector3(0, 2.2f, 0);
             gameObjectsFactory.Create(ssdata);
+
+            GlowStickData pdata = new GlowStickData();
+            pdata.Type = typeof(GlowStick);
+            pdata.Enabled = true;
+            pdata.DynamicRoughness = 0.8f;
+            pdata.StaticRoughness = 0.8f;
+            pdata.Immovable = false;
+            pdata.Mass = 0.3f;
+            pdata.Elasticity = 0.2f;
+            pdata.Color = new Vector3(0, 1, 0);
+            pdata.Texture = "GlowStick_Diffuse";
+            pdata.InstancingMode = 3;
+
+            Random random = new Random();
+            for (int i = 1; i < 50; i++)
+            {                
+                pdata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
+                                                        60 + random.Next() % 10,
+                                                        80 + random.Next() % 70);
+                gameObjectsFactory.Create(pdata);
+            }
+
+            CylindricalBodyMeshData ddwdtata = new CylindricalBodyMeshData();
+            ddwdtata.Type = (typeof(CylindricalBodyMesh));
+            ddwdtata.Model = "Barrel";
+            ddwdtata.Diffuse = "Barrel_diffuse";
+            ddwdtata.Specular = "Barrel_specular";
+            ddwdtata.Normals = "Barrel_normals";
+            ddwdtata.DynamicRoughness = 0.7f;
+            ddwdtata.Elasticity = 0.1f;
+            ddwdtata.StaticRoughness = 0.6f;
+            ddwdtata.Radius = 1.1f;
+            ddwdtata.Lenght = 3.3f;
+            ddwdtata.Immovable = false;
+            ddwdtata.InstancingMode = 3;
+            ddwdtata.Mass = 1;
+
+            for (int j = 0; j < 25; j++)
+            {
+                ddwdtata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
+                                                          80  + random.Next() % 10,
+                                                          80  + random.Next() % 70);
+                gameObjectsFactory.Create(ddwdtata);
+            }
         }
         /****************************************************************************/
 

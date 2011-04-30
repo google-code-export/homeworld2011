@@ -126,12 +126,6 @@
       <Processor>TextureProcessor</Processor>
       <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
     </Compile>
-    <Compile Include="Textures\Barrel_specular.tga">
-      <Name>Barrel_specular</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Effects\MeshEffect.fx">
@@ -291,6 +285,86 @@
   <ItemGroup>
     <Compile Include="Textures\flesh_normals.tga">
       <Name>flesh_normals</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\DSClear.fx">
+      <Name>DSClear</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\DSDebug.fx">
+      <Name>DSDebug</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\DSDirectionalLight.fx">
+      <Name>DSDirectionalLight</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\DSComposition.fx">
+      <Name>DSComposition</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\DSPointLight.fx">
+      <Name>DSPointLight</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Sphere.FBX">
+      <Name>Sphere</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Cone.fbx">
+      <Name>Cone</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Barrel_specular.tga">
+      <Name>Barrel_specular</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\GlowStick.FBX">
+      <Name>GlowStick</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\GlowStick_Diffuse.tga">
+      <Name>GlowStick_Diffuse</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\GlowStick_Normals.tga">
+      <Name>GlowStick_Normals</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\GlowStick_Specular.tga">
+      <Name>GlowStick_Specular</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
