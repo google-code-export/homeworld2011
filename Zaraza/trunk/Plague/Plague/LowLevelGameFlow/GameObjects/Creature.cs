@@ -89,10 +89,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
 
 
-            if (key == Keys.H && state.WasPressed())
+            if (key == Keys.H)
             {
                 if (state.WasPressed())
                 {
+                    isMoving++;
+
                     if (meshComponent.CurrentClip.Name != "Walk")
                         meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
                 }
