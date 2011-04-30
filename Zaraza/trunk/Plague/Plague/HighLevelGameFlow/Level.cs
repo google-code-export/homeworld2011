@@ -126,9 +126,9 @@ namespace PlagueEngine.HighLevelGameFlow
             lcdata.Target = new Vector3(245, 45, 35);
             lcdata.MovementSpeed = 0.07f;
             lcdata.RotationSpeed = 0.005f;
-            lcdata.ZoomSpeed = 0.05f;
+            lcdata.ZoomSpeed = 0.01f;
             lcdata.FoV = 60;
-            lcdata.ZNear = 1;
+            lcdata.ZNear = 0.1f;
             lcdata.ZFar = 10000;
             lcdata.ActiveKeyListener = true;
             lcdata.ActiveMouseListener = true;

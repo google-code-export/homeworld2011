@@ -378,6 +378,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
 
+        /****************************************************************************/
+        /// CanIMove
+        /****************************************************************************/
+
+        private bool CanIMove(Vector3 position, Vector3 desiredPosition)
+        {
+            CollisionSkin skin;
+            Vector3 pos, nor;  
+            float dist;
+
+            Physics.PhysicsUlitities.RayTest(position, desiredPosition+(desiredPosition-position)*5, out dist, out skin, out pos, out nor);
+
+            if (skin == null)
+            {
+                return true;
+            }
+            return false;
+        }
+        /****************************************************************************/
+
+
+
 
 
         /****************************************************************************/
@@ -395,7 +417,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             float time = (float)(clock.DeltaTime.TotalMilliseconds);
 
-
             switch (mouseMoveAction)
             {
                 case MouseMoveAction.Scroll:
@@ -407,12 +428,26 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         if (shiftDown)
                         {
-                            position.Y += zoomSpeed * direction.Y *mouseMoveState.ScrollDifference ;
+                            Vector3 tmp = position;
+                            tmp.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference;
+
+                            if (CanIMove(position, tmp))
+                            {
+                                position.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference;
+                            }
                         }
                         else
                         {
-                            position += zoomSpeed * direction * mouseMoveState.ScrollDifference;
-                        }
+                            
+                                Vector3 tmp = position;
+                                tmp += zoomSpeed * direction * mouseMoveState.ScrollDifference;
+                               
+                                if (CanIMove(position, tmp))
+                                {
+                                    position += zoomSpeed * direction * mouseMoveState.ScrollDifference;
+                                }
+                            }
+                       
 
                     }
 
@@ -429,41 +464,64 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     perpendicular.Y = 0;
                     if (isMouseInRegion(mouseRegions.left, mouseMoveState))
                     {
-                        position += perpendicular * movementSpeed * time;
-                        target += perpendicular * movementSpeed * time;
+                        Vector3 tmp = position;
+                        tmp += perpendicular * movementSpeed * time;
+                        if (CanIMove(position, tmp))
+                        {
 
-                        stopTracking();
-                        StopMovingToPoint();
+                            position += perpendicular * movementSpeed * time;
+                            target += perpendicular * movementSpeed * time;
+
+                            stopTracking();
+                            StopMovingToPoint();
+                        }
                         
                     }
 
                     if (isMouseInRegion(mouseRegions.right, mouseMoveState))
                     {
-                        position -= perpendicular * movementSpeed * time;
-                        target -= perpendicular * movementSpeed * time;
+                       Vector3 tmp = position;
+                       tmp -= perpendicular * movementSpeed * time;
+                       if (CanIMove(position, tmp))
+                        {
 
-                        stopTracking();
-                        StopMovingToPoint();
+                            position -= perpendicular * movementSpeed * time;
+                            target -= perpendicular * movementSpeed * time;
+
+                            stopTracking();
+                            StopMovingToPoint();
+                        }
 
                     }
 
                     if (isMouseInRegion(mouseRegions.top, mouseMoveState))
                     {
-                        position += direction * movementSpeed * time;
-                        target += direction * movementSpeed * time;
+                       Vector3 tmp = position;
+                       tmp += direction * movementSpeed * time;
+                       if (CanIMove(position, tmp))
+                       {
+                           position += direction * movementSpeed * time;
+                           target += direction * movementSpeed * time;
 
-                        stopTracking();
-                        StopMovingToPoint();
+                           stopTracking();
+                           StopMovingToPoint();
+                       }
 
                     }
 
                     if (isMouseInRegion(mouseRegions.bottom, mouseMoveState))
                     {
-                        position -= direction * movementSpeed * time;
-                        target -= direction * movementSpeed * time;
+                       Vector3 tmp = position;
+                       tmp -= direction * movementSpeed * time;
+                       if (CanIMove(position, tmp))
+                       {
 
-                        stopTracking();
-                        StopMovingToPoint();
+                           position -= direction * movementSpeed * time;
+                           target -= direction * movementSpeed * time;
+
+                           stopTracking();
+                           StopMovingToPoint();
+                       }
 
                     }
 
@@ -499,48 +557,82 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             perpendicular.Y = 0;
 
             float time = (float)(clock.DeltaTime.TotalMilliseconds);
+            Vector3 tmp = position;
 
             switch (key)
             {
                 case Keys.W:
-                            position += direction * time * movementSpeed ;
-                            target += direction * time * movementSpeed ;
-                            stopTracking();
+
+                            tmp += direction * time * movementSpeed;
+
+                            if (CanIMove(position, tmp))
+                            {
+                                position += direction * time * movementSpeed;
+                                target += direction * time * movementSpeed;
+                                stopTracking();
+                            }
                             break;
 
                 case Keys.S:
-                            position -= direction * time * movementSpeed ;
-                            target -= direction * time * movementSpeed ;
 
-                            stopTracking();
+                            tmp -= direction * time * movementSpeed ;
+                            if (CanIMove(position, tmp))
+                            {
+                                position -= direction * time * movementSpeed;
+                                target -= direction * time * movementSpeed;
+
+                                stopTracking();
+                            }
                             break;
 
                 case Keys.A:
-                            position += perpendicular * time * movementSpeed ;
-                            target += perpendicular * time * movementSpeed ;
-                            stopTracking();
+
+                            tmp += perpendicular * time * movementSpeed;
+                            if (CanIMove(position, tmp))
+                            {
+                                position += perpendicular * time * movementSpeed;
+                                target += perpendicular * time * movementSpeed;
+                                stopTracking();
+                            }
                             break;
 
                 case Keys.D:
-                            position -= perpendicular * time * movementSpeed ;
-                            target -= perpendicular * time * movementSpeed ;
 
-                            stopTracking();
+                            tmp -= perpendicular * time * movementSpeed;
+                            if (CanIMove(position, tmp))
+                            {
+                                position -= perpendicular * time * movementSpeed;
+                                target -= perpendicular * time * movementSpeed;
+
+                                stopTracking();
+                            }
                             break;
 
                 case Keys.Q:
-                    position -= target;
-                    position = Vector3.Transform(position, Matrix.CreateRotationY(time* rotationSpeed ));
-                    position += target;
-                    
-                    
+
+                    tmp -= target;
+                    tmp = Vector3.Transform(tmp, Matrix.CreateRotationY(time * rotationSpeed));
+                    tmp += target;
+
+                    if (CanIMove(position, tmp))
+                    {
+                        position -= target;
+                        position = Vector3.Transform(position, Matrix.CreateRotationY(time * rotationSpeed));
+                        position += target;
+                    }
                     break;
 
                 case Keys.E:
-                    position -= target;
-                    position = Vector3.Transform(position, Matrix.CreateRotationY(time* rotationSpeed *-1));
-                    position += target;
-                    
+
+                    tmp -= target;
+                    tmp = Vector3.Transform(tmp, Matrix.CreateRotationY(time * rotationSpeed *-1));
+                    tmp += target;
+                    if (CanIMove(position, tmp))
+                    {
+                        position -= target;
+                        position = Vector3.Transform(position, Matrix.CreateRotationY(time * rotationSpeed * -1));
+                        position += target;
+                    }
                     
                     break;
 
