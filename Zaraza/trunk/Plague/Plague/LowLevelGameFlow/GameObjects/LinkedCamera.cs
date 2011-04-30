@@ -388,7 +388,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Vector3 pos, nor;  
             float dist;
 
-            Physics.PhysicsUlitities.RayTest(position, desiredPosition+(desiredPosition-position)*5, out dist, out skin, out pos, out nor);
+            Physics.PhysicsUlitities.RayTest(position, desiredPosition+(desiredPosition-position)*10, out dist, out skin, out pos, out nor);
 
             if (skin == null)
             {
