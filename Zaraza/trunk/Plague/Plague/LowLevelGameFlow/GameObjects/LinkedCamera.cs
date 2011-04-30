@@ -9,7 +9,11 @@ using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.TimeControlSystem;
+using PlagueEngine.EventsSystem;
 
+using JigLibX.Geometry;
+using JigLibX.Collision;
+using JigLibX.Physics;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -76,6 +80,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private GameObjectInstance tracedObject = null;
         private uint frameCounterID = 0;
         private bool tracking = false;
+        private bool middleButton = false;
+        private bool isOnWindow = false;
+        private float mouseX, mouseY;
         /****************************************************************************/
 
 
@@ -107,7 +114,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                    Keys.D, Keys.Q, Keys.E, Keys.LeftShift,Keys.F1,Keys.F2);
 
             this.mouselistenerComponent.SubscribeMouseMove(onMouseMove,MouseMoveAction.Move,MouseMoveAction.Scroll);
-
+            this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick);
 
             int screenWidth = cameraComponent.ScreenWidth;
             int screenHeight = cameraComponent.ScreenHeight;
@@ -209,7 +216,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             
             Vector3 targetPosition = tracedObject.World.Translation;
-
+           
             if (targetPosition != target)
             {
                 if (Vector3.Distance(target, targetPosition) < 0.01f)
@@ -247,6 +254,42 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
 
+        private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
+        {
+
+
+            if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.MiddleClick)
+            {
+
+                if (middleButton == false && isOnWindow)
+                {
+                    CollisionSkin skin;
+                    Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                    Vector3 pos, nor;
+                    float dist;
+                    bool hit = false;
+                    Diagnostics.PushLog(direction.ToString());
+                    hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
+                    if (skin != null)
+                    {
+
+                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
+                        setTarget((GameObjectInstance)skin.ExternalData);
+                        startTracing();
+                    }
+
+                    middleButton = true;
+                }
+
+            }
+            else if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.MiddleClick)
+            {
+
+                middleButton = false;
+                this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
+            }
+         
+        }
 
         /****************************************************************************/
         /// On Mouse Move 
@@ -254,8 +297,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void onMouseMove(MouseMoveAction mouseMoveAction, ExtendedMouseMovementState mouseMoveState)
         {
             Vector3 direction = Vector3.Normalize(target - position);
-            
 
+            isOnWindow = mouseMoveState.IsOnWindow;
+            mouseX = mouseMoveState.Position.X;
+            mouseY = mouseMoveState.Position.Y;
             Vector3 perpendicular = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f)));
             perpendicular = Vector3.Normalize(perpendicular);
 
@@ -266,10 +311,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 case MouseMoveAction.Scroll:
 
-                    Vector3 testPosition = position + direction * zoomSpeed * time * mouseMoveState.ScrollDifference;
+                    Vector3 testPosition = position + direction * zoomSpeed/10 * time * mouseMoveState.ScrollDifference;
                     float distance = Vector3.Distance(target, testPosition);
-
-                    if (distance>100 && testPosition.Y>target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
+                    if (distance>3.0f && testPosition.Y>target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
                     {
 
                         if (shiftDown)
@@ -288,8 +332,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case MouseMoveAction.Move:
 
-                    if (mouseMoveState.Moved) stopTracking();
-                    
+                   
                     
                     direction.Y = 0;
                     perpendicular.Y = 0;
@@ -349,7 +392,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             
             Vector3 perpendicular = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f)));
-            perpendicular = Vector3.Normalize(perpendicular);
+            //perpendicular = Vector3.Normalize(perpendicular);
             perpendicular.Y = 0;
 
             float time = (float)(clock.DeltaTime.TotalMilliseconds);
@@ -359,7 +402,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case Keys.W:
                             position += direction * time * movementSpeed ;
                             target += direction * time * movementSpeed ;
-
                             stopTracking();
                             break;
 
@@ -373,7 +415,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case Keys.A:
                             position += perpendicular * time * movementSpeed ;
                             target += perpendicular * time * movementSpeed ;
-
                             stopTracking();
                             break;
 
@@ -399,20 +440,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     
                     
                     break;
-                case Keys.F1:
-                    
-                    
-                        startTracing();
-                    
 
-                    break;
-                
-                case Keys.F2:
-                    
-                        stopTracking();
-                       
-
-                    break;
 
 
             }
@@ -477,7 +505,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool ActiveKeyListener = false;
         public bool ActiveMouseListener = false;
         public Vector3 position;
-        public Vector3 Target;
+        public Vector3 Target { get; set; }
 
         public float movementSpeed
         {

@@ -99,55 +99,56 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         public void PutSomeObjects()
         {
-            //MovingBarrelData dddtata = new MovingBarrelData();
-            //dddtata.Type = (typeof(MovingBarrel));
-            //dddtata.Model = "Barrel";
-            //dddtata.Diffuse = "Barrel_diffuse";
-            //dddtata.Specular = "Barrel_specular";
-            //dddtata.Normals = "Barrel_normals";
-            //dddtata.DynamicRoughness = 0.5f;
-            //dddtata.Elasticity = 0.1f;
-            //dddtata.StaticRoughness = 0.5f;
-            //dddtata.Height = 3.3f;
-            //dddtata.Lenght = 3.3f;
-            //dddtata.Width = 3.3f;
-            //dddtata.Immovable = false;
-            //dddtata.InstancingMode = 1;
-            //dddtata.Mass = 1;
-            
-        
-            //        dddtata.World = Matrix.CreateTranslation(245 , 54, 35);
-            //        dddtata.Pitch = 90;
-            //        gameObjectsFactory.Create(dddtata);
+            SquareBodyMeshData dddtata = new SquareBodyMeshData();
+            dddtata.Type = (typeof(SquareBodyMesh));
+            dddtata.Model = "Barrel";
+            dddtata.Diffuse = "Barrel_diffuse";
+            dddtata.Specular = "Barrel_specular";
+            dddtata.Normals = "Barrel_normals";
+            dddtata.DynamicRoughness = 0.5f;
+            dddtata.Elasticity = 0.1f;
+            dddtata.StaticRoughness = 0.5f;
+            dddtata.Height = 3.3f;
+            dddtata.Lenght = 3.3f;
+            dddtata.Width = 3.3f;
+            dddtata.Immovable = false;
+            dddtata.InstancingMode = 1;
+            dddtata.Mass = 50;
+
+
+            dddtata.World = Matrix.CreateTranslation(245, 54, 35);
+            dddtata.Pitch = 90;
+            gameObjectsFactory.Create(dddtata);
 
             //LinkedCameraData lcdata = new LinkedCameraData();
             //lcdata.Type = typeof(LinkedCamera);
-            //lcdata.position = new Vector3(-200, 300, -200);
-            //lcdata.target = new Vector3(0, 0, 0);
-            //lcdata.MovementSpeed = 0.5f;
-            //lcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-            //lcdata.ZoomSpeed = 0.5f;
-            //lcdata.FoV = MathHelper.PiOver4;
+            //lcdata.position = new Vector3(245, 80, 10);
+            //lcdata.Target = new Vector3(245, 45, 35);
+            //lcdata.MovementSpeed = 0.07f;
+            //lcdata.RotationSpeed = 0.005f;
+            //lcdata.ZoomSpeed = 0.05f;
+            //lcdata.FoV = 60;
             //lcdata.ZNear = 1;
             //lcdata.ZFar = 10000;
             //lcdata.ActiveKeyListener = true;
             //lcdata.ActiveMouseListener = true;
-            
-            //LinkedCamera camera= (LinkedCamera)(gameObjectsFactory.Create(lcdata));
-            
+
+            //LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
+
             FreeCameraData fcdata = new FreeCameraData();
             fcdata.Type = typeof(FreeCamera);
             fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
-                                                             new Vector3(240, 10, 70), 
-                                                             new Vector3(  0,  1,  0)));
+                                                             new Vector3(240, 10, 70),
+                                                             new Vector3(0, 1, 0)));
             fcdata.MovementSpeed = 0.05f;
             fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
             fcdata.FoV = 60;
-            fcdata.ZNear = 1f;
-            fcdata.ZFar = 100;
+            fcdata.ZNear = 0.1f;
+            fcdata.ZFar = 11250;
             fcdata.ActiveKeyListener = true;
             fcdata.ActiveMouseListener = true;
             gameObjectsFactory.Create(fcdata);
+
             
             TerrainData tdata = new TerrainData();
             tdata.Type = typeof(Terrain);
@@ -186,10 +187,14 @@ namespace PlagueEngine.HighLevelGameFlow
             ssdata.Diffuse = "flesh_diffuse";
             ssdata.Normals = "flesh_normals";
             ssdata.World *= Matrix.CreateTranslation(245, 56, 30);
+
+
+
             ssdata.Mass = 60;
-            ssdata.StaticRoughness = 1f;
-            ssdata.DynamicRoughness = 1f;
-            ssdata.Elasticity = 0.1f;
+            ssdata.StaticRoughness = 0.7f;
+            ssdata.DynamicRoughness = 0.7f;
+            ssdata.Elasticity = 0.3f;
+
             ssdata.Length = 5;
             ssdata.Radius = 1;
             ssdata.Immovable = false;
