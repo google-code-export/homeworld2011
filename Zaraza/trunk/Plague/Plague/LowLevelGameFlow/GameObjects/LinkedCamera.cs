@@ -79,12 +79,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private GameObjectInstance tracedObject = null;
         private uint frameCounterID = 0;
-        private bool tracking = false;
         private bool middleButton = false;
+        private bool rmb = false;
         private bool isOnWindow = false;
         private float mouseX, mouseY;
         private Vector3 moveToPosition;
-        private bool movingToPosition = false;
         /****************************************************************************/
 
 
@@ -116,7 +115,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                    Keys.D, Keys.Q, Keys.E, Keys.LeftShift,Keys.F1,Keys.F2);
 
             this.mouselistenerComponent.SubscribeMouseMove(onMouseMove,MouseMoveAction.Move,MouseMoveAction.Scroll);
-            this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick);
+            this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick,MouseKeyAction.RightClick);
 
             int screenWidth = cameraComponent.ScreenWidth;
             int screenHeight = cameraComponent.ScreenHeight;
@@ -151,7 +150,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void StartMoveToPoint(Vector3 point)
         {
-            movingToPosition = true;
             moveToPosition = point;
             stopTracking();
             if (frameCounterID == 0)
@@ -171,7 +169,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void StopMovingToPoint()
         {
-            movingToPosition = false;
 
 
             TimeControl.ReleaseFrameCounter(frameCounterID);
@@ -228,7 +225,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /************************************************************************************/
         public void startTracing()
         {
-            this.tracking = true;
             StopMovingToPoint();
             if (tracedObject != null && frameCounterID==0 )
             {
@@ -246,7 +242,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void stopTracking()
         {
             
-            tracking = false;
             
             TimeControl.ReleaseFrameCounter(frameCounterID);
             frameCounterID = 0;
@@ -276,11 +271,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /************************************************************************************/
         private void traceTarget()
         {
-            if (tracedObject == null)
-            {
-                tracking = false;
-                
-            }
+
 
 
 
@@ -330,6 +321,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /************************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
         {
+            if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.RightClick)
+            {
+                rmb = true;
+            }
+            if (mouseKeyState.IsUp() && mouseKeyAction == MouseKeyAction.RightClick)
+            {
+                rmb = false;
+            }
+
 
 
             if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.MiddleClick)
@@ -398,7 +398,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
-
+        
 
 
 
@@ -456,7 +456,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case MouseMoveAction.Move:
 
-                   
+                    if (rmb)
+                    {
+                        Vector3 tmp = position;
+                        tmp -= target;
+                        tmp = Vector3.Transform(tmp, Matrix.CreateRotationY(time * rotationSpeed* (mouseMoveState.Position.X-mouseMoveState.OldPosition.X)));
+                        tmp += target;
+
+                        if (CanIMove(position, tmp))
+                        {
+                            position -= target;
+                            position = Vector3.Transform(position, Matrix.CreateRotationY(time * rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
+                            position += target;
+                        }
+                    }
                   
                         
                    
