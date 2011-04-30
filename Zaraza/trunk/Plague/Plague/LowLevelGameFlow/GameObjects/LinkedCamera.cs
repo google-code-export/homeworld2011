@@ -83,6 +83,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private bool middleButton = false;
         private bool isOnWindow = false;
         private float mouseX, mouseY;
+        private Vector3 moveToPosition;
+        private bool movingToPosition = false;
         /****************************************************************************/
 
 
@@ -142,8 +144,76 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
 
 
+
+
+        /****************************************************************************/
+        /// StartMoveToPoint
+        /****************************************************************************/
+        public void StartMoveToPoint(Vector3 point)
+        {
+            movingToPosition = true;
+            moveToPosition = point;
+            stopTracking();
+            if (frameCounterID == 0)
+            {
+                frameCounterID = TimeControl.CreateFrameCounter(1, -1, MoveToPoint);
+            }
+        }
+
         /************************************************************************************/
-        /// Track Target
+
+
+
+
+
+        /****************************************************************************/
+        /// StopMovingToPoint
+        /****************************************************************************/
+        public void StopMovingToPoint()
+        {
+            movingToPosition = false;
+
+
+            TimeControl.ReleaseFrameCounter(frameCounterID);
+            frameCounterID = 0;
+        }
+
+        /************************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// MoveToPoint
+        /****************************************************************************/
+        private void MoveToPoint()
+        {
+
+            if (moveToPosition != target)
+            {
+                if (Vector3.Distance(target, moveToPosition) < 0.01f)
+                {
+                    target = moveToPosition;
+                }
+                else
+                {
+                    Vector3 distanceVec = moveToPosition - target;
+                    target += distanceVec / 50.0f;
+                    position += distanceVec / 50.0f;
+                }
+            }
+        }
+
+
+        /************************************************************************************/
+
+
+
+
+
+
+        /************************************************************************************/
+        /// setTarget
         /************************************************************************************/
         public void setTarget(GameObjectInstance target)
         {
@@ -159,7 +229,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void startTracing()
         {
             this.tracking = true;
-
+            StopMovingToPoint();
             if (tracedObject != null && frameCounterID==0 )
             {
                 frameCounterID = TimeControl.CreateFrameCounter(1, -1, traceTarget);
@@ -188,7 +258,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /************************************************************************************/
-        /// Stop Tracing 
+        /// RealeseTarget
         /************************************************************************************/
         public void RealeseTarget()
         {
@@ -254,6 +324,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
 
+
+        /************************************************************************************/
+        /// OnMouseKey
+        /************************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
         {
 
@@ -272,10 +346,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
                     if (skin != null)
                     {
-
+                        Diagnostics.PushLog(pos.ToString());
                         this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
-                        setTarget((GameObjectInstance)skin.ExternalData);
-                        startTracing();
+
+                        if (skin.ExternalData.GetType().Equals(typeof(Terrain)))
+                        {
+                            StartMoveToPoint(pos);
+                        }
+                        else
+                        {
+                            setTarget((GameObjectInstance)skin.ExternalData);
+                            startTracing();
+                        }
+                        
                     }
 
                     middleButton = true;
@@ -290,6 +373,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
          
         }
+
+        /****************************************************************************/
+
+
+
+
 
         /****************************************************************************/
         /// On Mouse Move 
@@ -333,13 +422,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case MouseMoveAction.Move:
 
                    
-                    
+                  
+                        
+                   
                     direction.Y = 0;
                     perpendicular.Y = 0;
                     if (isMouseInRegion(mouseRegions.left, mouseMoveState))
                     {
                         position += perpendicular * movementSpeed * time;
                         target += perpendicular * movementSpeed * time;
+
+                        stopTracking();
+                        StopMovingToPoint();
                         
                     }
 
@@ -348,6 +442,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         position -= perpendicular * movementSpeed * time;
                         target -= perpendicular * movementSpeed * time;
 
+                        stopTracking();
+                        StopMovingToPoint();
+
                     }
 
                     if (isMouseInRegion(mouseRegions.top, mouseMoveState))
@@ -355,12 +452,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         position += direction * movementSpeed * time;
                         target += direction * movementSpeed * time;
 
+                        stopTracking();
+                        StopMovingToPoint();
+
                     }
 
                     if (isMouseInRegion(mouseRegions.bottom, mouseMoveState))
                     {
                         position -= direction * movementSpeed * time;
                         target -= direction * movementSpeed * time;
+
+                        stopTracking();
+                        StopMovingToPoint();
 
                     }
 
