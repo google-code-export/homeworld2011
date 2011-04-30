@@ -36,8 +36,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         CapsuleBodyComponent body = null;
         PhysicsController controller = null;
 
-        bool forward = false;
-        bool backward = false;
+        int isMoving = 0;
         /****************************************************************************/
 
 
@@ -66,47 +65,49 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
-
-
-            if (key == Keys.Y && state.WasPressed())
+            if (key == Keys.Y)
             {
-                if(meshComponent.CurrentClip.Name!="Walk")
-                meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
+                if(state.WasPressed())
+                {
+                    isMoving++;
+
+                    if(meshComponent.CurrentClip.Name!="Walk")
+                        meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
+                }
+                else if(state.IsDown())
+                {
+                    controller.MoveForward(5.0f);
+                }
+                else if(state.WasReleased())
+                {
+                    if (--isMoving == 0)
+                    {
+                        controller.StopMoving();
+                        meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.5));
+                    }
+                }
             }
 
 
             if (key == Keys.H && state.WasPressed())
             {
-                if (meshComponent.CurrentClip.Name != "Walk")
-                meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
-            }
-
-
-            if (key == Keys.P && state.IsDown())
-            {
-                if (controller.IsControlEnabled)
+                if (state.WasPressed())
                 {
-
-                    controller.DisableControl();
+                    if (meshComponent.CurrentClip.Name != "Walk")
+                        meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
                 }
-                else
+                else if (state.IsDown())
                 {
-                    controller.EnableControl();
+                    controller.MoveBackward(5.0f);
                 }
-            }
-            if (key == Keys.Y && state.IsDown())
-            {
-                
-                forward = true;
-                controller.MoveForward(5.0f);
-                
-            }
-
-            if (key == Keys.H && state.IsDown())
-            {
-                backward = true;
-                controller.MoveBackward(5.0f);
-                
+                else if (state.WasReleased())
+                {
+                    if (--isMoving == 0)
+                    {
+                        controller.StopMoving();
+                        meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.5));
+                    }
+                }
             }
 
 
@@ -119,29 +120,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 controller.Rotate(-1);
             }
-            if (key == Keys.Y && state.IsUp())
-            {
-                forward = false;
-
-            }
-
-            if (key == Keys.H && state.IsUp())
-            {
-                backward = false;
-
-            }
-
-
-            if (!forward && !backward)
-            {
-                controller.StopMoving();
-                if (meshComponent.CurrentClip.Name != "Idle")
-                {
-                    meshComponent.StartClip("Idle");
-                    //meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.5));
-                }
-            }
-
+            
 
             if (state.WasPressed())
             {
