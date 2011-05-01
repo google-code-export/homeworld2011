@@ -63,12 +63,11 @@ namespace PlagueEngine.GUI
               new UniScalar(0.1f, 0.0f), new UniScalar(0.1f, 0.0f), // x and y = 10%
               new UniScalar(0.8f, 0.0f), new UniScalar(0.8f, 0.0f) // width and height = 80%
             );
-            //TODO: FIXME!!! naprawić wykładanie się wskutek niezainicjalizowania Nuclex.Inputa  FIXME!!!
             this.Manager.Initialize();
-            
-            window = new WindowControl();
-            window.Bounds = new UniRectangle(100.0f, 100.0f, 512.0f, 384.0f);
 
+
+            //TODO: Usunąć ten hard-kodowany guzik po zrobieniu GUI do końca.
+            
             // Button through which the user can quit the application
             ButtonControl quitButton = new ButtonControl();
             quitButton.Text = "Quit";
@@ -78,7 +77,7 @@ namespace PlagueEngine.GUI
             quitButton.Pressed += delegate(object sender, EventArgs arguments) { Diagnostics.PushLog("button klikniety"); };
             mainScreen.Desktop.Children.Add(quitButton);
 
-            mainScreen.Desktop.Children.Add(window);
+           
             
         }
 
