@@ -189,6 +189,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\PointLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalSkinMesh.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\SpotLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
@@ -219,6 +220,7 @@
     <Compile Include="Rendering\Components\MeshComponent.cs" />
     <Compile Include="Rendering\Components\PointLightComponent.cs" />
     <Compile Include="Rendering\Components\SkinnedMeshComponent.cs" />
+    <Compile Include="Rendering\Components\SpotLightComponent.cs" />
     <Compile Include="Rendering\Components\SunlightComponent.cs" />
     <Compile Include="Rendering\Components\TerrainComponent.cs" />
     <Compile Include="Rendering\Components\WaterSurfaceComponent.cs" />

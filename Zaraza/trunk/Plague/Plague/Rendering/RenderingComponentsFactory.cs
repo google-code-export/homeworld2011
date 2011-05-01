@@ -250,6 +250,45 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// CreateSpotLightComponent
+        /****************************************************************************/
+        public SpotLightComponent CreateSpotLightComponent(GameObjectInstance gameObject,
+                                                           bool enabled,
+                                                           Vector3 color,
+                                                           float radius,
+                                                           float nearPlane,
+                                                           float farPlane,
+                                                           float linearAttenuation,
+                                                           float quadraticAttenuation,
+                                                           Matrix localTransform,
+                                                           String attenuation)
+        { 
+
+            Texture2D Attenuation = content.LoadTexture2D(attenuation);
+            
+            SpotLightComponent result = new SpotLightComponent(gameObject,
+                                                               enabled,
+                                                               color,
+                                                               radius,
+                                                               nearPlane,
+                                                               farPlane,
+                                                               linearAttenuation,
+                                                               quadraticAttenuation,
+                                                               localTransform,
+                                                               Attenuation);
+
+            if (!renderer.spotLights.ContainsKey(Attenuation))
+            {
+                renderer.spotLights.Add(Attenuation, new List<SpotLightComponent>());
+            }
+
+            renderer.spotLights[Attenuation].Add(result);
+            return result;        
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Guess Technique
         /****************************************************************************/
         private Techniques GuessTechnique(String specularMap, String normalMap)

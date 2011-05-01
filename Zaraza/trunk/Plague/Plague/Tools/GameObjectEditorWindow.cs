@@ -352,6 +352,12 @@ namespace PlagueEngine.Tools
             GlowStick.ClassType = typeof(GlowStick);
             GlowStick.dataClassType = typeof(GlowStickData);
             gameObjectClassNames.Add(GlowStick);
+
+            gameObjectsClassName SpotLight = new gameObjectsClassName();
+            SpotLight.className = "SpotLight";
+            SpotLight.ClassType = typeof(SpotLight);
+            SpotLight.dataClassType = typeof(SpotLightData);
+            gameObjectClassNames.Add(SpotLight);
         }
         /********************************************************************************/
 

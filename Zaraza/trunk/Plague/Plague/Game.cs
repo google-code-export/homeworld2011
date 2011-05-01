@@ -37,7 +37,7 @@ namespace PlagueEngine
         private String title = String.Empty;
 
 
-        private GUI.GUI gui = null;
+        //private GUI.GUI gui = null;
         private Renderer renderer = null;
         private ContentManager contentManager = null;
         private Input.Input input = null;
@@ -80,7 +80,7 @@ namespace PlagueEngine
             InitRenderer();
 
 
-            gui = new GUI.GUI(this, Services);
+            //gui = new GUI.GUI(this, Services);
 
             physicsManager = new PhysicsManager(contentManager);
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
@@ -117,7 +117,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Initialize()
         {
-            InitGUI();
+            //InitGUI();
             renderer.InitDeferredHelpers();
 
 
@@ -225,7 +225,7 @@ namespace PlagueEngine
         protected override void Draw(GameTime gameTime)
         {
             renderer.Draw(gameTime.ElapsedGameTime);
-            gui.Draw(gameTime);
+            //gui.Draw(gameTime);
             base.Draw(gameTime);
         }
         /****************************************************************************/
@@ -301,7 +301,7 @@ namespace PlagueEngine
         private void InitGUI()
         {
             GraphicsDevice.Reset();
-            gui.Initialize(GraphicsDevice);
+            //gui.Initialize(GraphicsDevice);
             //this.Components.Add(gui.Manager);
         }
         /****************************************************************************/

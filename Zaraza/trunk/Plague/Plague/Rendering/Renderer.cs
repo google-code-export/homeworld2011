@@ -68,7 +68,8 @@ namespace PlagueEngine.Rendering
         internal BatchedSkinnedMeshes batchedSkinnedMeshes = null;
         internal DebugDrawer          debugDrawer          = null;
         
-        internal List<PointLightComponent> pointLights = new List<PointLightComponent>();
+        internal List<PointLightComponent>                       pointLights = new List<PointLightComponent>();
+        internal Dictionary<Texture2D, List<SpotLightComponent>> spotLights  = new Dictionary<Texture2D, List<SpotLightComponent>>();
         /**********************/
 
 
@@ -89,10 +90,12 @@ namespace PlagueEngine.Rendering
         private Effect         debugEffect      = null;
         private Effect         directionalLight = null;
         private Effect         pointLight       = null;
+        private Effect         spotLight        = null;
         private Effect         composition      = null;
         private BlendState     lightBlendState  = null;
 
         private PlagueEngineModel pointLightModel = null;
+        private PlagueEngineModel spotLightModel  = null;
 
         private Quad topLeft     = null;
         private Quad topRight    = null;
@@ -100,7 +103,7 @@ namespace PlagueEngine.Rendering
         private Quad bottomRight = null;
         /**********************/
 
-        
+
         /****************************************************************************/
             
 
@@ -131,6 +134,8 @@ namespace PlagueEngine.Rendering
             SkinnedMeshComponent.renderer = this;
             Quad.renderer                 = this;
             PointLightComponent.renderer  = this;
+            SpotLightComponent.renderer   = this;
+
             ExtendedMouseMovementState.display = graphics.GraphicsDevice.DisplayMode;            
 
             fogColor = clearColor.ToVector3();            
@@ -242,6 +247,13 @@ namespace PlagueEngine.Rendering
             batchedSkinnedMeshes.DeltaTime = time;
 
             if (currentCamera == null) return;
+            
+            /*************************/
+            /// Cleaning Nuclex Shit
+            /*************************/
+            Device.BlendState       = BlendState.Opaque;
+            Device.SamplerStates[0] = SamplerState.LinearWrap;
+            /*************************/
 
             //foreach (RenderableComponent renderableComponent in preRender)
             //{
@@ -249,19 +261,15 @@ namespace PlagueEngine.Rendering
             //    renderableComponent.PreRender(currentCamera);
             //}
 
-            //Render( currentCamera.Position,
-            //        currentCamera.View,
-            //        currentCamera.Projection,
-            //        currentCamera.ViewProjection,
-            //        false,
-            //        Vector4.Zero);
-             
+            /*********************************/
+            /// Clear GBuffer
+            /*********************************/
             Device.SetRenderTargets(color, normal, depth);
-            Device.DepthStencilState = DepthStencilState.DepthRead;
-            Device.BlendState = BlendState.Opaque;             
+            Device.DepthStencilState = DepthStencilState.DepthRead;            
             clearEffect.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();            
             Device.DepthStencilState = DepthStencilState.Default;
+            /*********************************/
             
             Render(currentCamera.Position,
                    currentCamera.View,
@@ -275,10 +283,10 @@ namespace PlagueEngine.Rendering
 
             Device.Clear(clearColor);
 
-            composition.Parameters["Ambient"           ].SetValue(ambient);
-            composition.Parameters["FogEnabled"        ].SetValue(fogEnabled);
-            composition.Parameters["FogColor"          ].SetValue(fogColor);
-            composition.Parameters["FogRange"          ].SetValue(fogRange);
+            composition.Parameters["Ambient"    ].SetValue(ambient);
+            composition.Parameters["FogEnabled" ].SetValue(fogEnabled);
+            composition.Parameters["FogColor"   ].SetValue(fogColor);
+            composition.Parameters["FogRange"   ].SetValue(fogRange);
             
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
@@ -367,6 +375,9 @@ namespace PlagueEngine.Rendering
             Device.BlendState = lightBlendState;
             Device.DepthStencilState = DepthStencilState.DepthRead;
 
+            /*********************************/
+            /// Directional Light
+            /*********************************/
             if (sunlight != null)
             {
                 if (sunlight.Enabled)
@@ -381,7 +392,12 @@ namespace PlagueEngine.Rendering
                     fullScreenQuad.Draw();
                 }
             }
+            /*********************************/
 
+
+            /*********************************/
+            /// Point Light
+            /*********************************/
             pointLight.Parameters["ViewProjection"].SetValue(ViewProjection);
             pointLight.Parameters["InverseViewProjection"].SetValue(InverseViewProjection);
             pointLight.Parameters["CameraPosition"].SetValue(CameraPosition);
@@ -414,6 +430,77 @@ namespace PlagueEngine.Rendering
 
                 Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, pointLightModel.VertexCount, 0, pointLightModel.TriangleCount);
             }
+            /*********************************/
+
+            Device.RasterizerState = RasterizerState.CullCounterClockwise;
+
+            /*********************************/
+            /// Spot Light
+            /*********************************/
+            spotLight.Parameters["ViewProjection"].SetValue(ViewProjection);
+            spotLight.Parameters["InverseViewProjection"].SetValue(InverseViewProjection);
+            spotLight.Parameters["CameraPosition"].SetValue(CameraPosition);
+
+            Device.SetVertexBuffer(spotLightModel.VertexBuffer);
+            Device.Indices = spotLightModel.IndexBuffer;
+            
+            /************************/
+            /// Helpers
+            /************************/
+            Matrix LightViewProjection;
+            BoundingFrustum LightFrustrum = new BoundingFrustum(Matrix.Identity);
+            Matrix World;
+            Vector3 CamDir;
+            float DL;
+            Vector3 Direction;
+            /************************/
+
+            foreach (KeyValuePair<Texture2D, List<SpotLightComponent>> pair in spotLights)
+            {
+                spotLight.Parameters["AttenuationTexture"].SetValue(pair.Key);
+                
+                foreach (SpotLightComponent spotLightcomponent in pair.Value)
+                {
+
+                    LightViewProjection = Matrix.Invert(spotLightcomponent.LocalTransform * spotLightcomponent.GameObject.World) * spotLightcomponent.Projection;
+                    LightFrustrum.Matrix = LightViewProjection;
+                    
+                    if (!spotLightcomponent.Enabled) continue;
+                    if (!currentCamera.Frustrum.Intersects(LightFrustrum)) continue;
+                    
+                    World = spotLightcomponent.World;
+                    Direction = World.Forward;
+                    Direction.Normalize();
+
+                    spotLight.Parameters["World"               ].SetValue(World);
+                    spotLight.Parameters["LightColor"          ].SetValue(spotLightcomponent.Color);
+                    spotLight.Parameters["LightPosition"       ].SetValue(World.Translation);
+                    spotLight.Parameters["LightDirection"      ].SetValue(Direction);
+                    spotLight.Parameters["LightRadius"         ].SetValue(spotLightcomponent.Radius);
+                    spotLight.Parameters["LightAngleCos"       ].SetValue(spotLightcomponent.AngleCos);
+                    spotLight.Parameters["LightFarPlane"       ].SetValue(spotLightcomponent.FarPlane);
+                    spotLight.Parameters["LinearAttenuation"   ].SetValue(spotLightcomponent.LinearAttenuation);
+                    spotLight.Parameters["QuadraticAttenuation"].SetValue(spotLightcomponent.QuadraticAttenuation);
+                    spotLight.Parameters["LightViewProjection" ].SetValue(LightViewProjection);
+
+                    CamDir = World.Translation - CameraPosition;
+                    CamDir.Normalize();
+                    DL = Math.Abs(Vector3.Dot(Direction, -CamDir));
+                    if (DL > spotLightcomponent.AngleCos)
+                    {
+                        Device.RasterizerState = RasterizerState.CullClockwise;
+                    }
+                    else
+                    {
+                        Device.RasterizerState = RasterizerState.CullCounterClockwise;
+                    }
+
+                    spotLight.Techniques[0].Passes[0].Apply();
+                    Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, spotLightModel.VertexCount, 0, spotLightModel.TriangleCount);
+                }
+            }
+            /*********************************/
+
                                
             Device.BlendState        = BlendState.Opaque;
             Device.DepthStencilState = DepthStencilState.Default;
@@ -566,6 +653,7 @@ namespace PlagueEngine.Rendering
             debugEffect      = contentManager.LoadEffect("DSDebug");
             directionalLight = contentManager.LoadEffect("DSDirectionalLight");
             pointLight       = contentManager.LoadEffect("DSPointLight");
+            spotLight        = contentManager.LoadEffect("DSSpotLight");
             composition      = contentManager.LoadEffect("DSComposition");
 
             composition.Parameters["GBufferColor"].SetValue(color);
@@ -581,9 +669,14 @@ namespace PlagueEngine.Rendering
             pointLight.Parameters["GBufferDepth"].SetValue(depth);
             pointLight.Parameters["HalfPixel"].SetValue(HalfPixel);
 
+            spotLight.Parameters["GBufferNormal"].SetValue(normal);
+            spotLight.Parameters["GBufferDepth"].SetValue(depth);
+            spotLight.Parameters["HalfPixel"].SetValue(HalfPixel);
+
             debugEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
 
             pointLightModel = contentManager.LoadModel("Sphere");
+            spotLightModel = contentManager.LoadModel("Cone");
         }
         /****************************************************************************/
 

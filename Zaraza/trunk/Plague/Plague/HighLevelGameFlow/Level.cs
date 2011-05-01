@@ -120,34 +120,34 @@ namespace PlagueEngine.HighLevelGameFlow
             dddtata.Pitch = 90;
             gameObjectsFactory.Create(dddtata);
 
-            LinkedCameraData lcdata = new LinkedCameraData();
-            lcdata.Type = typeof(LinkedCamera);
-            lcdata.position = new Vector3(245, 80, 10);
-            lcdata.Target = new Vector3(245, 45, 35);
-            lcdata.MovementSpeed = 0.07f;
-            lcdata.RotationSpeed = 0.005f;
-            lcdata.ZoomSpeed = 0.01f;
-            lcdata.FoV = 60;
-            lcdata.ZNear = 0.1f;
-            lcdata.ZFar = 10000;
-            lcdata.ActiveKeyListener = true;
-            lcdata.ActiveMouseListener = true;
+            //LinkedCameraData lcdata = new LinkedCameraData();
+            //lcdata.Type = typeof(LinkedCamera);
+            //lcdata.position = new Vector3(245, 80, 10);
+            //lcdata.Target = new Vector3(245, 45, 35);
+            //lcdata.MovementSpeed = 0.07f;
+            //lcdata.RotationSpeed = 0.005f;
+            //lcdata.ZoomSpeed = 0.01f;
+            //lcdata.FoV = 60;
+            //lcdata.ZNear = 0.1f;
+            //lcdata.ZFar = 10000;
+            //lcdata.ActiveKeyListener = true;
+            //lcdata.ActiveMouseListener = true;
 
-            LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
+            //LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
 
-            //FreeCameraData fcdata = new FreeCameraData();
-            //fcdata.Type = typeof(FreeCamera);
-            //fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
-            //                                                 new Vector3(240, 10, 70),
-            //                                                 new Vector3(0, 1, 0)));
-            //fcdata.MovementSpeed = 0.05f;
-            //fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-            //fcdata.FoV = 60;
-            //fcdata.ZNear = 0.1f;
-            //fcdata.ZFar = 11250;
-            //fcdata.ActiveKeyListener = true;
-            //fcdata.ActiveMouseListener = true;
-            //gameObjectsFactory.Create(fcdata);
+            FreeCameraData fcdata = new FreeCameraData();
+            fcdata.Type = typeof(FreeCamera);
+            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
+                                                             new Vector3(240, 10, 70),
+                                                             new Vector3(0, 1, 0)));
+            fcdata.MovementSpeed = 0.05f;
+            fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
+            fcdata.FoV = 60;
+            fcdata.ZNear = 1;
+            fcdata.ZFar = 200;
+            fcdata.ActiveKeyListener = true;
+            fcdata.ActiveMouseListener = true;
+            gameObjectsFactory.Create(fcdata);
 
             
             TerrainData tdata = new TerrainData();
@@ -245,6 +245,22 @@ namespace PlagueEngine.HighLevelGameFlow
                                                           80  + random.Next() % 70);
                 gameObjectsFactory.Create(ddwdtata);
             }
+
+            SpotLightData spdata = new SpotLightData();
+            spdata.Type = typeof(SpotLight);
+            spdata.Color = new Vector3(1, 0, 0);
+            spdata.Enabled = true;
+            spdata.FarPlane = 60;
+            spdata.NearPlane = 1f;
+            spdata.Radius = 60f;
+            spdata.Texture = "Horse";
+            spdata.LinearAttenuation = 0;
+            spdata.LocalTransform = Matrix.Identity;
+            spdata.QuadraticAttenuation = 20;
+            Matrix temp = Matrix.CreateLookAt(new Vector3(245, 50, 35), new Vector3(245, 50, 40), Vector3.Up);            
+            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(245, 50, 95), new Vector3(245, 50, 40), Vector3.Up));
+
+            gameObjectsFactory.Create(spdata);
         }
         /****************************************************************************/
 
