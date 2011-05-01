@@ -257,7 +257,8 @@ namespace PlagueEngine.Rendering
             //        Vector4.Zero);
              
             Device.SetRenderTargets(color, normal, depth);
-            Device.DepthStencilState = DepthStencilState.DepthRead;                        
+            Device.DepthStencilState = DepthStencilState.DepthRead;
+            Device.BlendState = BlendState.Opaque;             
             clearEffect.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();            
             Device.DepthStencilState = DepthStencilState.Default;
@@ -603,35 +604,35 @@ namespace PlagueEngine.Rendering
                                        Device.PresentationParameters.BackBufferHeight,
                                        false,
                                        SurfaceFormat.Color,
-                                       DepthFormat.Depth24);
+                                       DepthFormat.Depth24Stencil8);
 
             normal = new RenderTarget2D(Device,
                                         Device.PresentationParameters.BackBufferWidth,
                                         Device.PresentationParameters.BackBufferHeight,
                                         false,
                                         SurfaceFormat.Color,
-                                        DepthFormat.None);
+                                        DepthFormat.Depth24Stencil8);
 
             depth = new RenderTarget2D(Device,
                                        Device.PresentationParameters.BackBufferWidth,
                                        Device.PresentationParameters.BackBufferHeight,
                                        false,
                                        SurfaceFormat.Single,
-                                       DepthFormat.None);
+                                       DepthFormat.Depth24Stencil8);
 
             light = new RenderTarget2D(Device,
                                        Device.PresentationParameters.BackBufferWidth,
                                        Device.PresentationParameters.BackBufferHeight,
                                        false,
                                        SurfaceFormat.Color,
-                                       DepthFormat.None);
+                                       DepthFormat.Depth24Stencil8);
             
             test = new RenderTarget2D(Device,
                                       Device.PresentationParameters.BackBufferWidth,
                                       Device.PresentationParameters.BackBufferHeight,
                                       false,
                                       SurfaceFormat.Color,
-                                      DepthFormat.None);
+                                      DepthFormat.Depth24Stencil8);
 
             fullScreenQuad = new Quad(-1, 1, 1, -1);
 
