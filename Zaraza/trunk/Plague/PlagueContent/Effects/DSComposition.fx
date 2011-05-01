@@ -23,6 +23,12 @@ sampler LightMapSampler = sampler_state
 {
 	texture = <LightMap>;
 };
+
+texture SSAOTexture;
+sampler SSAOSampler = sampler_state
+{
+	texture = <SSAOTexture>;
+};
 /****************************************************/
 
 
@@ -86,11 +92,12 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
 	float4 Color = tex2D(GBufferColorSampler,input.UV);
 	float4 Light = tex2D(LightMapSampler,input.UV);
-	
-	float3 output = Color.xyz * (Ambient + Light.w + Color.w);
-	output += Color.xyz * Light.xyz;
-    
+	float  SSAO  = tex2D(SSAOSampler,input.UV);
 
+	float3 output = Color.xyz * (Ambient + Light.w + Color.w);
+	output += Color.xyz * Light.xyz;	
+	output *= SSAO;
+    
 	if(FogEnabled)
 	{	
 		float Depth = tex2D(GBufferDepthSampler,input.UV);

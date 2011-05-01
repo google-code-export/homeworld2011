@@ -66,7 +66,7 @@ struct VertexShaderOutput
 	float2 UV			 : TEXCOORD0;
 	float4 Normal		 : TEXCOORD1;
 	float3 WorldPosition : TEXCOORD2;
-	float2 Depth		 : TEXCOORD3;
+	float3 Depth		 : TEXCOORD3;
 };
 /****************************************************/
 
@@ -81,13 +81,16 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 	output.UV			 = input.UV;
 	
 	output.Normal		 = mul(input.Normal, World);
-
+		
 	float4 worldPosition = mul(input.Position, World);
 	output.WorldPosition = worldPosition;
+
+	float4 viewPosition  = mul(worldPosition,View);
 	
 	output.Position		 = mul(worldPosition,ViewProjection);
 	output.Depth.x		 = output.Position.z;
 	output.Depth.y		 = output.Position.w;
+	output.Depth.z		 = viewPosition.z;
 
 	return output;
 }
@@ -99,9 +102,10 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 /****************************************************/
 struct PixelShaderOutput
 {
-	float4 Color  : COLOR0;
-	float4 Normal : COLOR1;
-	float4 Depth  : COLOR2;
+	float4 Color	 : COLOR0;
+	float4 Normal	 : COLOR1;
+	float4 Depth	 : COLOR2;
+	float4 SSAODepth : COLOR3;
 };
 /****************************************************/
 
@@ -124,9 +128,11 @@ PixelShaderOutput PixelShaderFunction(VertexShaderOutput input)
 
 	PixelShaderOutput output;
 	
-	output.Color  = float4(texColor,0);
-	output.Normal = 0.5f * (-input.Normal + 1.0f);
-	output.Depth  = input.Depth.x / input.Depth.y;			
+	output.Color   = float4(texColor,0);
+	output.Normal  = 0.5f * (-input.Normal + 1.0f);
+	output.Depth   = input.Depth.x / input.Depth.y;
+	
+	output.SSAODepth = input.Depth.z;
 
     return output;
 }

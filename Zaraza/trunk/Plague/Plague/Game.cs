@@ -37,7 +37,7 @@ namespace PlagueEngine
         private String title = String.Empty;
 
 
-        //private GUI.GUI gui = null;
+       // private GUI.GUI gui = null;
         private Renderer renderer = null;
         private ContentManager contentManager = null;
         private Input.Input input = null;
