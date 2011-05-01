@@ -23,6 +23,13 @@ sampler LightMapSampler = sampler_state
 {
 	texture = <LightMap>;
 };
+/****************************************************/
+
+
+/****************************************************/
+/// SSAO
+/****************************************************/
+bool SSAOEnabled;
 
 texture SSAOTexture;
 sampler SSAOSampler = sampler_state
@@ -96,7 +103,11 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 	float3 output = Color.xyz * (Ambient + Light.w + Color.w);
 	output += Color.xyz * Light.xyz;	
-	output *= SSAO;
+	
+	if(SSAOEnabled) 
+	{	
+		output *= SSAO;
+	}
     
 	if(FogEnabled)
 	{	
