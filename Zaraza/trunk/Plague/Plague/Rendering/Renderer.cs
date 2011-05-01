@@ -306,7 +306,7 @@ namespace PlagueEngine.Rendering
             if(ssaoEnabled) RenderSSAO(currentCamera.Projection, currentCamera.ZFar, currentCamera.Aspect);
             else Device.SetRenderTarget(null);
 
-            Device.SetRenderTarget(test);
+            //Device.SetRenderTarget(test);
 
             Device.Clear(clearColor);
 
@@ -320,23 +320,23 @@ namespace PlagueEngine.Rendering
             fullScreenQuad.Draw();
 
 
-            Device.SetRenderTarget(null);
+            //Device.SetRenderTarget(null);
 
-            debugEffect.Parameters["Texture"].SetValue(ssao);
-            debugEffect.Techniques[0].Passes[0].Apply();
-            topLeft.Draw();
+            //debugEffect.Parameters["Texture"].SetValue(ssao);
+            //debugEffect.Techniques[0].Passes[0].Apply();
+            //topLeft.Draw();
 
-            debugEffect.Parameters["Texture"].SetValue(ssaoBlur);
-            debugEffect.Techniques[0].Passes[0].Apply();
-            topRight.Draw();
+            //debugEffect.Parameters["Texture"].SetValue(ssaoBlur);
+            //debugEffect.Techniques[0].Passes[0].Apply();
+            //topRight.Draw();
 
-            debugEffect.Parameters["Texture"].SetValue(color);
-            debugEffect.Techniques[0].Passes[0].Apply();
-            bottomLeft.Draw();
+            //debugEffect.Parameters["Texture"].SetValue(color);
+            //debugEffect.Techniques[0].Passes[0].Apply();
+            //bottomLeft.Draw();
 
-            debugEffect.Parameters["Texture"].SetValue(test);
-            debugEffect.Techniques[0].Passes[0].Apply();
-            bottomRight.Draw();
+            //debugEffect.Parameters["Texture"].SetValue(test);
+            //debugEffect.Techniques[0].Passes[0].Apply();
+            //bottomRight.Draw();
 
         }
         /****************************************************************************/
