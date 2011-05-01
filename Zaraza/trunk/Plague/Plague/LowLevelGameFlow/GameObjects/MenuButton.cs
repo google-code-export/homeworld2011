@@ -10,9 +10,6 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Rendering;
 using PlagueEngine.GUI;
 using PlagueEngine.GUI.Components;
-using PlagueEngine.Input.Components;
-using PlagueEngine.Input;
-
 using Microsoft.Xna.Framework.Input;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
@@ -23,12 +20,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /********************************************************************************/
         ButtonComponent buttonComponent = null;
-        
         //TODO: wywalić zbedne komenty
-        //KeyboardListenerComponent keyboardListener = null;
 
-        //bool forward = false;
-        //bool backward = false;
         /********************************************************************************/
 
 
@@ -37,15 +30,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(ButtonComponent buttonComponent, Matrix world)
+        public void Init(ButtonComponent buttonComponent,Matrix world)
         {
             this.buttonComponent = buttonComponent;
             this.World = world;
-            //keyboardListener = new KeyboardListenerComponent(this, true);
-            //keyboardListener.SubscibeKeys(OnKey, Keys.Y, Keys.H);
-            
         }
         /********************************************************************************/
+
+
+        
 
 
         /********************************************************************************/
@@ -104,6 +97,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
         public uint InstancingMode { get; set; }
+
     }
     /********************************************************************************/
 }
