@@ -42,9 +42,9 @@ Tabela ma prostą strukturę:
 </tr>
 <tr>
 <td> </td>
-<td> *Oświetlenie* </td>
+<td> </td>
 <td> Krzysztof </td>
-<td> - </td>
+<td> Oświetlenie </td>
 <td> - </td>
 </tr>
 <tr>
