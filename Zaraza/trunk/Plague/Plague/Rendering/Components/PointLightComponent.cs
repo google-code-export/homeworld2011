@@ -43,7 +43,7 @@ namespace PlagueEngine.Rendering.Components
             Radius               = radius;
             LinearAttenuation    = linearAttenuation;
             QuadraticAttenuation = quadraticAttenuation;
-            LocalPosition   = localPosition;
+            LocalPosition        = localPosition;
 
             renderer.pointLights.Add(this);
         }

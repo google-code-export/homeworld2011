@@ -134,6 +134,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "PointLight":
                     result = CreatePointLight(data);
                     break;
+                case "SpotLight":
+                    result = CreateSpotLight(data);
+                    break;
                 case "GlowStick":
                     result = CreateGlowStick(data);
                     break;
@@ -847,6 +850,34 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              10,
                                                                              new Vector3(0, -0.5f, 0)),
                                                                              gdata.World);
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateSpotLight
+        /****************************************************************************/
+        public SpotLight CreateSpotLight(GameObjectInstanceData data)
+        {
+            SpotLight result = new SpotLight();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            SpotLightData sdata = (SpotLightData)data;
+
+            result.Init(renderingComponentsFactory.CreateSpotLightComponent(result,
+                                                                            sdata.Enabled,
+                                                                            sdata.Color,
+                                                                            sdata.Radius,
+                                                                            sdata.NearPlane,
+                                                                            sdata.FarPlane,
+                                                                            sdata.LinearAttenuation,
+                                                                            sdata.QuadraticAttenuation,
+                                                                            sdata.LocalTransform,
+                                                                            sdata.Texture),
+                                                                            sdata.World);
+
             return result;
         }
         /****************************************************************************/

@@ -1,0 +1,166 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+using PlagueEngine.LowLevelGameFlow;
+
+
+/************************************************************************************/
+/// PlagueEngine.Rendering.Components
+/************************************************************************************/
+namespace PlagueEngine.Rendering.Components
+{
+
+    /********************************************************************************/
+    /// SpotLightComponent
+    /********************************************************************************/
+    class SpotLightComponent : GameObjectComponent
+    {
+        
+        /****************************************************************************/
+        /// Fields
+        /****************************************************************************/
+        public static Renderer renderer = null;
+
+        private Matrix scale;
+        private float radius    = 0;
+        private float nearPlane = 0;
+        private float farPlane  = 0;
+        private float angleCos  = 0;
+        private Texture2D Attenuation = null;
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Constructor
+        /****************************************************************************/
+        public SpotLightComponent(GameObjectInstance gameObject,
+                                   bool              enabled,
+                                   Vector3           color,
+                                   float             radius,
+                                   float             nearPlane,
+                                   float             farPlane,
+                                   float             linearAttenuation,
+                                   float             quadraticAttenuation,
+                                   Matrix            localTransform,
+                                   Texture2D         attenuation)
+            : base(gameObject)
+        {
+            Enabled              = enabled;
+            Color                = color;
+            this.radius          = radius;
+            this.nearPlane       = nearPlane;
+            this.farPlane        = farPlane;
+            LinearAttenuation    = linearAttenuation;
+            QuadraticAttenuation = quadraticAttenuation;
+            LocalTransform       = localTransform;
+            Attenuation          = attenuation;
+
+            CalculateProjection();
+            CalculateScale();
+            angleCos = (float)Math.Cos(MathHelper.ToRadians(radius / 2));
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Release Me
+        /****************************************************************************/
+        public override void ReleaseMe()
+        {
+            renderer.spotLights[Attenuation].Remove(this);
+            base.ReleaseMe();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Calculate Projection
+        /****************************************************************************/
+        private void CalculateProjection()
+        {
+
+            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(radius),
+                                                             1.0f, 
+                                                             nearPlane, 
+                                                             farPlane);         
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Calculate Scale
+        /****************************************************************************/
+        private void CalculateScale()
+        {
+            scale = Matrix.CreateScale(radius / 45.0f, radius / 45.0f, 1);
+            scale *= Matrix.CreateScale(farPlane, farPlane, farPlane);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public bool     Enabled              { get; set; }
+        public Vector3  Color                { get; set; }      
+       
+        public float    LinearAttenuation    { get; set; }
+        public float    QuadraticAttenuation { get; set; }
+              
+        public Matrix   LocalTransform   { get; private set; }
+        public Matrix   Projection       { get; private set; }
+       
+        public Matrix   World            
+        { 
+            get 
+            {                 
+                return scale * LocalTransform * gameObject.World;
+            } 
+        }
+        
+        public String AttenuationTexture { get { return Attenuation.Name; } }
+        public float  AngleCos           { get { return angleCos; } }
+
+        public float Radius    
+        {
+            get { return radius; }
+            set
+            {
+                radius = value;
+                CalculateProjection();
+                CalculateScale();
+                angleCos = (float)Math.Cos(MathHelper.ToRadians(radius / 2));
+            }
+        }
+
+        public float NearPlane 
+        {
+            get { return nearPlane; }
+            set
+            {
+                nearPlane = value;
+                CalculateProjection();
+            }
+        }
+
+        public float FarPlane  
+        {
+            get { return farPlane; }
+            set
+            {
+                farPlane = value;
+                CalculateProjection();
+                CalculateScale();
+            }
+        }
+        /****************************************************************************/
+
+    }
+    /********************************************************************************/
+
+}
+/************************************************************************************/
