@@ -164,28 +164,28 @@ Tabela ma prostą strukturę:
 <tr>
 <td>*Odgrywanie ambientów* </td>
 <td> - </td>
-<td> - </td>
+<td> Łukasz </td>
 <td> - </td>
 <td> - </td>
 </tr>
 <tr>
 <td>*Źródła dźwięków* </td>
 <td> - </td>
-<td> - </td>
+<td> Łukasz </td>
 <td> - </td>
 <td> - </td>
 </tr>
 <tr>
 <td>_Efekty globalne`*`_</td>
 <td> - </td>
-<td> - </td>
+<td> Łukasz </td>
 <td> - </td>
 <td> - </td>
 </tr>
 <tr>
 <td>_Efekty lokalne`*`_</td>
 <td> - </td>
-<td> - </td>
+<td> Łukasz </td>
 <td> - </td>
 <td> - </td>
 </tr>
