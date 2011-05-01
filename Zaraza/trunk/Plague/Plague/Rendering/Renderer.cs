@@ -9,6 +9,8 @@ using PlagueEngine.Resources;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 
+using Microsoft.Xna.Framework.Input;
+
 /************************************************************************************/
 /// PlagueEngine.Rendering
 /************************************************************************************/
@@ -57,7 +59,7 @@ namespace PlagueEngine.Rendering
         private  Vector3 ambient    = new Vector3(0.2f, 0.2f, 0.2f);
         private  Vector3 fogColor   = new Vector3(0.5f, 0.5f, 0.5f);
         private  Vector2 fogRange   = new Vector2(0.995f, 1.0f);
-        private  bool    fogEnabled = true;
+        private  bool    fogEnabled = false;
         /**********************/
 
 
@@ -101,6 +103,18 @@ namespace PlagueEngine.Rendering
         private Quad topRight    = null;
         private Quad bottomLeft  = null;
         private Quad bottomRight = null;
+        /**********************/
+
+
+        /**********************/
+        /// SSAO
+        /**********************/
+        private Effect    ssaoEffect     = null;
+        private Texture2D ditherTexture  = null;
+        private float     sampleRadius   = 0.5f;
+        private float     distanceScale  = 3.0f;
+        private RenderTarget2D ssao      = null;
+        private RenderTarget2D ssaoDepth = null;        
         /**********************/
 
 
@@ -244,6 +258,14 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void Draw(TimeSpan time)
         {
+            KeyboardState state = Keyboard.GetState();
+            
+            if (state.IsKeyUp(Keys.M)) sampleRadius += 0.01f;
+            if (state.IsKeyUp(Keys.N)) sampleRadius -= 0.01f;
+
+            if (state.IsKeyUp(Keys.B)) distanceScale += 0.01f;
+            if (state.IsKeyUp(Keys.V)) distanceScale -= 0.01f;
+
             batchedSkinnedMeshes.DeltaTime = time;
 
             if (currentCamera == null) return;
@@ -264,7 +286,7 @@ namespace PlagueEngine.Rendering
             /*********************************/
             /// Clear GBuffer
             /*********************************/
-            Device.SetRenderTargets(color, normal, depth);
+            Device.SetRenderTargets(color, normal, depth, ssaoDepth);
             Device.DepthStencilState = DepthStencilState.DepthRead;            
             clearEffect.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();            
@@ -278,8 +300,10 @@ namespace PlagueEngine.Rendering
             
             RenderLights(currentCamera.ViewProjection,currentCamera.InverseViewProjection,currentCamera.Position);
 
+            RenderSSAO(currentCamera.Projection, currentCamera.ZFar, currentCamera.Aspect);
+
             //Device.SetRenderTarget(test);
-            Device.SetRenderTarget(null);
+            //Device.SetRenderTarget(null);
 
             Device.Clear(clearColor);
 
@@ -290,14 +314,15 @@ namespace PlagueEngine.Rendering
             
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
-
+                      
+            
             //Device.SetRenderTarget(null);
 
             //debugEffect.Parameters["Texture"].SetValue(color);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topLeft.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(normal);
+            //debugEffect.Parameters["Texture"].SetValue(ssao);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topRight.Draw();
 
@@ -511,6 +536,31 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// Render SSAO
+        /****************************************************************************/
+        private void RenderSSAO(Matrix Projection, float zFar, float aspect)
+        {
+            Device.SetRenderTarget(ssao);
+            
+            Vector3 cornerFrustum = Vector3.Zero;
+            cornerFrustum.Y = (float)Math.Tan(Math.PI / 3.0 / 2.0) * zFar;
+            cornerFrustum.X = cornerFrustum.Y * aspect;
+            cornerFrustum.Z = zFar;
+
+            ssaoEffect.Parameters["Projection"].SetValue(Projection);
+            ssaoEffect.Parameters["SampleRadius"].SetValue(sampleRadius);
+            ssaoEffect.Parameters["DistanceScale"].SetValue(distanceScale);
+            ssaoEffect.Parameters["CornerFrustrum"].SetValue(cornerFrustum);
+
+            ssaoEffect.Techniques[0].Passes[0].Apply();
+            fullScreenQuad.Draw();
+            
+            Device.SetRenderTarget(null);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Components Factory
         /****************************************************************************/
         public RenderingComponentsFactory ComponentsFactory
@@ -655,10 +705,12 @@ namespace PlagueEngine.Rendering
             pointLight       = contentManager.LoadEffect("DSPointLight");
             spotLight        = contentManager.LoadEffect("DSSpotLight");
             composition      = contentManager.LoadEffect("DSComposition");
+            ssaoEffect       = contentManager.LoadEffect("SSAO");
 
             composition.Parameters["GBufferColor"].SetValue(color);
             composition.Parameters["GBufferDepth"].SetValue(depth);
             composition.Parameters["LightMap"].SetValue(light);
+            composition.Parameters["SSAOTexture"].SetValue(ssao);
             composition.Parameters["HalfPixel"].SetValue(HalfPixel);
             
             directionalLight.Parameters["GBufferNormal"].SetValue(normal);
@@ -677,6 +729,13 @@ namespace PlagueEngine.Rendering
 
             pointLightModel = contentManager.LoadModel("Sphere");
             spotLightModel = contentManager.LoadModel("Cone");
+
+            ditherTexture = contentManager.LoadTexture2D("RandomNormals");
+
+            ssaoEffect.Parameters["DitherTexture"].SetValue(ditherTexture);
+            ssaoEffect.Parameters["GBufferNormal"].SetValue(normal);
+            ssaoEffect.Parameters["GBufferDepth"].SetValue(ssaoDepth);
+            ssaoEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
         }
         /****************************************************************************/
 
@@ -704,21 +763,21 @@ namespace PlagueEngine.Rendering
                                         Device.PresentationParameters.BackBufferHeight,
                                         false,
                                         SurfaceFormat.Color,
-                                        DepthFormat.Depth24Stencil8);
+                                        DepthFormat.None);
 
             depth = new RenderTarget2D(Device,
                                        Device.PresentationParameters.BackBufferWidth,
                                        Device.PresentationParameters.BackBufferHeight,
                                        false,
                                        SurfaceFormat.Single,
-                                       DepthFormat.Depth24Stencil8);
+                                       DepthFormat.None);
 
             light = new RenderTarget2D(Device,
                                        Device.PresentationParameters.BackBufferWidth,
                                        Device.PresentationParameters.BackBufferHeight,
                                        false,
                                        SurfaceFormat.Color,
-                                       DepthFormat.Depth24Stencil8);
+                                       DepthFormat.None);
             
             test = new RenderTarget2D(Device,
                                       Device.PresentationParameters.BackBufferWidth,
@@ -726,6 +785,20 @@ namespace PlagueEngine.Rendering
                                       false,
                                       SurfaceFormat.Color,
                                       DepthFormat.Depth24Stencil8);
+
+            ssao = new RenderTarget2D(Device,
+                                      Device.PresentationParameters.BackBufferWidth,
+                                      Device.PresentationParameters.BackBufferHeight,
+                                      false,
+                                      SurfaceFormat.Color,
+                                      DepthFormat.None);
+
+            ssaoDepth = new RenderTarget2D(Device,
+                                           Device.PresentationParameters.BackBufferWidth,
+                                           Device.PresentationParameters.BackBufferHeight,
+                                           false,
+                                           SurfaceFormat.Single,
+                                           DepthFormat.None);
 
             fullScreenQuad = new Quad(-1, 1, 1, -1);
 

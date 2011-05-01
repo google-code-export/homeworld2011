@@ -35,9 +35,10 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 /****************************************************/
 struct PixelShaderOutput
 {
-	float4 Color : COLOR0;
-	float4 Normal: COLOR1;
-	float4 Depth : COLOR2;
+	float4 Color	 : COLOR0;
+	float4 Normal	 : COLOR1;
+	float4 Depth	 : COLOR2;
+	float4 SSAODepth : COLOR3;
 };
 /****************************************************/
 
@@ -55,7 +56,8 @@ PixelShaderOutput PixelShaderFunction(VertexShaderOutput input)
 	output.Normal.rgb = 0.5f;
 	output.Normal.a = 0.0f;
 
-	output.Depth = 1.0f;
+	output.Depth	 = 1.0f;
+	output.SSAODepth = 1.0f;
 
     return output;
 }

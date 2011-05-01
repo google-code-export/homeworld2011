@@ -78,7 +78,7 @@ struct VSSimpleOutput
     float4	 Position	   : POSITION0;
 	float2	 UV			   : TEXCOORD0;
 	float3	 WorldPosition : TEXCOORD1;
-	float2   Depth         : TEXCOORD2;
+	float3   Depth         : TEXCOORD2;
 	float3	 Normal	       : TEXCOORD3;	
 };
 /****************************************************/
@@ -92,7 +92,7 @@ struct VSComplexOutput
     float4	 Position	   : POSITION0;
 	float2	 UV			   : TEXCOORD0;
 	float3	 WorldPosition : TEXCOORD1;
-	float2   Depth         : TEXCOORD2;
+	float3   Depth         : TEXCOORD2;
 	float3x3 TBN	       : TEXCOORD3;	
 };
 /****************************************************/
@@ -116,6 +116,7 @@ VSSimpleOutput VSSimpleFunction(VSSimpleInput input, float4x4 instanceTransform 
 
 	output.Depth.x		 = output.Position.z;
 	output.Depth.y		 = output.Position.w;
+	output.Depth.z		 = mul(worldPosition,View).z;
 
     return output;
 }
@@ -142,6 +143,7 @@ VSComplexOutput VSComplexFunction(VSComplexInput input, float4x4 instanceTransfo
 
 	output.Depth.x		 = output.Position.z;
 	output.Depth.y		 = output.Position.w;
+	output.Depth.z		 = mul(worldPosition,View).z;
 
     return output;
 }
@@ -153,9 +155,10 @@ VSComplexOutput VSComplexFunction(VSComplexInput input, float4x4 instanceTransfo
 /****************************************************/
 struct PixelShaderOutput
 {
-	float4 Color  : COLOR0;
-	float4 Normal : COLOR1;
-	float4 Depth  : COLOR2;
+	float4 Color	 : COLOR0;
+	float4 Normal	 : COLOR1;
+	float4 Depth	 : COLOR2;
+	float4 SSAODepth : COLOR3;
 };
 /****************************************************/
 
@@ -175,8 +178,11 @@ PixelShaderOutput PSDNFunction(VSComplexOutput input) : COLOR0
 
 	output.Color  = float4(texColor,0);
 	output.Normal = float4(0.5f * (normal + 1.0f),0.0f);
-	output.Depth  = input.Depth.x / input.Depth.y;
+	output.Depth   = input.Depth.x / input.Depth.y;
 	
+	output.SSAODepth = input.Depth.z;		
+	
+
     return output;
 }
 /****************************************************/
@@ -199,8 +205,11 @@ PixelShaderOutput PSDSNFunction(VSComplexOutput input) : COLOR0
 
 	output.Color  = float4(texColor,specular.g);
 	output.Normal = float4(0.5f * (normal + 1.0f),specular.r);
-	output.Depth  = input.Depth.x / input.Depth.y;
-		
+	output.Depth   = input.Depth.x / input.Depth.y;
+	
+	output.SSAODepth = input.Depth.z;		
+	
+
 	return output;
 }
 /****************************************************/
@@ -219,8 +228,10 @@ PixelShaderOutput PSDFunction(VSSimpleOutput input) : COLOR0
 
 	output.Color  = float4(texColor,0);
 	output.Normal = float4(0.5f * (normal + 1.0f),0.0f);
-	output.Depth  = input.Depth.x / input.Depth.y;
+	output.Depth   = input.Depth.x / input.Depth.y;
 	
+	output.SSAODepth = input.Depth.z;
+
 	return output;
 }
 /****************************************************/
@@ -241,8 +252,11 @@ PixelShaderOutput PSDSFunction(VSSimpleOutput input) : COLOR0
 	
 	output.Color  = float4(texColor,specular.g);
 	output.Normal = float4(0.5f * (normal + 1.0f),specular.r);
-	output.Depth  = input.Depth.x / input.Depth.y;
-		
+	output.Depth   = input.Depth.x / input.Depth.y;
+	
+	output.SSAODepth = input.Depth.z;		
+	
+
 	return output;
 }
 /****************************************************/
