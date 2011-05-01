@@ -76,10 +76,10 @@ Tabela ma prostą strukturę:
 <td> - </td>
 </tr>
 <tr>
-<td>_SSAO_</td>
+<td></td>
 <td> - </td>
-<td> - </td>
-<td> - </td>
+<td> Krzysztof </td>
+<td> _SSAO_ </td>
 <td> - </td>
 </tr>
 <tr>
