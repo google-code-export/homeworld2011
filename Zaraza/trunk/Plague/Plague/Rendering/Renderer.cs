@@ -112,8 +112,8 @@ namespace PlagueEngine.Rendering
         private Effect    ssaoEffect     = null;
         private Effect    ssaoBlurEffect = null;
         private Texture2D ditherTexture  = null;
-        private float     sampleRadius   = 0.33f;
-        private float     distanceScale  = 2.0f;
+        private float     sampleRadius   = -0.42f;
+        private float     distanceScale  = 7.13f;
         private RenderTarget2D ssao      = null;
         private RenderTarget2D ssaoDepth = null;
         private RenderTarget2D ssaoBlur  = null;        
@@ -261,6 +261,14 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void Draw(TimeSpan time)
         {         
+            //KeyboardState state = Keyboard.GetState();
+ 
+            //if (state.IsKeyDown(Keys.M)) sampleRadius += 0.01f;
+            //if (state.IsKeyDown(Keys.N)) sampleRadius -= 0.01f;
+
+            //if (state.IsKeyDown(Keys.B)) distanceScale += 0.01f;
+            //if (state.IsKeyDown(Keys.V)) distanceScale -= 0.01f;
+
             batchedSkinnedMeshes.DeltaTime = time;
 
             if (currentCamera == null) return;
@@ -298,7 +306,7 @@ namespace PlagueEngine.Rendering
             if(ssaoEnabled) RenderSSAO(currentCamera.Projection, currentCamera.ZFar, currentCamera.Aspect);
             else Device.SetRenderTarget(null);
 
-            //Device.SetRenderTarget(test);
+            Device.SetRenderTarget(test);
 
             Device.Clear(clearColor);
 
@@ -310,25 +318,25 @@ namespace PlagueEngine.Rendering
 
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
-                      
-            
-            //Device.SetRenderTarget(null);
 
-            //debugEffect.Parameters["Texture"].SetValue(ssao);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //topLeft.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(ssaoBlur);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //topRight.Draw();
+            Device.SetRenderTarget(null);
 
-            //debugEffect.Parameters["Texture"].SetValue(color);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //bottomLeft.Draw();
+            debugEffect.Parameters["Texture"].SetValue(ssao);
+            debugEffect.Techniques[0].Passes[0].Apply();
+            topLeft.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(test);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //bottomRight.Draw();
+            debugEffect.Parameters["Texture"].SetValue(ssaoBlur);
+            debugEffect.Techniques[0].Passes[0].Apply();
+            topRight.Draw();
+
+            debugEffect.Parameters["Texture"].SetValue(color);
+            debugEffect.Techniques[0].Passes[0].Apply();
+            bottomLeft.Draw();
+
+            debugEffect.Parameters["Texture"].SetValue(test);
+            debugEffect.Techniques[0].Passes[0].Apply();
+            bottomRight.Draw();
 
         }
         /****************************************************************************/
