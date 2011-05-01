@@ -14,7 +14,6 @@ using PlagueEngine.Physics.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Input;
 
-using Microsoft.Xna.Framework.Input;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects

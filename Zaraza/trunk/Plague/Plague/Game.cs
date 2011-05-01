@@ -301,8 +301,6 @@ namespace PlagueEngine
         private void InitGUI()
         {
             GraphicsDevice.Reset();
-            //TODO: metoda szcz¹tkowa, pewnie bêdzie wymagaæ rozszerzenia.
-            InputManager input = new InputManager(Services, Window.Handle);
             gui.Initialize(GraphicsDevice);
             //this.Components.Add(gui.Manager);
         }

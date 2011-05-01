@@ -23,6 +23,7 @@ namespace PlagueEngine.GUI
         public GuiManager Manager = null;
         public GUIComponentsFactory ComponentsFactory = null;
         public WindowControl window = null;
+        public InputManager input = null;
         /****************************************************************************/
         
         /****************************************************************************/
@@ -33,6 +34,8 @@ namespace PlagueEngine.GUI
             //this.game         = game;
             ComponentsFactory = new GUIComponentsFactory(this);
             Manager = new GuiManager(Services);
+            input = new InputManager(Services);
+            game.Components.Add(input);
             //GUIComponent.gui = this;
         }
         /****************************************************************************/
@@ -53,6 +56,7 @@ namespace PlagueEngine.GUI
             Viewport viewport = GraphicsDevice.Viewport;
             Screen mainScreen = new Screen(viewport.Width, viewport.Height);
             this.Manager.Screen = mainScreen;
+
             // Each screen has a 'desktop' control. This invisible control by default
             // stretches across the whole screen and serves as the root of the control
             // tree in which all visible controls are managed. All controls are positioned
@@ -76,11 +80,10 @@ namespace PlagueEngine.GUI
             );
             quitButton.Pressed += delegate(object sender, EventArgs arguments) { Diagnostics.PushLog("button klikniety"); };
             mainScreen.Desktop.Children.Add(quitButton);
-
-           
-            
+        
         }
 
+      
         internal void Draw(GameTime gameTime)
         {
             Manager.Draw(gameTime);
