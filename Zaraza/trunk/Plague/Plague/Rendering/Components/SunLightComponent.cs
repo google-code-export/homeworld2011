@@ -24,7 +24,6 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         private Renderer renderer      = null;
         private Vector3  diffuseColor  = Vector3.Zero;
-        private Vector3  specularColor = Vector3.Zero;
         private bool     enabled       = true;
         /****************************************************************************/
 
@@ -35,15 +34,16 @@ namespace PlagueEngine.Rendering.Components
         public SunlightComponent(GameObjectInstance gameObject,
                                  Renderer           renderer,
                                  Vector3            diffuseColor,
-                                 Vector3            specularColor,
+                                 float              intensity,
                                  bool               enabled)
             : base(gameObject)
         {
             this.gameObject     = gameObject;
             this.renderer       = renderer;
-            this.diffuseColor   = diffuseColor;
-            this.specularColor  = specularColor;
+            this.diffuseColor   = diffuseColor;            
             this.enabled        = enabled;
+            
+            Intensity           = intensity;
         }
         /****************************************************************************/
 
@@ -64,8 +64,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public bool    Enabled       { get { return enabled;       } set { enabled       = value; } }
         public Vector3 DiffuseColor  { get { return diffuseColor;  } set { diffuseColor  = value; } }
-        public Vector3 SpecularColor { get { return specularColor; } set { specularColor = value; } }
-        
+        public float   Intensity     { get; set; }
+
         public Vector3 Direction     
         { 
             get 

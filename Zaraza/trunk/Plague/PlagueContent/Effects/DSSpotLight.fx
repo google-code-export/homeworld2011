@@ -14,6 +14,7 @@ float3	 CameraPosition;
 float3	 LightColor;
 float3	 LightPosition;
 float3	 LightDirection;
+float	 LightIntensity;
 float	 LightRadius;
 float	 LightAngleCos;
 float	 LightFarPlane;
@@ -125,7 +126,7 @@ float4 Phong(float3 Position, float3 N, float radialAttenuation, float SpecularP
 	}
 
 	float4 result = float4(Diffuse,Specular);
-	result *= attenuation;
+	result *= attenuation * LightIntensity;	
 
 	return result;
 }

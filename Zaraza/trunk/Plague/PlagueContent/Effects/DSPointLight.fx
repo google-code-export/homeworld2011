@@ -13,6 +13,7 @@ float3	 CameraPosition;
 /****************************************************/
 float3 LightColor;
 float3 LightPosition;
+float  LightIntensity;
 float  LightRadius;
 float  LinearAttenuation;
 float  QuadraticAttenuation;
@@ -134,7 +135,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 		
 	float4 output = Phong(Position.xyz,Normal,normalize(lightVector),NormalData.w);
 
-	output *= attenuation;
+	output *= attenuation * LightIntensity;
     return output;
 }
 /****************************************************/

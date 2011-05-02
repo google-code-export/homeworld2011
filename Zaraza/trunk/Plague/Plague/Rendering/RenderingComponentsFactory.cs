@@ -138,13 +138,13 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public SunlightComponent CreateSunlightComponent(GameObjectInstance gameObject,
                                                          Vector3 diffuseColor,
-                                                         Vector3 specularColor,
+                                                         float   intensity,
                                                          bool    enabled)
         {
             SunlightComponent result = new SunlightComponent(gameObject,
                                                              renderer,
                                                              diffuseColor,
-                                                             specularColor,
+                                                             intensity,
                                                              enabled);
             renderer.Sunlight = result;
             return result;
@@ -232,6 +232,7 @@ namespace PlagueEngine.Rendering
         public PointLightComponent CreatePointLightComponent(GameObjectInstance gameObject,
                                                             bool enabled,
                                                             Vector3 color,
+                                                            float intensity,
                                                             float radius,
                                                             float linearAttenuation,
                                                             float quadraticAttenuation,
@@ -240,6 +241,7 @@ namespace PlagueEngine.Rendering
             PointLightComponent result = new PointLightComponent(gameObject,
                                                                  enabled,
                                                                  color,
+                                                                 intensity,
                                                                  radius,
                                                                  linearAttenuation,
                                                                  quadraticAttenuation,
@@ -255,6 +257,7 @@ namespace PlagueEngine.Rendering
         public SpotLightComponent CreateSpotLightComponent(GameObjectInstance gameObject,
                                                            bool enabled,
                                                            Vector3 color,
+                                                           float intensity,
                                                            float radius,
                                                            float nearPlane,
                                                            float farPlane,
@@ -269,6 +272,7 @@ namespace PlagueEngine.Rendering
             SpotLightComponent result = new SpotLightComponent(gameObject,
                                                                enabled,
                                                                color,
+                                                               intensity,
                                                                radius,
                                                                nearPlane,
                                                                farPlane,

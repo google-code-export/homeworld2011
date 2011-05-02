@@ -78,7 +78,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.Enabled   = SunlightComponent.Enabled;
             data.Diffuse   = SunlightComponent.DiffuseColor;
-            data.Specular  = SunlightComponent.SpecularColor;
+            data.Intensity = SunlightComponent.Intensity;
 
             return data;
         }
@@ -110,10 +110,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/        
         public bool Enabled   { get; set; }
 
-        [CategoryAttribute("Light Color")]
+        [CategoryAttribute("Color")]
         public Vector3 Diffuse   { get; set; }
-        [CategoryAttribute("Light Color")]
-        public Vector3 Specular  { get; set; }
+        [CategoryAttribute("Intensity")]
+        public float   Intensity { get; set; }
+
         [CategoryAttribute("Direction")]
         public Vector3 Direction
         {

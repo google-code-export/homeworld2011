@@ -11,6 +11,7 @@ float3	 CameraPosition;
 /****************************************************/
 float3 LightDirection;
 float3 LightColor;
+float  LightIntensity;
 /****************************************************/
 
 
@@ -122,6 +123,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	Position /= Position.w;
 
 	float4 output = Phong(Position.xyz,Normal,NormalData.w);
+	output *= LightIntensity;
     return output;
 }
 /****************************************************/

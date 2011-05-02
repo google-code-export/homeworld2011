@@ -162,26 +162,33 @@ struct PixelShaderOutput
 
 
 /****************************************************/
+/// Pixel Color
+/****************************************************/
+PixelShaderOutput PixelColor(float3 texColor,float3 normal,float3 depth,float specular, float selfIllumination)
+{
+	PixelShaderOutput output;
+
+	output.Color	 = float4(texColor,selfIllumination);
+	output.Normal	 = float4(0.5f * (normal + 1.0f),specular);
+	output.Depth	 = depth.x / depth.y;	
+	output.SSAODepth = depth.z;		
+	
+	return output;
+}
+/****************************************************/
+
+
+/****************************************************/
 /// Pixel Shader Diffuse Normal Function
 /****************************************************/
 PixelShaderOutput PSDNFunction(VSComplexOutput input)
 {
-	PixelShaderOutput output;
-
-	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
+	float3 texColor = tex2D(DiffuseMapSampler,input.UV);	
 	
 	float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
-	
-	normal = normalize(mul(normal,input.TBN));				
+	normal = normalize(mul(normal,input.TBN));					
 
-	output.Color  = float4(texColor,0);
-	output.Normal = float4(0.5f * (normal + 1.0f),0.0f);
-	output.Depth   = input.Depth.x / input.Depth.y;
-	
-	output.SSAODepth = input.Depth.z;		
-		
-
-    return output;
+    return PixelColor(texColor,normal,input.Depth,0,0);
 }
 /****************************************************/
 
@@ -191,24 +198,14 @@ PixelShaderOutput PSDNFunction(VSComplexOutput input)
 /****************************************************/
 PixelShaderOutput PSDSNFunction(VSComplexOutput input) : COLOR0
 {
-	PixelShaderOutput output;
-
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 
 	float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
-
 	normal = normalize(mul(normal,input.TBN));	
 
 	float2 specular = tex2D(SpecularMapSampler,input.UV);
 
-	output.Color  = float4(texColor,specular.g);
-	output.Normal = float4(0.5f * (normal + 1.0f),specular.r);
-	output.Depth   = input.Depth.x / input.Depth.y;
-	
-	output.SSAODepth = input.Depth.z;		
-			
-
-	return output;
+    return PixelColor(texColor,normal,input.Depth,specular.x,specular.y);
 }
 /****************************************************/
 
@@ -218,20 +215,11 @@ PixelShaderOutput PSDSNFunction(VSComplexOutput input) : COLOR0
 /****************************************************/
 PixelShaderOutput PSDFunction(VSSimpleOutput input) : COLOR0
 {
-	PixelShaderOutput output;
-
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 	
 	float3 normal = normalize(input.Normal);		
 
-	output.Color  = float4(texColor,0);
-	output.Normal = float4(0.5f * (normal + 1.0f),0.0f);
-	output.Depth   = input.Depth.x / input.Depth.y;
-	
-	output.SSAODepth = input.Depth.z;		
-	
-
-	return output;
+    return PixelColor(texColor,normal,input.Depth,0,0);
 }
 /****************************************************/
 
@@ -241,21 +229,13 @@ PixelShaderOutput PSDFunction(VSSimpleOutput input) : COLOR0
 /****************************************************/
 PixelShaderOutput PSDSFunction(VSSimpleOutput input) : COLOR0
 {
-	PixelShaderOutput output;
-
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 
 	float3 normal = normalize(input.Normal);		
 	
 	float2 specular = tex2D(SpecularMapSampler,input.UV);
 	
-	output.Color  = float4(texColor,specular.g);
-	output.Normal = float4(0.5f * (normal + 1.0f),specular.r);
-	output.Depth   = input.Depth.x / input.Depth.y;
-	
-	output.SSAODepth = input.Depth.z;		
-
-	return output;
+    return PixelColor(texColor,normal,input.Depth,specular.x,specular.y);
 }
 /****************************************************/
 

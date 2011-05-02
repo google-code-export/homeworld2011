@@ -40,6 +40,7 @@ namespace PlagueEngine.Rendering.Components
         public SpotLightComponent(GameObjectInstance gameObject,
                                    bool              enabled,
                                    Vector3           color,
+                                   float             intensity,
                                    float             radius,
                                    float             nearPlane,
                                    float             farPlane,
@@ -51,6 +52,7 @@ namespace PlagueEngine.Rendering.Components
         {
             Enabled              = enabled;
             Color                = color;
+            Intensity            = intensity;
             this.radius          = radius;
             this.nearPlane       = nearPlane;
             this.farPlane        = farPlane;
@@ -106,8 +108,9 @@ namespace PlagueEngine.Rendering.Components
         /// Properties
         /****************************************************************************/
         public bool     Enabled              { get; set; }
-        public Vector3  Color                { get; set; }      
-       
+        public Vector3  Color                { get; set; }
+        public float    Intensity            { get; set; }
+
         public float    LinearAttenuation    { get; set; }
         public float    QuadraticAttenuation { get; set; }
               

@@ -1229,6 +1229,11 @@ namespace PlagueEngine.Tools
             }
         }
 
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            renderer.ssaoEnabled = checkBox2.Checked;
+        }
+
 
 
 

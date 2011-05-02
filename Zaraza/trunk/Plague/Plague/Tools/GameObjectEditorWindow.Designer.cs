@@ -61,6 +61,7 @@
             this.buttonNew = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBoxGamePaused = new System.Windows.Forms.CheckBox();
             this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
@@ -414,6 +415,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.checkBox2);
             this.tabPage4.Controls.Add(this.checkBox1);
             this.tabPage4.Controls.Add(this.checkBoxGamePaused);
             this.tabPage4.Controls.Add(this.checkBoxShowCollisionSkin);
@@ -425,10 +427,23 @@
             this.tabPage4.Text = "Game Properites";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Checked = true;
+            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox2.Location = new System.Drawing.Point(204, 89);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(55, 17);
+            this.checkBox2.TabIndex = 8;
+            this.checkBox2.Text = "SSAO";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(204, 54);
+            this.checkBox1.Location = new System.Drawing.Point(204, 43);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(167, 17);
             this.checkBox1.TabIndex = 7;
@@ -439,7 +454,7 @@
             // checkBoxGamePaused
             // 
             this.checkBoxGamePaused.AutoSize = true;
-            this.checkBoxGamePaused.Location = new System.Drawing.Point(204, 90);
+            this.checkBoxGamePaused.Location = new System.Drawing.Point(204, 66);
             this.checkBoxGamePaused.Name = "checkBoxGamePaused";
             this.checkBoxGamePaused.Size = new System.Drawing.Size(92, 17);
             this.checkBoxGamePaused.TabIndex = 6;
@@ -546,6 +561,7 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.CheckBox checkBoxGamePaused;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox2;
 
 
     }

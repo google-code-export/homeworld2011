@@ -644,7 +644,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
             result.Init(renderingComponentsFactory.CreateSunlightComponent(result,
                                                                            sdata.Diffuse,
-                                                                           sdata.Specular,
+                                                                           sdata.Intensity,
                                                                            sdata.Enabled),
                                                                            sdata.World);
             return result;
@@ -782,6 +782,7 @@ namespace PlagueEngine.LowLevelGameFlow
             result.Init(renderingComponentsFactory.CreatePointLightComponent(result,
                                                                              pdata.Enabled,
                                                                              pdata.Color,
+                                                                             pdata.Intensity,
                                                                              pdata.LightRadius,
                                                                              pdata.LinearAttenuation,
                                                                              pdata.QuadraticAttenuation,
@@ -838,6 +839,7 @@ namespace PlagueEngine.LowLevelGameFlow
                         renderingComponentsFactory.CreatePointLightComponent(result,
                                                                              gdata.Enabled,
                                                                              gdata.Color,
+                                                                             1,
                                                                              2,
                                                                              0,
                                                                              10,
@@ -845,6 +847,7 @@ namespace PlagueEngine.LowLevelGameFlow
                         renderingComponentsFactory.CreatePointLightComponent(result,
                                                                              gdata.Enabled,
                                                                              gdata.Color,
+                                                                             1,
                                                                              2,
                                                                              0,
                                                                              10,
@@ -869,6 +872,7 @@ namespace PlagueEngine.LowLevelGameFlow
             result.Init(renderingComponentsFactory.CreateSpotLightComponent(result,
                                                                             sdata.Enabled,
                                                                             sdata.Color,
+                                                                            sdata.Intensity,
                                                                             sdata.Radius,
                                                                             sdata.NearPlane,
                                                                             sdata.FarPlane,
