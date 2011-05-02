@@ -76,6 +76,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.LightRadius = light.Radius;
             data.LinearAttenuation = light.LinearAttenuation;
             data.QuadraticAttenuation = light.QuadraticAttenuation;
+            data.Intensity = light.Intensity;
 
             return data;
         }
@@ -126,6 +127,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Light")]
         public Vector3 Color { get; set; }
+
+        [CategoryAttribute("Light")]
+        public float Intensity { get; set; }
 
         [CategoryAttribute("Light")]
         public float LightRadius { get; set; }

@@ -58,8 +58,8 @@ namespace PlagueEngine.Rendering
         private  Color   clearColor = Color.FromNonPremultiplied(new Vector4(0.05f,0.05f,0.2f,1));
         private  Vector3 ambient    = new Vector3(0.2f, 0.2f, 0.2f);
         private  Vector3 fogColor   = new Vector3(0.5f, 0.5f, 0.5f);
-        private  Vector2 fogRange   = new Vector2(0.995f, 1.0f);
-        private  bool    fogEnabled = true;
+        private  Vector2 fogRange   = new Vector2(0.997f, 1.0f);
+        private  bool    fogEnabled = false;
         /**********************/
 
 
@@ -117,7 +117,7 @@ namespace PlagueEngine.Rendering
         private RenderTarget2D ssao      = null;
         private RenderTarget2D ssaoDepth = null;
         private RenderTarget2D ssaoBlur  = null;        
-        private bool           ssaoEnabled = true;
+        public  bool           ssaoEnabled = true;
         /**********************/
 
 
@@ -260,14 +260,14 @@ namespace PlagueEngine.Rendering
         /// Draw
         /****************************************************************************/
         public void Draw(TimeSpan time)
-        {         
-            //KeyboardState state = Keyboard.GetState();
- 
-            //if (state.IsKeyDown(Keys.M)) sampleRadius += 0.01f;
-            //if (state.IsKeyDown(Keys.N)) sampleRadius -= 0.01f;
+        {
+            KeyboardState state = Keyboard.GetState();
 
-            //if (state.IsKeyDown(Keys.B)) distanceScale += 0.01f;
-            //if (state.IsKeyDown(Keys.V)) distanceScale -= 0.01f;
+            if (state.IsKeyDown(Keys.M)) sampleRadius += 0.01f;
+            if (state.IsKeyDown(Keys.N)) sampleRadius -= 0.01f;
+
+            if (state.IsKeyDown(Keys.B)) distanceScale += 0.01f;
+            if (state.IsKeyDown(Keys.V)) distanceScale -= 0.01f;
 
             batchedSkinnedMeshes.DeltaTime = time;
 
@@ -416,6 +416,7 @@ namespace PlagueEngine.Rendering
 
                     directionalLight.Parameters["LightDirection"].SetValue(sunlight.Direction);
                     directionalLight.Parameters["LightColor"].SetValue(sunlight.DiffuseColor);
+                    directionalLight.Parameters["LightIntensity"].SetValue(sunlight.Intensity);
 
                     directionalLight.Techniques[0].Passes[0].Apply();
                     fullScreenQuad.Draw();
@@ -443,6 +444,7 @@ namespace PlagueEngine.Rendering
                 pointLight.Parameters["LightPosition"       ].SetValue(pointLightComponent.Position);
                 pointLight.Parameters["LightRadius"         ].SetValue(pointLightComponent.Radius);
                 pointLight.Parameters["LightColor"          ].SetValue(pointLightComponent.Color);
+                pointLight.Parameters["LightIntensity"      ].SetValue(pointLightComponent.Intensity);
                 pointLight.Parameters["LinearAttenuation"   ].SetValue(pointLightComponent.LinearAttenuation);
                 pointLight.Parameters["QuadraticAttenuation"].SetValue(pointLightComponent.QuadraticAttenuation);
 
@@ -483,7 +485,7 @@ namespace PlagueEngine.Rendering
             float DL;
             Vector3 Direction;
             /************************/
-
+           
             foreach (KeyValuePair<Texture2D, List<SpotLightComponent>> pair in spotLights)
             {
                 spotLight.Parameters["AttenuationTexture"].SetValue(pair.Key);
@@ -503,6 +505,7 @@ namespace PlagueEngine.Rendering
 
                     spotLight.Parameters["World"               ].SetValue(World);
                     spotLight.Parameters["LightColor"          ].SetValue(spotLightcomponent.Color);
+                    spotLight.Parameters["LightIntensity"      ].SetValue(spotLightcomponent.Intensity);
                     spotLight.Parameters["LightPosition"       ].SetValue(World.Translation);
                     spotLight.Parameters["LightDirection"      ].SetValue(Direction);
                     spotLight.Parameters["LightRadius"         ].SetValue(spotLightcomponent.Radius);
@@ -515,7 +518,7 @@ namespace PlagueEngine.Rendering
                     CamDir = World.Translation - CameraPosition;
                     CamDir.Normalize();
                     DL = Math.Abs(Vector3.Dot(Direction, -CamDir));
-                    if (DL > spotLightcomponent.AngleCos)
+                    if (DL * 2 > spotLightcomponent.AngleCos)
                     {
                         Device.RasterizerState = RasterizerState.CullClockwise;
                     }

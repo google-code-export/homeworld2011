@@ -32,6 +32,7 @@ namespace PlagueEngine.Rendering.Components
         public PointLightComponent(GameObjectInstance gameObject,
                                    bool enabled,
                                    Vector3 color,
+                                   float intensity,
                                    float radius,
                                    float linearAttenuation,
                                    float quadraticAttenuation,
@@ -40,6 +41,7 @@ namespace PlagueEngine.Rendering.Components
         {
             Enabled              = enabled;
             Color                = color;
+            Intensity            = intensity;
             Radius               = radius;
             LinearAttenuation    = linearAttenuation;
             QuadraticAttenuation = quadraticAttenuation;
@@ -64,8 +66,9 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public bool    Enabled              { get; set; }
+        public bool    Enabled              { get; set; }        
         public Vector3 Color                { get; set; }
+        public float   Intensity            { get; set; }
         public float   Radius               { get; set; }
         public float   LinearAttenuation    { get; set; }
         public float   QuadraticAttenuation { get; set; }

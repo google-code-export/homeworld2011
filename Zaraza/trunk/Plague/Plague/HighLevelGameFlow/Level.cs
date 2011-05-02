@@ -128,8 +128,8 @@ namespace PlagueEngine.HighLevelGameFlow
             //lcdata.RotationSpeed = 0.005f;
             //lcdata.ZoomSpeed = 0.01f;
             //lcdata.FoV = 60;
-            //lcdata.ZNear = 0.1f;
-            //lcdata.ZFar = 10000;
+            //lcdata.ZNear = 1f;
+            //lcdata.ZFar = 200;
             //lcdata.ActiveKeyListener = true;
             //lcdata.ActiveMouseListener = true;
 
@@ -175,7 +175,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.World = Matrix.Identity;
             sdata.Enabled = true;
             sdata.Diffuse = new Vector3(0.5f, 0.5f, 0.7f);
-            sdata.Specular = new Vector3(0.7f, 0.7f, 0.9f);
+            sdata.Intensity = 1;
 
             Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
             s.Direction = new Vector3(-1,-1,-1);
@@ -250,17 +250,113 @@ namespace PlagueEngine.HighLevelGameFlow
             spdata.Type = typeof(SpotLight);
             spdata.Color = new Vector3(1, 0, 0);
             spdata.Enabled = true;
-            spdata.FarPlane = 60;
+            spdata.FarPlane = 90;
             spdata.NearPlane = 1f;
             spdata.Radius = 60f;
-            spdata.Texture = "Horse";
+            spdata.Texture = "RadialAttenuation";
             spdata.LinearAttenuation = 0;
+            spdata.Intensity = 1;
             spdata.LocalTransform = Matrix.Identity;
             spdata.QuadraticAttenuation = 20;
-            Matrix temp = Matrix.CreateLookAt(new Vector3(245, 50, 35), new Vector3(245, 50, 40), Vector3.Up);            
-            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(245, 50, 95), new Vector3(245, 50, 40), Vector3.Up));
+            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(245, 90, 95), new Vector3(285, 50, 40), Vector3.Up));
 
             gameObjectsFactory.Create(spdata);
+
+
+            SquareBodyMeshData sssdata = new SquareBodyMeshData();
+            sssdata.Type = typeof(SquareBodyMesh);
+            sssdata.Model = "woodbox01";
+            sssdata.Diffuse = "woodbox01.diff";
+            sssdata.Specular = "woodbox01.spec";
+            sssdata.Normals = "woodbox01.norm";
+            sssdata.InstancingMode = 3;
+
+            sssdata.DynamicRoughness = 0.8f;
+            sssdata.Elasticity = 0.1f;
+            sssdata.Mass = 3f;
+            sssdata.Height = 1.3f;
+            sssdata.Lenght = 1.3f;
+            sssdata.Width = 1.3f;
+            sssdata.Immovable = false;
+            sssdata.StaticRoughness = 0.8f;
+            sssdata.Translation = new Vector3(0, 0.65f, 0);
+                        
+            for (int j = 0; j < 25; j++)
+            {
+                sssdata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
+                                                         100 + random.Next() % 10,
+                                                         80  + random.Next() % 70);
+                gameObjectsFactory.Create(sssdata);
+            }
+
+
+            ddwdtata.Type = (typeof(CylindricalBodyMesh));
+            ddwdtata.Model = "gasbottle01";
+            ddwdtata.Diffuse = "gasbottle01.diff";
+            ddwdtata.Specular = "gasbottle01.spec";
+            ddwdtata.Normals = "gasbottle01.norm";
+            ddwdtata.DynamicRoughness = 0.7f;
+            ddwdtata.Elasticity = 0.1f;
+            ddwdtata.StaticRoughness = 0.6f;
+            ddwdtata.Radius = 0.38f;
+            ddwdtata.Lenght = 2.6f;
+            ddwdtata.Translation = new Vector3(0, 1.3f, 0);
+            ddwdtata.Immovable = false;
+            ddwdtata.InstancingMode = 3;
+            ddwdtata.SkinPitch = 90;
+            ddwdtata.Mass = 1;
+
+            for (int j = 0; j < 25; j++)
+            {
+                ddwdtata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
+                                                          50 + random.Next() % 10,
+                                                          70 + random.Next() % 70);
+                gameObjectsFactory.Create(ddwdtata);
+            }
+
+
+            sssdata.Type = typeof(SquareBodyMesh);
+            sssdata.Model = "pavelow";
+            sssdata.Diffuse = "pavelow.diff";
+            sssdata.Specular = "pavelow.spec";
+            sssdata.Normals = "pawelow.norm";
+            sssdata.InstancingMode = 1;
+
+            sssdata.DynamicRoughness = 0.8f;
+            sssdata.Elasticity = 0.1f;
+            sssdata.Mass = 1000f;
+            sssdata.Height = 6f;
+            sssdata.Lenght = 50f;
+            sssdata.Width = 24f;
+            sssdata.Immovable = false;
+            sssdata.StaticRoughness = 0.8f;
+            sssdata.Translation = new Vector3(0,3,0);
+            
+            sssdata.World = Matrix.CreateTranslation(351,100,152);
+            gameObjectsFactory.Create(sssdata);
+
+
+            sssdata.Type = typeof(SquareBodyMesh);
+            sssdata.Model = "buldozer";
+            sssdata.Diffuse = "buldozer.diff";
+            sssdata.Specular = String.Empty;
+            sssdata.Normals = String.Empty;
+            sssdata.InstancingMode = 1;
+
+            sssdata.DynamicRoughness = 0.8f;
+            sssdata.Elasticity = 0.1f;
+            sssdata.Mass = 1000f;
+            sssdata.Height = 2f;
+            sssdata.Lenght = 7.1f;
+            sssdata.Width = 12f;
+            sssdata.Immovable = false;
+            sssdata.StaticRoughness = 0.8f;
+            sssdata.Translation = new Vector3(0, 1, 0);
+
+            sssdata.World = Matrix.CreateTranslation(240, 60, 60);
+            gameObjectsFactory.Create(sssdata);
+
+
         }
         /****************************************************************************/
 

@@ -13,7 +13,9 @@ float2  HalfPixel;
 texture SSAOTexture;
 sampler SSAOTextureSampler = sampler_state
 {
-	texture   = <SSAOTexture>;	    
+	texture  = <SSAOTexture>;	
+	AddressU = Mirror;
+	AddressV = Mirror;    
 };
 /****************************************************/
 
@@ -60,9 +62,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 /****************************************************/
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {		
-	float ssao = tex2D(SSAOTextureSampler,input.UV);
-
-	float ssaoNormalizer = 1;
+	float color;	
 		
 	for(int x = -2; x <= 2; x++)
 	{
@@ -71,17 +71,13 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 			float2 shift = float2(x * 2 * HalfPixel.x, y * 2 * HalfPixel.y);
 			float2 newUV = float2(input.UV + shift);
 
-			float sample = tex2D(SSAOTextureSampler,newUV);
-	
-			float contribution = 4 - abs(x + y);
-			
-			ssaoNormalizer += (4 - abs(x + y));
+			float sample = tex2D(SSAOTextureSampler,newUV);				
 
-			ssao += sample * contribution;
+			color += sample;;
 		}
 	}
 	
-	return ssao / ssaoNormalizer;
+	return color / 25.0f;
 }
 /****************************************************/
 

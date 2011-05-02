@@ -65,6 +65,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.FarPlane = light.FarPlane;
             data.LocalTransform = light.LocalTransform;
             data.Texture = light.AttenuationTexture;
+            data.Intensity = light.Intensity;
 
             return data;
         }
@@ -85,6 +86,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Color")]
         public Vector3 Color { get; set; }
+        [CategoryAttribute("Color")]
+        public float Intensity { get; set; }
 
         [CategoryAttribute("Size")]
         public float Radius { get; set; }
