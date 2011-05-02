@@ -148,7 +148,6 @@ namespace PlagueEngine.Tools
             this.sniffer = new DummySniffer(this);
             this.game = game;
 
-
             foreach (var gameObject in gameObjectClassNames)
             {
                 gameObjectsName.Items.Add(gameObject.className);

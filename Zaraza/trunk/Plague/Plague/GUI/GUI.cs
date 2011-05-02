@@ -9,7 +9,9 @@ using Nuclex.Input;
 using Nuclex.UserInterface.Controls.Desktop;
 using Nuclex.UserInterface;
 using PlagueEngine.GUI.Components;
-
+using Nuclex.UserInterface.Controls.Desktop;
+using Nuclex.UserInterface.Visuals.Flat;
+using Nuclex.Input;
 namespace PlagueEngine.GUI
 {
     /********************************************************************************/
@@ -34,9 +36,14 @@ namespace PlagueEngine.GUI
             //this.game         = game;
             ComponentsFactory = new GUIComponentsFactory(this);
             Manager = new GuiManager(Services);
-            input = new InputManager(Services);
-            game.Components.Add(input);
+            input = new InputManager(game.Window.Handle);
+            //game.Components.Add(input);
             //GUIComponent.gui = this;
+    
+var capturer = new Nuclex.UserInterface.Input.DefaultInputCapturer(this.input);
+capturer.ChangePlayerIndex(ExtendedPlayerIndex.Five);
+this.Manager.InputCapturer = capturer;
+        
         }
         /****************************************************************************/
 
@@ -80,7 +87,7 @@ namespace PlagueEngine.GUI
             );
             quitButton.Pressed += delegate(object sender, EventArgs arguments) { Diagnostics.PushLog("button klikniety"); };
             mainScreen.Desktop.Children.Add(quitButton);
-        
+           
         }
 
       
