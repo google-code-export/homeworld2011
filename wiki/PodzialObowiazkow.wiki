@@ -48,9 +48,9 @@ Tabela ma prostą strukturę:
 <td> - </td>
 </tr>
 <tr>
-<td>*Cienie* </td>
-<td> - </td>
-<td> - </td>
+<td> </td>
+<td> *Cienie* </td>
+<td> Krzysztof </td>
 <td> - </td>
 <td> - </td>
 </tr>
