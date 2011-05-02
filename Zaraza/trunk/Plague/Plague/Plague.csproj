@@ -178,6 +178,7 @@
     <Compile Include="LowLevelGameFlow\GameObjectInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\GlowStick.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MenuButton.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\WaterSurface.cs" />
     <Compile Include="Physics\CollisionSkinComponent.cs" />
     <Compile Include="Physics\Components\CapsuleBodyComponent.cs" />
+    <Compile Include="Physics\Components\CylindricalBodyComponent2.cs" />
     <Compile Include="Physics\Components\CylindricalBodyComponent.cs" />
     <Compile Include="Physics\Components\CylindricalSkinComponent.cs" />
     <Compile Include="Physics\Components\SphericalBodyComponent.cs" />

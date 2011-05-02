@@ -103,6 +103,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "CylindricalBodyMesh":
                     result = CreateCylindricalBodyMesh(data);
                     break;
+                case "CylindricalBodyMesh2":
+                    result = CreateCylindricalBodyMesh2(data);
+                    break;
                 case "SphericalBodyMesh":
                     result = CreateSphericalBodyMesh(data);
                     break;
@@ -232,6 +235,52 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Create Cylindrical Body Mesh
+        /****************************************************************************/
+        public CylindricalBodyMesh2 CreateCylindricalBodyMesh2(GameObjectInstanceData data)
+        {
+            CylindricalBodyMesh2 result = new CylindricalBodyMesh2();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            CylindricalBodyMeshData2 sbmdata = (CylindricalBodyMeshData2)data;
+
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       sbmdata.Model,
+                                                                       sbmdata.Diffuse,
+                                                                       sbmdata.Specular,
+                                                                       sbmdata.Normals,
+                                                                       InstancingMode),
+                        physicsComponentFactory.CreateCylindricalBodyComponent2(result,
+                        sbmdata.Mass,
+                        sbmdata.Radius,
+                        sbmdata.Lenght,
+                        sbmdata.Elasticity,
+                        sbmdata.StaticRoughness,
+                        sbmdata.DynamicRoughness,
+                        sbmdata.Immovable,
+                        sbmdata.World,
+                        sbmdata.Translation,
+                        sbmdata.SkinYaw,
+                        sbmdata.SkinPitch,
+                        sbmdata.SkinRoll),
+                        sbmdata.World);
+
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
 
 
         /****************************************************************************/

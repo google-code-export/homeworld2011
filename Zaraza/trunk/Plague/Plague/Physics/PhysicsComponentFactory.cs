@@ -292,6 +292,34 @@ namespace PlagueEngine.Physics
             /********************************************************************************/
 
 
+
+        /****************************************************************************/
+        /// Create Cylidrical Body Component 2
+        /****************************************************************************/
+        public CylindricalBodyComponent2 CreateCylindricalBodyComponent2(GameObjectInstance gameObject,
+                                    float mass,
+                                    float radius,
+                                    float length,
+                                    float elasticity,
+                                    float staticRoughness,
+                                    float dynamicRoughness,
+                                    bool immovable,
+                                    Matrix world,
+                                    Vector3 skinTranslation,
+                                    float skinYaw,
+                                    float skinPitch,
+                                    float skinRoll)
+        {
+            MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
+
+            CylindricalBodyComponent2 result = new CylindricalBodyComponent2(gameObject, mass, radius, length, material, immovable, world, skinTranslation, skinYaw, skinPitch, skinRoll);
+            return result;
+        }
+        /********************************************************************************/
+
+
+
+
     }
 
         /********************************************************************************/

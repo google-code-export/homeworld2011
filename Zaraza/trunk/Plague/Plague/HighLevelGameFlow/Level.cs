@@ -99,22 +99,20 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         public void PutSomeObjects()
         {
-            SquareBodyMeshData dddtata = new SquareBodyMeshData();
-            dddtata.Type = (typeof(SquareBodyMesh));
-            dddtata.Model = "Barrel";
-            dddtata.Diffuse = "Barrel_diffuse";
-            dddtata.Specular = "Barrel_specular";
-            dddtata.Normals = "Barrel_normals";
+            CylindricalBodyMeshData2 dddtata = new CylindricalBodyMeshData2();
+            dddtata.Type = (typeof(CylindricalBodyMesh2));
+            dddtata.Model = "tire01";
+            dddtata.Diffuse = "tire01.diff";
             dddtata.DynamicRoughness = 0.5f;
             dddtata.Elasticity = 0.1f;
             dddtata.StaticRoughness = 0.5f;
-            dddtata.Height = 3.3f;
-            dddtata.Lenght = 3.3f;
-            dddtata.Width = 3.3f;
+          
+            dddtata.Lenght = 0.4f;
+            dddtata.Radius = 0.7f;
             dddtata.Immovable = false;
             dddtata.InstancingMode = 1;
             dddtata.Mass = 50;
-
+            dddtata.SkinPitch = 90;
 
             dddtata.World = Matrix.CreateTranslation(245, 54, 35);
             dddtata.Pitch = 90;
