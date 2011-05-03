@@ -9,6 +9,13 @@ float3	 CameraPosition;
 
 
 /****************************************************/
+/// Depth
+/****************************************************/
+float DepthPrecision;
+/****************************************************/
+
+
+/****************************************************/
 /// Diffuse Map
 /****************************************************/
 texture DiffuseMap;
@@ -45,6 +52,16 @@ sampler NormalsMapSampler = sampler_state
 
 
 /****************************************************/
+/// VSDepthWriteInput
+/****************************************************/
+struct VSDepthWriteInput
+{
+    float4 Position : POSITION0;	
+};
+/****************************************************/
+
+
+/****************************************************/
 /// VSSimpleInput
 /****************************************************/
 struct VSSimpleInput
@@ -66,6 +83,17 @@ struct VSComplexInput
     float3 Normal   : NORMAL0;    
     float3 Binormal : BINORMAL0;
     float3 Tangent  : TANGENT0;
+};
+/****************************************************/
+
+
+/****************************************************/
+/// VSDepthWriteOutput
+/****************************************************/
+struct VSDepthWriteOuput
+{
+    float4 Position      : POSITION0;	
+	float4 WorldPosition : TEXCOORD0;
 };
 /****************************************************/
 
@@ -144,6 +172,23 @@ VSComplexOutput VSComplexFunction(VSComplexInput input, float4x4 instanceTransfo
 	output.Depth.x		 = output.Position.z;
 	output.Depth.y		 = output.Position.w;
 	output.Depth.z		 = mul(worldPosition,View).z;
+
+    return output;
+}
+/****************************************************/
+
+
+/****************************************************/
+/// VSDepth Write
+/****************************************************/
+VSDepthWriteOuput VSDepthWrite(VSDepthWriteInput input, float4x4 instanceTransform : BLENDWEIGHT)
+{
+    VSDepthWriteOuput output;
+
+	float4x4 world		 = transpose(instanceTransform);
+	float4 worldPosition = mul(input.Position, world);
+	output.Position		 = mul(worldPosition,ViewProjection);
+	output.WorldPosition = worldPosition;
 
     return output;
 }
@@ -243,6 +288,20 @@ PixelShaderOutput PSDSFunction(VSSimpleOutput input) : COLOR0
 
 
 /****************************************************/
+/// PSDepthWrite
+/****************************************************/
+float4 PSDepthWrite(VSDepthWriteOuput input) : COLOR0
+{		
+	input.WorldPosition /= input.WorldPosition.w;
+
+	float depth = max(0.01f, length(CameraPosition - input.WorldPosition)) / DepthPrecision;
+
+	return exp((DepthPrecision * 0.5f) * depth);
+}
+/****************************************************/
+
+
+/****************************************************/
 /// Diffuse-Specular-Normal Technique
 /****************************************************/
 technique DiffuseSpecularNormalTechnique
@@ -294,5 +353,19 @@ technique DiffuseTechnique
         VertexShader = compile vs_3_0 VSSimpleFunction();
         PixelShader  = compile ps_3_0 PSDFunction();
     }
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Depth Write Technique
+/****************************************************/
+technique DepthWrite
+{
+	pass Pass1
+	{
+		VertexShader = compile vs_3_0 VSDepthWrite();
+        PixelShader  = compile ps_3_0 PSDepthWrite();
+	}
 }
 /****************************************************/

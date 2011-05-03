@@ -264,11 +264,15 @@ namespace PlagueEngine.Rendering
                                                            float linearAttenuation,
                                                            float quadraticAttenuation,
                                                            Matrix localTransform,
-                                                           String attenuation)
+                                                           String attenuation,
+                                                           int shadowMapSize,
+                                                           float depthBias,
+                                                           float depthPrecision)
         { 
 
             Texture2D Attenuation = content.LoadTexture2D(attenuation);
-            
+                      
+
             SpotLightComponent result = new SpotLightComponent(gameObject,
                                                                enabled,
                                                                color,
@@ -279,7 +283,15 @@ namespace PlagueEngine.Rendering
                                                                linearAttenuation,
                                                                quadraticAttenuation,
                                                                localTransform,
-                                                               Attenuation);
+                                                               Attenuation,
+                                                               new RenderTarget2D(renderer.Device, 
+                                                                                  shadowMapSize, 
+                                                                                  shadowMapSize, 
+                                                                                  false, 
+                                                                                  SurfaceFormat.Single, 
+                                                                                  DepthFormat.Depth24),
+                                                               depthBias,
+                                                               depthPrecision);
 
             if (!renderer.spotLights.ContainsKey(Attenuation))
             {

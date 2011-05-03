@@ -47,7 +47,10 @@ namespace PlagueEngine.Rendering.Components
                                    float             linearAttenuation,
                                    float             quadraticAttenuation,
                                    Matrix            localTransform,
-                                   Texture2D         attenuation)
+                                   Texture2D         attenuation,
+                                   RenderTarget2D    shadowMap,
+                                   float             depthBias,
+                                   float             depthPrecision)
             : base(gameObject)
         {
             Enabled              = enabled;
@@ -60,10 +63,15 @@ namespace PlagueEngine.Rendering.Components
             QuadraticAttenuation = quadraticAttenuation;
             LocalTransform       = localTransform;
             Attenuation          = attenuation;
+            ShadowMap            = shadowMap;
+            DepthBias            = depthBias;
+            DepthPrecision       = depthPrecision;
 
             CalculateProjection();
             CalculateScale();
             angleCos = (float)Math.Cos(MathHelper.ToRadians(radius / 2));
+
+            renderer.spottest = this;
         }
         /****************************************************************************/
 
@@ -124,7 +132,15 @@ namespace PlagueEngine.Rendering.Components
                 return scale * LocalTransform * gameObject.World;
             } 
         }
-        
+
+        public Matrix ViewProjection
+        {
+            get
+            {
+                return Matrix.Invert(LocalTransform * gameObject.World) * Projection;
+            }
+        }
+
         public String AttenuationTexture { get { return Attenuation.Name; } }
         public float  AngleCos           { get { return angleCos; } }
 
@@ -160,6 +176,11 @@ namespace PlagueEngine.Rendering.Components
                 CalculateScale();
             }
         }
+
+        public RenderTarget2D ShadowMap { get; private set; }
+        public int  ShadowMapSize       { get { return ShadowMap.Height; } }
+        public float DepthBias          { get; set; }
+        public float DepthPrecision     { get; set; }
         /****************************************************************************/
 
     }

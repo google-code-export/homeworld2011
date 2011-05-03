@@ -252,6 +252,30 @@ namespace PlagueEngine.Rendering.Components
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Draw Depth
+        /****************************************************************************/
+        public override void DrawDepth(ref Matrix ViewProjection, ref Vector3 LightPosition,float depthPrecision)
+        {
+            effect.Parameters["World"].SetValue(gameObject.World);
+            effect.Parameters["ViewProjection"].SetValue(ViewProjection);
+            effect.Parameters["LightPosition"].SetValue(LightPosition);
+            effect.Parameters["DepthPrecision"].SetValue(depthPrecision);
+
+
+            effect.CurrentTechnique = effect.Techniques["DepthWrite"];
+            effect.CurrentTechnique.Passes[0].Apply();
+            
+            device.Indices = indexBuffer;
+            device.SetVertexBuffer(vertexBuffer);
+            
+            device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, trianglesCount);
+
+            effect.CurrentTechnique = effect.Techniques[0];
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/
 

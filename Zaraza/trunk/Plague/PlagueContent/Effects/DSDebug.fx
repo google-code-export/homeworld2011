@@ -5,6 +5,9 @@ texture Texture;
 sampler TextureSampler = sampler_state
 {
 	texture	= <Texture>;
+			MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
 };
 
 struct VertexShaderInput

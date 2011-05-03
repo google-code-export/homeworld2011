@@ -31,6 +31,24 @@ sampler AttenuationTextureSampler = sampler_state
 
 
 /****************************************************/
+/// Shadows
+/****************************************************/
+bool  ShadowsEnabled;
+float DepthPrecision;
+float DepthBias;
+
+texture ShadowMap;
+sampler ShadowMapSampler = sampler_state
+{
+	texture   = <ShadowMap>;
+	MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
+};
+/****************************************************/
+
+
+/****************************************************/
 /// G-Buffer
 /****************************************************/
 float2  HalfPixel;
@@ -161,8 +179,14 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float2 LightUV = 0.5f * (float2(LightScreenPos.x,-LightScreenPos.y) + 1.0f);
 
 	float Attenuation = tex2D(AttenuationTextureSampler, LightUV).r;		
+	
+	float shadowDepth = tex2D(ShadowMapSampler, LightUV);
 
-    return Phong(Position.xyz,Normal,Attenuation,NormalData.w);
+	float len = max(0.01f, length(LightPosition - Position)) / DepthPrecision;
+	
+	float ShadowFactor = (shadowDepth * exp(-(DepthPrecision * 0.5f) * (len - DepthBias)));
+
+    return ShadowFactor * Phong(Position.xyz,Normal,Attenuation,NormalData.w);
 }
 /****************************************************/
 

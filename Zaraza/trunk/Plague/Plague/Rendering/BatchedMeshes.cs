@@ -355,25 +355,25 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
-        public void Draw()
+        public void Draw(BoundingFrustum frustrum)
         {
             instancingEffect.CurrentTechnique = instancingEffect.Techniques["DiffuseTechnique"];
-            Draw(instDiff);
+            Draw(instDiff, frustrum);
             instancingEffect.CurrentTechnique = instancingEffect.Techniques["DiffuseSpecularTechnique"];
-            Draw(instDiffSpec);
+            Draw(instDiffSpec, frustrum);
             instancingEffect.CurrentTechnique = instancingEffect.Techniques["DiffuseNormalTechnique"];
-            Draw(instDiffNorm);
+            Draw(instDiffNorm, frustrum);
             instancingEffect.CurrentTechnique = instancingEffect.Techniques["DiffuseSpecularNormalTechnique"];
-            Draw(instDiffSpecNorm);
+            Draw(instDiffSpecNorm, frustrum);
             
             noInstancingEffect.CurrentTechnique = noInstancingEffect.Techniques["DiffuseTechnique"];
-            Draw(noInstDiff);
+            Draw(noInstDiff, frustrum);
             noInstancingEffect.CurrentTechnique = noInstancingEffect.Techniques["DiffuseSpecularTechnique"];
-            Draw(noInstDiffSpec);
+            Draw(noInstDiffSpec, frustrum);
             noInstancingEffect.CurrentTechnique = noInstancingEffect.Techniques["DiffuseNormalTechnique"];
-            Draw(noInstDiffNorm);
+            Draw(noInstDiffNorm, frustrum);
             noInstancingEffect.CurrentTechnique = noInstancingEffect.Techniques["DiffuseSpecularNormalTechnique"];
-            Draw(noInstDiffSpecNorm);
+            Draw(noInstDiffSpecNorm, frustrum);
         }
         /****************************************************************************/
 
@@ -381,30 +381,30 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw (1)
         /****************************************************************************/
-        private void Draw(Dictionary<PlagueEngineModel, Dictionary<TexturesPack, List<MeshComponent>>> container)
+        private void Draw(Dictionary<PlagueEngineModel, Dictionary<TexturesPack, List<MeshComponent>>> container,BoundingFrustum frustrum)
         {
-            foreach (PlagueEngineModel model in container.Keys)
+            foreach (KeyValuePair<PlagueEngineModel,Dictionary<TexturesPack, List<MeshComponent>>> model in container)
             {
-                renderer.Device.Indices = model.IndexBuffer;
-                renderer.Device.SetVertexBuffer(model.VertexBuffer);
+                renderer.Device.Indices = model.Key.IndexBuffer;
+                renderer.Device.SetVertexBuffer(model.Key.VertexBuffer);
 
-                foreach (TexturesPack texturesPack in container[model].Keys)
+                foreach (KeyValuePair<TexturesPack, List<MeshComponent>> texturesPack in model.Value)
                 {
-                    noInstancingEffect.Parameters["DiffuseMap" ].SetValue(texturesPack.Diffuse);
-                    noInstancingEffect.Parameters["SpecularMap"].SetValue(texturesPack.Specular);
-                    noInstancingEffect.Parameters["NormalsMap" ].SetValue(texturesPack.Normals);
+                    noInstancingEffect.Parameters["DiffuseMap"].SetValue(texturesPack.Key.Diffuse);
+                    noInstancingEffect.Parameters["SpecularMap"].SetValue(texturesPack.Key.Specular);
+                    noInstancingEffect.Parameters["NormalsMap"].SetValue(texturesPack.Key.Normals);
 
-                    foreach (MeshComponent mesh in container[model][texturesPack])
+                    foreach (MeshComponent mesh in texturesPack.Value)
                     {
-                        if (!renderer.CurrentCamera.Frustrum.Intersects(mesh.BoundingBox)) continue;
-                         
+                        if (!frustrum.Intersects(mesh.BoundingBox)) continue;
+
                         noInstancingEffect.Parameters["World"].SetValue(mesh.GameObject.World);
                         noInstancingEffect.CurrentTechnique.Passes[0].Apply();
 
-                        renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, model.VertexCount, 0, model.TriangleCount);
+                        renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, model.Key.VertexCount, 0, model.Key.TriangleCount);
                     }
                 }
-            }            
+            }                     
         }
         /****************************************************************************/
 
@@ -412,22 +412,22 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw (2)
         /****************************************************************************/
-        private void Draw(Dictionary<PlagueEngineModel, Dictionary<TexturesPack, InstancesData>> container)
+        private void Draw(Dictionary<PlagueEngineModel, Dictionary<TexturesPack, InstancesData>> container, BoundingFrustum frustrum)
         {
-            foreach (PlagueEngineModel model in container.Keys)
+            foreach (KeyValuePair<PlagueEngineModel, Dictionary<TexturesPack, InstancesData>> model in container)
             {
-                renderer.Device.Indices = model.IndexBuffer;
-                VertexBufferBinding vertexBufferBinding = new VertexBufferBinding(model.VertexBuffer);
+                renderer.Device.Indices = model.Key.IndexBuffer;
+                VertexBufferBinding vertexBufferBinding = new VertexBufferBinding(model.Key.VertexBuffer);
 
-                foreach (TexturesPack texturesPack in container[model].Keys)
+                foreach (KeyValuePair<TexturesPack, InstancesData> texturesPack in model.Value)
                 {
-                    instancingEffect.Parameters["DiffuseMap"].SetValue(texturesPack.Diffuse);
-                    instancingEffect.Parameters["SpecularMap"].SetValue(texturesPack.Specular);
-                    instancingEffect.Parameters["NormalsMap"].SetValue(texturesPack.Normals);
+                    instancingEffect.Parameters["DiffuseMap"].SetValue(texturesPack.Key.Diffuse);
+                    instancingEffect.Parameters["SpecularMap"].SetValue(texturesPack.Key.Specular);
+                    instancingEffect.Parameters["NormalsMap"].SetValue(texturesPack.Key.Normals);
 
                     instancingEffect.CurrentTechnique.Passes[0].Apply();
 
-                    InstancesData instancesData = container[model][texturesPack];
+                    InstancesData instancesData = texturesPack.Value;
                     
                     /*************************/
                     // Static Instances
@@ -440,9 +440,9 @@ namespace PlagueEngine.Rendering
                         renderer.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList,
                                                                 0,
                                                                 0,
-                                                                model.VertexCount,
+                                                                model.Key.VertexCount,
                                                                 0,
-                                                                model.TriangleCount,
+                                                                model.Key.TriangleCount,
                                                                 instancesData.StaticInstanceCount);
                     }
                     /*************************/
@@ -475,7 +475,7 @@ namespace PlagueEngine.Rendering
                         int i = 0;
                         foreach (MeshComponent mesh in instancesData.DynamicMeshes)
                         {
-                            if (!renderer.CurrentCamera.Frustrum.Intersects(mesh.BoundingBox)) continue;
+                            if (!frustrum.Intersects(mesh.BoundingBox)) continue;
 
                             transforms[i++] = mesh.GameObject.World;
                         }
@@ -489,9 +489,9 @@ namespace PlagueEngine.Rendering
                         renderer.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList,
                                                                 0,
                                                                 0,
-                                                                model.VertexCount,
+                                                                model.Key.VertexCount,
                                                                 0,
-                                                                model.TriangleCount,
+                                                                model.Key.TriangleCount,
                                                                 i);
                     }
                     /*************************/
@@ -629,6 +629,112 @@ namespace PlagueEngine.Rendering
         public void DisableClipPlane()
         {
             SetEffectParameter("ClipPlaneEnabled",false);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Draw Depth
+        /****************************************************************************/
+        public void DrawDepth(Matrix ViewProjection, BoundingFrustum frustrum, Vector3 LightPosition,float depthPrecision)
+        {
+            instancingEffect.CurrentTechnique = instancingEffect.Techniques["DepthWrite"];
+            instancingEffect.Parameters["ViewProjection"].SetValue(ViewProjection);
+            instancingEffect.Parameters["CameraPosition"].SetValue(LightPosition);
+            instancingEffect.Parameters["DepthPrecision"].SetValue(depthPrecision);
+            instancingEffect.CurrentTechnique.Passes[0].Apply();
+
+            DrawDepth(instDiff,         frustrum);
+            DrawDepth(instDiffSpec,     frustrum);
+            DrawDepth(instDiffNorm,     frustrum);
+            DrawDepth(instDiffSpecNorm, frustrum);            
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Draw Depth
+        /****************************************************************************/
+        private void DrawDepth(Dictionary<PlagueEngineModel, Dictionary<TexturesPack, InstancesData>> container, BoundingFrustum frustrum)
+        {
+            foreach (KeyValuePair<PlagueEngineModel, Dictionary<TexturesPack, InstancesData>> model in container)
+            {
+                renderer.Device.Indices = model.Key.IndexBuffer;
+                VertexBufferBinding vertexBufferBinding = new VertexBufferBinding(model.Key.VertexBuffer);
+
+                foreach (KeyValuePair<TexturesPack, InstancesData> texturesPack in model.Value)
+                {
+                    InstancesData instancesData = texturesPack.Value;
+
+                    /*************************/
+                    // Static Instances
+                    /*************************/
+                    if (instancesData.StaticInstances != null && instancesData.StaticInstanceCount != 0)
+                    {
+                        renderer.Device.SetVertexBuffers(vertexBufferBinding,
+                                                         new VertexBufferBinding(instancesData.StaticInstances, 0, 1));
+
+                        renderer.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList,
+                                                                0,
+                                                                0,
+                                                                model.Key.VertexCount,
+                                                                0,
+                                                                model.Key.TriangleCount,
+                                                                instancesData.StaticInstanceCount);
+                    }
+                    /*************************/
+
+
+                    /*************************/
+                    // Dynamic Instances
+                    /*************************/
+                    if (instancesData.DynamicMeshes.Count != 0)
+                    {
+                        if (instancesData.DynamicInstances == null)
+                        {
+                            instancesData.DynamicInstances = new DynamicVertexBuffer(renderer.Device,
+                                                                                     InstanceVertexDeclaration,
+                                                                                     instancesData.DynamicMeshes.Count,
+                                                                                     BufferUsage.WriteOnly);
+                        }
+                        else if (instancesData.DynamicInstances.VertexCount < instancesData.DynamicMeshes.Count)
+                        {
+                            instancesData.DynamicInstances.Dispose();
+
+                            instancesData.DynamicInstances = new DynamicVertexBuffer(renderer.Device,
+                                                                                     InstanceVertexDeclaration,
+                                                                                     instancesData.DynamicMeshes.Count,
+                                                                                     BufferUsage.WriteOnly);
+                        }
+
+
+                        Matrix[] transforms = new Matrix[instancesData.DynamicMeshes.Count];
+                        int i = 0;
+                        foreach (MeshComponent mesh in instancesData.DynamicMeshes)
+                        {
+                            if (!frustrum.Intersects(mesh.BoundingBox)) continue;
+
+                            transforms[i++] = mesh.GameObject.World;
+                        }
+                        if (i == 0) continue;
+
+                        instancesData.DynamicInstances.SetData(transforms, 0, i, SetDataOptions.Discard);
+
+                        renderer.Device.SetVertexBuffers(vertexBufferBinding,
+                                                         new VertexBufferBinding(instancesData.DynamicInstances, 0, 1));
+
+                        renderer.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList,
+                                                                0,
+                                                                0,
+                                                                model.Key.VertexCount,
+                                                                0,
+                                                                model.Key.TriangleCount,
+                                                                i);
+                    }
+                    /*************************/
+
+                }
+            }
         }
         /****************************************************************************/
 
