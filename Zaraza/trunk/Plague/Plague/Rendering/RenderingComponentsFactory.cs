@@ -288,7 +288,7 @@ namespace PlagueEngine.Rendering
                                                                                   shadowMapSize, 
                                                                                   shadowMapSize, 
                                                                                   false, 
-                                                                                  SurfaceFormat.Single, 
+                                                                                  SurfaceFormat.HalfVector2, 
                                                                                   DepthFormat.Depth24),
                                                                depthBias,
                                                                depthPrecision);

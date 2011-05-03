@@ -119,7 +119,14 @@ namespace PlagueEngine.Rendering
         private RenderTarget2D ssaoBlur  = null;        
 
         public  bool           ssaoEnabled = true;
+        /**********************/
 
+
+        /**********************/
+        /// Shadows
+        /**********************/
+        private RenderTarget2D shadowMapBlur = null;
+        private Effect         gaussianBlur  = null;
         /**********************/
 
 
@@ -575,19 +582,42 @@ namespace PlagueEngine.Rendering
                     depthPrecision = spotLightcomponent.FarPlane;
                     Positon = spotLightcomponent.World.Translation;
 
+
+                    /*********************************/
+                    /// Renderable Components
+                    /*********************************/
                     foreach (RenderableComponent renderableComponent in renderableComponents)
                     {
                         if (!renderableComponent.FrustrumInteresction(LightFrustrum)) continue;
 
                         renderableComponent.DrawDepth(ref LightViewProjection,ref Positon, depthPrecision);
                     }
+                    /*********************************/
 
+
+                    /*********************************/
+                    /// Batched Meshes
+                    /*********************************/
                     batchedMeshes.DrawDepth(LightViewProjection,
                                             LightFrustrum,
                                             Positon,
                                             depthPrecision);
+                    /*********************************/
 
-                    Device.SetRenderTarget(null);
+
+                    /*********************************/
+                    /// Blur
+                    /*********************************/
+                    fullScreenQuad.SetBuffers();
+                    Device.SetRenderTarget(shadowMapBlur);
+                    gaussianBlur.Parameters["Texture"].SetValue(spotLightcomponent.ShadowMap);
+                    gaussianBlur.CurrentTechnique.Passes[0].Apply();
+                    fullScreenQuad.JustDraw();
+                    Device.SetRenderTarget(spotLightcomponent.ShadowMap);
+                    gaussianBlur.Parameters["Texture"].SetValue(shadowMapBlur);
+                    gaussianBlur.CurrentTechnique.Passes[1].Apply();
+                    fullScreenQuad.JustDraw();
+                    /*********************************/
                 }
             }
         }
@@ -774,6 +804,7 @@ namespace PlagueEngine.Rendering
             composition      = contentManager.LoadEffect("DSComposition");
             ssaoEffect       = contentManager.LoadEffect("SSAO");
             ssaoBlurEffect   = contentManager.LoadEffect("SSAOBlur");
+            gaussianBlur     = contentManager.LoadEffect("GaussianBlur");
 
             composition.Parameters["GBufferColor"].SetValue(color);
             composition.Parameters["GBufferDepth"].SetValue(depth);
@@ -877,6 +908,13 @@ namespace PlagueEngine.Rendering
                                           false,
                                           SurfaceFormat.Color,
                                           DepthFormat.None);
+
+            shadowMapBlur = new RenderTarget2D(Device,
+                                               512,
+                                               512,
+                                               false,
+                                               SurfaceFormat.HalfVector2,
+                                               DepthFormat.None);
 
             fullScreenQuad = new Quad(-1, 1, 1, -1);
 

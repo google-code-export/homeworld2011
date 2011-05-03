@@ -180,11 +180,33 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 	float Attenuation = tex2D(AttenuationTextureSampler, LightUV).r;		
 	
-	float shadowDepth = tex2D(ShadowMapSampler, LightUV);
+	float shadowDepth = tex2D(ShadowMapSampler, LightUV).r;
 
-	float len = max(0.01f, length(LightPosition - Position)) / DepthPrecision;
+	float realDepth = (length(LightPosition - Position) / DepthPrecision) - DepthBias;
 	
-	float ShadowFactor = (shadowDepth * exp(-(DepthPrecision * 0.5f) * (len - DepthBias)));
+	//float len = max(0.01f, length(LightPosition - Position)) / DepthPrecision;
+	
+	float ShadowFactor = 1;
+
+	if (realDepth < 1)
+	{
+		float2 moments = tex2D(ShadowMapSampler, LightUV);
+		
+		float lit_factor = (realDepth <= moments.x);
+		
+		float E_x2 = moments.y;
+		float Ex_2 = moments.x * moments.x;
+
+		float variance = min(max(E_x2 - Ex_2, 0.0) + 1.0f / 10000.0f, 1.0);
+
+		float m_d = (moments.x - realDepth);
+
+		float p = variance / (variance + m_d * m_d);
+		
+		ShadowFactor = saturate(max(lit_factor, p));
+	}
+
+	//float ShadowFactor = (shadowDepth > (len - DepthBias) ? 1 : 0);
 
     return ShadowFactor * Phong(Position.xyz,Normal,Attenuation,NormalData.w);
 }
@@ -198,8 +220,8 @@ technique Technique1
 {
     pass Pass1
     {
-        VertexShader = compile vs_2_0 VertexShaderFunction();
-        PixelShader = compile ps_2_0 PixelShaderFunction();
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }
 /****************************************************/

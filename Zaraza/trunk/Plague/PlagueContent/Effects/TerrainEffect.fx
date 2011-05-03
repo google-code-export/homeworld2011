@@ -193,7 +193,7 @@ float4 PSDepthWrite(VSDepthWriteOuput input) : COLOR0
 
 	float depth = max(0.01f, length(LightPosition - input.WorldPosition)) / DepthPrecision;
 
-	return exp((DepthPrecision * 0.5f) * depth);
+	return float4(depth,depth * depth,0,1);
 }
 /****************************************************/
 
