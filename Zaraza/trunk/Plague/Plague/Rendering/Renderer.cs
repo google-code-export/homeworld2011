@@ -112,7 +112,7 @@ namespace PlagueEngine.Rendering
         private Effect    ssaoEffect     = null;
         private Effect    ssaoBlurEffect = null;
         private Texture2D ditherTexture  = null;
-        private float     sampleRadius   = -0.42f;
+        private float     sampleRadius   = 0.42f;
         private float     distanceScale  = 7.13f;
         private RenderTarget2D ssao      = null;
         private RenderTarget2D ssaoDepth = null;
@@ -298,14 +298,20 @@ namespace PlagueEngine.Rendering
             Device.DepthStencilState = DepthStencilState.Default;
             /*********************************/
             
-            Render(currentCamera.Position,
-                   currentCamera.View,
-                   currentCamera.Projection,
-                   currentCamera.ViewProjection);           
-            
-            RenderLights(currentCamera.ViewProjection,currentCamera.InverseViewProjection,currentCamera.Position);
+            Vector3         CameraPosition          = currentCamera.Position;
+            Matrix          View                    = currentCamera.View;
+            Matrix          Projection              = currentCamera.Projection;
+            Matrix          ViewProjection          = currentCamera.ViewProjection;
+            Matrix          InverseViewProjection   = currentCamera.InverseViewProjection;
+            BoundingFrustum Frustrum                = currentCamera.Frustrum;
 
-            if(ssaoEnabled) RenderSSAO(currentCamera.Projection, currentCamera.ZFar, currentCamera.Aspect);
+            Render(ref CameraPosition, ref View, ref Projection, ref ViewProjection, Frustrum);
+
+            RenderShadows();
+
+            RenderLights(ref ViewProjection,ref InverseViewProjection, ref CameraPosition,Frustrum);
+
+            if(ssaoEnabled) RenderSSAO(ref Projection,ref View,currentCamera.ZFar, currentCamera.Aspect);
             else Device.SetRenderTarget(null);
 
             //Device.SetRenderTarget(test);
@@ -321,18 +327,17 @@ namespace PlagueEngine.Rendering
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
-
             //Device.SetRenderTarget(null);
 
-            //debugEffect.Parameters["Texture"].SetValue(ssao);
+            //debugEffect.Parameters["Texture"].SetValue(color);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topLeft.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(ssaoBlur);
+            //debugEffect.Parameters["Texture"].SetValue(spottest.ShadowMap);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topRight.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(color);
+            //debugEffect.Parameters["Texture"].SetValue(light);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //bottomLeft.Draw();
 
@@ -342,12 +347,12 @@ namespace PlagueEngine.Rendering
 
         }
         /****************************************************************************/
-
+        public SpotLightComponent spottest;
 
         /****************************************************************************/
         /// Render
         /****************************************************************************/
-        internal void Render(Vector3 cameraPosition,Matrix view,Matrix projection,Matrix viewProjection)
+        internal void Render(ref Vector3 cameraPosition,ref Matrix view,ref Matrix projection,ref Matrix viewProjection,BoundingFrustum frustrum)
         {
 
             /************************************/
@@ -355,7 +360,7 @@ namespace PlagueEngine.Rendering
             /************************************/
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
-                if (!renderableComponent.FrustrumInteresction(CurrentCamera.Frustrum)) continue;
+                if (!renderableComponent.FrustrumInteresction(frustrum)) continue;
                 
                 renderableComponent.Effect.Parameters["View"].SetValue(view);
                 renderableComponent.Effect.Parameters["Projection"].SetValue(projection);
@@ -372,7 +377,7 @@ namespace PlagueEngine.Rendering
             batchedMeshes.SetEffectParameter("View", view);
             batchedMeshes.SetEffectParameter("Projection", projection);
             batchedMeshes.SetEffectParameter("ViewProjection", viewProjection);
-            batchedMeshes.Draw();
+            batchedMeshes.Draw(frustrum);
             /************************************/
 
 
@@ -382,7 +387,7 @@ namespace PlagueEngine.Rendering
             batchedSkinnedMeshes.Effect.Parameters["View"].SetValue(view);
             batchedSkinnedMeshes.Effect.Parameters["Projection"].SetValue(projection);
             batchedSkinnedMeshes.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
-            batchedSkinnedMeshes.Draw();
+            batchedSkinnedMeshes.Draw(frustrum);
             /************************************/
 
 
@@ -399,7 +404,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Render Lights
         /****************************************************************************/
-        private void RenderLights(Matrix ViewProjection,Matrix InverseViewProjection,Vector3 CameraPosition)
+        private void RenderLights(ref Matrix ViewProjection,ref Matrix InverseViewProjection,ref Vector3 CameraPosition,BoundingFrustum frustrum)
         {
             Device.SetRenderTarget(light);
             Device.Clear(Color.Transparent);
@@ -440,7 +445,7 @@ namespace PlagueEngine.Rendering
             foreach (PointLightComponent pointLightComponent in pointLights)
             {
                 if (!pointLightComponent.Enabled) continue;
-                if (!currentCamera.Frustrum.Intersects(pointLightComponent.BoundingSphere)) continue;
+                if (!frustrum.Intersects(pointLightComponent.BoundingSphere)) continue;
 
                 pointLight.Parameters["World"               ].SetValue(pointLightComponent.World);
                 pointLight.Parameters["LightPosition"       ].SetValue(pointLightComponent.Position);
@@ -495,11 +500,11 @@ namespace PlagueEngine.Rendering
                 foreach (SpotLightComponent spotLightcomponent in pair.Value)
                 {
 
-                    LightViewProjection = Matrix.Invert(spotLightcomponent.LocalTransform * spotLightcomponent.GameObject.World) * spotLightcomponent.Projection;
+                    LightViewProjection = spotLightcomponent.ViewProjection;
                     LightFrustrum.Matrix = LightViewProjection;
                     
                     if (!spotLightcomponent.Enabled) continue;
-                    if (!currentCamera.Frustrum.Intersects(LightFrustrum)) continue;
+                    if (!frustrum.Intersects(LightFrustrum)) continue;
                     
                     World = spotLightcomponent.World;
                     Direction = World.Forward;
@@ -516,6 +521,10 @@ namespace PlagueEngine.Rendering
                     spotLight.Parameters["LinearAttenuation"   ].SetValue(spotLightcomponent.LinearAttenuation);
                     spotLight.Parameters["QuadraticAttenuation"].SetValue(spotLightcomponent.QuadraticAttenuation);
                     spotLight.Parameters["LightViewProjection" ].SetValue(LightViewProjection);
+
+                    spotLight.Parameters["DepthPrecision"].SetValue(spotLightcomponent.FarPlane);
+                    spotLight.Parameters["DepthBias"].SetValue(spotLightcomponent.DepthBias);
+                    spotLight.Parameters["ShadowMap"].SetValue(spotLightcomponent.ShadowMap);
 
                     CamDir = World.Translation - CameraPosition;
                     CamDir.Normalize();
@@ -545,9 +554,50 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// Render Shadows
+        /****************************************************************************/
+        private void RenderShadows()
+        {
+            BoundingFrustum LightFrustrum = new BoundingFrustum(Matrix.Identity);
+            Matrix LightViewProjection;
+            float depthPrecision;
+            Vector3 Positon;
+
+            foreach (KeyValuePair<Texture2D, List<SpotLightComponent>> pair in spotLights)
+            {             
+                foreach (SpotLightComponent spotLightcomponent in pair.Value)
+                {
+                    Device.SetRenderTarget(spotLightcomponent.ShadowMap);
+
+                    LightViewProjection = spotLightcomponent.ViewProjection;
+                    LightFrustrum.Matrix = LightViewProjection;
+
+                    depthPrecision = spotLightcomponent.FarPlane;
+                    Positon = spotLightcomponent.World.Translation;
+
+                    foreach (RenderableComponent renderableComponent in renderableComponents)
+                    {
+                        if (!renderableComponent.FrustrumInteresction(LightFrustrum)) continue;
+
+                        renderableComponent.DrawDepth(ref LightViewProjection,ref Positon, depthPrecision);
+                    }
+
+                    batchedMeshes.DrawDepth(LightViewProjection,
+                                            LightFrustrum,
+                                            Positon,
+                                            depthPrecision);
+
+                    Device.SetRenderTarget(null);
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Render SSAO
         /****************************************************************************/
-        private void RenderSSAO(Matrix Projection, float zFar, float aspect)
+        private void RenderSSAO(ref Matrix Projection,ref Matrix View, float zFar, float aspect)
         {            
             fullScreenQuad.SetBuffers();
             
@@ -559,6 +609,7 @@ namespace PlagueEngine.Rendering
             cornerFrustum.Z = zFar;
 
             ssaoEffect.Parameters["Projection"].SetValue(Projection);
+            ssaoEffect.Parameters["View"].SetValue(View);
             ssaoEffect.Parameters["SampleRadius"].SetValue(sampleRadius);
             ssaoEffect.Parameters["DistanceScale"].SetValue(distanceScale);
             ssaoEffect.Parameters["CornerFrustrum"].SetValue(cornerFrustum);

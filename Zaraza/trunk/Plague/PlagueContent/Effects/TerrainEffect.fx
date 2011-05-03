@@ -9,6 +9,14 @@ float4x4 ViewProjection;
 
 
 /****************************************************/
+/// Depth
+/****************************************************/
+float  DepthPrecision;
+float3 LightPosition;
+/****************************************************/
+
+
+/****************************************************/
 /// Textures
 /****************************************************/
 float TextureTiling;
@@ -58,6 +66,16 @@ struct VertexShaderInput
 
 
 /****************************************************/
+/// VSDepthWriteInput
+/****************************************************/
+struct VSDepthWriteInput
+{
+    float4 Position : POSITION0;	
+};
+/****************************************************/
+
+
+/****************************************************/
 /// VertexShaderOutput
 /****************************************************/
 struct VertexShaderOutput
@@ -67,6 +85,17 @@ struct VertexShaderOutput
 	float4 Normal		 : TEXCOORD1;
 	float3 WorldPosition : TEXCOORD2;
 	float3 Depth		 : TEXCOORD3;
+};
+/****************************************************/
+
+
+/****************************************************/
+/// VSDepthWriteOutput
+/****************************************************/
+struct VSDepthWriteOuput
+{
+    float4 Position      : POSITION0;	
+	float4 WorldPosition : TEXCOORD0;
 };
 /****************************************************/
 
@@ -93,6 +122,22 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 	output.Depth.z		 = viewPosition.z;
 
 	return output;
+}
+/****************************************************/
+
+
+/****************************************************/
+/// VSDepth Write
+/****************************************************/
+VSDepthWriteOuput VSDepthWrite(VSDepthWriteInput input)
+{
+    VSDepthWriteOuput output;
+	
+	float4 worldPosition = mul(input.Position, World);
+	output.Position		 = mul(worldPosition,ViewProjection);
+	output.WorldPosition = worldPosition;
+
+    return output;
 }
 /****************************************************/
 
@@ -140,6 +185,20 @@ PixelShaderOutput PixelShaderFunction(VertexShaderOutput input)
 
 
 /****************************************************/
+/// PSDepthWrite
+/****************************************************/
+float4 PSDepthWrite(VSDepthWriteOuput input) : COLOR0
+{		
+	input.WorldPosition /= input.WorldPosition.w;
+
+	float depth = max(0.01f, length(LightPosition - input.WorldPosition)) / DepthPrecision;
+
+	return exp((DepthPrecision * 0.5f) * depth);
+}
+/****************************************************/
+
+
+/****************************************************/
 /// Technique1
 /****************************************************/
 technique Technique1
@@ -149,5 +208,19 @@ technique Technique1
         VertexShader = compile vs_3_0 VertexShaderFunction();
         PixelShader  = compile ps_3_0 PixelShaderFunction();
     }
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Depth Write Technique
+/****************************************************/
+technique DepthWrite
+{
+	pass Pass1
+	{
+		VertexShader = compile vs_3_0 VSDepthWrite();
+        PixelShader  = compile ps_3_0 PSDepthWrite();
+	}
 }
 /****************************************************/

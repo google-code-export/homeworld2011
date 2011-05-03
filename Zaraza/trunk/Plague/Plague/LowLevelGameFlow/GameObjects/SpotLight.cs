@@ -66,6 +66,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.LocalTransform = light.LocalTransform;
             data.Texture = light.AttenuationTexture;
             data.Intensity = light.Intensity;
+            data.MapSize = light.ShadowMapSize;
+            data.DepthBias = light.DepthBias;
+            data.DepthPrecision = light.DepthPrecision;
 
             return data;
         }
@@ -100,11 +103,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Matrix LocalTransform { get; set; }
 
         [CategoryAttribute("Attenuation")]
-        public float LinearAttenuation { get; set; }
+        public float LinearAttenuation  { get; set; }
         [CategoryAttribute("Attenuation")]
         public float QuadraticAttenuation { get; set; }
         [CategoryAttribute("Attenuation")]
-        public String Texture { get; set; }
+        public String Texture               { get; set; }
+
+        [CategoryAttribute("Shadows")]
+        public int MapSize          { get; set; }
+        [CategoryAttribute("Shadows")]
+        public float DepthPrecision { get; set; }
+        [CategoryAttribute("Shadows")]
+        public float DepthBias      { get; set; }
     }
     /********************************************************************************/
 

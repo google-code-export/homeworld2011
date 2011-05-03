@@ -197,16 +197,16 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw (0)
         /****************************************************************************/
-        public void Draw()
+        public void Draw(BoundingFrustum frustrum)
         {            
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseTechnique"];
-            Draw(diff);
+            Draw(diff, frustrum);
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseSpecularTechnique"];
-            Draw(diffSpec);
+            Draw(diffSpec, frustrum);
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseNormalTechnique"];
-            Draw(diffNorm);
+            Draw(diffNorm, frustrum);
             skinningEffect.CurrentTechnique = skinningEffect.Techniques["DiffuseSpecularNormalTechnique"];
-            Draw(diffSpecNorm);
+            Draw(diffSpecNorm, frustrum);
 
             DeltaTime = TimeSpan.Zero;
         }
@@ -216,7 +216,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw (1)
         /****************************************************************************/
-        private void Draw(Dictionary<PlagueEngineSkinnedModel, Dictionary<TexturesPack, List<SkinnedMeshComponent>>> container)
+        private void Draw(Dictionary<PlagueEngineSkinnedModel, Dictionary<TexturesPack, List<SkinnedMeshComponent>>> container, BoundingFrustum frustrum)
         {
             foreach (PlagueEngineSkinnedModel model in container.Keys)
             {
@@ -231,7 +231,7 @@ namespace PlagueEngine.Rendering
 
                     foreach (SkinnedMeshComponent mesh in container[model][texturePack])
                     {
-                        if (!renderer.CurrentCamera.Frustrum.Intersects(mesh.BoundingBox))
+                        if (!frustrum.Intersects(mesh.BoundingBox))
                         {
                             if (mesh.Blend) mesh.UpdateBoneBlendTransforms(DeltaTime);
                             else mesh.UpdateBoneTransforms(DeltaTime);

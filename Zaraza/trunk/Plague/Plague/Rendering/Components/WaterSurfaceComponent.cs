@@ -284,6 +284,11 @@ namespace PlagueEngine.Rendering.Components
         public float  SpecularStrength    { get { return specularStrength;    } }
         /****************************************************************************/
 
+
+        public override void DrawDepth(ref Matrix ViewProjection, ref Vector3 LightPosition, float depthPrecision)
+        {
+            throw new NotImplementedException();
+        }
     }
     /********************************************************************************/
 

@@ -29,6 +29,7 @@ namespace PlagueEngine.Rendering.Components
 
         private Renderer    renderer   = null;
         private Quaternion  quaternion;
+        private BoundingFrustum frustrum;
         /****************************************************************************/
 
 
@@ -48,17 +49,8 @@ namespace PlagueEngine.Rendering.Components
             this.zFar       = zFar;
             this.aspect     = renderer.Device.Viewport.AspectRatio;
 
-            ComputeProjectionMatrix();            
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Compute Frustrum
-        /****************************************************************************/
-        private void ComputeFrustrum()
-        {
-            Frustrum = new BoundingFrustum(ViewProjection);
+            ComputeProjectionMatrix();
+            frustrum = new BoundingFrustum(ViewProjection);
         }
         /****************************************************************************/
 
@@ -249,7 +241,6 @@ namespace PlagueEngine.Rendering.Components
         private void ComputeProjectionMatrix()
         {
             projection = Matrix.CreatePerspectiveFieldOfView(FoV, aspect, ZNear, ZFar);
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -263,8 +254,6 @@ namespace PlagueEngine.Rendering.Components
             gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
             gameObject.World.Right   = Vector3.Transform(gameObject.World.Right,   quaternion);
             gameObject.World.Up      = Vector3.Transform(gameObject.World.Up,      quaternion);
-
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -335,7 +324,6 @@ namespace PlagueEngine.Rendering.Components
         public void MoveForward(float step)
         {
             gameObject.World *= Matrix.CreateTranslation(gameObject.World.Forward * step);
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -346,7 +334,6 @@ namespace PlagueEngine.Rendering.Components
         public void MoveUp(float step)
         {
             gameObject.World *= Matrix.CreateTranslation(gameObject.World.Up * step * -1);
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -357,7 +344,6 @@ namespace PlagueEngine.Rendering.Components
         public void MoveRight(float step)
         {
             gameObject.World *= Matrix.CreateTranslation(gameObject.World.Right * step);
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -368,7 +354,6 @@ namespace PlagueEngine.Rendering.Components
         public void MoveX(float step)
         {
             gameObject.World *= Matrix.CreateTranslation(step, 0, 0);
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -379,7 +364,6 @@ namespace PlagueEngine.Rendering.Components
         public void MoveY(float step)
         {
             gameObject.World *= Matrix.CreateTranslation(0, step * -1, 0);
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -390,7 +374,6 @@ namespace PlagueEngine.Rendering.Components
         public void MoveZ(float step)
         {
             gameObject.World *= Matrix.CreateTranslation(0, 0, step);
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -401,7 +384,6 @@ namespace PlagueEngine.Rendering.Components
         public void LookAt(ref Vector3 position, ref Vector3 target, ref Vector3 up)
         {
             gameObject.World = Matrix.Invert(Matrix.CreateLookAt(position, target, up));
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -412,7 +394,6 @@ namespace PlagueEngine.Rendering.Components
         public void LookAt(Vector3 position,Vector3 target,Vector3 up)
         {
             gameObject.World = Matrix.Invert(Matrix.CreateLookAt(position, target, up));
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -444,7 +425,6 @@ namespace PlagueEngine.Rendering.Components
         public void ForceUpdate()
         {
             ComputeProjectionMatrix();
-            ComputeFrustrum();
         }
         /****************************************************************************/
 
@@ -452,7 +432,14 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Frustrum 
         /****************************************************************************/
-        public BoundingFrustum Frustrum { get; private set; }
+        public BoundingFrustum Frustrum 
+        { 
+            get 
+            { 
+                frustrum.Matrix = ViewProjection;
+                return frustrum;
+            }
+        }
         /****************************************************************************/
 
     }

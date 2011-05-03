@@ -5,6 +5,7 @@
 /// Orientation
 /****************************************************/
 float4x4 Projection;
+float4x4 View;
 float3   CornerFrustrum;
 /****************************************************/
 
@@ -118,6 +119,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 	float3 normal = tex2D(GBufferNormalSampler,input.UV);
 	normal = 2.0f * normal - 1.0f;
+	normal = mul(normal,View);
 
 	float finalColor = 0.0f;
 
@@ -141,7 +143,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 		}
 		else
 		{
-			float occlusion = DistanceScale * max(sampleDepth - depth, 0.0f);
+			float occlusion = DistanceScale * max(sampleDepth - depth, 0.0f);			
 			finalColor += 1.0f / (1.0f + occlusion * occlusion * 0.1f);
 		}
 	}

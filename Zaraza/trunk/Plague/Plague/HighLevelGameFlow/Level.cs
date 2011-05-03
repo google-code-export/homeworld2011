@@ -253,10 +253,13 @@ namespace PlagueEngine.HighLevelGameFlow
             spdata.Radius = 60f;
             spdata.Texture = "RadialAttenuation";
             spdata.LinearAttenuation = 0;
-            spdata.Intensity = 1;
+            spdata.Intensity = 2;
             spdata.LocalTransform = Matrix.Identity;
             spdata.QuadraticAttenuation = 20;
-            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(245, 90, 95), new Vector3(285, 50, 40), Vector3.Up));
+            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(245, 60, 95), new Vector3(285, 50, 100), Vector3.Up));
+            spdata.MapSize = 2048;
+            spdata.DepthBias = 0.0001f;
+            spdata.DepthPrecision = 1;
 
             gameObjectsFactory.Create(spdata);
 
