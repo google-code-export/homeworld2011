@@ -257,12 +257,19 @@ namespace PlagueEngine.HighLevelGameFlow
             spdata.LocalTransform = Matrix.Identity;
             spdata.QuadraticAttenuation = 20;
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(245, 60, 95), new Vector3(285, 50, 100), Vector3.Up));
-            spdata.MapSize = 2048;
-            spdata.DepthBias = 0.0001f;
+            spdata.MapSize = 512;
+            spdata.DepthBias = 0.0f;
             spdata.DepthPrecision = 1;
 
             gameObjectsFactory.Create(spdata);
+            
+            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(315, 60, 95), new Vector3(285, 50, 100), Vector3.Up));
+            spdata.Color = new Vector3(0, 1, 0);
+            gameObjectsFactory.Create(spdata);
 
+            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(275, 60, 120), new Vector3(285, 50, 100), Vector3.Up));
+            spdata.Color = new Vector3(0, 0, 1);
+            gameObjectsFactory.Create(spdata);
 
             SquareBodyMeshData sssdata = new SquareBodyMeshData();
             sssdata.Type = typeof(SquareBodyMesh);
