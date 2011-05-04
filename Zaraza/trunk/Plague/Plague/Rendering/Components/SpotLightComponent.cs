@@ -70,8 +70,6 @@ namespace PlagueEngine.Rendering.Components
             CalculateProjection();
             CalculateScale();
             angleCos = (float)Math.Cos(MathHelper.ToRadians(radius / 2));
-
-            renderer.spottest = this;
         }
         /****************************************************************************/
 

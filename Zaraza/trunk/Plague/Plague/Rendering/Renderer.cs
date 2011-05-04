@@ -63,7 +63,7 @@ namespace PlagueEngine.Rendering
         // Specials
         /**********************/
         private  Color   clearColor = Color.FromNonPremultiplied(new Vector4(0.05f,0.05f,0.2f,1));
-        private  Vector3 ambient    = new Vector3(0.2f, 0.2f, 0.2f);
+        private  Vector3 ambient    = new Vector3(0.1f, 0.1f, 0.1f);
         private  Vector3 fogColor   = new Vector3(0.5f, 0.5f, 0.5f);
         private  Vector2 fogRange   = new Vector2(0.997f, 1.0f);
         private  bool    fogEnabled = false;
@@ -119,12 +119,12 @@ namespace PlagueEngine.Rendering
         private Effect    ssaoEffect     = null;
         private Effect    ssaoBlurEffect = null;
         private Texture2D ditherTexture  = null;
-        private float     sampleRadius   = 0.42f;
-        private float     distanceScale  = 7.13f;
+        private float     sampleRadius   = 0.62f;
+        private float     distanceScale  = 304.5f;
         private RenderTarget2D ssao      = null;
         private RenderTarget2D ssaoDepth = null;
-        private RenderTarget2D ssaoBlur  = null;        
-
+        private RenderTarget2D ssaoBlur  = null;
+        float ssaoBias = 7.79f;
         public  bool           ssaoEnabled = true;
         /**********************/
 
@@ -282,8 +282,11 @@ namespace PlagueEngine.Rendering
             if (state.IsKeyDown(Keys.M)) sampleRadius += 0.01f;
             if (state.IsKeyDown(Keys.N)) sampleRadius -= 0.01f;
 
-            if (state.IsKeyDown(Keys.B)) distanceScale += 0.01f;
-            if (state.IsKeyDown(Keys.V)) distanceScale -= 0.01f;
+            if (state.IsKeyDown(Keys.B)) distanceScale += 0.10f;
+            if (state.IsKeyDown(Keys.V)) distanceScale -= 0.10f;
+
+            if (state.IsKeyDown(Keys.O)) ssaoBias += 0.01f;
+            if (state.IsKeyDown(Keys.P)) ssaoBias -= 0.01f;
 
             batchedSkinnedMeshes.DeltaTime = time;
 
@@ -320,55 +323,50 @@ namespace PlagueEngine.Rendering
             BoundingFrustum Frustrum                = currentCamera.Frustrum;
 
             Render(ref CameraPosition, ref View, ref Projection, ref ViewProjection, Frustrum);
-
-
-            RenderShadows();
+                        
+            RenderShadows(Frustrum);
 
             RenderLights(ref ViewProjection,ref InverseViewProjection, ref CameraPosition,Frustrum);
 
             if(ssaoEnabled) RenderSSAO(ref Projection,ref View,currentCamera.ZFar, currentCamera.Aspect);
             else Device.SetRenderTarget(null);
-
-            Device.SetRenderTarget(test);
-
-            Device.Clear(clearColor);
-            
-            particleManager.DrawParticles(gameTime);
-
-            //composition.Parameters["Ambient"    ].SetValue(ambient);
-            //composition.Parameters["FogEnabled" ].SetValue(fogEnabled);
-            //composition.Parameters["FogColor"   ].SetValue(fogColor);
-            //composition.Parameters["FogRange"   ].SetValue(fogRange);
-            //composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
-
-            //composition.Techniques[0].Passes[0].Apply();
-            //fullScreenQuad.Draw();
-
-
-
-
+                       
+            //Device.SetRenderTarget(test);
+                        
             Device.SetRenderTarget(null);
 
+            composition.Parameters["Ambient"].SetValue(ambient);
+            composition.Parameters["FogEnabled"].SetValue(fogEnabled);
+            composition.Parameters["FogColor"].SetValue(fogColor);
+            composition.Parameters["FogRange"].SetValue(fogRange);
+            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
 
-            debugEffect.Parameters["Texture"].SetValue(color);
-            debugEffect.Techniques[0].Passes[0].Apply();
-            topLeft.Draw();
+            composition.Techniques[0].Passes[0].Apply();
+            fullScreenQuad.Draw();
 
-            debugEffect.Parameters["Texture"].SetValue(test);
-            debugEffect.Techniques[0].Passes[0].Apply();
-            topRight.Draw();
+            particleManager.DrawParticles(gameTime);
 
-            debugEffect.Parameters["Texture"].SetValue(light);
-            debugEffect.Techniques[0].Passes[0].Apply();
-            bottomLeft.Draw();
+            //Device.SetRenderTarget(null);
 
-            debugEffect.Parameters["Texture"].SetValue(test);
-            debugEffect.Techniques[0].Passes[0].Apply();
-            bottomRight.Draw();
+            //debugEffect.Parameters["Texture"].SetValue(color);
+            //debugEffect.Techniques[0].Passes[0].Apply();
+            //topLeft.Draw();
+
+            //debugEffect.Parameters["Texture"].SetValue(ssaoBlur);
+            //debugEffect.Techniques[0].Passes[0].Apply();
+            //topRight.Draw();
+
+            //debugEffect.Parameters["Texture"].SetValue(light);
+            //debugEffect.Techniques[0].Passes[0].Apply();
+            //bottomLeft.Draw();
+
+            //debugEffect.Parameters["Texture"].SetValue(test);
+            //debugEffect.Techniques[0].Passes[0].Apply();
+            //bottomRight.Draw();
 
         }
         /****************************************************************************/
-        public SpotLightComponent spottest;
+
 
         /****************************************************************************/
         /// Render
@@ -577,7 +575,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Render Shadows
         /****************************************************************************/
-        private void RenderShadows()
+        private void RenderShadows(BoundingFrustum frustrum)
         {
             BoundingFrustum LightFrustrum = new BoundingFrustum(Matrix.Identity);
             Matrix LightViewProjection;
@@ -588,15 +586,16 @@ namespace PlagueEngine.Rendering
             {             
                 foreach (SpotLightComponent spotLightcomponent in pair.Value)
                 {
-                    Device.SetRenderTarget(spotLightcomponent.ShadowMap);
-
                     LightViewProjection = spotLightcomponent.ViewProjection;
                     LightFrustrum.Matrix = LightViewProjection;
 
+                    if (!spotLightcomponent.Enabled) continue;
+                    if (!frustrum.Intersects(LightFrustrum)) continue;
+
+                    Device.SetRenderTarget(spotLightcomponent.ShadowMap);                  
                     depthPrecision = spotLightcomponent.FarPlane;
                     Positon = spotLightcomponent.World.Translation;
-
-
+                    
                     /*********************************/
                     /// Renderable Components
                     /*********************************/
@@ -644,8 +643,8 @@ namespace PlagueEngine.Rendering
         private void RenderSSAO(ref Matrix Projection,ref Matrix View, float zFar, float aspect)
         {            
             fullScreenQuad.SetBuffers();
-            
-            Device.SetRenderTarget(ssao);
+
+            Device.SetRenderTarget(ssaoBlur);
 
             Vector3 cornerFrustum = Vector3.Zero;
             cornerFrustum.Y = (float)Math.Tan(Math.PI / 3.0 / 2.0) * zFar;
@@ -657,15 +656,25 @@ namespace PlagueEngine.Rendering
             ssaoEffect.Parameters["SampleRadius"].SetValue(sampleRadius);
             ssaoEffect.Parameters["DistanceScale"].SetValue(distanceScale);
             ssaoEffect.Parameters["CornerFrustrum"].SetValue(cornerFrustum);
+            ssaoEffect.Parameters["SSAOBias"].SetValue(ssaoBias);
 
             ssaoEffect.Techniques[0].Passes[0].Apply();
             fullScreenQuad.JustDraw();
 
-            Device.SetRenderTarget(ssaoBlur);
+            //Device.SetRenderTarget(ssaoBlur);
+            //ssaoBlurEffect.Techniques[0].Passes[0].Apply();
+            //fullScreenQuad.JustDraw();
 
-            ssaoBlurEffect.Techniques[0].Passes[0].Apply();
+            Device.SetRenderTarget(ssao);
+            gaussianBlur.Parameters["Texture"].SetValue(ssaoBlur);
+            gaussianBlur.CurrentTechnique.Passes[0].Apply();
             fullScreenQuad.JustDraw();
-            
+
+            Device.SetRenderTarget(ssaoBlur);
+            gaussianBlur.Parameters["Texture"].SetValue(ssao);
+            gaussianBlur.CurrentTechnique.Passes[1].Apply();
+            fullScreenQuad.JustDraw();
+
             Device.SetRenderTarget(null);
         }
         /****************************************************************************/
@@ -852,6 +861,8 @@ namespace PlagueEngine.Rendering
 
             ssaoBlurEffect.Parameters["SSAOTexture"].SetValue(ssao);
             ssaoBlurEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
+            ssaoBlurEffect.Parameters["GBufferNormal"].SetValue(normal);
+            ssaoBlurEffect.Parameters["GBufferDepth"].SetValue(ssaoDepth);
         }
         /****************************************************************************/
 

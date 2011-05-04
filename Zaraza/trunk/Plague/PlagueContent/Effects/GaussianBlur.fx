@@ -27,8 +27,8 @@ float weights[15] = { 0.1061154,  0.1028506,  0.1028506,  0.09364651,  0.0936465
 /****************************************************/
 /// Precalculated Offsets
 /****************************************************/
-float offsets[15] = { 0,			0.00125,	 -0.00125,     0.002916667, -0.002916667, 
-					  0.004583334, -0.004583334,  0.00625,	  -0.00625,		 0.007916667, 
+float offsets[15] = { 0,				0.00125, -0.00125, 0.002916667, -0.002916667, 
+					  0.004583334, -0.004583334,  0.00625,	  -0.00625,  0.007916667, 
 					 -0.007916667,  0.009583334, -0.009583334, 0.01125,     -0.01125 };
 /****************************************************/
 
@@ -81,7 +81,7 @@ float4 BlurHorizontal(float4 Position : POSITION0, float2 UV : TEXCOORD0) : COLO
 	{
 		output += tex2D(TextureSampler, UV + float2(offsets[i], 0)) * weights[i];
 	}
-	
+
 	return output;
 }
 /****************************************************/
@@ -111,8 +111,8 @@ technique Technique1
 {
 	pass Horizontal
 	{
-        VertexShader = compile vs_2_0 VertexShaderFunction();
-		PixelShader = compile ps_2_0 BlurHorizontal();
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+		PixelShader = compile ps_3_0 BlurHorizontal();
 	}
 	
 	pass Vertical

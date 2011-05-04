@@ -17,6 +17,23 @@ sampler SSAOTextureSampler = sampler_state
 	AddressU = Mirror;
 	AddressV = Mirror;    
 };
+
+texture GBufferNormal;
+sampler GBufferNormalSampler = sampler_state
+{
+	texture   = <GBufferNormal>;	    
+};
+
+texture GBufferDepth;
+sampler GBufferDepthSampler = sampler_state
+{
+	texture   = <GBufferDepth>;
+	MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
+	AddressU  = MIRROR;
+	AddressV  = MIRROR;
+};
 /****************************************************/
 
 
