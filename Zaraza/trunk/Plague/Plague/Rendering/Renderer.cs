@@ -10,7 +10,7 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 
 using Microsoft.Xna.Framework.Input;
-
+using PlagueEngine.Particles;
 /************************************************************************************/
 /// PlagueEngine.Rendering
 /************************************************************************************/
@@ -41,6 +41,13 @@ namespace PlagueEngine.Rendering
         /*************************/
         internal List<RenderableComponent> renderableComponents = new List<RenderableComponent>();
         internal List<RenderableComponent> preRender            = new List<RenderableComponent>();
+        /*************************/
+
+
+        /*************************/
+        /// Particles
+        /*************************/
+        private ParticleManager particleManager = null;
         /*************************/
 
 
@@ -152,7 +159,7 @@ namespace PlagueEngine.Rendering
             componentsFactory      = new RenderingComponentsFactory(this);            
             batchedMeshes          = new BatchedMeshes(contentManager, this);
             batchedSkinnedMeshes   = new BatchedSkinnedMeshes(contentManager, this);
-
+            particleManager        = game.ParticleManager;
             Physics.PhysicsUlitities.graphics = this.graphics;
 
             MeshComponent.renderer        = this;
@@ -268,7 +275,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
-        public void Draw(TimeSpan time)
+        public void Draw(TimeSpan time, GameTime gameTime)
         {
             KeyboardState state = Keyboard.GetState();
 
@@ -314,6 +321,7 @@ namespace PlagueEngine.Rendering
 
             Render(ref CameraPosition, ref View, ref Projection, ref ViewProjection, Frustrum);
 
+
             RenderShadows();
 
             RenderLights(ref ViewProjection,ref InverseViewProjection, ref CameraPosition,Frustrum);
@@ -321,36 +329,42 @@ namespace PlagueEngine.Rendering
             if(ssaoEnabled) RenderSSAO(ref Projection,ref View,currentCamera.ZFar, currentCamera.Aspect);
             else Device.SetRenderTarget(null);
 
-            //Device.SetRenderTarget(test);
+            Device.SetRenderTarget(test);
 
             Device.Clear(clearColor);
+            
+            particleManager.DrawParticles(gameTime);
 
-            composition.Parameters["Ambient"    ].SetValue(ambient);
-            composition.Parameters["FogEnabled" ].SetValue(fogEnabled);
-            composition.Parameters["FogColor"   ].SetValue(fogColor);
-            composition.Parameters["FogRange"   ].SetValue(fogRange);
-            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
+            //composition.Parameters["Ambient"    ].SetValue(ambient);
+            //composition.Parameters["FogEnabled" ].SetValue(fogEnabled);
+            //composition.Parameters["FogColor"   ].SetValue(fogColor);
+            //composition.Parameters["FogRange"   ].SetValue(fogRange);
+            //composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
 
-            composition.Techniques[0].Passes[0].Apply();
-            fullScreenQuad.Draw();
+            //composition.Techniques[0].Passes[0].Apply();
+            //fullScreenQuad.Draw();
 
-            //Device.SetRenderTarget(null);
 
-            //debugEffect.Parameters["Texture"].SetValue(color);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //topLeft.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(spottest.ShadowMap);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //topRight.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(light);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //bottomLeft.Draw();
+            Device.SetRenderTarget(null);
 
-            //debugEffect.Parameters["Texture"].SetValue(test);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //bottomRight.Draw();
+
+            debugEffect.Parameters["Texture"].SetValue(color);
+            debugEffect.Techniques[0].Passes[0].Apply();
+            topLeft.Draw();
+
+            debugEffect.Parameters["Texture"].SetValue(test);
+            debugEffect.Techniques[0].Passes[0].Apply();
+            topRight.Draw();
+
+            debugEffect.Parameters["Texture"].SetValue(light);
+            debugEffect.Techniques[0].Passes[0].Apply();
+            bottomLeft.Draw();
+
+            debugEffect.Parameters["Texture"].SetValue(test);
+            debugEffect.Techniques[0].Passes[0].Apply();
+            bottomRight.Draw();
 
         }
         /****************************************************************************/

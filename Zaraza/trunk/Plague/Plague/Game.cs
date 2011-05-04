@@ -16,7 +16,7 @@ using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.GUI;
 using Nuclex.Input;
-
+using PlagueEngine.Particles;
 
 /************************************************************************************/
 /// PlagueEngine
@@ -46,7 +46,7 @@ namespace PlagueEngine
         private EventsSystem.EventsSystem eventsSystem = null;
         private EventsHistorian eventsHistorian = null;
         private Level Level = null;
-
+        private ParticleManager particleManager = null;
 
         private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
 
@@ -76,18 +76,24 @@ namespace PlagueEngine
             contentManager = new ContentManager(this, "Content");
             input = new Input.Input(this);
 
+            particleManager = new ParticleManager();
+
 
             InitRenderer();
 
+            particleManager.CreateFactory(contentManager, renderer);
 
             //gui = new GUI.GUI(this, Services);
 
             physicsManager = new PhysicsManager(contentManager);
+
+
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,
                                                         null,
                                                         contentManager.GameObjectsDefinitions,
-                                                        physicsManager.physicsComponentFactory);
+                                                        physicsManager.physicsComponentFactory,
+                                                        particleManager.particleFactory);
 
 
             Level = new Level(gameObjectsFactory);
@@ -99,6 +105,7 @@ namespace PlagueEngine
 
 
             renderer.InitDebugDrawer(physicsManager);
+
 
         }
         /****************************************************************************/
@@ -209,6 +216,8 @@ namespace PlagueEngine
 
                 base.Update(gameTime);
             }
+
+            particleManager.Update(gameTime);
         }
         /****************************************************************************/
 
@@ -224,7 +233,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Draw(GameTime gameTime)
         {
-            renderer.Draw(gameTime.ElapsedGameTime);
+            renderer.Draw(gameTime.ElapsedGameTime,gameTime);
             //gui.Draw(gameTime);
             base.Draw(gameTime);
         }
@@ -270,6 +279,21 @@ namespace PlagueEngine
         /****************************************************************************/
 
 
+
+
+
+
+        /****************************************************************************/
+        /// ParticleManager
+        /****************************************************************************/
+        internal ParticleManager ParticleManager
+        {
+            get
+            {
+                return this.particleManager;
+            }
+        }
+        /****************************************************************************/
 
 
         /****************************************************************************/
