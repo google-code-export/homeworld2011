@@ -104,8 +104,8 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 output = Color.xyz * (Ambient + Light.w + Color.w);
 	output += Color.xyz * Light.xyz;	
 	
-	if(SSAOEnabled) 
-	{	
+	if(SSAOEnabled)
+	{ 
 		output *= SSAO;
 	}
     

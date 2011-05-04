@@ -182,12 +182,14 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	
 	float shadowDepth = tex2D(ShadowMapSampler, LightUV).r;
 
-	float realDepth = (length(LightPosition - Position) / DepthPrecision) - DepthBias;
+	float realDepth = (length(LightPosition - Position) / DepthPrecision);// - DepthBias;
 	
 	//float len = max(0.01f, length(LightPosition - Position)) / DepthPrecision;
 	
-	float ShadowFactor = 1;
+	float ShadowFactor = 1;// = exp(DepthBias * shadowDepth) * exp(-DepthBias * realDepth);
+	//exp(k*z) * exp(-k*d)
 
+	
 	if (realDepth < 1)
 	{
 		float2 moments = tex2D(ShadowMapSampler, LightUV);
@@ -205,8 +207,8 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 		
 		ShadowFactor = saturate(max(lit_factor, p));
 	}
-
-	//float ShadowFactor = (shadowDepth > (len - DepthBias) ? 1 : 0);
+	
+	//float ShadowFactor = (shadowDepth > (realDepth - DepthBias) ? 1 : 0);
 
     return ShadowFactor * Phong(Position.xyz,Normal,Attenuation,NormalData.w);
 }

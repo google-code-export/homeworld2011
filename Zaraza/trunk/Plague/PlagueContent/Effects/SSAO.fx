@@ -15,6 +15,7 @@ float3   CornerFrustrum;
 /****************************************************/
 float SampleRadius;
 float DistanceScale;
+float SSAOBias;
 
 texture DitherTexture;
 sampler DitherTextureSampler = sampler_state
@@ -42,6 +43,8 @@ sampler GBufferDepthSampler = sampler_state
 	MagFilter = POINT;
     MinFilter = POINT;
     Mipfilter = POINT;
+	AddressU  = CLAMP;
+	AddressV  = CLAMP;
 };
 /****************************************************/
 
@@ -116,18 +119,14 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 se = depth * ViewDirection;
 
 	float3 randNormal = tex2D(DitherTextureSampler, input.UV * 200.0f).xyz;
-
-	float3 normal = tex2D(GBufferNormalSampler,input.UV);
-	normal = 2.0f * normal - 1.0f;
-	normal = mul(normal,View);
-
+	
+	randNormal = normalize(randNormal);
+	
 	float finalColor = 0.0f;
 
 	for(int i = 0; i < NUMSAMPLES; i++)
 	{
 		float3 ray = reflect(Samples[i].xyz,randNormal) * SampleRadius;
-
-		if(dot(ray,normal) < 0) ray += normal * SampleRadius;
 
 		float4 sample = float4(se + ray,1.0f);
 
@@ -137,18 +136,24 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 		float sampleDepth = tex2D(GBufferDepthSampler,sampleUV);
 
-		if(sampleDepth == 1.0f)
-		{
-			finalColor += 1.0f;
-		}
-		else
-		{
-			float occlusion = DistanceScale * max(sampleDepth - depth, 0.0f);			
-			finalColor += 1.0f / (1.0f + occlusion * occlusion * 0.1f);
-		}
+
+			if(abs(sampleDepth - depth) <= SampleRadius)
+			{
+				float occlusion = DistanceScale * max(sampleDepth - depth, 0);
+				finalColor += 1 / (1 + occlusion * occlusion * 0.01f);
+			}
+			else
+			{
+				finalColor += 1.0f;
+			}
+
 	}
 	
-	return float4(finalColor / NUMSAMPLES, finalColor / NUMSAMPLES, finalColor / NUMSAMPLES, 1.0f);
+	finalColor /= NUMSAMPLES;
+
+	finalColor = finalColor * finalColor * finalColor * SSAOBias;
+
+	return float4(finalColor, finalColor, finalColor, 1.0f);
 }
 /****************************************************/
 

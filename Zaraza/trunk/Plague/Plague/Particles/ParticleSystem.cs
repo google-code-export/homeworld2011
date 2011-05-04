@@ -300,7 +300,7 @@ namespace PlagueEngine.Particles
             if (firstActiveParticle != firstFreeParticle)
             {
                 graphics.BlendState = settings.BlendState;
-                graphics.DepthStencilState = DepthStencilState.DepthRead;
+                graphics.DepthStencilState = DepthStencilState.None;
 
                 // Set an effect parameter describing the viewport size. This is
                 // needed to convert particle sizes into screen space point sizes.

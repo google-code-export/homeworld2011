@@ -25,30 +25,40 @@ texture BaseTexture;
 sampler BaseTextureSampler = sampler_state 
 {
 	texture = <BaseTexture>;
+	AddressU = WRAP;
+	AddressV = WRAP;
 };
 
 texture RTexture;
 sampler RTextureSampler = sampler_state 
 {
 	texture = <RTexture>;
+	AddressU = WRAP;
+	AddressV = WRAP;
 };
 
 texture GTexture;
 sampler GTextureSampler = sampler_state 
 {
 	texture = <GTexture>;
+	AddressU = WRAP;
+	AddressV = WRAP;
 };
 
 texture BTexture;
 sampler BTextureSampler = sampler_state 
 {
 	texture = <BTexture>;
+	AddressU = WRAP;
+	AddressV = WRAP;
 };
 
 texture WeightMap;
 sampler WeightMapSampler = sampler_state 
 {
 	texture = <WeightMap>;
+	AddressU = WRAP;
+	AddressV = WRAP;
 };
 /****************************************************/
 
