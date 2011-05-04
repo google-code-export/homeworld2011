@@ -11,7 +11,7 @@ using PlagueEngine.Input.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.GUI;
-
+using PlagueEngine.Particles;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
@@ -32,6 +32,7 @@ namespace PlagueEngine.LowLevelGameFlow
         private InputComponentsFactory                   inputComponentsFactory     = null;
         private PhysicsComponentFactory                  physicsComponentFactory    = null;
         private GUIComponentsFactory                     guiComponentsFactory        = null;
+        private ParticleFactory                          particleFactory = null;
         private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;
         
         private Dictionary<uint, GameObjectInstance>     gameObjects                = null;
@@ -45,13 +46,15 @@ namespace PlagueEngine.LowLevelGameFlow
                                   InputComponentsFactory                   inputComponentsFactory,
                                   GUIComponentsFactory                     guiComponentsFactory,
                                   Dictionary<String, GameObjectDefinition> gameObjectsDefinitions,
-                                  PhysicsComponentFactory physicsComponentFactory)
+                                  PhysicsComponentFactory                  physicsComponentFactory,
+                                  ParticleFactory                          particleFactory)
         {
             this.renderingComponentsFactory = renderingComponentsFactory;
             this.inputComponentsFactory     = inputComponentsFactory;
             this.guiComponentsFactory       = guiComponentsFactory;
             this.gameObjectsDefinitions     = gameObjectsDefinitions;
             this.physicsComponentFactory    = physicsComponentFactory;
+            this.particleFactory            = particleFactory;
         }
         /****************************************************************************/
 
@@ -143,6 +146,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "GlowStick":
                     result = CreateGlowStick(data);
                     break;
+                case "ParticleEmitterGO":
+                    result = CreateParticleEmitterGO(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -152,6 +158,57 @@ namespace PlagueEngine.LowLevelGameFlow
             return result;
         }
         /****************************************************************************/
+
+
+
+
+
+
+        /****************************************************************************/
+        /// Create Cylindrical Body Mesh
+        /****************************************************************************/
+        public ParticleEmitterGO CreateParticleEmitterGO(GameObjectInstanceData data)
+        {
+            ParticleEmitterGO result = new ParticleEmitterGO();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            ParticleEmitterGOData sbmdata = (ParticleEmitterGOData)data;
+
+
+            result.Init(particleFactory.CreateParticleEmitter(
+            sbmdata.blendState,
+            sbmdata.duration,
+            sbmdata.durationRandomnes,
+            sbmdata.emitterVelocitySensitivity,
+            sbmdata.endVelocity,
+            sbmdata.gravity,
+            sbmdata.maxColor,
+            sbmdata.maxEndSize,
+            sbmdata.maxHorizontalVelocity,
+            sbmdata.maxParticles,
+            sbmdata.maxRotateSpeed,
+            sbmdata.maxStartSize,
+            sbmdata.maxVerticalVelocity,
+            sbmdata.minColor,
+            sbmdata.minEndSize,
+            sbmdata.minHorizontalVelocity,
+            sbmdata.minRotateSpeed,
+            sbmdata.minStartSize,
+            sbmdata.minVerticalVelocity,
+            sbmdata.particleTexture,
+            sbmdata.particlesPerSecond,
+            sbmdata.initialPosition
+                ));
+
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+
+
 
 
         /****************************************************************************/

@@ -9,9 +9,7 @@ using Nuclex.Input;
 using Nuclex.UserInterface.Controls.Desktop;
 using Nuclex.UserInterface;
 using PlagueEngine.GUI.Components;
-using Nuclex.UserInterface.Controls.Desktop;
 using Nuclex.UserInterface.Visuals.Flat;
-using Nuclex.Input;
 namespace PlagueEngine.GUI
 {
     /********************************************************************************/
