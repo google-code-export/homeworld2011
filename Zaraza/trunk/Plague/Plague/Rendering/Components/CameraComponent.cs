@@ -56,6 +56,50 @@ namespace PlagueEngine.Rendering.Components
 
 
         /****************************************************************************/
+        /// GetMouseRay
+        /****************************************************************************/
+        public Ray GetMouseRay(Vector2 mousePosition)
+        {
+            Vector3 near = new Vector3(mousePosition, 0);
+            Vector3 far = new Vector3(mousePosition, 1);
+
+            near = renderer.Device.Viewport.Unproject(near, projection, View, Matrix.Identity);
+            far = renderer.Device.Viewport.Unproject(far, projection, View, Matrix.Identity);
+            
+            return new Ray(near, Vector3.Normalize(far - near));
+        }
+        /****************************************************************************/
+
+        
+        
+        /****************************************************************************/
+        /// GetFrustumFromRect
+        /****************************************************************************/
+        public BoundingFrustum GetFrustumFromRect(Rectangle source)
+        {
+            
+
+            Vector2 regionCenterScreen = new Vector2(source.Center.X, source.Center.Y);
+
+            Matrix regionProjMatrix = projection;
+
+            regionProjMatrix.M11 /= ((float)source.Width / (float)renderer.Device.Viewport.Width);
+            regionProjMatrix.M22 /= ((float)source.Height / (float)renderer.Device.Viewport.Height);
+
+            regionProjMatrix.M31 = (regionCenterScreen.X - (renderer.Device.Viewport.Width / 2f)) / ((float)source.Width / 2f);
+
+            regionProjMatrix.M32 = -(regionCenterScreen.Y - (renderer.Device.Viewport.Height / 2f)) / ((float)source.Height / 2f);
+
+            return new BoundingFrustum(View * regionProjMatrix);
+        
+          
+        }
+        
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
         /// Scren Width
         /****************************************************************************/
         public int ScreenWidth
@@ -66,6 +110,20 @@ namespace PlagueEngine.Rendering.Components
             }
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Rendered
+        /****************************************************************************/
+        public Renderer Renderer
+        {
+            get
+            {
+                return renderer;
+            }
+        }
+        /****************************************************************************/
+
 
 
         /****************************************************************************/

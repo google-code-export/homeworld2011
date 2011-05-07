@@ -162,7 +162,7 @@ namespace PlagueEngine
         protected override void LoadContent()
         {
             renderer.LoadEffects();
-
+            renderer.InitSpriteBatch();
 
             Diagnostics.PushLog("Loading content complete");
         }

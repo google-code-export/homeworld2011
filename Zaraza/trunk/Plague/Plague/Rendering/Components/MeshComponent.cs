@@ -51,6 +51,7 @@ namespace PlagueEngine.Rendering.Components
             this.technique      = technique;
 
             renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);
+            renderer.meshes.Add(this);
         }        
         /****************************************************************************/
 
@@ -61,6 +62,7 @@ namespace PlagueEngine.Rendering.Components
         public override void ReleaseMe()
         {
             renderer.batchedMeshes.RemoveMeshComponent(instancingMode, technique, this);
+            renderer.meshes.Remove(this);
             base.ReleaseMe();
         }
         /****************************************************************************/

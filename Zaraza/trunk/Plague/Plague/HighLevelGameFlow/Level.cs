@@ -85,7 +85,7 @@ namespace PlagueEngine.HighLevelGameFlow
 
 
         /****************************************************************************/
-        /// Destructor
+        /// Destructor  
         /****************************************************************************/
         ~Level()
         {
@@ -151,10 +151,10 @@ namespace PlagueEngine.HighLevelGameFlow
             fcdata.ActiveMouseListener = true;
             gameObjectsFactory.Create(fcdata);
 
-            
+
             TerrainData tdata = new TerrainData();
             tdata.Type = typeof(Terrain);
-            tdata.World = Matrix.CreateTranslation(0,0,0);
+            tdata.World = Matrix.CreateTranslation(0, 0, 0);
             tdata.HeightMap = "Heightmap";
             tdata.BaseTexture = "grass";
             tdata.RTexture = "ground";
@@ -180,7 +180,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Intensity = 1;
 
             Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
-            s.Direction = new Vector3(-1,-1,-1);
+            s.Direction = new Vector3(-1, -1, -1);
 
             CreatureData ssdata = new CreatureData();
             ssdata.Type = typeof(Creature);
@@ -372,31 +372,37 @@ namespace PlagueEngine.HighLevelGameFlow
             ddxdtata.Type = (typeof(ParticleEmitterGO));
             ddxdtata.particleTexture = "fire";
 
-            ddxdtata.maxParticles = 2400;
+            ddxdtata.maxParticles = 500;
 
-            ddxdtata.duration = 2;
+            ddxdtata.duration = 3;
+
+            ddxdtata.durationRandomnes = 1;
 
             ddxdtata.minHorizontalVelocity = 0;
-            ddxdtata.maxHorizontalVelocity = 15;
+            ddxdtata.maxHorizontalVelocity = 0;
 
-            ddxdtata.minVerticalVelocity = 10;
+            ddxdtata.minVerticalVelocity = 0;
             ddxdtata.maxVerticalVelocity = 10;
 
-            // Create a wind effect by tilting the gravity vector sideways.
-            ddxdtata.gravity = new Vector3(0, 10, 0);
+            ddxdtata.gravity = new Vector3(0, 5, 0);
 
             ddxdtata.minColor = new Color(255, 255, 255, 10);
-            ddxdtata.maxColor = new Color(255, 255, 255, 40);
+            ddxdtata.maxColor = new Color(255, 255, 255, 255);
 
             ddxdtata.minStartSize = 5;
             ddxdtata.maxStartSize = 10;
 
-            ddxdtata.minEndSize = 10;
-            ddxdtata.maxEndSize = 40;
+            ddxdtata.minEndSize = 1;
+            ddxdtata.maxEndSize = 2;
+
+            ddxdtata.blendState = 1;
 
             ddxdtata.initialPosition = new Vector3(245, 54, 35);
-            ddxdtata.particlesPerSecond = 100;
+            ddxdtata.particlesPerSecond = 10;
+
             gameObjectsFactory.Create(ddxdtata);
+
+
 
         }
         /****************************************************************************/

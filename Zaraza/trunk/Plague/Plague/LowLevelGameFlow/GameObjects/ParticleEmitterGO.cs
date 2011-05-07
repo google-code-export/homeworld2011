@@ -12,13 +12,13 @@ using PlagueEngine.Physics.Components;
 using PlagueEngine.Particles;
 
 /************************************************************************************/
-/// Plague Engine Model Pipeline
+///PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// GlowStick
+    /// ParticleEmitterGO
     /********************************************************************************/
     class ParticleEmitterGO : GameObjectInstance
     {
@@ -45,7 +45,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-
+            particleEmitter.ReleaseEmitter();
         }
         /****************************************************************************/
 
@@ -112,34 +112,91 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
     /********************************************************************************/
-    /// GlowStickData
+    /// ParticleEmitterGOData
     /********************************************************************************/
     [Serializable]
     public class ParticleEmitterGOData : GameObjectInstanceData
     {
 
-           public int blendState { get; set; }
+
+        [CategoryAttribute("Time"),
+        DescriptionAttribute("How long these particles will last.")]
            public double duration { get; set; }
+        [CategoryAttribute("Time"),
+        DescriptionAttribute("If greater than zero, some particles will last a shorter time than others")]
            public float durationRandomnes { get; set; }
-           public float emitterVelocitySensitivity { get; set; }
-           public float endVelocity { get; set; }
-           public Vector3 gravity { get; set; }
-           public Color maxColor { get; set; }
-           public float maxEndSize { get; set; }
-           public float maxHorizontalVelocity { get; set; }
-           public int maxParticles { get; set; }
-           public float maxRotateSpeed { get; set; }
-           public float maxStartSize { get; set; }
-           public float maxVerticalVelocity { get; set; }
-           public Color minColor { get; set; }
-           public float minEndSize { get; set; }
-           public float minHorizontalVelocity { get; set; }
-           public float minRotateSpeed { get; set; }
-           public float minStartSize { get; set; }
-           public float minVerticalVelocity { get; set; }
-           public String particleTexture { get; set; }
-           public float particlesPerSecond { get; set; }
+
+        [CategoryAttribute("Initialization"),
+        DescriptionAttribute("Spawn point.")]
            public Vector3 initialPosition { get; set; }
+        [CategoryAttribute("Initialization"),
+        DescriptionAttribute("Alpha blending settings.1 - Additive, 2 - AlphaBlend, 3 - NonPremultiplied, 4 - Opaque. ")]
+           public int blendState { get; set; }
+        [CategoryAttribute("Initialization"),
+        DescriptionAttribute("Maximum number of particles that can be displayed at one time.")]
+           public int maxParticles { get; set; }
+        [CategoryAttribute("Initialization"),
+        DescriptionAttribute("Name of the texture used by this particle system.")]
+           public String particleTexture { get; set; }
+        [CategoryAttribute("Initialization"),
+        DescriptionAttribute("Frequency at which particles will be created.")]
+           public float particlesPerSecond { get; set; }
+
+        [CategoryAttribute("Color"),
+        DescriptionAttribute("Range of values controlling the particle color and alpha. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public Color minColor { get; set; }
+        [CategoryAttribute("Color"),
+        DescriptionAttribute("Range of values controlling the particle color and alpha. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public Color maxColor { get; set; }
+
+
+
+        [CategoryAttribute("Size"),
+        DescriptionAttribute("Range of values controlling how big the particles are when first created. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public float minStartSize { get; set; }
+        [CategoryAttribute("Size"),
+        DescriptionAttribute("Range of values controlling how big the particles are when first created. Values for individual particles are randomly chosen from somewhere between min and max.")]
+        public float maxStartSize { get; set; }
+        [CategoryAttribute("Size"),
+        DescriptionAttribute("Range of values controlling how big particles become at the end of their life. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public float minEndSize { get; set; }
+        [CategoryAttribute("Size"),
+        DescriptionAttribute("Range of values controlling how big particles become at the end of their life. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public float maxEndSize { get; set; }
+
+
+
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Controls how the particle velocity will change over their lifetime. If set to 1, particles will keep going at the same speed as when they were created.If set to 0, particles will come to a complete stop right before they die. Values greater than 1 make the particles speed up over time.")]
+           public float endVelocity { get; set; }
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Range of values controlling how much Y axis velocity to give each particle. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public float minVerticalVelocity { get; set; }
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Range of values controlling how much X and Z axis velocity to give each particle. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public float maxVerticalVelocity { get; set; }
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Range of values controlling how much X and Z axis velocity to give each particle. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public float minHorizontalVelocity { get; set; }
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Range of values controlling how much X and Z axis velocity to give each particle. Values for individual particles are randomly chosen from somewhere between min and max.")]
+           public float maxHorizontalVelocity { get; set; }
+
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Direction and strength of the gravity effect. Note that this can point in any direction, not just down! The fire effect points it upward to make the flames rise, and the smoke plume points it sideways to simulate wind.")]
+           public Vector3 gravity { get; set; }
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Controls how much particles are influenced by the velocity of the object which created them. You can see this in action with the explosion effect, where the flames continue to move in the same direction as the source projectile. The projectile trail particles, on the other hand, set this value very low so they are less affected by the velocity of the projectile.")]
+           public float emitterVelocitySensitivity { get; set; }
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Range of values controlling how fast the particles rotate. Values for individual particles are randomly chosen from somewhere between min and max. If both these values are set to 0, the particle system will automatically switch to an alternative shader technique that does not support rotation, and thus requires significantly less GPU power. This means if you don't need the rotation effect, you may get a performance boost from leaving these values at 0.")]
+           public float maxRotateSpeed { get; set; }
+        [CategoryAttribute("Velocity"),
+        DescriptionAttribute("Range of values controlling how fast the particles rotate. Values for individual particles are randomly chosen from somewhere between min and max. If both these values are set to 0, the particle system will automatically switch to an alternative shader technique that does not support rotation, and thus requires significantly less GPU power. This means if you don't need the rotation effect, you may get a performance boost from leaving these values at 0.")]
+           public float minRotateSpeed { get; set; }
+
+
+           
 
 
     }
