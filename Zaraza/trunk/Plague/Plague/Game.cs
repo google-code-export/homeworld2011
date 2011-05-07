@@ -37,7 +37,7 @@ namespace PlagueEngine
         private String title = String.Empty;
 
 
-       // private GUI.GUI gui = null;
+        private GUI.GUI gui = null;
         private Renderer renderer = null;
         private ContentManager contentManager = null;
         private Input.Input input = null;
@@ -82,8 +82,9 @@ namespace PlagueEngine
             InitRenderer();
 
             particleManager.CreateFactory(contentManager, renderer);
+            
+            gui = new GUI.GUI(this, Services);
 
-            //gui = new GUI.GUI(this, Services);
 
             physicsManager = new PhysicsManager(contentManager);
 
@@ -124,12 +125,12 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Initialize()
         {
-            //InitGUI();
+
             renderer.InitDeferredHelpers();
 
 
             Level.PutSomeObjects();
-
+            
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
 
@@ -137,10 +138,11 @@ namespace PlagueEngine
 
             renderer.batchedMeshes.CommitMeshTransforms();
 
-            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, renderer, input, this);
+            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, renderer, input, gui, this);
             gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
 
-            
+            InitGUI();
+                
             
             base.Initialize();              
 
@@ -201,28 +203,20 @@ namespace PlagueEngine
             Diagnostics.Update(gameTime.ElapsedGameTime);
             TimeControl.Update(gameTime.ElapsedGameTime);
 
-
             input.Update();
             //TODO: sprawdziæ czy konieczne i usun¹æ jeli niepotrzebne
-            //gui.Manager.Update(gameTime);
-
-
+            gui.Update(gameTime);
+            
             eventsSystem.Update();
             if (!gameStopped)
             {
-
                 physicsManager.Update(((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond));
-
-
                 base.Update(gameTime);
             }
 
             particleManager.Update(gameTime);
         }
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         /// Draw
@@ -234,7 +228,7 @@ namespace PlagueEngine
         protected override void Draw(GameTime gameTime)
         {
             renderer.Draw(gameTime.ElapsedGameTime,gameTime);
-            //gui.Draw(gameTime);
+            gui.Draw(gameTime);
             base.Draw(gameTime);
         }
         /****************************************************************************/
@@ -324,7 +318,9 @@ namespace PlagueEngine
         /****************************************************************************/
         private void InitGUI()
         {
-            GraphicsDevice.Reset();
+            //GraphicsDevice.Reset();
+            gui.Initialize(GraphicsDevice);
+            //GraphicsDevice.Reset();
             //gui.Initialize(GraphicsDevice);
             //this.Components.Add(gui.Manager);
         }

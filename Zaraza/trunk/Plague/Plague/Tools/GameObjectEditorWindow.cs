@@ -22,6 +22,8 @@ using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering;
 using PlagueEngine.EventsSystem;
 using PlagueEngine;
+using Nuclex.Input;
+using Nuclex.UserInterface.Input;
 /********************************************************************************/
 /// PlagueEngine.Tools
 /********************************************************************************/
@@ -108,6 +110,7 @@ namespace PlagueEngine.Tools
         private GameObjectsFactory factory = null;
         private Renderer renderer = null;
         private Input.Input input=null;
+        private GUI.GUI gui = null;
         private Game game = null;
 
         private gameObjectsClassName currentClassName = null;
@@ -137,7 +140,7 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,Renderer renderer,Input.Input input,Game game)
+        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,Renderer renderer,Input.Input input, GUI.GUI gui, Game game)
         {
             InitializeComponent();
             FillClassNames();
@@ -147,6 +150,7 @@ namespace PlagueEngine.Tools
             this.input = input;
             this.sniffer = new DummySniffer(this);
             this.game = game;
+            this.gui = gui;
 
             foreach (var gameObject in gameObjectClassNames)
             {
@@ -1166,17 +1170,10 @@ namespace PlagueEngine.Tools
             }
         }
 
-
-
-
         private void buttonCommitMeshTransforms_Click(object sender, EventArgs e)
         {
             renderer.batchedMeshes.CommitMeshTransforms();
         }
-
-
-
-
 
         private void checkBoxShowCollisionSkin_CheckedChanged(object sender, EventArgs e)
         {
@@ -1196,11 +1193,23 @@ namespace PlagueEngine.Tools
         private void GameObjectEditorWindow_Activated(object sender, EventArgs e)
         {
             input.enabled = false;
+            gui.updateable = false;
+            //game.Components.Remove(gui.input);
+            //gui.input.Dispose();
+            
+            //gui.input = new InputManager(game.Services);
+#if DEBUG
+            //game.Components.Remove(gui.input);
+            //game.Services.RemoveService(typeof (InputManager) );
+#endif            
         }
 
         private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
         {
             input.enabled = true;
+            gui.updateable = true;
+            //gui.input = new InputManager(game.Services);
+            //game.Components.Add(gui.input);
         }
 
         private void checkBoxGamePaused_CheckedChanged(object sender, EventArgs e)
