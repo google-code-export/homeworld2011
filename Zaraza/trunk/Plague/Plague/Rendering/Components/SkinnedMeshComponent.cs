@@ -88,8 +88,9 @@ namespace PlagueEngine.Rendering.Components
             Pause           = pause;
             Blend           = blend;
 
-            skinningData.BindPose.CopyTo(boneTransforms);   
+            skinningData.BindPose.CopyTo(boneTransforms);
 
+            renderer.skinnedMeshes.Add(this);
             renderer.batchedSkinnedMeshes.AddSkinnedMeshComponent(technique, this);
         }
         /****************************************************************************/
@@ -100,6 +101,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
+            renderer.skinnedMeshes.Remove(this);
             renderer.batchedSkinnedMeshes.RemoveSkinnedMeshComponent(technique, this);
             base.ReleaseMe();
         }

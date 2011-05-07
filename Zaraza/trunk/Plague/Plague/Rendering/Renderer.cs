@@ -69,6 +69,17 @@ namespace PlagueEngine.Rendering
         private  bool    fogEnabled = false;
         /**********************/
 
+        /**********************/
+        /// For picking
+        /**********************/
+        public List<SkinnedMeshComponent> skinnedMeshes = new List<SkinnedMeshComponent>();
+        public List<MeshComponent> meshes = new List<MeshComponent>();
+        private Texture2D rectangleTexture;
+        private SpriteBatch spriteBatch;
+        private bool drawRect = false;
+        private Rectangle rectToDraw=Rectangle.Empty;
+        /**********************/
+
 
         /**********************/
         /// Helpers
@@ -171,10 +182,18 @@ namespace PlagueEngine.Rendering
 
             ExtendedMouseMovementState.display = graphics.GraphicsDevice.DisplayMode;            
 
-            fogColor = clearColor.ToVector3();            
+            fogColor = clearColor.ToVector3();
+
         }
         /****************************************************************************/
 
+
+        public void InitSpriteBatch()
+        {
+            spriteBatch = new SpriteBatch(graphics.GraphicsDevice);
+
+            rectangleTexture = contentManager.LoadTexture2D("SelectionBox");
+        }
 
         /****************************************************************************/
         /// Init Debug Drawer
@@ -270,6 +289,35 @@ namespace PlagueEngine.Rendering
             }
         }
         /****************************************************************************/
+        private void DrawRect()
+        {
+
+            spriteBatch.Begin();
+            
+            Rectangle r = new Rectangle(rectToDraw.X, rectToDraw.Y, rectToDraw.Width, rectToDraw.Height);
+            if (r.Width < 0)
+            {
+                r.Width = -r.Width;
+                r.X -= r.Width;
+            }
+            if (r.Height < 0)
+            {
+                r.Height = -r.Height;
+                r.Y -= r.Height;
+            }
+
+            spriteBatch.Draw(rectangleTexture, r, Color.White);
+            spriteBatch.End();
+
+            drawRect = false;
+        }
+
+        public void DrawSelectionRect(Rectangle selectionRect)
+        {
+            rectToDraw = selectionRect;
+            drawRect = true;
+
+        }
 
 
         /****************************************************************************/
@@ -291,11 +339,11 @@ namespace PlagueEngine.Rendering
             batchedSkinnedMeshes.DeltaTime = time;
 
             if (currentCamera == null) return;
-            
+
             /*************************/
             /// Cleaning Nuclex Shit
             /*************************/
-            Device.BlendState       = BlendState.Opaque;
+            Device.BlendState = BlendState.Opaque;
             Device.SamplerStates[0] = SamplerState.LinearWrap;
             /*************************/
 
@@ -309,30 +357,30 @@ namespace PlagueEngine.Rendering
             /// Clear GBuffer
             /*********************************/
             Device.SetRenderTargets(color, normal, depth, ssaoDepth);
-            Device.DepthStencilState = DepthStencilState.DepthRead;            
+            Device.DepthStencilState = DepthStencilState.DepthRead;
             clearEffect.Techniques[0].Passes[0].Apply();
-            fullScreenQuad.Draw();            
+            fullScreenQuad.Draw();
             Device.DepthStencilState = DepthStencilState.Default;
             /*********************************/
-            
-            Vector3         CameraPosition          = currentCamera.Position;
-            Matrix          View                    = currentCamera.View;
-            Matrix          Projection              = currentCamera.Projection;
-            Matrix          ViewProjection          = currentCamera.ViewProjection;
-            Matrix          InverseViewProjection   = currentCamera.InverseViewProjection;
-            BoundingFrustum Frustrum                = currentCamera.Frustrum;
+
+            Vector3 CameraPosition = currentCamera.Position;
+            Matrix View = currentCamera.View;
+            Matrix Projection = currentCamera.Projection;
+            Matrix ViewProjection = currentCamera.ViewProjection;
+            Matrix InverseViewProjection = currentCamera.InverseViewProjection;
+            BoundingFrustum Frustrum = currentCamera.Frustrum;
 
             Render(ref CameraPosition, ref View, ref Projection, ref ViewProjection, Frustrum);
-                        
+
             RenderShadows(Frustrum);
 
-            RenderLights(ref ViewProjection,ref InverseViewProjection, ref CameraPosition,Frustrum);
+            RenderLights(ref ViewProjection, ref InverseViewProjection, ref CameraPosition, Frustrum);
 
-            if(ssaoEnabled) RenderSSAO(ref Projection,ref View,currentCamera.ZFar, currentCamera.Aspect);
+            if (ssaoEnabled) RenderSSAO(ref Projection, ref View, currentCamera.ZFar, currentCamera.Aspect);
             else Device.SetRenderTarget(null);
-                       
-            //Device.SetRenderTarget(test);
-                        
+
+
+
             Device.SetRenderTarget(null);
 
             composition.Parameters["Ambient"].SetValue(ambient);
@@ -344,9 +392,15 @@ namespace PlagueEngine.Rendering
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
+            //Device.SetRenderTarget(test);
             particleManager.DrawParticles(gameTime);
 
-            //Device.SetRenderTarget(null);
+            if (drawRect)
+            {
+                DrawRect();
+            }
+
+            Device.SetRenderTarget(null);
 
             //debugEffect.Parameters["Texture"].SetValue(color);
             //debugEffect.Techniques[0].Passes[0].Apply();

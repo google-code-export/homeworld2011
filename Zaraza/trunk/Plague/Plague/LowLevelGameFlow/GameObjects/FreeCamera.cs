@@ -43,6 +43,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Clock                     clock                     = TimeControl.CreateClock();
 
         private float                     mouseX, mouseY;
+        private float                     mouseXclicked, mouseYclicked;
+        private bool                      clicked = false;
+        private Microsoft.Xna.Framework.Rectangle selectRectange;
         private bool                      isOnWindow = false;
         ConstraintWorldPoint              objectController = new ConstraintWorldPoint();
         ConstraintVelocity                damperController = new ConstraintVelocity();
@@ -80,6 +83,74 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             cameraComponent.ForceUpdate();
         }
         /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// CheckRayIntersection
+        /****************************************************************************/
+        private void CheckRayIntersection()
+        {
+
+            Microsoft.Xna.Framework.Ray ray = cameraComponent.GetMouseRay(new Vector2(mouseX, mouseY));
+            foreach (MeshComponent mesh in cameraComponent.Renderer.meshes)
+            {
+                if (ray.Intersects(mesh.BoundingBox) != null)
+                {
+                    this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
+
+                }
+            }
+
+            foreach (SkinnedMeshComponent skinnedMesh in cameraComponent.Renderer.skinnedMeshes)
+            {
+                if (ray.Intersects(skinnedMesh.BoundingBox) != null)
+                {
+                    this.Broadcast(new LowLevelGameFlow.GameObjectClicked(skinnedMesh.GameObject.ID));
+
+                }
+            }
+
+
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// CheckFrustumIntersection
+        /****************************************************************************/
+        private void CheckFrustumIntersection(BoundingFrustum frustum)
+        {
+            Diagnostics.PushLog("SELECTED OBJECTS: ");
+            int a = 0;
+            foreach (MeshComponent mesh in cameraComponent.Renderer.meshes)
+            {
+                ContainmentType con = frustum.Contains(mesh.BoundingBox);
+                if (con == ContainmentType.Contains || con == ContainmentType.Intersects)
+                {
+
+                    Diagnostics.PushLog("ID: "+mesh.GameObject.ID.ToString());
+                    a++;
+                }
+            }
+
+            foreach (SkinnedMeshComponent skinnedMesh in cameraComponent.Renderer.skinnedMeshes)
+            {
+
+                ContainmentType con = frustum.Contains(skinnedMesh.BoundingBox);
+                if (con == ContainmentType.Contains || con == ContainmentType.Intersects)
+                {
+                    Diagnostics.PushLog("ID: "+skinnedMesh.GameObject.ID.ToString());
+                    a++;
+                }
+            }
+            Diagnostics.PushLog(a.ToString());
+        }
+        /****************************************************************************/
+
+
 
 
         /****************************************************************************/
@@ -134,14 +205,47 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 rotation = false;
                 mouseListenerComponent.UnlockCursor();            
             }
-            
-            
-            
+
+
+            if (!selectRectange.IsEmpty && mouseKeyAction==MouseKeyAction.LeftClick)
+            {
+                cameraComponent.Renderer.DrawSelectionRect(selectRectange);
+            }
+
+            //klikniecie
+            if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick && isOnWindow)
+            {
+                clicked = true;
+            }
+            else
+            {
+                clicked = false;
+            }
+
+
+            //przeciaganie
+            if (mouseKeyState.IsDown() && !mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick)
+            {
+                selectRectange.Width = (int)mouseX - selectRectange.X;
+                selectRectange.Height =(int)mouseY - selectRectange.Y;
+            }
+
+            //zwolnienie klawisza
+            if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick && selectRectange.Width!=0 && selectRectange.Height!=0)
+            {
+                BoundingFrustum frustum = cameraComponent.GetFrustumFromRect(selectRectange);
+               
+                selectRectange = Microsoft.Xna.Framework.Rectangle.Empty;
+                CheckFrustumIntersection(frustum);
+            }
+
             if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
                 
                 if (middleButton == false && isOnWindow)
                 {
+                    
+
                     CollisionSkin skin;
                     Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
                     Vector3 pos, nor;
@@ -152,6 +256,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
 
                         this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
+                    }
+                    else
+                    {
+                        CheckRayIntersection();
                     }
                     if (hit)
                     {
@@ -215,6 +323,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 cameraComponent.RotateY(-rotationSpeed * mouseMovementState.Difference.X);
                 cameraComponent.Pitch  (-rotationSpeed * mouseMovementState.Difference.Y);
+            }
+
+            if (clicked)
+            {
+                mouseXclicked = mouseMovementState.Position.X;
+                mouseYclicked = mouseMovementState.Position.Y;
+                selectRectange = new Microsoft.Xna.Framework.Rectangle((int)mouseXclicked, (int)mouseYclicked, 0, 0);
+
             }
         }
         /****************************************************************************/

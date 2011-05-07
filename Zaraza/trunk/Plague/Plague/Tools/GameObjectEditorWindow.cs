@@ -361,6 +361,12 @@ namespace PlagueEngine.Tools
             SpotLight.ClassType = typeof(SpotLight);
             SpotLight.dataClassType = typeof(SpotLightData);
             gameObjectClassNames.Add(SpotLight);
+
+            gameObjectsClassName ParticleEmitter = new gameObjectsClassName();
+            ParticleEmitter.className = "ParticleEmitterGO";
+            ParticleEmitter.ClassType = typeof(ParticleEmitterGO);
+            ParticleEmitter.dataClassType = typeof(ParticleEmitterGOData);
+            gameObjectClassNames.Add(ParticleEmitter);
         }
         /********************************************************************************/
 

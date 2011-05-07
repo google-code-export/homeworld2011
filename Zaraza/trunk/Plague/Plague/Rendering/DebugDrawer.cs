@@ -178,7 +178,7 @@ namespace PlagueEngine.Rendering
 
                 foreach (RigidBodyComponent body in physicsManager.rigidBodies.Values)
                 {
-
+                    
                     AddShape(BodyRenderExtensions.GetLocalSkinWireframe(body.Skin));
                     Matrix skinWorld = body.Body.Orientation;
                     skinWorld.Translation = body.Body.Position;
