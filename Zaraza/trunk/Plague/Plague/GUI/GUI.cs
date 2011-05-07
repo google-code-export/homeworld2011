@@ -9,7 +9,10 @@ using Nuclex.Input;
 using Nuclex.UserInterface.Controls.Desktop;
 using Nuclex.UserInterface;
 using PlagueEngine.GUI.Components;
+using PlagueEngine.Rendering;
+using PlagueEngine.Tools;
 using Nuclex.UserInterface.Visuals.Flat;
+
 namespace PlagueEngine.GUI
 {
     /********************************************************************************/
@@ -23,40 +26,35 @@ namespace PlagueEngine.GUI
         public GuiManager Manager = null;
         public GUIComponentsFactory ComponentsFactory = null;
         public WindowControl window = null;
-        public InputManager input = null;
+#if DEBUG
+        public NonConsumingInputManager input = null;
+#else
+        public InputManager input = null; 
+#endif
         /****************************************************************************/
         
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public GUI(Game game, GameServiceContainer Services)
+        public GUI(PlagueEngine.Game game, GameServiceContainer Services)
         {
-            //this.game         = game;
             ComponentsFactory = new GUIComponentsFactory(this);
+#if DEBUG
+            input = new NonConsumingInputManager(Services);       
+#else
+            input = new InputManager(Services, game.Window.Handle); 
+#endif
             Manager = new GuiManager(Services);
-            input = new InputManager(game.Window.Handle);
-            //game.Components.Add(input);
-            //GUIComponent.gui = this;
-    
-var capturer = new Nuclex.UserInterface.Input.DefaultInputCapturer(this.input);
-capturer.ChangePlayerIndex(ExtendedPlayerIndex.Five);
-this.Manager.InputCapturer = capturer;
-        
         }
         /****************************************************************************/
 
-        public void onDisposing(object o, EventArgs ea)
-        {
-            GraphicsDevice gd = (GraphicsDevice)o;
-            Viewport viewport = gd.Viewport;
-            Screen mainScreen = new Screen(viewport.Width, viewport.Height);
-            this.Manager.Screen = mainScreen;
-        }
+        public bool updateable = true;
 
         public void Initialize(GraphicsDevice GraphicsDevice)
         {
+            
             GUIComponent.gui = this;
-            //GraphicsDevice.DeviceReset += onDisposing;
+            
             this.Manager.DrawOrder = 1000;
             Viewport viewport = GraphicsDevice.Viewport;
             Screen mainScreen = new Screen(viewport.Width, viewport.Height);
@@ -79,11 +77,20 @@ this.Manager.InputCapturer = capturer;
             
             // Button through which the user can quit the application
             ButtonControl quitButton = new ButtonControl();
-            quitButton.Text = "Quit";
+            quitButton.Text = "Exit";
             quitButton.Bounds = new UniRectangle(
               new UniScalar(1.0f, -80.0f), new UniScalar(1.0f, -32.0f), 80, 32
             );
-            quitButton.Pressed += delegate(object sender, EventArgs arguments) { Diagnostics.PushLog("button klikniety"); };
+            quitButton.Pressed += delegate(object sender, EventArgs arguments) { 
+                Diagnostics.PushLog("Quit button clicked!!");
+            };
+
+            InputControl inputControl = new InputControl();
+            inputControl.Enabled = true;
+            inputControl.Bounds = new UniRectangle(
+              new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -132.0f), 80, 32
+            );
+            mainScreen.Desktop.Children.Add(inputControl);
             mainScreen.Desktop.Children.Add(quitButton);
            
         }
@@ -94,5 +101,14 @@ this.Manager.InputCapturer = capturer;
             Manager.Draw(gameTime);
         }
 
+        public void Update(GameTime gameTime)
+        {
+            if (updateable)
+            {
+                Manager.Update(gameTime);
+                input.Update();
+                //Diagnostics.PushLog("UPDATE INPUT!!");
+            }
+        }
     }
 }

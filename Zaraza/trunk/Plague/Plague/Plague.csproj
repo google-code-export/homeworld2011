@@ -55,7 +55,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS, RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -102,28 +102,35 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Nuclex.Input">
-      <HintPath>.\Nuclex.Input.dll</HintPath>
+    <Reference Include="NMock2">
+      <HintPath>..\NMock2.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.Support, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=MSIL">
+    <Reference Include="Nuclex.Input, Version=4.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Nuclex.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Nuclex.Support.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.Testing.Xna">
-      <HintPath>.\Nuclex.Testing.Xna.dll</HintPath>
+    <Reference Include="Nuclex.Testing.Xna, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Nuclex.Testing.Xna.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.UserInterface, Version=4.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
+    <Reference Include="Nuclex.UserInterface, Version=4.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Nuclex.UserInterface.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>.\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=2.5.5.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PlagueEngineSkinning">
       <HintPath>..\..\PlagueEngineSkinning\bin\x86\Release\PlagueEngineSkinning.dll</HintPath>
     </Reference>
-    <Reference Include="SlimDX.DirectInput">
-      <HintPath>.\SlimDX.DirectInput.dll</HintPath>
+    <Reference Include="SlimDX.DirectInput, Version=4.0.10.43, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SlimDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -156,6 +163,7 @@
     <Compile Include="GUI\GUI.cs" />
     <Compile Include="GUI\GUIComponent.cs" />
     <Compile Include="GUI\GUIComponentsFactory.cs" />
+    <Compile Include="GUI\KeyboardUnawareInputManager.cs" />
     <Compile Include="HighLevelGameFlow\Level.cs" />
     <Compile Include="HighLevelGameFlow\LevelData.cs" />
     <Compile Include="Input\Components\KeyboardListenerComponent.cs" />
