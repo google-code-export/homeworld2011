@@ -49,9 +49,7 @@ namespace PlagueEngine.Rendering.Components
                                    float             quadraticAttenuation,
                                    Matrix            localTransform,
                                    Texture2D         attenuation,
-                                   RenderTarget2D    shadowMap,
-                                   float             depthBias,
-                                   float             depthPrecision)
+                                   bool              shadows)
             : base(gameObject)
         {
             Enabled              = enabled;
@@ -65,24 +63,18 @@ namespace PlagueEngine.Rendering.Components
             LocalTransform       = localTransform;
             Attenuation          = attenuation;
             Specular             = specular;
-
-            if (shadowMap != null)
-            {
-                ShadowMap = shadowMap;
-                DepthBias = depthBias;
-                DepthPrecision = depthPrecision;
-                ShadowsEnabled = true;
-            }
-            else
-            {
-                ShadowsEnabled = false;
-            }
-
+                     
             CalculateProjection();
             CalculateScale();
             angleCos = (float)Math.Cos(MathHelper.ToRadians(radius / 2));
 
-            renderer.lightsManager.AddSpotLight(this, Attenuation, Specular, ShadowsEnabled);
+            ShadowMap = renderer.lightsManager.AddSpotLight(this, Attenuation, Specular, shadows);
+
+            if (ShadowMap >= 0)
+            {
+                Vector2 offset = new Vector2(ShadowMap % 4,ShadowMap / 4);
+                ShadowMapOffset = offset;
+            }
         }
         /****************************************************************************/
 
@@ -187,14 +179,11 @@ namespace PlagueEngine.Rendering.Components
                 CalculateScale();
             }
         }
-
-        public bool ShadowsEnabled      { get; private set; }
-        public bool Specular            { get; private set; }
-
-        public RenderTarget2D ShadowMap { get; private set; }
-        public int  ShadowMapSize       { get { return (ShadowMap != null ? ShadowMap.Height : 0); } }
-        public float DepthBias          { get; set; }
-        public float DepthPrecision     { get; set; }
+        
+        public bool    Specular        { get; private set; }
+        public int     ShadowMap       { get; private set; }
+        public Vector2 ShadowMapOffset { get; private set; }
+        public bool    ShadowsEnabled  { get { return (ShadowMap >= 0 ? true : false); } }        
         /****************************************************************************/
 
     }

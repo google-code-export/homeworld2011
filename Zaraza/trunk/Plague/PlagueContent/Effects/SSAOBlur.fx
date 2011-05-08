@@ -10,29 +10,13 @@ float2 BlurDirection = float2(1,1);
 /****************************************************/
 float2  HalfPixel;
 
-texture SSAOTexture;
-sampler SSAOTextureSampler = sampler_state
+texture Texture;
+sampler TextureSampler = sampler_state
 {
-	texture  = <SSAOTexture>;	
-	AddressU = Mirror;
-	AddressV = Mirror;    
-};
-
-texture GBufferNormal;
-sampler GBufferNormalSampler = sampler_state
-{
-	texture   = <GBufferNormal>;	    
-};
-
-texture GBufferDepth;
-sampler GBufferDepthSampler = sampler_state
-{
-	texture   = <GBufferDepth>;
-	MagFilter = POINT;
-    MinFilter = POINT;
-    Mipfilter = POINT;
-	AddressU  = MIRROR;
-	AddressV  = MIRROR;
+	texture  = <Texture>;	
+	minfilter = point;
+	magfilter = point;
+	mipfilter = point; 
 };
 /****************************************************/
 
@@ -79,7 +63,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 /****************************************************/
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {		
-	float color;	
+	float2 color;	
 		
 	for(int x = -2; x <= 2; x++)
 	{
@@ -88,13 +72,15 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 			float2 shift = float2(x * 2 * HalfPixel.x, y * 2 * HalfPixel.y);
 			float2 newUV = float2(input.UV + shift);
 
-			float sample = tex2D(SSAOTextureSampler,newUV);				
+			float2 sample = tex2D(TextureSampler,newUV);				
 
 			color += sample;;
 		}
 	}
 	
-	return color / 25.0f;
+	color /= 25.0f;
+	
+	return float4(color.x,color.y,0,1);
 }
 /****************************************************/
 

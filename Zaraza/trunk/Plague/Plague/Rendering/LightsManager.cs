@@ -28,7 +28,8 @@ namespace PlagueEngine.Rendering
         private RenderTarget2D     normal          = null;
         private RenderTarget2D     depth           = null;
         private RenderTarget2D     light           = null;
-        private RenderTarget2D     shadowMapBlur   = null;        
+        internal RenderTarget2D shadowMapBlur = null;
+        internal RenderTarget2D shadowMap = null;        
 
         private PlagueEngineModel pointLightModel  = null;
         private PlagueEngineModel spotLightModel   = null;
@@ -50,7 +51,9 @@ namespace PlagueEngine.Rendering
         private Dictionary<Texture2D, List<SpotLightComponent>> spotLightsDiff = new Dictionary<Texture2D, List<SpotLightComponent>>();
         private Dictionary<Texture2D, List<SpotLightComponent>> spotLightsSpec = new Dictionary<Texture2D, List<SpotLightComponent>>();
 
-        private List<SpotLightComponent> shadowCasters = new List<SpotLightComponent>();
+        private SpotLightComponent[] shadowCasters      = new SpotLightComponent[16];
+        private List<int>            freeShadowCasterID = new List<int>();
+        private int                  lastShadowCasterID = 0;
 
         private Renderer renderer = null;
         /****************************************************************************/
@@ -71,7 +74,7 @@ namespace PlagueEngine.Rendering
             directionalLight = content.LoadEffect("DSDirectionalLight");
             pointLight       = content.LoadEffect("DSPointLight");
             spotLight        = content.LoadEffect("DSSpotLight");
-            blur             = content.LoadEffect("GaussianBlur");
+            blur             = content.LoadEffect("GaussianBlur7");
 
             directionalLight.Parameters["GBufferNormal"].SetValue(normal);
             directionalLight.Parameters["GBufferDepth" ].SetValue(depth);
@@ -89,11 +92,18 @@ namespace PlagueEngine.Rendering
             spotLightModel  = content.LoadModel("Cone");
 
             shadowMapBlur = new RenderTarget2D(renderer.Device,
-                                               512,
-                                               512,
+                                               2048,
+                                               2048,
                                                false,
                                                SurfaceFormat.HalfVector2,
                                                DepthFormat.None);
+
+            shadowMap = new RenderTarget2D(renderer.Device,
+                                           2048,
+                                           2048,
+                                           false,
+                                           SurfaceFormat.HalfVector2,
+                                           DepthFormat.None);
 
             lightBlendState = new BlendState();
 
@@ -286,7 +296,8 @@ namespace PlagueEngine.Rendering
                     {
                         spotLight.Parameters["ShadowsEnabled"].SetValue(true);
                         spotLight.Parameters["DepthPrecision"].SetValue(spotLightcomponent.FarPlane);
-                        spotLight.Parameters["ShadowMap"].SetValue(spotLightcomponent.ShadowMap);
+                        spotLight.Parameters["ShadowMap"].SetValue(shadowMap);
+                        spotLight.Parameters["ShadowMapOffset"].SetValue(spotLightcomponent.ShadowMapOffset);
                     }
                     else
                     {
@@ -350,9 +361,10 @@ namespace PlagueEngine.Rendering
 
                     if (spotLightcomponent.ShadowsEnabled)
                     {
-                        spotLight.Parameters["ShadowsEnabled"].SetValue(true);
-                        spotLight.Parameters["DepthPrecision"].SetValue(spotLightcomponent.FarPlane);
-                        spotLight.Parameters["ShadowMap"].SetValue(spotLightcomponent.ShadowMap);
+                        spotLight.Parameters["ShadowsEnabled" ].SetValue(true);
+                        spotLight.Parameters["DepthPrecision" ].SetValue(spotLightcomponent.FarPlane);
+                        spotLight.Parameters["ShadowMap"      ].SetValue(shadowMap);
+                        spotLight.Parameters["ShadowMapOffset"].SetValue(spotLightcomponent.ShadowMapOffset);
                     }
                     else
                     {
@@ -401,19 +413,31 @@ namespace PlagueEngine.Rendering
             float           depthPrecision;
             Vector3         Positon;
 
+            renderer.Device.SetRenderTarget(shadowMap);
+
+            Viewport viewport = renderer.Device.Viewport;
+
+            viewport.Width  = 512;
+            viewport.Height = 512;
+            
             foreach (SpotLightComponent spotLight in shadowCasters)
             {
+                if (spotLight == null) continue;
+
                 LightViewProjection  = spotLight.ViewProjection;
                 LightFrustrum.Matrix = LightViewProjection;
 
                 if (!spotLight.Enabled) continue;
-                if (!frustrum.Intersects(LightFrustrum)) continue;
-
-                renderer.Device.SetRenderTarget(spotLight.ShadowMap);
+                if (!frustrum.Intersects(LightFrustrum)) continue;                             
                 
                 depthPrecision = spotLight.FarPlane;
                 Positon        = spotLight.World.Translation;
 
+                viewport.X = 512 * (int)spotLight.ShadowMapOffset.X;
+                viewport.Y = 512 * (int)spotLight.ShadowMapOffset.Y;
+
+                renderer.Device.Viewport = viewport;
+                
                 /*********************************/
                 /// Renderable Components
                 /*********************************/
@@ -437,22 +461,30 @@ namespace PlagueEngine.Rendering
 
 
                 /*********************************/
-                /// Blur
+                /// Skinned Meshes
                 /*********************************/
-                fullScreenQuad.SetBuffers();
-
-                renderer.Device.SetRenderTarget(shadowMapBlur);
-                blur.Parameters["Texture"].SetValue(spotLight.ShadowMap);
-                blur.CurrentTechnique.Passes[0].Apply();
-                fullScreenQuad.JustDraw();
-
-                renderer.Device.SetRenderTarget(spotLight.ShadowMap);
-                blur.Parameters["Texture"].SetValue(shadowMapBlur);
-                blur.CurrentTechnique.Passes[1].Apply();
-                fullScreenQuad.JustDraw();
+                renderer.batchedSkinnedMeshes.DrawDepth(LightViewProjection,
+                                                        LightFrustrum,
+                                                        Positon,
+                                                        depthPrecision);
                 /*********************************/
-                
             }
+
+            /*********************************/
+            /// Blur
+            /*********************************/
+            fullScreenQuad.SetBuffers();
+
+            renderer.Device.SetRenderTarget(shadowMapBlur);
+            blur.Parameters["Texture"].SetValue(shadowMap);
+            blur.CurrentTechnique.Passes[0].Apply();
+            fullScreenQuad.JustDraw();
+
+            renderer.Device.SetRenderTarget(shadowMap);
+            blur.Parameters["Texture"].SetValue(shadowMapBlur);
+            blur.CurrentTechnique.Passes[1].Apply();
+            fullScreenQuad.JustDraw();
+            /*********************************/
 
         }
         /****************************************************************************/
@@ -483,7 +515,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Add Spot Light
         /****************************************************************************/
-        public void AddSpotLight(SpotLightComponent light, Texture2D attenuationTexture, bool specular, bool shadows)
+        public int AddSpotLight(SpotLightComponent light, Texture2D attenuationTexture, bool specular, bool shadows)
         {
             if (specular)
             {
@@ -502,7 +534,23 @@ namespace PlagueEngine.Rendering
                 spotLightsDiff[attenuationTexture].Add(light);
             }
 
-            if (shadows) shadowCasters.Add(light);
+            if (shadows)
+            {
+                if (freeShadowCasterID.Count > 0)
+                {
+                    int id = freeShadowCasterID[0];
+                    shadowCasters[id] = light;
+                    freeShadowCasterID.RemoveAt(0);
+                    return id;
+                }
+                               
+                if (lastShadowCasterID == 16) return -1;
+
+                shadowCasters[lastShadowCasterID++] = light;
+
+                return lastShadowCasterID - 1;
+            }
+            else return -1;
         }
         /****************************************************************************/
 
@@ -537,7 +585,11 @@ namespace PlagueEngine.Rendering
                 }
             }
 
-            if (shadows) shadowCasters.Remove(light);
+            if (shadows)
+            {
+                shadowCasters[light.ShadowMap] = null;
+                freeShadowCasterID.Add(light.ShadowMap);
+            }
         }
         /****************************************************************************/
 

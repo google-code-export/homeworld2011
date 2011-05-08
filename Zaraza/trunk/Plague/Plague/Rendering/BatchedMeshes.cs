@@ -647,7 +647,17 @@ namespace PlagueEngine.Rendering
             DrawDepth(instDiff,         frustrum);
             DrawDepth(instDiffSpec,     frustrum);
             DrawDepth(instDiffNorm,     frustrum);
-            DrawDepth(instDiffSpecNorm, frustrum);            
+            DrawDepth(instDiffSpecNorm, frustrum);
+
+            noInstancingEffect.CurrentTechnique = noInstancingEffect.Techniques["DepthWrite"];
+            noInstancingEffect.Parameters["ViewProjection"].SetValue(ViewProjection);
+            noInstancingEffect.Parameters["CameraPosition"].SetValue(LightPosition);
+            noInstancingEffect.Parameters["DepthPrecision"].SetValue(depthPrecision);
+            
+            DrawDepth(noInstDiff, frustrum);
+            DrawDepth(noInstDiffSpec, frustrum);
+            DrawDepth(noInstDiffNorm, frustrum);
+            DrawDepth(noInstDiffSpecNorm, frustrum);
         }
         /****************************************************************************/
 
@@ -738,6 +748,33 @@ namespace PlagueEngine.Rendering
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Draw Depth
+        /****************************************************************************/
+        private void DrawDepth(Dictionary<PlagueEngineModel, Dictionary<TexturesPack, List<MeshComponent>>> container, BoundingFrustum frustrum)
+        {
+            foreach (KeyValuePair<PlagueEngineModel, Dictionary<TexturesPack, List<MeshComponent>>> model in container)
+            {
+                renderer.Device.Indices = model.Key.IndexBuffer;
+                renderer.Device.SetVertexBuffer(model.Key.VertexBuffer);
+
+                foreach (KeyValuePair<TexturesPack, List<MeshComponent>> texturesPack in model.Value)
+                {                    
+                    foreach (MeshComponent mesh in texturesPack.Value)
+                    {
+                        if (!frustrum.Intersects(mesh.BoundingBox)) continue;
+
+                        noInstancingEffect.Parameters["World"].SetValue(mesh.GameObject.World);
+                        noInstancingEffect.CurrentTechnique.Passes[0].Apply();
+
+                        renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, model.Key.VertexCount, 0, model.Key.TriangleCount);
+                    }
+                }
+            }
+        }
+        /****************************************************************************/
+     
 
         /****************************************************************************/
         /// InstancesData

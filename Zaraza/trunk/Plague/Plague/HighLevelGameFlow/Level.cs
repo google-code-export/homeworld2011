@@ -258,12 +258,10 @@ namespace PlagueEngine.HighLevelGameFlow
             spdata.Texture = "RadialAttenuation";
             spdata.LinearAttenuation = 0;
             spdata.Intensity = 2;
+            spdata.ShadowsEnabled = true;
             spdata.LocalTransform = Matrix.Identity;
             spdata.QuadraticAttenuation = 20;
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(245, 60, 95), new Vector3(285, 50, 100), Vector3.Up));
-            spdata.MapSize = 512;
-            spdata.DepthBias = 0.0f;
-            spdata.DepthPrecision = 1;
 
             gameObjectsFactory.Create(spdata);
 
@@ -274,7 +272,17 @@ namespace PlagueEngine.HighLevelGameFlow
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(275, 60, 120), new Vector3(285, 50, 100), Vector3.Up));
             spdata.Color = new Vector3(0, 0, 1);
             spdata.Specular = true;
-            spdata.ShadowsEnabled = true;
+            gameObjectsFactory.Create(spdata);
+
+            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(275, 60, 150), new Vector3(285, 50, 120), Vector3.Up));
+            spdata.Color = new Vector3(1, 1, 0);
+            spdata.Specular = true;
+            gameObjectsFactory.Create(spdata);
+
+            spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(295, 80, 110), new Vector3(285, 50, 120), Vector3.Up));
+            spdata.Color = new Vector3(1, 0, 1);
+            spdata.Texture = "Horse";
+            spdata.Specular = true;
             gameObjectsFactory.Create(spdata);
 
             SquareBodyMeshData sssdata = new SquareBodyMeshData();

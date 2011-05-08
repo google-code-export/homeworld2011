@@ -518,8 +518,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\GaussianBlur.fx">
-      <Name>GaussianBlur</Name>
+    <Compile Include="Effects\GaussianBlur7.fx">
+      <Name>GaussianBlur7</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
@@ -548,6 +548,13 @@
   <ItemGroup>
     <Compile Include="Effects\SSLineEffect.fx">
       <Name>SSLineEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\GaussianBlur15.fx">
+      <Name>GaussianBlur15</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
