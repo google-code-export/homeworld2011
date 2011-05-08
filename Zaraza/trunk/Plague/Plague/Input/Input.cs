@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nuclex.Input;
+using Nuclex.UserInterface;
+using Nuclex.UserInterface.Controls;
 using PlagueEngine.Input.Components;
 
 
@@ -126,7 +128,8 @@ namespace PlagueEngine.Input
         private Dictionary<MouseKeyAction,List<MouseKeyListener>>   mouseKeyListeners  = new Dictionary<MouseKeyAction,List<MouseKeyListener>>();
         private Dictionary<MouseMoveAction,List<MouseMoveListener>> mouseMoveListeners = new Dictionary<MouseMoveAction,List<MouseMoveListener>>();
 
-        private InputManager           inputManager;             
+        private InputManager           inputManager;
+        private Screen                 _guiScreen;   
         private Game                   game;
         private InputComponentsFactory componentsFactory;
         private KeyboardState          oldKeyboardState;
@@ -143,7 +146,7 @@ namespace PlagueEngine.Input
         {
             enabled = true;
             this.game         = game;
-            inputManager = new InputManager(services, game.Window.Handle); 
+            inputManager = new InputManager(services, game.Window.Handle);
             componentsFactory = new InputComponentsFactory(this);
             InputComponent.input = this;
         }
@@ -448,7 +451,27 @@ namespace PlagueEngine.Input
             set
             {
                 enabled = value;
-                if (inputManager != null) inputManager.Enable = value;
+
+                if (inputManager != null)
+                {
+                    inputManager.Enable = value;
+                }
+                if (!value)
+                {
+                    if (inputManager != null)
+                    {
+                        KeyboardState state = inputManager.GetKeyboard().GetState();
+
+                        foreach (Keys key in state.GetPressedKeys())
+                        {
+                            if (GuiScreen != null) GuiScreen.InjectKeyRelease(key);
+                            foreach (KeyboardListener keyboardListener in keyListeners[key])
+                            {
+                                if (keyboardListener.listener.Active) keyboardListener.onKey(key, new ExtendedKeyState(false, false));
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -456,6 +479,12 @@ namespace PlagueEngine.Input
         {
             get { return inputManager; }
             set { inputManager = value; }
+        }
+
+        public Screen GuiScreen
+        {
+            get { return _guiScreen; }
+            set { _guiScreen = value; }
         }
 
         /****************************************************************************/

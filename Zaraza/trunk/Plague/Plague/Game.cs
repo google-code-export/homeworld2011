@@ -106,6 +106,7 @@ namespace PlagueEngine
             renderer.InitDebugDrawer(physicsManager);
 
         }
+
         /****************************************************************************/
 
 
