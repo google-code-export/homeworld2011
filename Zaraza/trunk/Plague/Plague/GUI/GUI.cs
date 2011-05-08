@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Nuclex.Input;
 using Nuclex.UserInterface.Controls.Desktop;
 using Nuclex.UserInterface;
-using PlagueEngine.GUI.Components;
-using PlagueEngine.Rendering;
-using PlagueEngine.Tools;
-using Nuclex.UserInterface.Visuals.Flat;
+using PlagueEngine.Input.Components;
 
 namespace PlagueEngine.GUI
 {
@@ -26,37 +18,36 @@ namespace PlagueEngine.GUI
         public GuiManager Manager = null;
         public GUIComponentsFactory ComponentsFactory = null;
         public WindowControl window = null;
-#if DEBUG
-        public NonConsumingInputManager input = null;
-#else
-        public InputManager input = null; 
-#endif
+        private MouseListenerComponent mouseListenerComponent = null;
+
         /****************************************************************************/
         
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public GUI(PlagueEngine.Game game, GameServiceContainer Services)
+        public GUI(Microsoft.Xna.Framework.Game game, GameServiceContainer services, MouseListenerComponent mouseListenerComponent)
         {
             ComponentsFactory = new GUIComponentsFactory(this);
-#if DEBUG
-            input = new NonConsumingInputManager(Services);       
-#else
-            input = new InputManager(Services, game.Window.Handle); 
-#endif
-            Manager = new GuiManager(Services);
+            Manager = new GuiManager(services);
+            this.mouseListenerComponent = mouseListenerComponent;
+            this.mouseListenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.RightClick, MouseKeyAction.LeftClick,MouseKeyAction.MiddleClick);
         }
         /****************************************************************************/
 
-        public bool updateable = true;
+        private bool _updateable = true;
 
-        public void Initialize(GraphicsDevice GraphicsDevice)
+        public bool Updateable
+        {
+            get { return _updateable; }
+            set { _updateable = value; }
+        }
+
+        public void Initialize(GraphicsDevice graphicsDevice)
         {
             
             GUIComponent.gui = this;
             
-            this.Manager.DrawOrder = 1000;
-            Viewport viewport = GraphicsDevice.Viewport;
+            Viewport viewport = graphicsDevice.Viewport;
             Screen mainScreen = new Screen(viewport.Width, viewport.Height);
             this.Manager.Screen = mainScreen;
 
@@ -82,14 +73,17 @@ namespace PlagueEngine.GUI
               new UniScalar(1.0f, -80.0f), new UniScalar(1.0f, -32.0f), 80, 32
             );
             quitButton.Pressed += delegate(object sender, EventArgs arguments) { 
+#if DEBUG
                 Diagnostics.PushLog("Quit button clicked!!");
+#endif
             };
 
             InputControl inputControl = new InputControl();
             inputControl.Enabled = true;
             inputControl.Bounds = new UniRectangle(
-              new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -132.0f), 80, 32
+              new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -132.0f), 150, 32
             );
+
             mainScreen.Desktop.Children.Add(inputControl);
             mainScreen.Desktop.Children.Add(quitButton);
            
@@ -103,11 +97,33 @@ namespace PlagueEngine.GUI
 
         public void Update(GameTime gameTime)
         {
-            if (updateable)
+            if (Updateable)
             {
                 Manager.Update(gameTime);
-                input.Update();
-                //Diagnostics.PushLog("UPDATE INPUT!!");
+            }
+            // Blokowanie wykonywania innych akcji przy wpisywaniu tekstu w pole input... 
+            if (Manager.Screen.FocusedControl is InputControl)
+            {
+                if (!Input.Input.inTextInputMode)
+                {
+                    Input.Input.inTextInputMode = true;
+                }
+            }
+            else
+            {
+                Input.Input.inTextInputMode = false;
+            }
+        }
+
+        // Odznaczanie zaznaczonych kontrolek przy kliknięciu dowolnym przyciskiem myszy nie na kontrolce
+        private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
+        {
+            if (Updateable)
+            {
+                if (!Manager.Screen.IsMouseOverGui && mouseKeyState.WasPressed())
+                {
+                    Manager.Screen.FocusedControl = null;
+                }
             }
         }
     }

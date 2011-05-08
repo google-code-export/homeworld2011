@@ -46,13 +46,15 @@ namespace PlagueEngine.GUI.Components
             if (button != null && gui!=null)
             {
                 button.Text = text;
-                button.Bounds = new UniRectangle(
-      new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -40.0f), 80, 24
-    );//bounds;
+                button.Bounds = new UniRectangle(new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -40.0f), 80, 24);//bounds;
+#if DEBUG
                 Diagnostics.PushLog("Button component initialized successfully");
+#endif
                 return true;
             }
+#if DEBUG
             Diagnostics.PushLog("Button component wasn't initialized");
+#endif
             return false;
         }
         /****************************************************************************/

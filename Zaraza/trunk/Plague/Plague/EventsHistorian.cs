@@ -78,7 +78,7 @@ namespace PlagueEngine
             }
 
             #if DEBUG
-            Diagnostics.PushLog(builder.ToString());
+                Diagnostics.PushLog(builder.ToString());
             #endif
         }
         /****************************************************************************/
@@ -95,8 +95,9 @@ namespace PlagueEngine
             {
                 builder.AppendLine(eventData);                   
             }
-
-            Diagnostics.PushLog(builder.ToString());
+            #if DEBUG
+                Diagnostics.PushLog(builder.ToString());
+            #endif
         }
         /****************************************************************************/
 

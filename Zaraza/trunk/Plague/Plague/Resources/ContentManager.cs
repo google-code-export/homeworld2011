@@ -84,7 +84,9 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public override T Load<T>(string assetName)
         {
-            Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);                     
+#if DEBUG
+            Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);
+#endif         
             return base.Load<T>(assetName);                     
         }
         /****************************************************************************/
@@ -145,7 +147,9 @@ namespace PlagueEngine.Resources
         /****************************************************************************/        
         public void SaveConfiguration<T>(T configuration)
         {
+#if DEBUG
             Diagnostics.PushLog("Saving Configuration: " + typeof(T).ToString() + ".");
+#endif
 
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             TextWriter textWriter = null;
@@ -165,8 +169,9 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public T LoadConfiguration<T>()
         {
+#if DEBUG
             Diagnostics.PushLog("Loading Configuration: " + typeof(T).ToString() + ".");
-
+#endif
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             TextReader textReader = null;
 
@@ -178,7 +183,9 @@ namespace PlagueEngine.Resources
             }
             catch (System.IO.IOException e) 
             {
+#if DEBUG
                 Diagnostics.PushLog("Loading Configuration: " + typeof(T).ToString() + " failed.");
+#endif
                 throw e;
             }
 
@@ -224,7 +231,9 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public LevelData LoadLevel(String levelName)
         {
+#if DEBUG
             Diagnostics.PushLog("Loading level: " + levelName + ".");
+#endif
             Stream stream = new FileStream(dataDirectory + "\\" + levelsDirectory + "\\" + levelName, System.IO.FileMode.Open);
 
             IFormatter formatter = new BinaryFormatter();
@@ -242,7 +251,9 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public void SaveLevel(String levelName,LevelData levelData)
         {
+#if DEBUG
             Diagnostics.PushLog("Saving level: " + levelName + ".");
+#endif
             Stream stream = new FileStream(dataDirectory + "\\" + levelsDirectory + "\\" + levelName, System.IO.FileMode.Create);
 
             IFormatter formatter = new BinaryFormatter();
@@ -272,7 +283,9 @@ namespace PlagueEngine.Resources
         public bool CreateProfile(String name)
         {
             if (profiles.Contains(name) || name.CompareTo(defaultProfile) == 0) return false;
+#if DEBUG
             Diagnostics.PushLog("Creating new profile: " + name + ".");
+#endif
             Directory.CreateDirectory("Profiles\\" + name);
             profiles.Add(name);
             return true;
@@ -286,7 +299,9 @@ namespace PlagueEngine.Resources
         public void DeleteProfile(String name)
         {
             if (!profiles.Contains(name)) return;
+#if DEBUG
             Diagnostics.PushLog("Deleting profile: " + name + ".");
+#endif
             Directory.Delete("Profiles\\" + name, true);
             profiles.Remove(name);
         }
@@ -316,7 +331,9 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         private void LoadDefaultProfile()
         {
+#if DEBUG
             Diagnostics.PushLog("Loading default profile.");
+#endif
 
             TextReader textReader = null;
             try
@@ -324,8 +341,10 @@ namespace PlagueEngine.Resources
                  textReader = new StreamReader(defaultProfileFile);
             }
             catch (System.IO.IOException)
-            {                
+            {    
+#if DEBUG
                 Diagnostics.PushLog("File: " + defaultProfileFile + " not found.");
+#endif
                 return;
             }
             
@@ -333,7 +352,9 @@ namespace PlagueEngine.Resources
             textReader.Close();
 
             if (profiles.Contains(profile)) currentProfile = profile;
+#if DEBUG
             Diagnostics.PushLog("Profile : " + currentProfile);    
+#endif
         }
         /****************************************************************************/
 
@@ -344,8 +365,9 @@ namespace PlagueEngine.Resources
         public void SaveDefaultProfile()
         {
             if (currentProfile.Length == 0) return;
-
+#if DEBUG
             Diagnostics.PushLog("Saving default profile: " + currentProfile);
+#endif
             TextWriter textWriter = new StreamWriter(defaultProfileFile);
             textWriter.WriteLine(currentProfile);
             textWriter.Close();            
@@ -369,7 +391,9 @@ namespace PlagueEngine.Resources
             }
             catch (System.IO.IOException e)
             {
+#if DEBUG
                 Diagnostics.PushLog("Loading game objects definitions: " + e.Message);
+#endif
                 throw e;
             }
 
@@ -381,7 +405,9 @@ namespace PlagueEngine.Resources
             foreach (GameObjectDefinition god in temp)
             {
                 gameObjectsDefinitions.Add(god.Name, god);
+#if DEBUG
                 Diagnostics.PushLog("Loading object definition: " + god.Name + ".");
+#endif
             }
 
             temp.Clear();

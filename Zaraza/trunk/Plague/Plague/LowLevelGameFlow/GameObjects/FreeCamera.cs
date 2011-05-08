@@ -123,15 +123,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void CheckFrustumIntersection(BoundingFrustum frustum)
         {
+#if DEBUG
             Diagnostics.PushLog("SELECTED OBJECTS: ");
+#endif
             int a = 0;
             foreach (MeshComponent mesh in cameraComponent.Renderer.meshes)
             {
                 ContainmentType con = frustum.Contains(mesh.BoundingBox);
                 if (con == ContainmentType.Contains || con == ContainmentType.Intersects)
                 {
-
+#if DEBUG
                     Diagnostics.PushLog("ID: "+mesh.GameObject.ID.ToString());
+#endif
                     a++;
                 }
             }
@@ -142,11 +145,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 ContainmentType con = frustum.Contains(skinnedMesh.BoundingBox);
                 if (con == ContainmentType.Contains || con == ContainmentType.Intersects)
                 {
+#if DEBUG
                     Diagnostics.PushLog("ID: "+skinnedMesh.GameObject.ID.ToString());
+#endif
                     a++;
                 }
             }
+#if DEBUG
             Diagnostics.PushLog(a.ToString());
+#endif
         }
         /****************************************************************************/
 

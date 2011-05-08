@@ -129,7 +129,6 @@ namespace PlagueEngine.LowLevelGameFlow
                     break;
                 case "MenuButton":
                     result = CreateMenuButton(data);
-                    Diagnostics.PushLog("Menu Button created!!!");
                     break;
                 case "BackgroundTerrain":
                     result = CreateBackgroundTerrain(data);
@@ -448,7 +447,9 @@ namespace PlagueEngine.LowLevelGameFlow
             {
                 if(!gameObjectsDefinitions.Keys.Contains(smdata.Definition))
                 {
+#if DEBUG
                     Diagnostics.PushLog("No existing definition: " + smdata.Definition + ". Creating object failed.");
+#endif
                     return result = null;
                 }
                 
@@ -834,8 +835,10 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             if (!gameObject.Init(data.ID, data.Definition))
             {
+#if DEBUG
                 Diagnostics.PushLog("Creating Object " + data.Type + ", id: " + data.ID +
                                     ", definition: " + data.Definition + ", failed.");
+#endif
                 return false;
             }
             return true;

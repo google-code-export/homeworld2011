@@ -258,7 +258,7 @@ namespace PlagueEngine.Rendering
                 graphics.ApplyChanges();
 
                 if (currentCamera != null) currentCamera.Aspect = Device.Viewport.AspectRatio;
-
+#if DEBUG
                 Diagnostics.PushLog("Presentation Parameters Changed" +
                                     ". Resolution: " + Device.PresentationParameters.BackBufferWidth.ToString() +
                                     " x " + Device.PresentationParameters.BackBufferHeight.ToString() +
@@ -267,6 +267,7 @@ namespace PlagueEngine.Rendering
                                     ". Multisampling: " + Device.PresentationParameters.MultiSampleCount.ToString() +
                                     ". Fullscreen: " + Device.PresentationParameters.IsFullScreen.ToString() +
                                     ". VSync: " + graphics.SynchronizeWithVerticalRetrace.ToString());
+#endif
             }
         }
         /****************************************************************************/
@@ -751,6 +752,7 @@ namespace PlagueEngine.Rendering
             bottomRight = new Quad( 0.0f, 0.0f, 1.0f, -1.0f);
 
             lightsManager = new LightsManager(normal, depth, light, fullScreenQuad, HalfPixel, this, contentManager);
+
         }
         /****************************************************************************/
 

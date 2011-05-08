@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-
+using Nuclex.Input;
 using PlagueEngine.Input.Components;
 
 
@@ -117,29 +118,33 @@ namespace PlagueEngine.Input
 
 
         /****************************************************************************/
+
         /// Fields
         /****************************************************************************/
+        public static bool inTextInputMode = false;
         private Dictionary<Keys, List<KeyboardListener>>            keyListeners       = new Dictionary<Keys,List<KeyboardListener>>();
         private Dictionary<MouseKeyAction,List<MouseKeyListener>>   mouseKeyListeners  = new Dictionary<MouseKeyAction,List<MouseKeyListener>>();
         private Dictionary<MouseMoveAction,List<MouseMoveListener>> mouseMoveListeners = new Dictionary<MouseMoveAction,List<MouseMoveListener>>();
 
+        private InputManager           inputManager;             
         private Game                   game;
         private InputComponentsFactory componentsFactory;
         private KeyboardState          oldKeyboardState;
         private MouseState             oldMouseState;
         private int                    cursorLock;
-        public bool                    enabled = true;
+        private bool                   enabled;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Input(Game game)
+        public Input(Game game, GameServiceContainer services)
         {
+            enabled = true;
             this.game         = game;
+            inputManager = new InputManager(services, game.Window.Handle); 
             componentsFactory = new InputComponentsFactory(this);
-            
             InputComponent.input = this;
         }
         /****************************************************************************/
@@ -283,7 +288,11 @@ namespace PlagueEngine.Input
         {
             if (enabled)
             {
-                CheckKeyboard();
+                inputManager.Update();
+                if (!Input.inTextInputMode)
+                {
+                    CheckKeyboard();
+                }
                 CheckMouse();
             }
         }
@@ -295,7 +304,7 @@ namespace PlagueEngine.Input
         /****************************************************************************/
         private void CheckMouse()
         {
-            MouseState state = Mouse.GetState();
+            MouseState state = inputManager.GetMouse().GetState();
 
             ExtendedMouseKeyState       mouseKeyState;
             ExtendedMouseMovementState  mouseMoveState;
@@ -356,10 +365,8 @@ namespace PlagueEngine.Input
         private void CheckKeyboard()
         {
 
-            KeyboardState    state = Keyboard.GetState();
-            
+            KeyboardState    state = inputManager.GetKeyboard().GetState();
             ExtendedKeyState keyState;
-
             foreach (Keys key in keyListeners.Keys)
             {
 
@@ -434,6 +441,23 @@ namespace PlagueEngine.Input
                 return componentsFactory;
             }
         }
+
+        public bool Enabled
+        {
+            get { return enabled; }
+            set
+            {
+                enabled = value;
+                if (inputManager != null) inputManager.Enable = value;
+            }
+        }
+
+        public InputManager InputManager
+        {
+            get { return inputManager; }
+            set { inputManager = value; }
+        }
+
         /****************************************************************************/
 
     }

@@ -342,11 +342,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     Vector3 pos, nor;
                     float dist;
                     bool hit = false;
+#if DEBUG
                     Diagnostics.PushLog(direction.ToString());
+#endif
                     hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
                     if (skin != null)
                     {
+#if DEBUG
                         Diagnostics.PushLog(pos.ToString());
+#endif
                         this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
 
                         if (skin.ExternalData.GetType().Equals(typeof(Terrain)))

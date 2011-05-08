@@ -317,8 +317,10 @@ namespace PlagueEngine
         /****************************************************************************/
         public static void DiagnosticSnapshot()
         { 
-            Diagnostics.PushLog("FPS: " + fPS.ToString() + " | Allocated Managed Memory: "  
-                                + Diagnostics.allocatedMemory.ToString() + " kb");               
+            #if DEBUG
+                Diagnostics.PushLog("FPS: " + fPS.ToString() + " | Allocated Managed Memory: "  
+                                + Diagnostics.allocatedMemory.ToString() + " kb");  
+            #endif 
         }
         /****************************************************************************/
 

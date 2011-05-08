@@ -66,28 +66,28 @@ namespace PlagueEngine
             Window.Title = title;
             this.IsMouseVisible = true;
 
+#if DEBUG
             Diagnostics.Game = this;
             Diagnostics.ShowDiagnostics = true;
             Diagnostics.ForceGCOnUpdate = true;
             Diagnostics.LimitUpdateTimeStep = false;
             Diagnostics.ShowLogWindow = true;
             Diagnostics.OpenLogFile("log");
+#endif
 
             contentManager = new ContentManager(this, "Content");
-            input = new Input.Input(this);
+
+            input = new Input.Input(this, Services);
+
+            gui = new GUI.GUI(this, Services,input.ComponentsFactory.CreateMouseListenerComponent(null,true));
 
             particleManager = new ParticleManager();
-
 
             InitRenderer();
 
             particleManager.CreateFactory(contentManager, renderer);
-            
-            gui = new GUI.GUI(this, Services);
-
 
             physicsManager = new PhysicsManager(contentManager);
-
 
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,
@@ -101,12 +101,9 @@ namespace PlagueEngine
 
             eventsSystem = new EventsSystem.EventsSystem(Level);
 
-
             eventsHistorian = new EventsHistorian(20);
 
-
             renderer.InitDebugDrawer(physicsManager);
-
 
         }
         /****************************************************************************/
@@ -137,16 +134,17 @@ namespace PlagueEngine
             //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
 
             renderer.batchedMeshes.CommitMeshTransforms();
-
+#if DEBUG
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, renderer, input, gui, this);
             gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
+#endif
 
-            InitGUI();
-                
+            InitGUI();  
             
             base.Initialize();              
-
+#if DEBUG
             Diagnostics.PushLog("Initialization complete");
+#endif
         }
         /****************************************************************************/
 
@@ -162,8 +160,9 @@ namespace PlagueEngine
         protected override void LoadContent()
         {
             renderer.LoadEffects();
-
+#if DEBUG
             Diagnostics.PushLog("Loading content complete");
+#endif
         }
         /****************************************************************************/
 
@@ -180,8 +179,10 @@ namespace PlagueEngine
         protected override void UnloadContent()
         {
             contentManager.Unload();
+#if DEBUG
             Diagnostics.PushLog("Unloading content complete");
-            Diagnostics.CloseLogFile();
+            Diagnostics.CloseLogFile(); 
+#endif
         }
         /****************************************************************************/
 
@@ -198,8 +199,9 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Update(GameTime gameTime)
         {
-
+#if DEBUG
             Diagnostics.Update(gameTime.ElapsedGameTime);
+#endif
             TimeControl.Update(gameTime.ElapsedGameTime);
 
             input.Update();
@@ -245,8 +247,9 @@ namespace PlagueEngine
             contentManager.SaveDefaultProfile();
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
 
-
+#if DEBUG
             Diagnostics.PushLog("Exiting");
+#endif
         }
         /****************************************************************************/
 
