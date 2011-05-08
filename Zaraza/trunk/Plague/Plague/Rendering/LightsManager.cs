@@ -28,7 +28,7 @@ namespace PlagueEngine.Rendering
         private RenderTarget2D     normal          = null;
         private RenderTarget2D     depth           = null;
         private RenderTarget2D     light           = null;
-        private RenderTarget2D     shadowMapBlur   = null;
+        private RenderTarget2D     shadowMapBlur   = null;        
 
         private PlagueEngineModel pointLightModel  = null;
         private PlagueEngineModel spotLightModel   = null;
@@ -41,6 +41,8 @@ namespace PlagueEngine.Rendering
         private BlendState        lightBlendState  = null;
 
         private Quad              fullScreenQuad   = null;
+
+        internal SunlightComponent         sunlight        = null;
 
         private List<PointLightComponent> pointLightsDiff = new List<PointLightComponent>();
         private List<PointLightComponent> pointLightsSpec = new List<PointLightComponent>();
@@ -119,14 +121,13 @@ namespace PlagueEngine.Rendering
 
             /*********************************/
             /// Directional Light
-            /*********************************
+            /*********************************/
             if (sunlight != null)
             {
                 if (sunlight.Enabled)
                 {
                     directionalLight.Parameters["InverseViewProjection"].SetValue(InverseViewProjection);
-                    directionalLight.Parameters["CameraPosition"].SetValue(CameraPosition);
-
+                    directionalLight.Parameters["CameraPosition"].SetValue(CameraPosition);                                        
                     directionalLight.Parameters["LightDirection"].SetValue(sunlight.Direction);
                     directionalLight.Parameters["LightColor"].SetValue(sunlight.DiffuseColor);
                     directionalLight.Parameters["LightIntensity"].SetValue(sunlight.Intensity);
@@ -285,7 +286,6 @@ namespace PlagueEngine.Rendering
                     {
                         spotLight.Parameters["ShadowsEnabled"].SetValue(true);
                         spotLight.Parameters["DepthPrecision"].SetValue(spotLightcomponent.FarPlane);
-                        spotLight.Parameters["DepthBias"].SetValue(spotLightcomponent.DepthBias);
                         spotLight.Parameters["ShadowMap"].SetValue(spotLightcomponent.ShadowMap);
                     }
                     else
@@ -352,7 +352,6 @@ namespace PlagueEngine.Rendering
                     {
                         spotLight.Parameters["ShadowsEnabled"].SetValue(true);
                         spotLight.Parameters["DepthPrecision"].SetValue(spotLightcomponent.FarPlane);
-                        spotLight.Parameters["DepthBias"].SetValue(spotLightcomponent.DepthBias);
                         spotLight.Parameters["ShadowMap"].SetValue(spotLightcomponent.ShadowMap);
                     }
                     else

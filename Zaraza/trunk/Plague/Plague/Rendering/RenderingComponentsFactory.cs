@@ -51,7 +51,7 @@ namespace PlagueEngine.Rendering
         {
             CameraComponent result = new CameraComponent(gameObject, renderer, fov, zNear, zFar);
             
-            if (renderer.CurrentCamera == null) renderer.CurrentCamera = result;
+            renderer.CurrentCamera = result;
             
             return result;
         }                            
@@ -146,7 +146,7 @@ namespace PlagueEngine.Rendering
                                                              diffuseColor,
                                                              intensity,
                                                              enabled);
-            renderer.Sunlight = result;
+            renderer.lightsManager.sunlight = result;
             return result;
         }                                                         
         /****************************************************************************/

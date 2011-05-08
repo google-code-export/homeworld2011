@@ -42,8 +42,7 @@ namespace PlagueEngine.Rendering.Components
             this.renderer       = renderer;
             this.diffuseColor   = diffuseColor;            
             this.enabled        = enabled;
-            
-            Intensity           = intensity;
+            Intensity           = intensity;            
         }
         /****************************************************************************/
 
@@ -53,7 +52,6 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            if (renderer.Sunlight == this) renderer.Sunlight = null;
             base.ReleaseMe();
         }
         /****************************************************************************/
@@ -71,7 +69,6 @@ namespace PlagueEngine.Rendering.Components
             get 
             {
                 Vector3 result = gameObject.World.Forward;
-       //         result.Normalize();
                 return result;
             }
 

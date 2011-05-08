@@ -30,7 +30,7 @@ sampler DiffuseMapSampler = sampler_state
 /****************************************************/
 /// Specular Map
 /****************************************************/
-texture SpecularMap;
+texture SpecularMap; 
 
 sampler SpecularMapSampler = sampler_state
 {

@@ -57,7 +57,6 @@ namespace PlagueEngine.Rendering
         /// Global Components
         /**********************/
         private  CameraComponent   currentCamera = null;
-        private  SunlightComponent sunlight      = null;
         /**********************/
         
 
@@ -367,7 +366,8 @@ namespace PlagueEngine.Rendering
             else Device.SetRenderTarget(null);
 
             Device.SetRenderTarget(null);
-
+            //Device.SetRenderTarget(test);
+            
             composition.Parameters["Ambient"].SetValue(ambient);
             composition.Parameters["FogEnabled"].SetValue(fogEnabled);
             composition.Parameters["FogColor"].SetValue(fogColor);
@@ -377,7 +377,6 @@ namespace PlagueEngine.Rendering
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
-            //Device.SetRenderTarget(test);
             particleManager.DrawParticles(gameTime);
             DrawRect();
 
@@ -550,24 +549,6 @@ namespace PlagueEngine.Rendering
             set
             {
                 currentCamera = value;
-            }
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Sun Light
-        /****************************************************************************/
-        public SunlightComponent Sunlight
-        {
-            get
-            {
-                return sunlight;
-            }
-            
-            set
-            {
-                sunlight = value;
             }
         }
         /****************************************************************************/
