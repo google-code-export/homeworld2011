@@ -121,10 +121,11 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	
 	Position = mul(Position,InverseViewProjection);
 	Position /= Position.w;
-
+	
 	float4 output = Phong(Position.xyz,Normal,NormalData.w);
 	output *= LightIntensity;
-    return output;
+    
+	return output;
 }
 /****************************************************/
 

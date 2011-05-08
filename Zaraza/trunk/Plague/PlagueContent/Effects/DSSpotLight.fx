@@ -35,7 +35,6 @@ sampler AttenuationTextureSampler = sampler_state
 /****************************************************/
 bool  ShadowsEnabled;
 float DepthPrecision;
-float DepthBias;
 
 texture ShadowMap;
 sampler ShadowMapSampler = sampler_state
@@ -276,11 +275,8 @@ float4 PixelShaderFunction2(VertexShaderOutput input) : COLOR0
 
 	if(ShadowsEnabled)
 	{		
-		float shadowDepth = tex2D(ShadowMapSampler, LightUV).r;
-
 		float realDepth = (length(LightPosition - Position) / DepthPrecision);
 
-	
 		if (realDepth < 1)
 		{
 			float2 moments = tex2D(ShadowMapSampler, LightUV);
