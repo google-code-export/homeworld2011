@@ -91,6 +91,7 @@ namespace PlagueEngine.Particles
             settings.DurationInSeconds = duration;
 
             Effect particleEffect = content.LoadEffect("ParticleEffect");
+            particleEffect.Parameters["DepthTexture"].SetValue(renderer.depth);
             ParticleSystem particleSystem = new ParticleSystem(renderer.Device, renderer.CurrentCamera, content.LoadTexture2D(particleTexture), particleEffect.Clone(), settings);
             ParticleEmitter result = new ParticleEmitter(particleSystem,particlesPerSecond,initialPosition);
             return result;
