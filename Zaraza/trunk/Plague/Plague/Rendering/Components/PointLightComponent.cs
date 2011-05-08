@@ -32,6 +32,7 @@ namespace PlagueEngine.Rendering.Components
         public PointLightComponent(GameObjectInstance gameObject,
                                    bool enabled,
                                    Vector3 color,
+                                   bool specular,
                                    float intensity,
                                    float radius,
                                    float linearAttenuation,
@@ -46,8 +47,9 @@ namespace PlagueEngine.Rendering.Components
             LinearAttenuation    = linearAttenuation;
             QuadraticAttenuation = quadraticAttenuation;
             LocalPosition        = localPosition;
+            Specular             = specular;
 
-            renderer.pointLights.Add(this);
+            renderer.lightsManager.AddPointLight(this,Specular);
         }
         /****************************************************************************/
 
@@ -57,7 +59,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            renderer.pointLights.Remove(this);            
+            renderer.lightsManager.RemovePointLight(this, Specular);
             base.ReleaseMe();
         }
         /****************************************************************************/
@@ -67,12 +69,13 @@ namespace PlagueEngine.Rendering.Components
         /// Properties
         /****************************************************************************/
         public bool    Enabled              { get; set; }        
-        public Vector3 Color                { get; set; }
+        public Vector3 Color                { get; set; }        
         public float   Intensity            { get; set; }
         public float   Radius               { get; set; }
         public float   LinearAttenuation    { get; set; }
         public float   QuadraticAttenuation { get; set; }
 
+        public bool           Specular       { get; private set; }
         public Vector3        LocalPosition  { get; private set; }
         public Vector3        Position       { get { return Vector3.Transform(LocalPosition,gameObject.World); } }
         public Matrix         World          { get { return Matrix.CreateScale(Radius) * Matrix.CreateTranslation(Position); } }

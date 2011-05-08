@@ -11,6 +11,8 @@ using PlagueEngine.Input.Components;
 
 using Microsoft.Xna.Framework.Input;
 using PlagueEngine.Particles;
+
+
 /************************************************************************************/
 /// PlagueEngine.Rendering
 /************************************************************************************/
@@ -89,9 +91,7 @@ namespace PlagueEngine.Rendering
         internal BatchedMeshes        batchedMeshes        = null;
         internal BatchedSkinnedMeshes batchedSkinnedMeshes = null;
         internal DebugDrawer          debugDrawer          = null;
-        
-        internal List<PointLightComponent>                       pointLights = new List<PointLightComponent>();
-        internal Dictionary<Texture2D, List<SpotLightComponent>> spotLights  = new Dictionary<Texture2D, List<SpotLightComponent>>();
+        internal LightsManager        lightsManager        = null;
         /**********************/
 
 
@@ -110,15 +110,9 @@ namespace PlagueEngine.Rendering
         private Quad           fullScreenQuad   = null;
         private Effect         clearEffect      = null;
         private Effect         debugEffect      = null;
-        private Effect         directionalLight = null;
-        private Effect         pointLight       = null;
-        private Effect         spotLight        = null;
+
         private Effect         composition      = null;
-        private BlendState     lightBlendState  = null;
-
-        private PlagueEngineModel pointLightModel = null;
-        private PlagueEngineModel spotLightModel  = null;
-
+        
         private Quad topLeft     = null;
         private Quad topRight    = null;
         private Quad bottomLeft  = null;
@@ -129,24 +123,16 @@ namespace PlagueEngine.Rendering
         /**********************/
         /// SSAO
         /**********************/
-        private Effect    ssaoEffect     = null;
-        private Effect    ssaoBlurEffect = null;
-        private Texture2D ditherTexture  = null;
-        private float     sampleRadius   = 0.62f;
-        private float     distanceScale  = 304.5f;
-        private RenderTarget2D ssao      = null;
-        private RenderTarget2D ssaoDepth = null;
-        private RenderTarget2D ssaoBlur  = null;
-        float ssaoBias = 7.79f;
-        public  bool           ssaoEnabled = false;
-        /**********************/
-
-
-        /**********************/
-        /// Shadows
-        /**********************/
-        private RenderTarget2D shadowMapBlur = null;
-        private Effect         gaussianBlur  = null;
+        private Effect         ssaoEffect     = null;
+        private Effect         ssaoBlurEffect = null;
+        private Texture2D      ditherTexture  = null;
+        private float          sampleRadius   = 0.62f;
+        private float          distanceScale  = 304.5f;
+        private RenderTarget2D ssao           = null;
+        private RenderTarget2D ssaoDepth      = null;
+        private RenderTarget2D ssaoBlur       = null;
+        private float          ssaoBias       = 7.79f;
+        public  bool           ssaoEnabled    = false;
         /**********************/
 
 
@@ -336,17 +322,6 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void Draw(TimeSpan time, GameTime gameTime)
         {
-            KeyboardState state = Keyboard.GetState();
-
-            if (state.IsKeyDown(Keys.M)) sampleRadius += 0.01f;
-            if (state.IsKeyDown(Keys.N)) sampleRadius -= 0.01f;
-
-            if (state.IsKeyDown(Keys.B)) distanceScale += 0.10f;
-            if (state.IsKeyDown(Keys.V)) distanceScale -= 0.10f;
-
-            if (state.IsKeyDown(Keys.O)) ssaoBias += 0.01f;
-            if (state.IsKeyDown(Keys.P)) ssaoBias -= 0.01f;
-
             batchedSkinnedMeshes.DeltaTime = time;
 
             if (currentCamera == null) return;
@@ -383,14 +358,12 @@ namespace PlagueEngine.Rendering
 
             Render(ref CameraPosition, ref View, ref Projection, ref ViewProjection, Frustrum);
 
-            RenderShadows(Frustrum);
+            lightsManager.RenderShadows(Frustrum);
 
-            RenderLights(ref ViewProjection, ref InverseViewProjection, ref CameraPosition, Frustrum);
+            lightsManager.RenderLights(ref ViewProjection, ref InverseViewProjection, ref CameraPosition, Frustrum);
 
             if (ssaoEnabled) RenderSSAO(ref Projection, ref View, currentCamera.ZFar, currentCamera.Aspect);
             else Device.SetRenderTarget(null);
-
-
 
             Device.SetRenderTarget(null);
 
@@ -478,224 +451,7 @@ namespace PlagueEngine.Rendering
             /************************************/
 
         }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Render Lights
-        /****************************************************************************/
-        private void RenderLights(ref Matrix ViewProjection,ref Matrix InverseViewProjection,ref Vector3 CameraPosition,BoundingFrustum frustrum)
-        {
-            Device.SetRenderTarget(light);
-            Device.Clear(Color.Transparent);
-            Device.BlendState = lightBlendState;
-            Device.DepthStencilState = DepthStencilState.DepthRead;
-
-            /*********************************/
-            /// Directional Light
-            /*********************************/
-            if (sunlight != null)
-            {
-                if (sunlight.Enabled)
-                {
-                    directionalLight.Parameters["InverseViewProjection"].SetValue(InverseViewProjection);
-                    directionalLight.Parameters["CameraPosition"].SetValue(CameraPosition);
-
-                    directionalLight.Parameters["LightDirection"].SetValue(sunlight.Direction);
-                    directionalLight.Parameters["LightColor"].SetValue(sunlight.DiffuseColor);
-                    directionalLight.Parameters["LightIntensity"].SetValue(sunlight.Intensity);
-
-                    directionalLight.Techniques[0].Passes[0].Apply();
-                    fullScreenQuad.Draw();
-                }
-            }
-            /*********************************/
-
-
-            /*********************************/
-            /// Point Light
-            /*********************************/
-            pointLight.Parameters["ViewProjection"].SetValue(ViewProjection);
-            pointLight.Parameters["InverseViewProjection"].SetValue(InverseViewProjection);
-            pointLight.Parameters["CameraPosition"].SetValue(CameraPosition);
-
-            Device.SetVertexBuffer(pointLightModel.VertexBuffer);
-            Device.Indices = pointLightModel.IndexBuffer;
-            
-            foreach (PointLightComponent pointLightComponent in pointLights)
-            {
-                if (!pointLightComponent.Enabled) continue;
-                if (!frustrum.Intersects(pointLightComponent.BoundingSphere)) continue;
-
-                pointLight.Parameters["World"               ].SetValue(pointLightComponent.World);
-                pointLight.Parameters["LightPosition"       ].SetValue(pointLightComponent.Position);
-                pointLight.Parameters["LightRadius"         ].SetValue(pointLightComponent.Radius);
-                pointLight.Parameters["LightColor"          ].SetValue(pointLightComponent.Color);
-                pointLight.Parameters["LightIntensity"      ].SetValue(pointLightComponent.Intensity);
-                pointLight.Parameters["LinearAttenuation"   ].SetValue(pointLightComponent.LinearAttenuation);
-                pointLight.Parameters["QuadraticAttenuation"].SetValue(pointLightComponent.QuadraticAttenuation);
-
-                if (Vector3.Distance(CameraPosition, pointLightComponent.Position) < pointLightComponent.Radius * 3)
-                {
-                    Device.RasterizerState = RasterizerState.CullClockwise;
-                }
-                else
-                {
-                    Device.RasterizerState = RasterizerState.CullCounterClockwise;
-                }
-
-                pointLight.Techniques[0].Passes[0].Apply();
-
-                Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, pointLightModel.VertexCount, 0, pointLightModel.TriangleCount);
-            }
-            /*********************************/
-
-            Device.RasterizerState = RasterizerState.CullCounterClockwise;
-
-            /*********************************/
-            /// Spot Light
-            /*********************************/
-            spotLight.Parameters["ViewProjection"].SetValue(ViewProjection);
-            spotLight.Parameters["InverseViewProjection"].SetValue(InverseViewProjection);
-            spotLight.Parameters["CameraPosition"].SetValue(CameraPosition);
-
-            Device.SetVertexBuffer(spotLightModel.VertexBuffer);
-            Device.Indices = spotLightModel.IndexBuffer;
-            
-            /************************/
-            /// Helpers
-            /************************/
-            Matrix LightViewProjection;
-            BoundingFrustum LightFrustrum = new BoundingFrustum(Matrix.Identity);
-            Matrix World;
-            Vector3 CamDir;
-            float DL;
-            Vector3 Direction;
-            /************************/
-           
-            foreach (KeyValuePair<Texture2D, List<SpotLightComponent>> pair in spotLights)
-            {
-                spotLight.Parameters["AttenuationTexture"].SetValue(pair.Key);
-                
-                foreach (SpotLightComponent spotLightcomponent in pair.Value)
-                {
-
-                    LightViewProjection = spotLightcomponent.ViewProjection;
-                    LightFrustrum.Matrix = LightViewProjection;
-                    
-                    if (!spotLightcomponent.Enabled) continue;
-                    if (!frustrum.Intersects(LightFrustrum)) continue;
-                    
-                    World = spotLightcomponent.World;
-                    Direction = World.Forward;
-                    Direction.Normalize();
-
-                    spotLight.Parameters["World"               ].SetValue(World);
-                    spotLight.Parameters["LightColor"          ].SetValue(spotLightcomponent.Color);
-                    spotLight.Parameters["LightIntensity"      ].SetValue(spotLightcomponent.Intensity);
-                    spotLight.Parameters["LightPosition"       ].SetValue(World.Translation);
-                    spotLight.Parameters["LightDirection"      ].SetValue(Direction);
-                    spotLight.Parameters["LightRadius"         ].SetValue(spotLightcomponent.Radius);
-                    spotLight.Parameters["LightAngleCos"       ].SetValue(spotLightcomponent.AngleCos);
-                    spotLight.Parameters["LightFarPlane"       ].SetValue(spotLightcomponent.FarPlane);
-                    spotLight.Parameters["LinearAttenuation"   ].SetValue(spotLightcomponent.LinearAttenuation);
-                    spotLight.Parameters["QuadraticAttenuation"].SetValue(spotLightcomponent.QuadraticAttenuation);
-                    spotLight.Parameters["LightViewProjection" ].SetValue(LightViewProjection);
-
-                    spotLight.Parameters["DepthPrecision"].SetValue(spotLightcomponent.FarPlane);
-                    spotLight.Parameters["DepthBias"].SetValue(spotLightcomponent.DepthBias);
-                    spotLight.Parameters["ShadowMap"].SetValue(spotLightcomponent.ShadowMap);
-
-                    CamDir = World.Translation - CameraPosition;
-                    CamDir.Normalize();
-                    DL = Math.Abs(Vector3.Dot(Direction, -CamDir));
-                    if (DL * 2 > spotLightcomponent.AngleCos)
-                    {
-                        Device.RasterizerState = RasterizerState.CullClockwise;
-                    }
-                    else
-                    {
-                        Device.RasterizerState = RasterizerState.CullCounterClockwise;
-                    }
-
-                    spotLight.Techniques[0].Passes[0].Apply();
-                    Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, spotLightModel.VertexCount, 0, spotLightModel.TriangleCount);
-                }
-            }
-            /*********************************/
-
-                               
-            Device.BlendState        = BlendState.Opaque;
-            Device.DepthStencilState = DepthStencilState.Default;
-            Device.RasterizerState   = RasterizerState.CullCounterClockwise;
-            Device.SetRenderTarget(null);
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Render Shadows
-        /****************************************************************************/
-        private void RenderShadows(BoundingFrustum frustrum)
-        {
-            BoundingFrustum LightFrustrum = new BoundingFrustum(Matrix.Identity);
-            Matrix LightViewProjection;
-            float depthPrecision;
-            Vector3 Positon;
-
-            foreach (KeyValuePair<Texture2D, List<SpotLightComponent>> pair in spotLights)
-            {             
-                foreach (SpotLightComponent spotLightcomponent in pair.Value)
-                {
-                    LightViewProjection = spotLightcomponent.ViewProjection;
-                    LightFrustrum.Matrix = LightViewProjection;
-
-                    if (!spotLightcomponent.Enabled) continue;
-                    if (!frustrum.Intersects(LightFrustrum)) continue;
-
-                    Device.SetRenderTarget(spotLightcomponent.ShadowMap);                  
-                    depthPrecision = spotLightcomponent.FarPlane;
-                    Positon = spotLightcomponent.World.Translation;
-                    
-                    /*********************************/
-                    /// Renderable Components
-                    /*********************************/
-                    foreach (RenderableComponent renderableComponent in renderableComponents)
-                    {
-                        if (!renderableComponent.FrustrumInteresction(LightFrustrum)) continue;
-
-                        renderableComponent.DrawDepth(ref LightViewProjection,ref Positon, depthPrecision);
-                    }
-                    /*********************************/
-
-
-                    /*********************************/
-                    /// Batched Meshes
-                    /*********************************/
-                    batchedMeshes.DrawDepth(LightViewProjection,
-                                            LightFrustrum,
-                                            Positon,
-                                            depthPrecision);
-                    /*********************************/
-
-
-                    /*********************************/
-                    /// Blur
-                    /*********************************/
-                    fullScreenQuad.SetBuffers();
-                    Device.SetRenderTarget(shadowMapBlur);
-                    gaussianBlur.Parameters["Texture"].SetValue(spotLightcomponent.ShadowMap);
-                    gaussianBlur.CurrentTechnique.Passes[0].Apply();
-                    fullScreenQuad.JustDraw();
-                    Device.SetRenderTarget(spotLightcomponent.ShadowMap);
-                    gaussianBlur.Parameters["Texture"].SetValue(shadowMapBlur);
-                    gaussianBlur.CurrentTechnique.Passes[1].Apply();
-                    fullScreenQuad.JustDraw();
-                    /*********************************/
-                }
-            }
-        }
-        /****************************************************************************/
+        /****************************************************************************/             
 
 
         /****************************************************************************/
@@ -727,13 +483,13 @@ namespace PlagueEngine.Rendering
             //fullScreenQuad.JustDraw();
 
             Device.SetRenderTarget(ssao);
-            gaussianBlur.Parameters["Texture"].SetValue(ssaoBlur);
-            gaussianBlur.CurrentTechnique.Passes[0].Apply();
+            ssaoBlurEffect.Parameters["Texture"].SetValue(ssaoBlur);
+            ssaoBlurEffect.CurrentTechnique.Passes[0].Apply();
             fullScreenQuad.JustDraw();
 
             Device.SetRenderTarget(ssaoBlur);
-            gaussianBlur.Parameters["Texture"].SetValue(ssao);
-            gaussianBlur.CurrentTechnique.Passes[1].Apply();
+            ssaoBlurEffect.Parameters["Texture"].SetValue(ssao);
+            ssaoBlurEffect.CurrentTechnique.Passes[1].Apply();
             fullScreenQuad.JustDraw();
 
             Device.SetRenderTarget(null);
@@ -895,13 +651,9 @@ namespace PlagueEngine.Rendering
 
             clearEffect      = contentManager.LoadEffect("DSClear");
             debugEffect      = contentManager.LoadEffect("DSDebug");
-            directionalLight = contentManager.LoadEffect("DSDirectionalLight");
-            pointLight       = contentManager.LoadEffect("DSPointLight");
-            spotLight        = contentManager.LoadEffect("DSSpotLight");
             composition      = contentManager.LoadEffect("DSComposition");
             ssaoEffect       = contentManager.LoadEffect("SSAO");
-            ssaoBlurEffect   = contentManager.LoadEffect("SSAOBlur");
-            gaussianBlur     = contentManager.LoadEffect("GaussianBlur");
+            ssaoBlurEffect   = contentManager.LoadEffect("GaussianBlur");
             rectEffect       = contentManager.LoadEffect("SSLineEffect");
 
             composition.Parameters["GBufferColor"].SetValue(color);
@@ -909,24 +661,9 @@ namespace PlagueEngine.Rendering
             composition.Parameters["LightMap"].SetValue(light);
             composition.Parameters["SSAOTexture"].SetValue(ssaoBlur);
             composition.Parameters["HalfPixel"].SetValue(HalfPixel);
-            
-            directionalLight.Parameters["GBufferNormal"].SetValue(normal);
-            directionalLight.Parameters["GBufferDepth"].SetValue(depth);
-            directionalLight.Parameters["HalfPixel"].SetValue(HalfPixel);
-
-            pointLight.Parameters["GBufferNormal"].SetValue(normal);
-            pointLight.Parameters["GBufferDepth"].SetValue(depth);
-            pointLight.Parameters["HalfPixel"].SetValue(HalfPixel);
-
-            spotLight.Parameters["GBufferNormal"].SetValue(normal);
-            spotLight.Parameters["GBufferDepth"].SetValue(depth);
-            spotLight.Parameters["HalfPixel"].SetValue(HalfPixel);
-
+                        
             debugEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
-
-            pointLightModel = contentManager.LoadModel("Sphere");
-            spotLightModel = contentManager.LoadModel("Cone");
-
+                       
             ditherTexture = contentManager.LoadTexture2D("RandomNormals");
 
             ssaoEffect.Parameters["DitherTexture"].SetValue(ditherTexture);
@@ -934,10 +671,7 @@ namespace PlagueEngine.Rendering
             ssaoEffect.Parameters["GBufferDepth"].SetValue(ssaoDepth);
             ssaoEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
 
-            ssaoBlurEffect.Parameters["SSAOTexture"].SetValue(ssao);
-            ssaoBlurEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
-            ssaoBlurEffect.Parameters["GBufferNormal"].SetValue(normal);
-            ssaoBlurEffect.Parameters["GBufferDepth"].SetValue(ssaoDepth);            
+            ssaoBlurEffect.Parameters["Texture"].SetValue(ssao);
         }
         /****************************************************************************/
 
@@ -1009,13 +743,6 @@ namespace PlagueEngine.Rendering
                                           SurfaceFormat.Color,
                                           DepthFormat.None);
 
-            shadowMapBlur = new RenderTarget2D(Device,
-                                               512,
-                                               512,
-                                               false,
-                                               SurfaceFormat.HalfVector2,
-                                               DepthFormat.None);
-
             fullScreenQuad = new Quad(-1, 1, 1, -1);
 
             topLeft     = new Quad(-1.0f, 1.0f, 0.0f,  0.0f);
@@ -1023,13 +750,7 @@ namespace PlagueEngine.Rendering
             bottomLeft  = new Quad(-1.0f, 0.0f, 0.0f, -1.0f);
             bottomRight = new Quad( 0.0f, 0.0f, 1.0f, -1.0f);
 
-            lightBlendState = new BlendState();
-            lightBlendState.ColorSourceBlend        = Blend.One;
-            lightBlendState.ColorDestinationBlend   = Blend.One;
-            lightBlendState.ColorBlendFunction      = BlendFunction.Add;
-            lightBlendState.AlphaSourceBlend        = Blend.One;
-            lightBlendState.AlphaDestinationBlend   = Blend.One;
-            lightBlendState.AlphaBlendFunction      = BlendFunction.Add;
+            lightsManager = new LightsManager(normal, depth, light, fullScreenQuad, HalfPixel, this, contentManager);
         }
         /****************************************************************************/
 

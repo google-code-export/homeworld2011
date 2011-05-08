@@ -90,19 +90,32 @@ float4 Phong(float3 Position, float3 N, float3 L, float SpecularPower)
 
 	float NL = dot(N,L);
 	
-	if(NL > 0)
-	{
-		Diffuse = NL * LightColor;
+	Diffuse = NL * LightColor;
 
-		if(SpecularPower > 0)
-		{		
-			float3 R = normalize(reflect(-L,N));
-			float3 E = normalize(CameraPosition - Position.xyz);
-			Specular = pow(saturate(dot(R,E)), SpecularPower * 100);
-		}	
-	}
+	if(SpecularPower > 0)
+	{		
+		float3 R = normalize(reflect(-L,N));
+		float3 E = normalize(CameraPosition - Position.xyz);
+		Specular = pow(saturate(dot(R,E)), SpecularPower * 100);
+	}	
 
 	return float4(Diffuse,Specular);
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Lambert
+/****************************************************/
+float4 Lambert(float3 Position, float3 N, float3 L)
+{
+	float3 Diffuse = 0;	
+
+	float NL = dot(N,L);
+
+	Diffuse = NL * LightColor;
+
+	return float4(Diffuse,0);
 }
 /****************************************************/
 
@@ -142,14 +155,62 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 
 /****************************************************/
-/// Technique1
+/// PixelShaderFunction2
 /****************************************************/
-technique Technique1
+float4 PixelShaderFunction2(VertexShaderOutput input) : COLOR0
+{
+	input.ScreenPosition.xy /= input.ScreenPosition.w;
+	float2 UV = 0.5f * (float2(input.ScreenPosition.x,-input.ScreenPosition.y) + 1.0f);
+	UV -= HalfPixel;
+
+	float4 NormalData = tex2D(GBufferNormalSampler,UV);
+	float3 Normal = 2.0f * NormalData.xyz - 1.0f;
+
+	float Depth = tex2D(GBufferDepthSampler,UV);
+
+	float4 Position = 1.0f;
+	
+	Position.xy = input.ScreenPosition.xy;
+	Position.z  = Depth;
+	
+	Position = mul(Position,InverseViewProjection);
+	Position /= Position.w;
+
+	float3 lightVector = LightPosition - Position.xyz;
+	float distance = saturate(1.0f - length(lightVector)/LightRadius);
+	float attenuation = (LinearAttenuation * distance) + (QuadraticAttenuation * distance * distance);
+		
+	float4 output = Lambert(Position.xyz,Normal,normalize(lightVector));
+
+	output *= attenuation * LightIntensity;
+    return output;
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Phong
+/****************************************************/
+technique PhongTechnique
 {
     pass Pass1
     {
         VertexShader = compile vs_2_0 VertexShaderFunction();
         PixelShader = compile ps_2_0 PixelShaderFunction();
+    }
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Lambert
+/****************************************************/
+technique LambertTechnique
+{
+    pass Pass1
+    {
+        VertexShader = compile vs_2_0 VertexShaderFunction();
+        PixelShader = compile ps_2_0 PixelShaderFunction2();
     }
 }
 /****************************************************/

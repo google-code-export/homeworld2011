@@ -70,8 +70,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     isMoving++;
 
-                    if(meshComponent.currentAnimation.Clip.Name!="Walk")
+                    if (meshComponent.currentAnimation.Clip.Name != "Walk")
+                    {
                         meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
+                    }
                 }
                 else if(state.IsDown())
                 {
@@ -208,7 +210,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Blend         = meshComponent.Blend;
             data.BlendDuration = meshComponent.BlendDuration.TotalSeconds;
             data.BlendTime     = meshComponent.BlendTime.TotalSeconds;
-            data.BlendClip = (meshComponent.blendAnimation == null ? String.Empty : meshComponent.blendAnimation.Clip.Name);
+            data.BlendClip     = (meshComponent.blendAnimation.Clip == null ? String.Empty : meshComponent.blendAnimation.Clip.Name);
             data.BlendClipTime = meshComponent.blendAnimation.ClipTime.TotalSeconds;
             data.BlendKeyframe = meshComponent.blendAnimation.Keyframe;
 

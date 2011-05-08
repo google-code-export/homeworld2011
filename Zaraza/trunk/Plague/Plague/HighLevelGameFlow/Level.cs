@@ -273,6 +273,8 @@ namespace PlagueEngine.HighLevelGameFlow
 
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(275, 60, 120), new Vector3(285, 50, 100), Vector3.Up));
             spdata.Color = new Vector3(0, 0, 1);
+            spdata.Specular = true;
+            spdata.ShadowsEnabled = true;
             gameObjectsFactory.Create(spdata);
 
             SquareBodyMeshData sssdata = new SquareBodyMeshData();

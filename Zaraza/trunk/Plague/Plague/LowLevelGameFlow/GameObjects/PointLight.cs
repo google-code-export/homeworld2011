@@ -77,6 +77,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.LinearAttenuation = light.LinearAttenuation;
             data.QuadraticAttenuation = light.QuadraticAttenuation;
             data.Intensity = light.Intensity;
+            data.Specular = light.Specular;
 
             return data;
         }
@@ -127,6 +128,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Light")]
         public Vector3 Color { get; set; }
+
+        [CategoryAttribute("Light")]
+        public bool Specular { get; set; }
 
         [CategoryAttribute("Light")]
         public float Intensity { get; set; }

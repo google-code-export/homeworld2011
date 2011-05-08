@@ -130,20 +130,50 @@ float4 Phong(float3 Position, float3 N, float radialAttenuation, float SpecularP
 	{
 		float NL = dot(N,L);
 
-		if(NL > 0)
-		{
-			Diffuse = NL * LightColor;
+		Diffuse = NL * LightColor;
 
-			if(SpecularPower > 0)
-			{		
-				float3 R = normalize(reflect(-L,N));
-				float3 E = normalize(CameraPosition - Position.xyz);
-				Specular = pow(saturate(dot(R,E)), SpecularPower * 100);
-			}	
-		}		
+		if(SpecularPower > 0)
+		{		
+			float3 R = normalize(reflect(-L,N));
+			float3 E = normalize(CameraPosition - Position.xyz);
+			Specular = pow(saturate(dot(R,E)), SpecularPower * 100);
+		}	
 	}
 
 	float4 result = float4(Diffuse,Specular);
+	result *= attenuation * LightIntensity;	
+
+	return result;
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Lambert
+/****************************************************/
+float4 Lambert(float3 Position, float3 N, float radialAttenuation)
+{
+	float3 L = LightPosition - Position;
+	
+	float distance = saturate(1.0f - length(L)/LightFarPlane);
+	float attenuation = (LinearAttenuation * distance) + (QuadraticAttenuation * distance * distance);
+	attenuation = min(attenuation,radialAttenuation);
+
+	L = normalize(L);
+
+	float3 Diffuse = 0;
+	float Specular = 0;
+
+	float DL = dot(normalize(LightDirection),-L);
+	
+	if(DL > LightAngleCos)
+	{
+		float NL = dot(N,L);
+
+		Diffuse = NL * LightColor;		
+	}
+
+	float4 result = float4(Diffuse,0);
 	result *= attenuation * LightIntensity;	
 
 	return result;
@@ -179,36 +209,34 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float2 LightUV = 0.5f * (float2(LightScreenPos.x,-LightScreenPos.y) + 1.0f);
 
 	float Attenuation = tex2D(AttenuationTextureSampler, LightUV).r;		
-	
-	float shadowDepth = tex2D(ShadowMapSampler, LightUV).r;
 
-	float realDepth = (length(LightPosition - Position) / DepthPrecision);// - DepthBias;
-	
-	//float len = max(0.01f, length(LightPosition - Position)) / DepthPrecision;
-	
-	float ShadowFactor = 1;// = exp(DepthBias * shadowDepth) * exp(-DepthBias * realDepth);
-	//exp(k*z) * exp(-k*d)
+	float ShadowFactor = 1;	
+
+	if(ShadowsEnabled)
+	{			
+		float shadowDepth = tex2D(ShadowMapSampler, LightUV).r;
+
+		float realDepth = (length(LightPosition - Position) / DepthPrecision);
 
 	
-	if (realDepth < 1)
-	{
-		float2 moments = tex2D(ShadowMapSampler, LightUV);
+		if (realDepth < 1)
+		{
+			float2 moments = tex2D(ShadowMapSampler, LightUV);
 		
-		float lit_factor = (realDepth <= moments.x);
+			float lit_factor = (realDepth <= moments.x);
 		
-		float E_x2 = moments.y;
-		float Ex_2 = moments.x * moments.x;
+			float E_x2 = moments.y;
+			float Ex_2 = moments.x * moments.x;
 
-		float variance = min(max(E_x2 - Ex_2, 0.0) + 1.0f / 10000.0f, 1.0);
+			float variance = min(max(E_x2 - Ex_2, 0.0) + 1.0f / 10000.0f, 1.0);
 
-		float m_d = (moments.x - realDepth);
+			float m_d = (moments.x - realDepth);
 
-		float p = variance / (variance + m_d * m_d);
+			float p = variance / (variance + m_d * m_d);
 		
-		ShadowFactor = saturate(max(lit_factor, p));
+			ShadowFactor = saturate(max(lit_factor, p));
+		}
 	}
-	
-	//float ShadowFactor = (shadowDepth > (realDepth - DepthBias) ? 1 : 0);
 
     return ShadowFactor * Phong(Position.xyz,Normal,Attenuation,NormalData.w);
 }
@@ -216,14 +244,90 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 
 /****************************************************/
-/// Technique1
+/// PixelShaderFunction2
 /****************************************************/
-technique Technique1
+float4 PixelShaderFunction2(VertexShaderOutput input) : COLOR0
+{
+	input.ScreenPosition.xy /= input.ScreenPosition.w;
+	float2 UV = 0.5f * (float2(input.ScreenPosition.x,-input.ScreenPosition.y) + 1.0f);
+	UV -= HalfPixel;
+
+	float4 NormalData = tex2D(GBufferNormalSampler,UV);
+	float3 Normal = 2.0f * NormalData.xyz - 1.0f;
+
+	float Depth = tex2D(GBufferDepthSampler,UV);
+
+	float4 Position = 1.0f;
+	
+	Position.xy = input.ScreenPosition.xy;
+	Position.z  = Depth;
+	
+	Position = mul(Position,InverseViewProjection);
+	Position /= Position.w;
+
+	float4 LightScreenPos = mul(Position, LightViewProjection);
+	LightScreenPos /= LightScreenPos.w;
+	
+	float2 LightUV = 0.5f * (float2(LightScreenPos.x,-LightScreenPos.y) + 1.0f);
+
+	float Attenuation = tex2D(AttenuationTextureSampler, LightUV).r;		
+
+	float ShadowFactor = 1;	
+
+	if(ShadowsEnabled)
+	{		
+		float shadowDepth = tex2D(ShadowMapSampler, LightUV).r;
+
+		float realDepth = (length(LightPosition - Position) / DepthPrecision);
+
+	
+		if (realDepth < 1)
+		{
+			float2 moments = tex2D(ShadowMapSampler, LightUV);
+		
+			float lit_factor = (realDepth <= moments.x);
+		
+			float E_x2 = moments.y;
+			float Ex_2 = moments.x * moments.x;
+
+			float variance = min(max(E_x2 - Ex_2, 0.0) + 1.0f / 10000.0f, 1.0);
+
+			float m_d = (moments.x - realDepth);
+
+			float p = variance / (variance + m_d * m_d);
+		
+			ShadowFactor = saturate(max(lit_factor, p));
+		}
+	}
+
+    return ShadowFactor * Lambert(Position.xyz,Normal,Attenuation);
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Phong
+/****************************************************/
+technique PhongTechnique
 {
     pass Pass1
     {
         VertexShader = compile vs_3_0 VertexShaderFunction();
         PixelShader = compile ps_3_0 PixelShaderFunction();
+    }
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Lambert
+/****************************************************/
+technique LambertTechnique
+{
+    pass Pass1
+    {
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction2();
     }
 }
 /****************************************************/
