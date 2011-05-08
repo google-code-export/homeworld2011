@@ -268,24 +268,10 @@ namespace PlagueEngine.Rendering
                                                            float quadraticAttenuation,
                                                            Matrix localTransform,
                                                            String attenuation,
-                                                           bool shadowsEnabled,
-                                                           int shadowMapSize,
-                                                           float depthBias,
-                                                           float depthPrecision)
+                                                           bool shadowsEnabled)
         { 
 
             Texture2D Attenuation = content.LoadTexture2D(attenuation);
-            RenderTarget2D shadowMap = null;
-
-            if (shadowsEnabled)
-            { 
-                shadowMap = new RenderTarget2D( renderer.Device, 
-                                                shadowMapSize, 
-                                                shadowMapSize, 
-                                                false, 
-                                                SurfaceFormat.HalfVector2, 
-                                                DepthFormat.Depth24);
-            }
 
             SpotLightComponent result = new SpotLightComponent(gameObject,
                                                                enabled,
@@ -299,9 +285,7 @@ namespace PlagueEngine.Rendering
                                                                quadraticAttenuation,
                                                                localTransform,
                                                                Attenuation,
-                                                               shadowMap,
-                                                               depthBias,
-                                                               depthPrecision);
+                                                               shadowsEnabled);
 
             return result;        
         }

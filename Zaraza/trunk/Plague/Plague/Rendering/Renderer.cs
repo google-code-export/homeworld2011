@@ -386,7 +386,7 @@ namespace PlagueEngine.Rendering
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topLeft.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(ssaoBlur);
+            //debugEffect.Parameters["Texture"].SetValue(lightsManager.shadowMap);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topRight.Draw();
 
@@ -635,7 +635,7 @@ namespace PlagueEngine.Rendering
             debugEffect      = contentManager.LoadEffect("DSDebug");
             composition      = contentManager.LoadEffect("DSComposition");
             ssaoEffect       = contentManager.LoadEffect("SSAO");
-            ssaoBlurEffect   = contentManager.LoadEffect("GaussianBlur");
+            ssaoBlurEffect   = contentManager.LoadEffect("GaussianBlur15");
             rectEffect       = contentManager.LoadEffect("SSLineEffect");
 
             composition.Parameters["GBufferColor"].SetValue(color);
@@ -734,9 +734,49 @@ namespace PlagueEngine.Rendering
 
             lightsManager = new LightsManager(normal, depth, light, fullScreenQuad, HalfPixel, this, contentManager);
 
+            float[] w = new float[7];
+            Vector2[] o = new Vector2[7];
+
+            //calcSettings(1.0f/2048.0f, 1.0f/2048.0f,out w,out o);
+
         }
         /****************************************************************************/
 
+
+        //void calcSettings(float w, float h, out float[] weights, out Vector2[] offsets)
+        //{
+        //    // 15 Samples
+        //    weights = new float[7];
+        //    offsets = new Vector2[7];
+        //    // Calculate values for center pixel
+        //    weights[0] = gaussianFn(0);
+        //    offsets[0] = new Vector2(0, 0);
+        //    float total = weights[0];
+        //    // Calculate samples in pairs
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        // Weight each pair of samples according to Gaussian function
+        //        float weight = gaussianFn(i + 1);
+        //        weights[i * 2 + 1] = weight;
+        //        weights[i * 2 + 2] = weight;
+        //        total += weight * 2;
+        //        // Samples are offset by 1.5 pixels, to make use of
+        //        // filtering halfway between pixels
+        //        float offset = i * 2 + 1.5f;
+        //        Vector2 offsetVec = new Vector2(w, h) * offset;
+        //        offsets[i * 2 + 1] = offsetVec;
+        //        offsets[i * 2 + 2] = -offsetVec;
+        //    }
+        //    // Divide all weights by total so they will add up to 1
+        //    for (int i = 0; i < weights.Length; i++)
+        //        weights[i] /= total;
+        //}
+
+
+        //float gaussianFn(float x)
+        //{
+        //    return (float)((1.0f / Math.Sqrt(2 * Math.PI * 1 * 1)) * Math.Exp(-(x * x) / (2 * 1 * 1)));
+        //}
     }
     /********************************************************************************/
 

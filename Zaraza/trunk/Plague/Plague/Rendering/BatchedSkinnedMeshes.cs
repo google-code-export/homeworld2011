@@ -255,6 +255,62 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// Draw Depth
+        /****************************************************************************/
+        public void DrawDepth(Matrix ViewProjection, BoundingFrustum frustrum, Vector3 LightPosition, float depthPrecision)
+        {
+            skinningEffect.CurrentTechnique = skinningEffect.Techniques["DepthWrite"];
+            skinningEffect.Parameters["ViewProjection"].SetValue(ViewProjection);
+            skinningEffect.Parameters["CameraPosition"].SetValue(LightPosition);
+            skinningEffect.Parameters["DepthPrecision"].SetValue(depthPrecision);
+            skinningEffect.CurrentTechnique.Passes[0].Apply();
+            
+            DrawDepth(diff, frustrum);
+            DrawDepth(diffSpec, frustrum);
+            DrawDepth(diffNorm, frustrum);
+            DrawDepth(diffSpecNorm, frustrum);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Draw (1)
+        /****************************************************************************/
+        private void DrawDepth(Dictionary<PlagueEngineSkinnedModel, Dictionary<TexturesPack, List<SkinnedMeshComponent>>> container, BoundingFrustum frustrum)
+        {
+            foreach (KeyValuePair<PlagueEngineSkinnedModel,Dictionary<TexturesPack, List<SkinnedMeshComponent>>> model in container)
+            {
+                renderer.Device.Indices = model.Key.IndexBuffer;
+                renderer.Device.SetVertexBuffer(model.Key.VertexBuffer);
+
+                foreach (KeyValuePair<TexturesPack,List<SkinnedMeshComponent>> texturePack in model.Value)
+                {
+                    foreach (SkinnedMeshComponent mesh in texturePack.Value)
+                    {
+                        if (!frustrum.Intersects(mesh.BoundingBox))
+                        {
+                            mesh.UpdateBoneTransforms(DeltaTime);
+                            continue;
+                        }
+                        else
+                        {
+                            mesh.Update(DeltaTime, mesh.GameObject.World);
+                        }
+
+                        Matrix[] bones = mesh.SkinTransforms;
+
+                        skinningEffect.Parameters["Bones"].SetValue(bones);
+                        skinningEffect.CurrentTechnique.Passes[0].Apply();
+
+                        renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, model.Key.VertexCount, 0, model.Key.TriangleCount);
+                    }
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Load Effect
         /****************************************************************************/
         public void LoadEffect()

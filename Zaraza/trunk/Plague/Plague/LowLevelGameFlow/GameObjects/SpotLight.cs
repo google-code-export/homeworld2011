@@ -67,9 +67,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.LocalTransform = light.LocalTransform;
             data.Texture        = light.AttenuationTexture;
             data.Intensity      = light.Intensity;
-            data.MapSize        = light.ShadowMapSize;
-            data.DepthBias      = light.DepthBias;
-            data.DepthPrecision = light.DepthPrecision;
             data.ShadowsEnabled = light.ShadowsEnabled;
             data.Specular       = light.Specular;
 
@@ -116,12 +113,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Shadows")]
         public bool ShadowsEnabled  { get; set; }
-        [CategoryAttribute("Shadows")]
-        public int MapSize          { get; set; }
-        [CategoryAttribute("Shadows")]
-        public float DepthPrecision { get; set; }
-        [CategoryAttribute("Shadows")]
-        public float DepthBias      { get; set; }
     }
     /********************************************************************************/
 

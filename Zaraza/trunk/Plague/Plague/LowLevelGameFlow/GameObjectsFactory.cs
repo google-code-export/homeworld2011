@@ -997,10 +997,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             sdata.QuadraticAttenuation,
                                                                             sdata.LocalTransform,
                                                                             sdata.Texture,
-                                                                            sdata.ShadowsEnabled,
-                                                                            sdata.MapSize,
-                                                                            sdata.DepthBias,
-                                                                            sdata.DepthPrecision),
+                                                                            sdata.ShadowsEnabled),
                                                                             sdata.World);
 
             return result;
