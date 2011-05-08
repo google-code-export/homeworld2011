@@ -228,6 +228,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Rendering\AnimationPlayer.cs" />
     <Compile Include="Rendering\BatchedSkinnedMeshes.cs" />
     <Compile Include="Rendering\Components\CameraComponent.cs" />
     <Compile Include="Rendering\Components\MeshComponent.cs" />

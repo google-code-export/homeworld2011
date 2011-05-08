@@ -128,10 +128,10 @@ namespace PlagueEngine
         {
             if (textWriter == null) return;
 
-            textWriter.WriteLine(">> " + DateTime.Now.ToString(@"HH\:mm\:ss")     + " | "
-                                       + totalElapsedTime.ToString(@"hh\:mm\:ss") + " >> "
-                                       + text);
-            textWriter.Flush();
+            //textWriter.WriteLine(">> " + DateTime.Now.ToString(@"HH\:mm\:ss")     + " | "
+            //                           + totalElapsedTime.ToString(@"hh\:mm\:ss") + " >> "
+            //                           + text);
+            //textWriter.Flush();
 
             if (logWindow != null)
             {

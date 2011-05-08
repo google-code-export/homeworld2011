@@ -70,7 +70,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     isMoving++;
 
-                    if(meshComponent.CurrentClip.Name!="Walk")
+                    if(meshComponent.currentAnimation.Clip.Name!="Walk")
                         meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
                 }
                 else if(state.IsDown())
@@ -94,7 +94,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     isMoving++;
 
-                    if (meshComponent.CurrentClip.Name != "Walk")
+                    if (meshComponent.currentAnimation.Clip.Name != "Walk")
                         meshComponent.BlendTo("Walk", TimeSpan.FromSeconds(0.5));
                 }
                 else if (state.IsDown())
@@ -131,9 +131,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         break;
                     case Keys.D1: meshComponent.StartClip("Idle");
                         break;
-                    case Keys.D2: meshComponent.BlendTo("Attack", TimeSpan.FromSeconds(0.5));
+                    case Keys.D2: meshComponent.BlendTo("Attack", TimeSpan.FromSeconds(0.3));
                         break;
-                    case Keys.D3: meshComponent.BlendTo("Walk",TimeSpan.FromSeconds(0.5));
+                    case Keys.D3: meshComponent.BlendTo("Walk",TimeSpan.FromSeconds(0.3));
                         break;
                     case Keys.D4: meshComponent.TimeRatio *= 2;
                         break;
@@ -147,7 +147,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             }
                             else
                             {
-                                meshComponent.PauseClip();
+                                meshComponent.PauseAnimation();
                             }
                         }
                         break;
@@ -167,7 +167,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (e.GetType().Equals(typeof(Rendering.AnimationEndEvent)))
             {
-                meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.05));
+                meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.3));
             }
         }
         /****************************************************************************/
@@ -200,17 +200,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Normals  = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
 
             data.TimeRatio       = meshComponent.TimeRatio;
-            data.CurrentClip     = (meshComponent.CurrentClip == null ? String.Empty : meshComponent.CurrentClip.Name);
-            data.CurrentTime     = meshComponent.CurrentTime.TotalSeconds;
-            data.CurrentKeyframe = meshComponent.CurrentKeyframe;
+            data.CurrentClip     = (meshComponent.currentAnimation.Clip == null ? String.Empty : meshComponent.currentAnimation.Clip.Name);
+            data.CurrentTime     = meshComponent.currentAnimation.ClipTime.TotalSeconds;
+            data.CurrentKeyframe = meshComponent.currentAnimation.Keyframe;
             data.Pause           = meshComponent.Pause;
 
             data.Blend         = meshComponent.Blend;
             data.BlendDuration = meshComponent.BlendDuration.TotalSeconds;
             data.BlendTime     = meshComponent.BlendTime.TotalSeconds;
-            data.BlendClip     = (meshComponent.BlendClip == null ? String.Empty : meshComponent.BlendClip.Name);
-            data.BlendClipTime = meshComponent.BlendClipTime.TotalSeconds;
-            data.BlendKeyframe = meshComponent.BlendKeyframe;
+            data.BlendClip = (meshComponent.blendAnimation == null ? String.Empty : meshComponent.blendAnimation.Clip.Name);
+            data.BlendClipTime = meshComponent.blendAnimation.ClipTime.TotalSeconds;
+            data.BlendKeyframe = meshComponent.blendAnimation.Keyframe;
 
             data.Immovable = body.Immovable;
             data.IsEnabled = body.IsEnabled;

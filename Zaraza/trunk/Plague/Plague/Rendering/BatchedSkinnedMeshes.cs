@@ -233,8 +233,7 @@ namespace PlagueEngine.Rendering
                     {
                         if (!frustrum.Intersects(mesh.BoundingBox))
                         {
-                            if (mesh.Blend) mesh.UpdateBoneBlendTransforms(DeltaTime);
-                            else mesh.UpdateBoneTransforms(DeltaTime);
+                            mesh.UpdateBoneTransforms(DeltaTime);
                             continue;
                         }
                         else
