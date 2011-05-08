@@ -49,25 +49,36 @@ sampler Sampler = sampler_state
 };
 
 
+texture DepthTexture;
+sampler DepthTextureSampler = sampler_state
+{
+	texture	  = <DepthTexture>;
+	MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
+};
+
+
 // Vertex shader input structure describes the start position and
 // velocity of the particle, and the time at which it was created,
 // along with some random values that affect its size and rotation.
 struct VertexShaderInput
 {
-    float2 Corner : POSITION0;
+    float2 Corner   : POSITION0;
     float3 Position : POSITION1;
     float3 Velocity : NORMAL0;
-    float4 Random : COLOR0;
-    float Time : TEXCOORD0;
+    float4 Random   : COLOR0;
+    float Time		: TEXCOORD0;
 };
 
 
 // Vertex shader output structure specifies the position and color of the particle.
 struct VertexShaderOutput
 {
-    float4 Position : POSITION0;
-    float4 Color : COLOR0;
+    float4 Position			 : POSITION0;	
+    float4 Color			 : COLOR0;
     float2 TextureCoordinate : COLOR1;
+	float4 ScreenPosition	 : TEXCOORD0;
 };
 
 
@@ -173,7 +184,10 @@ VertexShaderOutput ParticleVertexShader(VertexShaderInput input)
     float2x2 rotation = ComputeParticleRotation(input.Random.w, age);
 
     output.Position.xy += mul(input.Corner, rotation) * size * ViewportScale;
-    
+	
+	output.ScreenPosition = output.Position;		
+	
+
     output.Color = ComputeParticleColor(output.Position, input.Random.z, normalizedAge);
     output.TextureCoordinate = (input.Corner + 1) / 2;
     
@@ -184,7 +198,19 @@ VertexShaderOutput ParticleVertexShader(VertexShaderInput input)
 // Pixel shader for drawing particles.
 float4 ParticlePixelShader(VertexShaderOutput input) : COLOR0
 {
-    return tex2D(Sampler, input.TextureCoordinate) * input.Color;
+	input.ScreenPosition.xyz /= input.ScreenPosition.w;
+	float2 UV = 0.5 * (float2(input.ScreenPosition.x,-input.ScreenPosition.y) + 1.0f);
+
+	float depth = tex2D(DepthTextureSampler,UV);
+	
+	float4 output = float4(0,0,0,0);
+
+	if(input.ScreenPosition.z < depth)
+	{
+		output = tex2D(Sampler, input.TextureCoordinate) * input.Color;
+	}
+
+    return output;
 }
 
 

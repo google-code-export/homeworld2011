@@ -101,11 +101,11 @@ namespace PlagueEngine.Rendering
         private Vector2 TextureSize;
         private Vector2 HalfPixel;
 
-        private RenderTarget2D color            = null;
-        private RenderTarget2D normal           = null;
-        private RenderTarget2D depth            = null;
-        private RenderTarget2D light            = null;
-        private RenderTarget2D test             = null;
+        private  RenderTarget2D color            = null;
+        private  RenderTarget2D normal           = null;
+        internal RenderTarget2D depth            = null;
+        private  RenderTarget2D light            = null;
+        private  RenderTarget2D test             = null;
 
         private Quad           fullScreenQuad   = null;
         private Effect         clearEffect      = null;
