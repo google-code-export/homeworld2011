@@ -232,6 +232,7 @@ namespace PlagueEngine.Rendering
         public PointLightComponent CreatePointLightComponent(GameObjectInstance gameObject,
                                                             bool enabled,
                                                             Vector3 color,
+                                                            bool specular,
                                                             float intensity,
                                                             float radius,
                                                             float linearAttenuation,
@@ -241,6 +242,7 @@ namespace PlagueEngine.Rendering
             PointLightComponent result = new PointLightComponent(gameObject,
                                                                  enabled,
                                                                  color,
+                                                                 specular,
                                                                  intensity,
                                                                  radius,
                                                                  linearAttenuation,
@@ -257,6 +259,7 @@ namespace PlagueEngine.Rendering
         public SpotLightComponent CreateSpotLightComponent(GameObjectInstance gameObject,
                                                            bool enabled,
                                                            Vector3 color,
+                                                           bool specular,
                                                            float intensity,
                                                            float radius,
                                                            float nearPlane,
@@ -265,17 +268,29 @@ namespace PlagueEngine.Rendering
                                                            float quadraticAttenuation,
                                                            Matrix localTransform,
                                                            String attenuation,
+                                                           bool shadowsEnabled,
                                                            int shadowMapSize,
                                                            float depthBias,
                                                            float depthPrecision)
         { 
 
             Texture2D Attenuation = content.LoadTexture2D(attenuation);
-                      
+            RenderTarget2D shadowMap = null;
+
+            if (shadowsEnabled)
+            { 
+                shadowMap = new RenderTarget2D( renderer.Device, 
+                                                shadowMapSize, 
+                                                shadowMapSize, 
+                                                false, 
+                                                SurfaceFormat.HalfVector2, 
+                                                DepthFormat.Depth24);
+            }
 
             SpotLightComponent result = new SpotLightComponent(gameObject,
                                                                enabled,
                                                                color,
+                                                               specular,
                                                                intensity,
                                                                radius,
                                                                nearPlane,
@@ -284,21 +299,10 @@ namespace PlagueEngine.Rendering
                                                                quadraticAttenuation,
                                                                localTransform,
                                                                Attenuation,
-                                                               new RenderTarget2D(renderer.Device, 
-                                                                                  shadowMapSize, 
-                                                                                  shadowMapSize, 
-                                                                                  false, 
-                                                                                  SurfaceFormat.HalfVector2, 
-                                                                                  DepthFormat.Depth24),
+                                                               shadowMap,
                                                                depthBias,
                                                                depthPrecision);
 
-            if (!renderer.spotLights.ContainsKey(Attenuation))
-            {
-                renderer.spotLights.Add(Attenuation, new List<SpotLightComponent>());
-            }
-
-            renderer.spotLights[Attenuation].Add(result);
             return result;        
         }
         /****************************************************************************/

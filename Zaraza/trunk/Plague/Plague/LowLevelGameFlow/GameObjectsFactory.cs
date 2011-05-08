@@ -888,6 +888,7 @@ namespace PlagueEngine.LowLevelGameFlow
             result.Init(renderingComponentsFactory.CreatePointLightComponent(result,
                                                                              pdata.Enabled,
                                                                              pdata.Color,
+                                                                             pdata.Specular,
                                                                              pdata.Intensity,
                                                                              pdata.LightRadius,
                                                                              pdata.LinearAttenuation,
@@ -929,6 +930,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        "GlowStick_Specular",
                                                                        "GlowStick_Normals",
                                                                        Renderer.UIntToInstancingMode(gdata.InstancingMode)),
+                        
                         physicsComponentFactory.CreateCylindricalBodyComponent(result,
                                                                                gdata.Mass,
                                                                                0.08f,
@@ -942,23 +944,28 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                                0,
                                                                                90,
                                                                                0),
+                        
                         renderingComponentsFactory.CreatePointLightComponent(result,
                                                                              gdata.Enabled,
                                                                              gdata.Color,
+                                                                             false,
                                                                              1,
                                                                              2,
                                                                              0,
                                                                              10,
                                                                              new Vector3(0,0.5f,0)),
+                        
                         renderingComponentsFactory.CreatePointLightComponent(result,
                                                                              gdata.Enabled,
                                                                              gdata.Color,
+                                                                             false,
                                                                              1,
                                                                              2,
                                                                              0,
                                                                              10,
                                                                              new Vector3(0, -0.5f, 0)),
                                                                              gdata.World);
+            
             return result;
         }
         /****************************************************************************/
@@ -978,6 +985,7 @@ namespace PlagueEngine.LowLevelGameFlow
             result.Init(renderingComponentsFactory.CreateSpotLightComponent(result,
                                                                             sdata.Enabled,
                                                                             sdata.Color,
+                                                                            sdata.Specular,
                                                                             sdata.Intensity,
                                                                             sdata.Radius,
                                                                             sdata.NearPlane,
@@ -986,6 +994,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             sdata.QuadraticAttenuation,
                                                                             sdata.LocalTransform,
                                                                             sdata.Texture,
+                                                                            sdata.ShadowsEnabled,
                                                                             sdata.MapSize,
                                                                             sdata.DepthBias,
                                                                             sdata.DepthPrecision),

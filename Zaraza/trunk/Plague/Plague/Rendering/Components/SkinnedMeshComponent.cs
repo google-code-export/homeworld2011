@@ -22,15 +22,11 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private SkinningData    skinningData    = null;
-
         internal static Renderer renderer = null;
         private Techniques technique;
        
         private List<String> subscribedAnimations = new List<String>();
         private Vector3[] corners = new Vector3[8];
-
-
         /****************************************************************************/
         
 

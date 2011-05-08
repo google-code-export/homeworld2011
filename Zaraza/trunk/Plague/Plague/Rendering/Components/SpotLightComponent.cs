@@ -40,6 +40,7 @@ namespace PlagueEngine.Rendering.Components
         public SpotLightComponent(GameObjectInstance gameObject,
                                    bool              enabled,
                                    Vector3           color,
+                                   bool              specular,
                                    float             intensity,
                                    float             radius,
                                    float             nearPlane,
@@ -63,13 +64,25 @@ namespace PlagueEngine.Rendering.Components
             QuadraticAttenuation = quadraticAttenuation;
             LocalTransform       = localTransform;
             Attenuation          = attenuation;
-            ShadowMap            = shadowMap;
-            DepthBias            = depthBias;
-            DepthPrecision       = depthPrecision;
+            Specular             = specular;
+
+            if (shadowMap != null)
+            {
+                ShadowMap = shadowMap;
+                DepthBias = depthBias;
+                DepthPrecision = depthPrecision;
+                ShadowsEnabled = true;
+            }
+            else
+            {
+                ShadowsEnabled = false;
+            }
 
             CalculateProjection();
             CalculateScale();
             angleCos = (float)Math.Cos(MathHelper.ToRadians(radius / 2));
+
+            renderer.lightsManager.AddSpotLight(this, Attenuation, Specular, ShadowsEnabled);
         }
         /****************************************************************************/
 
@@ -79,7 +92,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            renderer.spotLights[Attenuation].Remove(this);
+            renderer.lightsManager.RemoveSpotLight(this, Attenuation, Specular, ShadowsEnabled);
             base.ReleaseMe();
         }
         /****************************************************************************/
@@ -175,8 +188,11 @@ namespace PlagueEngine.Rendering.Components
             }
         }
 
+        public bool ShadowsEnabled      { get; private set; }
+        public bool Specular            { get; private set; }
+
         public RenderTarget2D ShadowMap { get; private set; }
-        public int  ShadowMapSize       { get { return ShadowMap.Height; } }
+        public int  ShadowMapSize       { get { return (ShadowMap != null ? ShadowMap.Height : 0); } }
         public float DepthBias          { get; set; }
         public float DepthPrecision     { get; set; }
         /****************************************************************************/

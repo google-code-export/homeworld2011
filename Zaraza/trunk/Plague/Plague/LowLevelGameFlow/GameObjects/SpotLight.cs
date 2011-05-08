@@ -56,19 +56,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             SpotLightData data = new SpotLightData();
             GetData(data);
 
-            data.Enabled = light.Enabled;
-            data.Color = light.Color;
-            data.Radius = light.Radius;
-            data.LinearAttenuation = light.LinearAttenuation;
+            data.Enabled              = light.Enabled;
+            data.Color                = light.Color;
+            data.Radius               = light.Radius;
+            data.LinearAttenuation    = light.LinearAttenuation;
             data.QuadraticAttenuation = light.QuadraticAttenuation;
-            data.NearPlane = light.NearPlane;
-            data.FarPlane = light.FarPlane;
+            
+            data.NearPlane      = light.NearPlane;
+            data.FarPlane       = light.FarPlane;
             data.LocalTransform = light.LocalTransform;
-            data.Texture = light.AttenuationTexture;
-            data.Intensity = light.Intensity;
-            data.MapSize = light.ShadowMapSize;
-            data.DepthBias = light.DepthBias;
+            data.Texture        = light.AttenuationTexture;
+            data.Intensity      = light.Intensity;
+            data.MapSize        = light.ShadowMapSize;
+            data.DepthBias      = light.DepthBias;
             data.DepthPrecision = light.DepthPrecision;
+            data.ShadowsEnabled = light.ShadowsEnabled;
+            data.Specular       = light.Specular;
 
             return data;
         }
@@ -91,6 +94,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Vector3 Color { get; set; }
         [CategoryAttribute("Color")]
         public float Intensity { get; set; }
+        [CategoryAttribute("Color")]
+        public bool Specular { get; set; }
 
         [CategoryAttribute("Size")]
         public float Radius { get; set; }
@@ -109,6 +114,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Attenuation")]
         public String Texture               { get; set; }
 
+        [CategoryAttribute("Shadows")]
+        public bool ShadowsEnabled  { get; set; }
         [CategoryAttribute("Shadows")]
         public int MapSize          { get; set; }
         [CategoryAttribute("Shadows")]
