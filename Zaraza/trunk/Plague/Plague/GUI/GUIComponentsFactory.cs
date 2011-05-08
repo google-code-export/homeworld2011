@@ -54,7 +54,9 @@ namespace PlagueEngine.GUI
                 component.register();
                 return component;
             }
+#if DEBUG
             Diagnostics.PushLog("Creating button component failed due to initialization failure");
+#endif
             return null;
         }
         /****************************************************************************/

@@ -1198,24 +1198,12 @@ namespace PlagueEngine.Tools
 
         private void GameObjectEditorWindow_Activated(object sender, EventArgs e)
         {
-            input.enabled = false;
-            gui.updateable = false;
-            //game.Components.Remove(gui.input);
-            //gui.input.Dispose();
-            
-            //gui.input = new InputManager(game.Services);
-#if DEBUG
-            //game.Components.Remove(gui.input);
-            //game.Services.RemoveService(typeof (InputManager) );
-#endif            
+            input.Enabled = false;
         }
 
         private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
         {
-            input.enabled = true;
-            gui.updateable = true;
-            //gui.input = new InputManager(game.Services);
-            //game.Components.Add(gui.input);
+            input.Enabled = true;
         }
 
         private void checkBoxGamePaused_CheckedChanged(object sender, EventArgs e)
