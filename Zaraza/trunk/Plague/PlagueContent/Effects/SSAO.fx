@@ -159,14 +159,60 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 
 /****************************************************/
+/// PixelShaderFunction
+/****************************************************/
+float4 PixelShaderFunction2(VertexShaderOutput input) : COLOR0
+{
+	float3 ViewDirection = normalize(input.ViewDirection);
+		
+	float depth = tex2D(GBufferDepthSampler, input.UV);
+	
+	float3 se = depth * ViewDirection;
+
+	float3 randNormal = tex2D(DitherTextureSampler, input.UV * 200.0f).xyz;
+	
+	randNormal = normalize(randNormal);
+	
+	float finalColor = 0.0f;
+
+	for(int i = 0; i < NUMSAMPLES; i++)
+	{
+		float3 ray = reflect(Samples[i].xyz,randNormal) * SampleRadius;
+
+		float4 sample = float4(se + ray,1.0f);
+
+		float4 ss = mul(sample,Projection);
+
+		float2 sampleUV = 0.5f * ss.xy/ss.w + float2(0.5f,0.5f);
+
+		float sampleDepth = tex2D(GBufferDepthSampler,sampleUV);
+
+		float occlusion = DistanceScale * max(sampleDepth - depth, 0);
+		finalColor += 1 / (1 + occlusion * occlusion * 0.01f);	
+	}
+	
+	finalColor /= NUMSAMPLES;
+
+	return float4(finalColor, finalColor, finalColor, 1.0f);
+}
+/****************************************************/
+
+
+/****************************************************/
 /// Technique1
 /****************************************************/
 technique Technique1
 {
-    pass Pass1
+    pass Pass0
     {
         VertexShader = compile vs_3_0 VertexShaderFunction();
         PixelShader = compile ps_3_0 PixelShaderFunction();
+    }
+
+    pass Pass2
+    {
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction2();
     }
 }
 /****************************************************/

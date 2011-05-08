@@ -69,15 +69,17 @@ namespace PlagueEngine.Rendering
         private  bool    fogEnabled = false;
         /**********************/
 
+
         /**********************/
         /// For picking
         /**********************/
         public List<SkinnedMeshComponent> skinnedMeshes = new List<SkinnedMeshComponent>();
         public List<MeshComponent> meshes = new List<MeshComponent>();
-        private Texture2D rectangleTexture;
-        private SpriteBatch spriteBatch;
-        private bool drawRect = false;
-        private Rectangle rectToDraw=Rectangle.Empty;
+
+        private bool            drawRect   = false;
+        private Color           rectColor  = Color.Green;
+        private Effect          rectEffect = null;
+        private VertexPositionColor[] rect = new VertexPositionColor[5];
         /**********************/
 
 
@@ -136,7 +138,7 @@ namespace PlagueEngine.Rendering
         private RenderTarget2D ssaoDepth = null;
         private RenderTarget2D ssaoBlur  = null;
         float ssaoBias = 7.79f;
-        public  bool           ssaoEnabled = true;
+        public  bool           ssaoEnabled = false;
         /**********************/
 
 
@@ -187,13 +189,6 @@ namespace PlagueEngine.Rendering
         }
         /****************************************************************************/
 
-
-        public void InitSpriteBatch()
-        {
-            spriteBatch = new SpriteBatch(graphics.GraphicsDevice);
-
-            rectangleTexture = contentManager.LoadTexture2D("SelectionBox");
-        }
 
         /****************************************************************************/
         /// Init Debug Drawer
@@ -289,35 +284,51 @@ namespace PlagueEngine.Rendering
             }
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Draw Rect
+        /****************************************************************************/
         private void DrawRect()
         {
+            if (!drawRect) return;
 
-            spriteBatch.Begin();
+            rectEffect.CurrentTechnique.Passes[0].Apply();
             
-            Rectangle r = new Rectangle(rectToDraw.X, rectToDraw.Y, rectToDraw.Width, rectToDraw.Height);
-            if (r.Width < 0)
-            {
-                r.Width = -r.Width;
-                r.X -= r.Width;
-            }
-            if (r.Height < 0)
-            {
-                r.Height = -r.Height;
-                r.Y -= r.Height;
-            }
-
-            spriteBatch.Draw(rectangleTexture, r, Color.White);
-            spriteBatch.End();
+            Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip, rect, 0, 4);
 
             drawRect = false;
         }
+        /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Draw Selection Rect
+        /****************************************************************************/
         public void DrawSelectionRect(Rectangle selectionRect)
         {
-            rectToDraw = selectionRect;
-            drawRect = true;
+            float x =         (float)selectionRect.Left   / (float)Device.PresentationParameters.BackBufferWidth;
+            float y = 1.0f - ((float)selectionRect.Bottom / (float)Device.PresentationParameters.BackBufferHeight);
+            float w =         (float)selectionRect.Right  / (float)Device.PresentationParameters.BackBufferWidth;
+            float h = 1.0f - ((float)selectionRect.Top    / (float)Device.PresentationParameters.BackBufferHeight);
 
+            rect[0].Position = new Vector3(x,y,0);
+            rect[0].Color = rectColor;
+
+            rect[1].Position = new Vector3(w,y,0);
+            rect[1].Color = rectColor;
+
+            rect[2].Position = new Vector3(w,h,0);
+            rect[2].Color = rectColor;
+
+            rect[3].Position = new Vector3(x,h,0);
+            rect[3].Color = rectColor;
+
+            rect[4] = rect[0];
+
+            drawRect = true;
         }
+        /****************************************************************************/
 
 
         /****************************************************************************/
@@ -394,13 +405,9 @@ namespace PlagueEngine.Rendering
 
             //Device.SetRenderTarget(test);
             particleManager.DrawParticles(gameTime);
+            DrawRect();
 
-            if (drawRect)
-            {
-                DrawRect();
-            }
-
-            Device.SetRenderTarget(null);
+            //Device.SetRenderTarget(null);
 
             //debugEffect.Parameters["Texture"].SetValue(color);
             //debugEffect.Techniques[0].Passes[0].Apply();
@@ -712,7 +719,7 @@ namespace PlagueEngine.Rendering
             ssaoEffect.Parameters["CornerFrustrum"].SetValue(cornerFrustum);
             ssaoEffect.Parameters["SSAOBias"].SetValue(ssaoBias);
 
-            ssaoEffect.Techniques[0].Passes[0].Apply();
+            ssaoEffect.Techniques[0].Passes[1].Apply();
             fullScreenQuad.JustDraw();
 
             //Device.SetRenderTarget(ssaoBlur);
@@ -895,6 +902,7 @@ namespace PlagueEngine.Rendering
             ssaoEffect       = contentManager.LoadEffect("SSAO");
             ssaoBlurEffect   = contentManager.LoadEffect("SSAOBlur");
             gaussianBlur     = contentManager.LoadEffect("GaussianBlur");
+            rectEffect       = contentManager.LoadEffect("SSLineEffect");
 
             composition.Parameters["GBufferColor"].SetValue(color);
             composition.Parameters["GBufferDepth"].SetValue(depth);
@@ -929,7 +937,7 @@ namespace PlagueEngine.Rendering
             ssaoBlurEffect.Parameters["SSAOTexture"].SetValue(ssao);
             ssaoBlurEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
             ssaoBlurEffect.Parameters["GBufferNormal"].SetValue(normal);
-            ssaoBlurEffect.Parameters["GBufferDepth"].SetValue(ssaoDepth);
+            ssaoBlurEffect.Parameters["GBufferDepth"].SetValue(ssaoDepth);            
         }
         /****************************************************************************/
 
@@ -937,7 +945,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Init Deferred Helpers
         /****************************************************************************/
-        public void InitDeferredHelpers()
+        public void InitHelpers()
         {
             TextureSize.X = Device.PresentationParameters.BackBufferWidth;
             TextureSize.Y = Device.PresentationParameters.BackBufferHeight;
