@@ -148,6 +148,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 case "ParticleEmitterGO":
                     result = CreateParticleEmitterGO(data);
                     break;
+                case "Flashlight":
+                    result = CreateFlashLight(data);
+                    break;
             }
 
             if (result == null) return null;
@@ -997,6 +1000,60 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             sdata.QuadraticAttenuation,
                                                                             sdata.LocalTransform,
                                                                             sdata.Texture,
+                                                                            sdata.ShadowsEnabled),
+                                                                            sdata.World);
+
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateFlashlight
+        /****************************************************************************/
+        public Flashlight CreateFlashLight(GameObjectInstanceData data)
+        {
+            Flashlight result = new Flashlight();
+
+            if (!DefaultObjectInit(result, data)) return result = null;
+
+            FlashlightData sdata = (FlashlightData)data;
+
+            Matrix spotlighttrans = Matrix.CreateLookAt(new Vector3(-0.02f, -0.02f, 0.35f), new Vector3(-0.02f, -1, 0.35f), Vector3.Right);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       "flashlight",
+                                                                       "flashlightdiff",
+                                                                       "flashlightspec",
+                                                                       String.Empty,
+                                                                       Renderer.UIntToInstancingMode(sdata.InstancingMode)),
+
+                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
+                                                                               sdata.Mass,
+                                                                               0.06f,
+                                                                               0.4f,
+                                                                               sdata.Elasticity,
+                                                                               sdata.StaticRoughness,
+                                                                               sdata.DynamicRoughness,
+                                                                               sdata.Immovable,
+                                                                               sdata.World,
+                                                                               new Vector3(-0.15f,0,0),
+                                                                               0,
+                                                                               0,
+                                                                               90),
+ 
+                        renderingComponentsFactory.CreateSpotLightComponent(result,
+                                                                            sdata.Enabled,
+                                                                            sdata.Color,
+                                                                            sdata.Specular,
+                                                                            sdata.Intensity,
+                                                                            sdata.Radius,
+                                                                            sdata.NearPlane,
+                                                                            sdata.FarPlane,
+                                                                            sdata.LinearAttenuation,
+                                                                            sdata.QuadraticAttenuation,
+                                                                            spotlighttrans,
+                                                                            sdata.AttenuationTexture,
                                                                             sdata.ShadowsEnabled),
                                                                             sdata.World);
 

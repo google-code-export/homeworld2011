@@ -412,8 +412,28 @@ namespace PlagueEngine.HighLevelGameFlow
 
             gameObjectsFactory.Create(ddxdtata);
 
+            FlashlightData fldata = new FlashlightData();
+            fldata.Type = (typeof(Flashlight));
+            fldata.AttenuationTexture = "FlashlightBeam";
+            fldata.Color = new Vector3(1, 1, 0.75f);
+            fldata.DynamicRoughness = 1;
+            fldata.Elasticity = 1;
+            fldata.Enabled = true;
+            fldata.FarPlane = 20;
+            fldata.Immovable = false;
+            fldata.InstancingMode = 3;
+            fldata.Intensity = 2;
+            fldata.LinearAttenuation = 0;
+            fldata.Mass = 1;
+            fldata.NearPlane = 1;
+            fldata.QuadraticAttenuation = 5;
+            fldata.Radius = 45;
+            fldata.ShadowsEnabled = true;
+            fldata.Specular = true;
+            fldata.StaticRoughness = 1;
+            fldata.World = Matrix.CreateTranslation(250, 60, 30);
 
-
+            gameObjectsFactory.Create(fldata);
         }
         /****************************************************************************/
 

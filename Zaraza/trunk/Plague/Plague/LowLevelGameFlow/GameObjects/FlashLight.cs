@@ -17,18 +17,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// GlowStick
+    /// Flashlight
     /********************************************************************************/
-    class GlowStick : GameObjectInstance
+    class Flashlight : GameObjectInstance
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        MeshComponent            mesh   = null;
-        CylindricalBodyComponent body   = null;
-        PointLightComponent      light1 = null;
-        PointLightComponent      light2 = null;
+        MeshComponent            mesh = null;
+        CylindricalBodyComponent body = null;
+        SpotLightComponent       light = null;        
         /****************************************************************************/
 
 
@@ -37,15 +36,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(MeshComponent mesh,
                          CylindricalBodyComponent body,
-                         PointLightComponent light1,
-                         PointLightComponent light2,
+                         SpotLightComponent light,
                          Matrix world)
         {
-            this.mesh   = mesh;
-            this.body   = body;
-            this.light1 = light1;
-            this.light2 = light2;
-            this.World  = world;
+            this.mesh  = mesh;
+            this.body  = body;
+            this.light = light;
+            this.World = world;
         }
         /****************************************************************************/
 
@@ -59,10 +56,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mesh = null;
             body.ReleaseMe();
             body = null;
-            light1.ReleaseMe();
-            light1 = null;
-            light2.ReleaseMe();
-            light2 = null;
+            light.ReleaseMe();
+            light = null;
         }
         /****************************************************************************/
 
@@ -72,11 +67,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            GlowStickData data = new GlowStickData();
+            FlashlightData data = new FlashlightData();
 
             GetData(data);
-            
-            data.Texture = mesh.Textures.Diffuse.Name;
             data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
             data.Mass = body.Mass;
@@ -85,8 +78,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.DynamicRoughness = body.DynamicRoughness;
             data.Immovable = body.Immovable;
 
-            data.Enabled              = light1.Enabled;
-            data.Color                = light1.Color;
+            data.Enabled = light.Enabled;
+            data.Color = light.Color;
+            data.Radius = light.Radius;
+            data.LinearAttenuation = light.LinearAttenuation;
+            data.QuadraticAttenuation = light.QuadraticAttenuation;
+
+            data.NearPlane = light.NearPlane;
+            data.FarPlane = light.FarPlane;
+            data.LocalTransform = light.LocalTransform;
+            data.AttenuationTexture = light.AttenuationTexture;
+            data.Intensity = light.Intensity;
+            data.ShadowsEnabled = light.ShadowsEnabled;
+            data.Specular = light.Specular;
 
             return data;
         }
@@ -97,14 +101,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
     /********************************************************************************/
-    /// GlowStickData
+    /// FlashlightData
     /********************************************************************************/
     [Serializable]
-    public class GlowStickData : GameObjectInstanceData
+    public class FlashlightData : GameObjectInstanceData
     {
-        [CategoryAttribute("Textures")]
-        public String Texture { get; set; }
-
         [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
         public uint InstancingMode { get; set; }
@@ -124,13 +125,36 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Physics")]
         public bool Immovable { get; set; }
 
-        [CategoryAttribute("Light")]
+        [CategoryAttribute("Misc")]
         public bool Enabled { get; set; }
 
-        [CategoryAttribute("Light")]
+        [CategoryAttribute("Color")]
         public Vector3 Color { get; set; }
+        [CategoryAttribute("Color")]
+        public float Intensity { get; set; }
+        [CategoryAttribute("Color")]
+        public bool Specular { get; set; }
+
+        [CategoryAttribute("Size")]
+        public float Radius { get; set; }
+        [CategoryAttribute("Size")]
+        public float NearPlane { get; set; }
+        [CategoryAttribute("Size")]
+        public float FarPlane { get; set; }
+
+        [CategoryAttribute("Transform")]
+        public Matrix LocalTransform { get; set; }
+
+        [CategoryAttribute("Attenuation")]
+        public float LinearAttenuation { get; set; }
+        [CategoryAttribute("Attenuation")]
+        public float QuadraticAttenuation { get; set; }
+        [CategoryAttribute("Attenuation")]
+        public String AttenuationTexture { get; set; }
+
+        [CategoryAttribute("Shadows")]
+        public bool ShadowsEnabled { get; set; }
     }
     /********************************************************************************/
-
 }
 /************************************************************************************/
