@@ -128,7 +128,7 @@ float4 Phong(float3 Position, float3 N, float radialAttenuation, float SpecularP
 	
 	if(DL > LightAngleCos)
 	{
-		float NL = dot(N,L);
+		float NL = saturate(dot(N,L));
 
 		Diffuse = NL * LightColor;
 
@@ -168,7 +168,7 @@ float4 Lambert(float3 Position, float3 N, float radialAttenuation)
 	
 	if(DL > LightAngleCos)
 	{
-		float NL = dot(N,L);
+		float NL = saturate(dot(N,L));
 
 		Diffuse = NL * LightColor;		
 	}

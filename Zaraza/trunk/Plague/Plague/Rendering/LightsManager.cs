@@ -96,14 +96,14 @@ namespace PlagueEngine.Rendering
                                                2048,
                                                false,
                                                SurfaceFormat.HalfVector2,
-                                               DepthFormat.None);
+                                               DepthFormat.Depth24);
 
             shadowMap = new RenderTarget2D(renderer.Device,
                                            2048,
                                            2048,
                                            false,
                                            SurfaceFormat.HalfVector2,
-                                           DepthFormat.None);
+                                           DepthFormat.Depth24);
 
             lightBlendState = new BlendState();
 

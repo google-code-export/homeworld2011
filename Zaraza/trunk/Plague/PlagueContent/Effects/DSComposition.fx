@@ -22,6 +22,9 @@ texture LightMap;
 sampler LightMapSampler = sampler_state
 {
 	texture = <LightMap>;
+	MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
 };
 /****************************************************/
 
@@ -101,8 +104,9 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float4 Light = tex2D(LightMapSampler,input.UV);
 	float  SSAO  = tex2D(SSAOSampler,input.UV);
 
-	float3 output = Color.xyz * (Ambient + Light.w + Color.w);
-	output += Color.xyz * Light.xyz;	
+	float3 output = Color.xyz * (Ambient + Light.w);
+	output += Color.xyz * Light.xyz;
+	output += Color.w;
 	
 	if(SSAOEnabled)
 	{ 
