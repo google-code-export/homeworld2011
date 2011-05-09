@@ -88,7 +88,7 @@ float4 Phong(float3 Position, float3 N, float3 L, float SpecularPower)
 	float3 Diffuse = 0;
 	float Specular = 0;
 
-	float NL = dot(N,L);
+	float NL = saturate(dot(N,L));
 	
 	Diffuse = NL * LightColor;
 
@@ -111,7 +111,7 @@ float4 Lambert(float3 Position, float3 N, float3 L)
 {
 	float3 Diffuse = 0;	
 
-	float NL = dot(N,L);
+	float NL = saturate(dot(N,L));
 
 	Diffuse = NL * LightColor;
 

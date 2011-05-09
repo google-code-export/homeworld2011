@@ -694,7 +694,7 @@ namespace PlagueEngine.Rendering
                                        Device.PresentationParameters.BackBufferWidth,
                                        Device.PresentationParameters.BackBufferHeight,
                                        false,
-                                       SurfaceFormat.Color,
+                                       SurfaceFormat.HdrBlendable,
                                        DepthFormat.None);
             
             test = new RenderTarget2D(Device,
