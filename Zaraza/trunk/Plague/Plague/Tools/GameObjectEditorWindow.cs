@@ -367,6 +367,12 @@ namespace PlagueEngine.Tools
             ParticleEmitter.ClassType = typeof(ParticleEmitterGO);
             ParticleEmitter.dataClassType = typeof(ParticleEmitterGOData);
             gameObjectClassNames.Add(ParticleEmitter);
+
+            gameObjectsClassName Flashlight = new gameObjectsClassName();
+            Flashlight.className = "Flashlight";
+            Flashlight.ClassType = typeof(Flashlight);
+            Flashlight.dataClassType = typeof(FlashlightData);
+            gameObjectClassNames.Add(Flashlight);
         }
         /********************************************************************************/
 

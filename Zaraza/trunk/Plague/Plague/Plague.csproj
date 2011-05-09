@@ -183,6 +183,7 @@
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Flashlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\GlowStick.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MenuButton.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh.cs" />
