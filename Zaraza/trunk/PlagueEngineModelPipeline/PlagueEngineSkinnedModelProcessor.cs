@@ -79,7 +79,7 @@ namespace PlagueEngineModelPipeline
 
             MapBones(bones);
 
-            ProcessAnimation(skeleton.Animations["Take 001"]);
+            ProcessAnimation(skeleton.Animations.ElementAt(0).Value);
             
             outputModel.SkinningData = new  SkinningData(animationClips,
                                                          bindPose,

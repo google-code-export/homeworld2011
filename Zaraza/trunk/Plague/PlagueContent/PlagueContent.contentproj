@@ -585,6 +585,35 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\mie.X">
+      <Name>mie</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
+      <ProcessorParameters_AnimationClip1>Idle</ProcessorParameters_AnimationClip1>
+      <ProcessorParameters_AnimationClip1End>10</ProcessorParameters_AnimationClip1End>
+      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
+      <ProcessorParameters_AnimationClip2>Walk</ProcessorParameters_AnimationClip2>
+      <ProcessorParameters_AnimationClip2Start>26</ProcessorParameters_AnimationClip2Start>
+      <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
+      <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\DesertEagle.FBX">
+      <Name>DesertEagle</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\desertEagle.tga">
+      <Name>desertEagle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
