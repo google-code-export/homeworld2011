@@ -65,6 +65,8 @@ namespace PlagueEngine
             this.title = title;
             Window.Title = title;
             this.IsMouseVisible = true;
+            this.Activated += new EventHandler<EventArgs>(Game_Activated);
+            this.Deactivated+=new EventHandler<EventArgs>(Game_Deactivated);
 
 #if DEBUG
             Diagnostics.Game = this;
@@ -107,6 +109,16 @@ namespace PlagueEngine
 
         }
 
+        private void Game_Deactivated(object sender, EventArgs e)
+        {
+            input.Enabled = false;
+        }
+
+        void Game_Activated(object sender, EventArgs e)
+        {
+            input.Enabled = true;
+        }
+
         /****************************************************************************/
 
 
@@ -136,7 +148,7 @@ namespace PlagueEngine
 
             renderer.batchedMeshes.CommitMeshTransforms();
 #if DEBUG
-            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, renderer, input, gui, this);
+            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, renderer, input, this);
             gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
 #endif
 
