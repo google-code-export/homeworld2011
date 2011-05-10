@@ -368,11 +368,10 @@ namespace PlagueEngine.Input
         private void CheckKeyboard()
         {
 
-            KeyboardState    state = inputManager.GetKeyboard().GetState();
+            KeyboardState state = Keyboard.GetState();
             ExtendedKeyState keyState;
             foreach (Keys key in keyListeners.Keys)
             {
-
                 if(state.IsKeyDown(key))
                 {
                     if(oldKeyboardState.IsKeyDown(key))

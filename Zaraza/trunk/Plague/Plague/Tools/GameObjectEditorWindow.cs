@@ -1,29 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Reflection;
-
-using System.Drawing.Imaging;
-
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Resources;
 using PlagueEngine.HighLevelGameFlow;
-using PlagueEngine.Input;
-using PlagueEngine.Input.Components;
-using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering;
 using PlagueEngine.EventsSystem;
-using PlagueEngine;
-using Nuclex.Input;
-using Nuclex.UserInterface.Input;
+
 /********************************************************************************/
 /// PlagueEngine.Tools
 /********************************************************************************/
@@ -110,7 +98,6 @@ namespace PlagueEngine.Tools
         private GameObjectsFactory factory = null;
         private Renderer renderer = null;
         private Input.Input input=null;
-        private GUI.GUI gui = null;
         private Game game = null;
 
         private gameObjectsClassName currentClassName = null;
@@ -132,6 +119,7 @@ namespace PlagueEngine.Tools
 
 
         private DummySniffer sniffer = null;
+        private bool releaseInput = true;
         /********************************************************************************/
 
 
@@ -140,7 +128,7 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,Renderer renderer,Input.Input input, GUI.GUI gui, Game game)
+        public GameObjectEditorWindow(GameObjectsFactory factory,ContentManager contentManager,Renderer renderer,Input.Input input, Game game)
         {
             InitializeComponent();
             FillClassNames();
@@ -150,7 +138,6 @@ namespace PlagueEngine.Tools
             this.input = input;
             this.sniffer = new DummySniffer(this);
             this.game = game;
-            this.gui = gui;
 
             foreach (var gameObject in gameObjectClassNames)
             {
@@ -424,7 +411,9 @@ namespace PlagueEngine.Tools
             }
             catch(Exception execption)
             {
+                releaseInput = false;
                 MessageBox.Show("That makes 100 errors \nPlease try again.\n\n"+execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                releaseInput = true;
             }
 
 
@@ -555,7 +544,9 @@ namespace PlagueEngine.Tools
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Incompatibility or other black magic! :<\n\n"+ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                        releaseInput = false;
+                        MessageBox.Show("Incompatibility or other black magic! :<\n\n"+ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        releaseInput = true;
                     }
                 }
                 
@@ -577,14 +568,17 @@ namespace PlagueEngine.Tools
 
             if (!levelSaved)
             {
+                releaseInput = false;
                 DialogResult result = MessageBox.Show("Save level?", "Notification", MessageBoxButtons.YesNoCancel);
+                releaseInput = true;
                 if (result == DialogResult.Yes)
                 {
                     if (currentLevelName == string.Empty)
                     {
-                        LevelNameMessageBox box = new LevelNameMessageBox("Old level name:");
+                        releaseInput = false;
+                        var box = new LevelNameMessageBox("Old level name:");
                         box.ShowDialog();
-
+                        releaseInput = true;
                         if (!box.canceled)
                         {
 
@@ -624,20 +618,24 @@ namespace PlagueEngine.Tools
             if (!NewCanceled)
             {
                 renderer.debugDrawer.DisableHeightmapDrawing();
-
-                LevelNameMessageBox box2 = new LevelNameMessageBox("New level name:");
+                
+                var box2 = new LevelNameMessageBox("New level name:");
+                
                 bool newName;
                 do
                 {
                     newName = true;
+                    releaseInput = false;
                     box2.ShowDialog();
-
+                    releaseInput = true;
                     foreach (string name in listBoxLevelNames.Items)
                     {
                         if ((name == box2.levelName) || (name == (box2.levelName + levelExtension)))
                         {
                             newName = false;
+                            releaseInput = false;
                             MessageBox.Show("Name already exists!", "Error", MessageBoxButtons.OK);
+                            releaseInput = true;
                         }
                     }
 
@@ -699,9 +697,9 @@ namespace PlagueEngine.Tools
             if (listBoxLevelNames.SelectedIndex == -1)
             {
                 if (currentLevelName == string.Empty || currentLevel == null) return;
-
+                releaseInput = false;
                 DialogResult result = MessageBox.Show("Delete currrent level: " + currentLevelName + " ?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
+                releaseInput = true;
                 if (result == DialogResult.Yes)
                 {
                     File.Delete(Directory.GetCurrentDirectory() + "\\" + levelDirectory + "\\" + currentLevelName);
@@ -712,9 +710,9 @@ namespace PlagueEngine.Tools
             else
             {
                 string filename = listBoxLevelNames.SelectedItem.ToString();
-
+                releaseInput = false;
                 DialogResult result = MessageBox.Show("Delete level: " + filename + " ?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
+                releaseInput = true;
                 if (result == DialogResult.Yes)
                 {
                     File.Delete(Directory.GetCurrentDirectory()+ "\\" + levelDirectory +"\\"+ filename);
@@ -740,7 +738,9 @@ namespace PlagueEngine.Tools
             {
                 if (currentLevelName != string.Empty && currentLevel != null)
                 {
+                    releaseInput = false;
                     DialogResult result = MessageBox.Show("Save current level?", "Level is not saved!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    releaseInput = true;
                     if (result == DialogResult.Yes)
                     {
                         contentManager.SaveLevel(currentLevelName, currentLevel.SaveLevel());
@@ -796,7 +796,9 @@ namespace PlagueEngine.Tools
 
                     if(contentManager.GameObjectsDefinitions.ContainsKey(god.Name))
                     {
+                        releaseInput = false;
                         DialogResult dr=MessageBox.Show("Definition exists. Override?","",MessageBoxButtons.YesNo);
+                        releaseInput = true;
                         if(dr==DialogResult.Yes)
                         {
                             contentManager.GameObjectsDefinitions.Remove(god.Name);
@@ -897,7 +899,9 @@ namespace PlagueEngine.Tools
                 DialogResult dialogResult = new DialogResult();
                 if (allDefinitions != 0)
                 {
+                    releaseInput = false;
                     dialogResult = MessageBox.Show("Objects using this definition:\n\n" + messageBoxText + "\n\nDelete this definition?\n(Clicking yes can leads to error while loading level data)", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    releaseInput = true;
                 }
                 //usuwanie definicji z comboboxa
                 if (dialogResult == DialogResult.Yes || allDefinitions==0)
@@ -1209,7 +1213,10 @@ namespace PlagueEngine.Tools
 
         private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
         {
-            input.Enabled = true;
+            if (releaseInput)
+            {
+                input.Enabled = true;
+            }
         }
 
         private void checkBoxGamePaused_CheckedChanged(object sender, EventArgs e)
