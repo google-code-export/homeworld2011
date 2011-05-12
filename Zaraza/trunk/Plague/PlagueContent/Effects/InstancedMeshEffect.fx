@@ -243,7 +243,7 @@ PixelShaderOutput PSDNFunction(VSComplexOutput input)
 /****************************************************/
 /// Pixel Shader Diffuse Specular Normal Function
 /****************************************************/
-PixelShaderOutput PSDSNFunction(VSComplexOutput input) : COLOR0
+PixelShaderOutput PSDSNFunction(VSComplexOutput input)
 {
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 
@@ -260,7 +260,7 @@ PixelShaderOutput PSDSNFunction(VSComplexOutput input) : COLOR0
 /****************************************************/
 /// Pixel Shader Diffuse Function
 /****************************************************/
-PixelShaderOutput PSDFunction(VSSimpleOutput input) : COLOR0
+PixelShaderOutput PSDFunction(VSSimpleOutput input)
 {
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 	
@@ -274,7 +274,7 @@ PixelShaderOutput PSDFunction(VSSimpleOutput input) : COLOR0
 /****************************************************/
 /// Pixel Shader Diffuse Specular Function
 /****************************************************/
-PixelShaderOutput PSDSFunction(VSSimpleOutput input) : COLOR0
+PixelShaderOutput PSDSFunction(VSSimpleOutput input)
 {
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 

@@ -45,8 +45,10 @@ namespace PlagueEngine
         private PhysicsManager physicsManager = null;
         private EventsSystem.EventsSystem eventsSystem = null;
         private EventsHistorian eventsHistorian = null;
-        private Level Level = null;
+        
         private ParticleManager particleManager = null;
+
+        private Level Level = null;
 
         private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
 
@@ -68,14 +70,14 @@ namespace PlagueEngine
             this.Activated += new EventHandler<EventArgs>(Game_Activated);
             this.Deactivated+=new EventHandler<EventArgs>(Game_Deactivated);
 
-#if DEBUG
+            #if DEBUG
             Diagnostics.Game = this;
             Diagnostics.ShowDiagnostics = true;
             Diagnostics.ForceGCOnUpdate = true;
             Diagnostics.LimitUpdateTimeStep = false;
             Diagnostics.ShowLogWindow = true;
             Diagnostics.OpenLogFile("log");
-#endif
+            #endif
 
             contentManager = new ContentManager(this, "Content");
 
@@ -137,27 +139,26 @@ namespace PlagueEngine
         {
 
             renderer.InitHelpers();
-
-
-            Level.PutSomeObjects();
             
+            Level.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
-
-            //testLevel.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
+            //Level.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
 
             renderer.batchedMeshes.CommitMeshTransforms();
-#if DEBUG
+            
+            #if DEBUG
             GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, renderer, input, this);
             gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
-#endif
+            #endif
 
             InitGUI();  
             
             base.Initialize();              
-#if DEBUG
+            
+            #if DEBUG
             Diagnostics.PushLog("Initialization complete");
-#endif
+            #endif
         }
         /****************************************************************************/
 

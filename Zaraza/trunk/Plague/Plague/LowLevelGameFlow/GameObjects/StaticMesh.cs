@@ -34,10 +34,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(MeshComponent meshComponent, Matrix world)
+        public void Init(MeshComponent meshComponent)
         {
             this.meshComponent      = meshComponent;
-            this.World              = world;
         }
         /****************************************************************************/
 
