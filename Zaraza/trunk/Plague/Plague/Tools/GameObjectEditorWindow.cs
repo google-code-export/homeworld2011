@@ -577,6 +577,7 @@ namespace PlagueEngine.Tools
                     {
                         releaseInput = false;
                         var box = new LevelNameMessageBox("Old level name:");
+                        box.Activated += new EventHandler(GameObjectEditorWindow_Activated);
                         box.ShowDialog();
                         releaseInput = true;
                         if (!box.canceled)
@@ -620,7 +621,7 @@ namespace PlagueEngine.Tools
                 renderer.debugDrawer.DisableHeightmapDrawing();
                 
                 var box2 = new LevelNameMessageBox("New level name:");
-                
+                box2.Activated += new EventHandler(GameObjectEditorWindow_Activated);
                 bool newName;
                 do
                 {
@@ -666,6 +667,7 @@ namespace PlagueEngine.Tools
             LoadFilteredID(null,null);
 
          }
+
         /********************************************************************************/
 
 
