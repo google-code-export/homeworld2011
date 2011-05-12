@@ -30,13 +30,48 @@ namespace PlagueEngine.LowLevelGameFlow
                 
         private static uint       lastID    = 0;
         private static List<uint> freeIDs   = new List<uint>();
+
+        private GameObjectInstance owner     = null;        
+        
+        private delegate Matrix GetWorldDelegate(int bone);
+        private GetWorldDelegate getWorld = null;
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get World
+        /****************************************************************************/
+        public Matrix GetWorld(int bone)
+        {
+            return getWorld(bone);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get My World 
+        /****************************************************************************/
+        protected virtual Matrix GetMyWorld(int bone)
+        {
+            return World;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Owner World 
+        /****************************************************************************/
+        private Matrix GetOwnerWorld(int bone)
+        {
+            return owner.GetWorld(OwnerBone) * GetMyWorld(bone);
+        }
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public bool Init(uint id,String definition)
+        public bool Init(uint id, String definition, Matrix world, GameObjectInstance owner = null,int ownerBone = -1)
         {
             if (id == 0) this.id = GenerateID();
             else
@@ -46,23 +81,14 @@ namespace PlagueEngine.LowLevelGameFlow
             }
 
             this.definition = definition;
+            this.World      = world;
+
+            Owner     = owner;
+            OwnerBone = ownerBone;
 
             Broadcast(new CreateEvent());
 
             return true;            
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// ID
-        /****************************************************************************/
-        public uint ID
-        {
-            get
-            {
-                return id;
-            }
         }
         /****************************************************************************/
 
@@ -145,7 +171,9 @@ namespace PlagueEngine.LowLevelGameFlow
             data.Type          = this.GetType();
             data.World         = this.World;
             data.Definition    = this.definition;
-            
+            data.Owner         = (this.Owner == null ? 0 : this.Owner.ID);
+            data.OwnerBone     = this.OwnerBone;
+
             return data;
         }
         /****************************************************************************/
@@ -160,23 +188,40 @@ namespace PlagueEngine.LowLevelGameFlow
             data.Type          = this.GetType();
             data.World         = this.World;
             data.Definition    = this.definition;
+            data.Owner         = (this.Owner == null ? 0 : this.Owner.ID);
+            data.OwnerBone     = this.OwnerBone;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Definition
+        /// Properties
         /****************************************************************************/
-        public String Definition
+        public String Definition { get { return definition; } }        
+        public uint   ID         { get { return id; } }
+        public int    OwnerBone  { get; set; }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Owner
+        /****************************************************************************/
+        public GameObjectInstance Owner
         {
-            get
+            get { return owner; }
+            set
             {
-                return definition;
+                if (value == null) getWorld = this.GetMyWorld;
+                else
+                {
+                    getWorld = this.GetOwnerWorld;
+                    owner = value;
+                }
             }
-        }        
+        }
         /****************************************************************************/
-        
-        
+
+
         /****************************************************************************/
         /// Release Components
         /****************************************************************************/
@@ -307,6 +352,10 @@ namespace PlagueEngine.LowLevelGameFlow
         }
 
 
+        [CategoryAttribute("Owner")]
+        public uint Owner     { get; set; }
+        [CategoryAttribute("Owner")]
+        public int  OwnerBone { get; set; }
 
         /****************************************************************************/
         /// Rotate

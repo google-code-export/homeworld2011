@@ -592,7 +592,7 @@
       <Processor>PlagueEngineSkinnedModelProcessor</Processor>
       <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
       <ProcessorParameters_AnimationClip1>Idle</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1End>10</ProcessorParameters_AnimationClip1End>
+      <ProcessorParameters_AnimationClip1End>156</ProcessorParameters_AnimationClip1End>
       <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
       <ProcessorParameters_AnimationClip2>Walk</ProcessorParameters_AnimationClip2>
       <ProcessorParameters_AnimationClip2Start>26</ProcessorParameters_AnimationClip2Start>
@@ -610,6 +610,74 @@
   <ItemGroup>
     <Compile Include="Textures\desertEagle.tga">
       <Name>desertEagle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\m203.fbx">
+      <Name>m203</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\m4.body.fbx">
+      <Name>m4.body</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\m4.mag.fbx">
+      <Name>m4.mag</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\m4.optics.fbx">
+      <Name>m4.optics</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\scope01.fbx">
+      <Name>scope01</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\scope01.diff.tga">
+      <Name>scope01.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\m4.mag.diff.tga">
+      <Name>m4.mag.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\m4.body.diff.tga">
+      <Name>m4.body.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\m4.optics.diff.tga">
+      <Name>m4.optics.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\M203.diff.tga">
+      <Name>M203.diff</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

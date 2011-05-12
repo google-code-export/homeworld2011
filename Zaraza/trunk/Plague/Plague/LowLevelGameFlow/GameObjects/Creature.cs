@@ -42,19 +42,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard,CapsuleBodyComponent body, Matrix world)
+        public void Init(SkinnedMeshComponent meshComponent,KeyboardListenerComponent keyboard,CapsuleBodyComponent body)
         {
             this.meshComponent = meshComponent;
             this.keyboard      = keyboard;
             this.body          = body;
-            this.World         = world;
 
             keyboard.SubscibeKeys(OnKey, Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D8, Keys.D9, Keys.Y, Keys.H, Keys.G, Keys.J, Keys.P);
             meshComponent.SubscribeAnimationsEnd("Attack");
             controller = new PhysicsController(body);
             controller.EnableControl();
             meshComponent.StartClip("Idle");
-            
         }
         /****************************************************************************/
 

@@ -22,17 +22,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private TerrainComponent        terrainComponent     = null;        
+        private TerrainComponent terrainComponent = null;        
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(TerrainComponent      terrainComponent,Matrix world)
+        public void Init(TerrainComponent terrainComponent)
         {
-            this.terrainComponent     = terrainComponent;            
-            this.World                = world;
+            this.terrainComponent = terrainComponent;                        
         }
         /****************************************************************************/
 

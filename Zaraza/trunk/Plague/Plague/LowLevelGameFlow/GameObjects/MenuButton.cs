@@ -30,10 +30,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(ButtonComponent buttonComponent,Matrix world)
+        public void Init(ButtonComponent buttonComponent)
         {
             this.buttonComponent = buttonComponent;
-            this.World = world;
         }
         /********************************************************************************/
 

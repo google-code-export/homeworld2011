@@ -239,8 +239,6 @@ namespace PlagueEngine.Rendering.Components
 
             TimeSpan deltaTime = TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
 
-            rootTransform = rootTransform;
-
             currentAnimation.Update(deltaTime, rootTransform);
 
             if (Blend)

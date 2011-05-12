@@ -48,10 +48,30 @@ namespace PlagueEngine.HighLevelGameFlow
         {
             Clear();
 
+            Dictionary<uint,KeyValuePair<GameObjectInstance,GameObjectInstanceData>> waitroom = new Dictionary<uint,KeyValuePair<GameObjectInstance,GameObjectInstanceData>>();
+
+            gameObjectsFactory.WaitingRoom = waitroom;
+
             foreach (GameObjectInstanceData goid in levelData.gameObjects)
             {
                 gameObjectsFactory.Create(goid);                
             }
+
+            gameObjectsFactory.ProcessWaitingRoom = true;
+            gameObjectsFactory.ProcessedObjects   = 0;
+
+            foreach (KeyValuePair<uint, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> goid in waitroom)
+            {
+                gameObjectsFactory.Create(goid.Value.Value);
+            }
+
+            if (waitroom.Count > gameObjectsFactory.ProcessedObjects)
+            {
+                throw new Exception("Game Objects (" + waitroom.Count.ToString() + ") stucked in waitroom");
+            }
+            
+            gameObjectsFactory.WaitingRoom = null;
+            gameObjectsFactory.ProcessWaitingRoom = false;
         }
         /****************************************************************************/
 

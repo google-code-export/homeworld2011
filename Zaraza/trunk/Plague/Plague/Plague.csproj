@@ -191,7 +191,6 @@
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FreeCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
-    <Compile Include="LowLevelGameFlow\GameObjects\MovingBarrel.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ParticleEmitterGO.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\PointLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />

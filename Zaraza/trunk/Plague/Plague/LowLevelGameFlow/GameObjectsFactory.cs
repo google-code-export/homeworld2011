@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using System.Reflection;
 
 using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
@@ -12,6 +13,7 @@ using PlagueEngine.Physics;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.GUI;
 using PlagueEngine.Particles;
+
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
@@ -33,9 +35,8 @@ namespace PlagueEngine.LowLevelGameFlow
         private PhysicsComponentFactory                  physicsComponentFactory    = null;
         private GUIComponentsFactory                     guiComponentsFactory        = null;
         private ParticleFactory                          particleFactory = null;
-        private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;
-        
-        private Dictionary<uint, GameObjectInstance>     gameObjects                = null;
+
+        private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;        
         /****************************************************************************/
 
 
@@ -62,17 +63,10 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Game Objects
         /****************************************************************************/
-        public Dictionary<uint, GameObjectInstance> GameObjects
-        {
-            set
-            {
-                gameObjects = value;
-            }
-            get
-            {
-                return this.gameObjects;
-            }
-        }
+        public Dictionary<uint, GameObjectInstance> GameObjects                                       { get; set; }
+        public Dictionary<uint, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> WaitingRoom { get; set; }
+        public bool ProcessWaitingRoom = false;
+        public int  ProcessedObjects   = 0;
         /****************************************************************************/
 
 
@@ -82,216 +76,168 @@ namespace PlagueEngine.LowLevelGameFlow
         public GameObjectInstance Create(GameObjectInstanceData data)
         {
             GameObjectInstance result = null;
+
+            if (!ProcessWaitingRoom) result = (GameObjectInstance)Activator.CreateInstance(data.Type);
+            else result = WaitingRoom[data.ID].Key;
+
+            if (!DefaultObjectInit(result, data)) return null;
+
+            UseDefinition(data);
+
+            if (!(bool)this.GetType().InvokeMember("Create" + data.Type.Name,
+                                        BindingFlags.InvokeMethod,
+                                        null,
+                                        this,
+                                        new Object[] { result, data })) return null;
+
+            GameObjects.Add(result.ID, result);
+            if (ProcessWaitingRoom) ++ProcessedObjects;
             
-            switch (data.Type.Name)
+            return result;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Default Object Init
+        /****************************************************************************/
+        private bool DefaultObjectInit(GameObjectInstance gameObject, GameObjectInstanceData data)
+        {
+            if (data.Owner != 0)
             {
-                case "StaticMesh": 
-                    result = CreateStaticMesh(data);
-                    break;
-                case "FreeCamera":
-                    result = CreateFreeCamera(data);
-                    break;
-                case "LinkedCamera":
-                    result = CreateLinkedCamera(data);
-                    break;
-                case "Terrain":
-                    result = CreateTerrain(data);
-                    break;
-                case "Sunlight":
-                    result = CreateSunlight(data);
-                    break;
-                case "SquareBodyMesh":
-                    result = CreateSquareBodyMesh(data);
-                    break;
-                case "CylindricalBodyMesh":
-                    result = CreateCylindricalBodyMesh(data);
-                    break;
-                case "CylindricalBodyMesh2":
-                    result = CreateCylindricalBodyMesh2(data);
-                    break;
-                case "SphericalBodyMesh":
-                    result = CreateSphericalBodyMesh(data);
-                    break;
-                case "Creature":
-                    result = CreateCreature(data);
-                    break;
-                case "SquareSkinMesh":
-                    result = CreateSquareSkinMesh(data);
-                    break;
-                case "SphericalSkinMesh":
-                    result = CreateSphericalSkinMesh(data);
-                    break;
-                case "CylindricalSkinMesh":
-                    result = CreateCylindricalSkinMesh(data);
-                    break;
-                case "MovingBarrel":
-                    result = CreateMovingBarrel(data);
-                    break;
-                case "MenuButton":
-                    result = CreateMenuButton(data);
-                    break;
-                case "BackgroundTerrain":
-                    result = CreateBackgroundTerrain(data);
-                    break;
-                case "WaterSurface":
-                    result = CreateWaterSurface(data);
-                    break;
-                case "PointLight":
-                    result = CreatePointLight(data);
-                    break;
-                case "SpotLight":
-                    result = CreateSpotLight(data);
-                    break;
-                case "GlowStick":
-                    result = CreateGlowStick(data);
-                    break;
-                case "ParticleEmitterGO":
-                    result = CreateParticleEmitterGO(data);
-                    break;
-                case "Flashlight":
-                    result = CreateFlashLight(data);
-                    break;
+                GameObjectInstance owner = GetObject(data.Owner);
+                
+                if (owner == null)
+                {
+                    PushToWaitingRoom(gameObject, data);
+                    return false;
+                }
+
+                gameObject.Init(data.ID, data.Definition, data.World, owner, data.OwnerBone);
             }
 
-            if (result == null) return null;
-
-            if (gameObjects != null) gameObjects.Add(result.ID, result);
-
-            return result;
+            gameObject.Init(data.ID, data.Definition, data.World);
+            return true;
         }
         /****************************************************************************/
 
 
-
-
-
-
         /****************************************************************************/
-        /// Create Cylindrical Body Mesh
+        /// Get Object
         /****************************************************************************/
-        public ParticleEmitterGO CreateParticleEmitterGO(GameObjectInstanceData data)
+        private GameObjectInstance GetObject(uint id)
         {
-            ParticleEmitterGO result = new ParticleEmitterGO();
+            if (GameObjects.ContainsKey(id)) return GameObjects[id];
 
-            if (!DefaultObjectInit(result, data)) return result = null;
+            if (WaitingRoom != null)
+            {
+                if (WaitingRoom.ContainsKey(id)) return WaitingRoom[id].Key;
+            }
 
-            ParticleEmitterGOData sbmdata = (ParticleEmitterGOData)data;
+            return null;
+        }
+        /****************************************************************************/
 
 
+        /****************************************************************************/
+        /// Push To Waiting Room
+        /****************************************************************************/
+        private void PushToWaitingRoom(GameObjectInstance gameObject, GameObjectInstanceData data)
+        {
+            if (ProcessWaitingRoom) return;
+
+            WaitingRoom.Add(data.ID, new KeyValuePair<GameObjectInstance, GameObjectInstanceData>(gameObject, data));
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Use Definition
+        /****************************************************************************/
+        private void UseDefinition(GameObjectInstanceData data)
+        {
+            if (String.IsNullOrEmpty(data.Definition)) return;
+            if (!gameObjectsDefinitions.ContainsKey(data.Definition)) return;
+
+            GameObjectDefinition definition = gameObjectsDefinitions[data.Definition];
+
+            foreach (KeyValuePair<String, object> value in definition.Properties)
+            {
+                data.GetType().InvokeMember(value.Key, 
+                                            BindingFlags.SetProperty, 
+                                            null, 
+                                            data, 
+                                            new Object[] { value.Value });
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create Particle Emitter GO
+        /****************************************************************************/
+        public bool CreateParticleEmitterGO(ParticleEmitterGO result, ParticleEmitterGOData data)
+        {                                                
             result.Init(particleFactory.CreateParticleEmitter(
-            sbmdata.blendState,
-            sbmdata.duration,
-            sbmdata.durationRandomnes,
-            sbmdata.emitterVelocitySensitivity,
-            sbmdata.endVelocity,
-            sbmdata.gravity,
-            sbmdata.maxColor,
-            sbmdata.maxEndSize,
-            sbmdata.maxHorizontalVelocity,
-            sbmdata.maxParticles,
-            sbmdata.maxRotateSpeed,
-            sbmdata.maxStartSize,
-            sbmdata.maxVerticalVelocity,
-            sbmdata.minColor,
-            sbmdata.minEndSize,
-            sbmdata.minHorizontalVelocity,
-            sbmdata.minRotateSpeed,
-            sbmdata.minStartSize,
-            sbmdata.minVerticalVelocity,
-            sbmdata.particleTexture,
-            sbmdata.particlesPerSecond,
-            sbmdata.initialPosition
-                ));
+                                                                data.blendState,
+                                                                data.duration,
+                                                                data.durationRandomnes,
+                                                                data.emitterVelocitySensitivity,
+                                                                data.endVelocity,
+                                                                data.gravity,
+                                                                data.maxColor,
+                                                                data.maxEndSize,
+                                                                data.maxHorizontalVelocity,
+                                                                data.maxParticles,
+                                                                data.maxRotateSpeed,
+                                                                data.maxStartSize,
+                                                                data.maxVerticalVelocity,
+                                                                data.minColor,
+                                                                data.minEndSize,
+                                                                data.minHorizontalVelocity,
+                                                                data.minRotateSpeed,
+                                                                data.minStartSize,
+                                                                data.minVerticalVelocity,
+                                                                data.particleTexture,
+                                                                data.particlesPerSecond,
+                                                                data.initialPosition
+                                                                ));
 
-
-            return result;
+            return true;
         }
         /****************************************************************************/
-
-
-
-
-
+        
 
         /****************************************************************************/
         /// Create Cylindrical Body Mesh
         /****************************************************************************/
-        public MovingBarrel CreateMovingBarrel(GameObjectInstanceData data)
-        {
-            MovingBarrel result = new MovingBarrel();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            MovingBarrelData sbmdata = (MovingBarrelData)data;
-
+        public bool CreateCylindricalBodyMesh(CylindricalBodyMesh result, CylindricalBodyMeshData data)
+        {            
             InstancingModes InstancingMode;
-            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+            InstancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
 
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       sbmdata.Model,
-                                                                       sbmdata.Diffuse,
-                                                                       sbmdata.Specular,
-                                                                       sbmdata.Normals,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
                                                                        InstancingMode),
-                        physicsComponentFactory.CreateSquareBodyComponent(result,
-                        sbmdata.Mass,
-                        sbmdata.Lenght,
-                        sbmdata.Width,
-                        sbmdata.Width,
-                        sbmdata.Elasticity,
-                        sbmdata.StaticRoughness,
-                        sbmdata.DynamicRoughness,
-                        sbmdata.Immovable,
-                        sbmdata.World,
-                        sbmdata.Translation,
-                        sbmdata.SkinYaw,
-                        sbmdata.SkinPitch,
-                        sbmdata.SkinRoll),
-                        sbmdata.World);
 
+                        physicsComponentFactory.CreateCylindricalBodyComponent( result,
+                                                                                data.Mass,
+                                                                                data.Radius,
+                                                                                data.Lenght,
+                                                                                data.Elasticity,
+                                                                                data.StaticRoughness,
+                                                                                data.DynamicRoughness,
+                                                                                data.Immovable,
+                                                                                data.World,
+                                                                                data.Translation,
+                                                                                data.SkinYaw,
+                                                                                data.SkinPitch,
+                                                                                data.SkinRoll));
 
-            return result;
-        }
-        /****************************************************************************/    
-
-
-        /****************************************************************************/
-        /// Create Cylindrical Body Mesh
-        /****************************************************************************/
-        public CylindricalBodyMesh CreateCylindricalBodyMesh(GameObjectInstanceData data)
-        {
-            CylindricalBodyMesh result = new CylindricalBodyMesh();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            CylindricalBodyMeshData sbmdata = (CylindricalBodyMeshData)data;
-
-            InstancingModes InstancingMode;
-            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
-
-            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       sbmdata.Model,
-                                                                       sbmdata.Diffuse,
-                                                                       sbmdata.Specular,
-                                                                       sbmdata.Normals,
-                                                                       InstancingMode),
-                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
-                        sbmdata.Mass,
-                        sbmdata.Radius,
-                        sbmdata.Lenght,
-                        sbmdata.Elasticity,
-                        sbmdata.StaticRoughness,
-                        sbmdata.DynamicRoughness,
-                        sbmdata.Immovable,
-                        sbmdata.World,
-                        sbmdata.Translation,
-                        sbmdata.SkinYaw,
-                        sbmdata.SkinPitch,
-                        sbmdata.SkinRoll),
-                        sbmdata.World);
-
-
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -301,83 +247,66 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Cylindrical Body Mesh
         /****************************************************************************/
-        public CylindricalBodyMesh2 CreateCylindricalBodyMesh2(GameObjectInstanceData data)
-        {
-            CylindricalBodyMesh2 result = new CylindricalBodyMesh2();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            CylindricalBodyMeshData2 sbmdata = (CylindricalBodyMeshData2)data;
-
+        public bool CreateCylindricalBodyMesh2(CylindricalBodyMesh2 result, CylindricalBodyMeshData2 data)
+        {        
             InstancingModes InstancingMode;
-            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+            InstancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
 
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       sbmdata.Model,
-                                                                       sbmdata.Diffuse,
-                                                                       sbmdata.Specular,
-                                                                       sbmdata.Normals,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
                                                                        InstancingMode),
+
                         physicsComponentFactory.CreateCylindricalBodyComponent2(result,
-                        sbmdata.Mass,
-                        sbmdata.Radius,
-                        sbmdata.Lenght,
-                        sbmdata.Elasticity,
-                        sbmdata.StaticRoughness,
-                        sbmdata.DynamicRoughness,
-                        sbmdata.Immovable,
-                        sbmdata.World,
-                        sbmdata.Translation,
-                        sbmdata.SkinYaw,
-                        sbmdata.SkinPitch,
-                        sbmdata.SkinRoll),
-                        sbmdata.World);
+                                                                                data.Mass,
+                                                                                data.Radius,
+                                                                                data.Lenght,
+                                                                                data.Elasticity,
+                                                                                data.StaticRoughness,
+                                                                                data.DynamicRoughness,
+                                                                                data.Immovable,
+                                                                                data.World,
+                                                                                data.Translation,
+                                                                                data.SkinYaw,
+                                                                                data.SkinPitch,
+                                                                                data.SkinRoll));
 
-
-            return result;
+            return true;
         }
         /****************************************************************************/
-
-
-
-
+        
 
         /****************************************************************************/
         /// Create Spherical Body Mesh
         /****************************************************************************/
-        public SphericalBodyMesh CreateSphericalBodyMesh(GameObjectInstanceData data)
+        public bool CreateSphericalBodyMesh(SphericalBodyMesh result, SphericalBodyMeshData data)
         {
-            SphericalBodyMesh result = new SphericalBodyMesh();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            SphericalBodyMeshData sbmdata = (SphericalBodyMeshData)data;
-
             InstancingModes InstancingMode;
-            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+            InstancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
 
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       sbmdata.Model,
-                                                                       sbmdata.Diffuse,
-                                                                       sbmdata.Specular,
-                                                                       sbmdata.Normals,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
                                                                        InstancingMode),
+
                         physicsComponentFactory.CreateSphericalBodyComponent(result,
-                        sbmdata.Mass,
-                        sbmdata.Radius,
-                        sbmdata.Elasticity,
-                        sbmdata.StaticRoughness,
-                        sbmdata.DynamicRoughness,
-                        sbmdata.Immovable,
-                        sbmdata.World,
-                        sbmdata.Translation,
-                        sbmdata.SkinYaw,
-                        sbmdata.SkinPitch,
-                        sbmdata.SkinRoll),
-                        sbmdata.World);
+                                                                            data.Mass,
+                                                                            data.Radius,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll));
 
-
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -385,41 +314,34 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Square Body Mesh
         /****************************************************************************/
-        public SquareBodyMesh CreateSquareBodyMesh(GameObjectInstanceData data)
+        public bool CreateSquareBodyMesh(SquareBodyMesh result, SquareBodyMeshData data)
         {
-            SquareBodyMesh result = new SquareBodyMesh();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            SquareBodyMeshData sbmdata = (SquareBodyMeshData)data;
-
             InstancingModes InstancingMode;
-            InstancingMode = Renderer.UIntToInstancingMode(sbmdata.InstancingMode);
+            InstancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
 
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       sbmdata.Model,
-                                                                       sbmdata.Diffuse,
-                                                                       sbmdata.Specular,
-                                                                       sbmdata.Normals,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
                                                                        InstancingMode),
+
                         physicsComponentFactory.CreateSquareBodyComponent(result,
-                        sbmdata.Mass,
-                        sbmdata.Lenght,
-                        sbmdata.Height,
-                        sbmdata.Width,
-                        sbmdata.Elasticity,
-                        sbmdata.StaticRoughness,
-                        sbmdata.DynamicRoughness,
-                        sbmdata.Immovable,
-                        sbmdata.World,
-                        sbmdata.Translation,
-                        sbmdata.SkinYaw,
-                        sbmdata.SkinPitch,
-                        sbmdata.SkinRoll),
-                        sbmdata.World);
+                                                                            data.Mass,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll));
 
-
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -427,77 +349,15 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Static Mesh
         /****************************************************************************/
-        private StaticMesh CreateStaticMesh(GameObjectInstanceData data)
+        public bool CreateStaticMesh(StaticMesh result, StaticMeshData data)
         {
-            StaticMesh result = new StaticMesh();                    
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            StaticMeshData smdata = (StaticMeshData)data;
-
-            if (String.IsNullOrEmpty(data.definition))
-            {
-                result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                            smdata.Model,
-                                                                            smdata.Diffuse,
-                                                                            smdata.Specular,
-                                                                            smdata.Normals,
-                                                                            Renderer.UIntToInstancingMode(smdata.InstancingMode)),
-                                                                            smdata.World);                    
-                               
-            }
-            else
-            {
-                if(!gameObjectsDefinitions.Keys.Contains(smdata.Definition))
-                {
-#if DEBUG
-                    Diagnostics.PushLog("No existing definition: " + smdata.Definition + ". Creating object failed.");
-#endif
-                    return result = null;
-                }
-                
-                GameObjectDefinition definition = gameObjectsDefinitions[smdata.Definition];
-
-
-                /**************************/
-                // Model
-                String Model;
-                if (definition.Properties.Keys.Contains("Model")) Model = (String)definition.Properties["Model"];
-                else Model = smdata.Model;
-                /**************************/
-                // Diffuse
-                String Diffuse;
-                if (definition.Properties.Keys.Contains("Diffuse")) Diffuse = (String)definition.Properties["Diffuse"];
-                else Diffuse = smdata.Diffuse;
-                /**************************/
-                // Specular
-                String Specular;
-                if (definition.Properties.Keys.Contains("Specular")) Specular = (String)definition.Properties["Specular"];
-                else Specular = smdata.Specular;
-                /**************************/
-                // Normals
-                String Normals;
-                if (definition.Properties.Keys.Contains("Normals")) Normals = (String)definition.Properties["Normals"];
-                else Normals = smdata.Normals;
-                /**************************/
-                // InstancingMode
-                InstancingModes InstancingMode;
-                if (definition.Properties.Keys.Contains("InstancingMode")) InstancingMode = Renderer.UIntToInstancingMode((uint)definition.Properties["InstancingMode"]);
-                else InstancingMode = Renderer.UIntToInstancingMode(smdata.InstancingMode);
-                /**************************/
-
-
-
-                result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                            Model,
-                                                                            Diffuse,
-                                                                            Specular,
-                                                                            Normals,
-                                                                            InstancingMode),
-                                                                            data.World);
-            }
-            
-            return result;
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                        data.Model,
+                                                                        data.Diffuse,
+                                                                        data.Specular,
+                                                                        data.Normals,
+                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)));
+            return true;
         }
         /****************************************************************************/
         
@@ -505,30 +365,23 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Free Camera
         /****************************************************************************/
-        private FreeCamera CreateFreeCamera(GameObjectInstanceData data)
-        {
-            FreeCamera result = new FreeCamera();
-
-            if (!DefaultObjectInit(result, data)) return result = null; 
-
-            FreeCameraData fcdata = (FreeCameraData)data;
-            
+        public bool CreateFreeCamera(FreeCamera result, FreeCameraData data)
+        {            
             result.Init(renderingComponentsFactory.CreateCameraComponent(result,
-                                                                         fcdata.FoV,
-                                                                         fcdata.ZNear,
-                                                                         fcdata.ZFar),
+                                                                         data.FoV,
+                                                                         data.ZNear,
+                                                                         data.ZFar),
 
                          inputComponentsFactory.CreateKeyboardListenerComponent(result,
-                                                                                fcdata.ActiveKeyListener),
+                                                                                data.ActiveKeyListener),
 
                          inputComponentsFactory.CreateMouseListenerComponent(result,
-                                                                             fcdata.ActiveMouseListener),
+                                                                             data.ActiveMouseListener),
 
-                         fcdata.World,
-                         fcdata.MovementSpeed,
-                         fcdata.RotationSpeed);
+                         data.MovementSpeed,
+                         data.RotationSpeed);
 
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -536,31 +389,26 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Linked Camera
         /****************************************************************************/
-        private LinkedCamera CreateLinkedCamera(GameObjectInstanceData data)
+        public bool CreateLinkedCamera(LinkedCamera result, LinkedCameraData data)
         {            
-            LinkedCamera result = new LinkedCamera();
-         
-            if (!DefaultObjectInit(result, data)) return result = null; 
-
-            LinkedCameraData lcdata = (LinkedCameraData)data;
-
             result.Init(renderingComponentsFactory.CreateCameraComponent(result,
-                                                                          lcdata.FoV,
-                                                                          lcdata.ZNear,
-                                                                          lcdata.ZFar),
+                                                                         data.FoV,
+                                                                         data.ZNear,
+                                                                         data.ZFar),
 
                          inputComponentsFactory.CreateKeyboardListenerComponent(result,
-                                                                                lcdata.ActiveKeyListener),
+                                                                                data.ActiveKeyListener),
 
 
-                         inputComponentsFactory.CreateMouseListenerComponent(result,lcdata.ActiveMouseListener),
-                         lcdata.MovementSpeed,
-                         lcdata.RotationSpeed,
-                         lcdata.ZoomSpeed,
-                         lcdata.position,
-                         lcdata.Target);
+                         inputComponentsFactory.CreateMouseListenerComponent(result, data.ActiveMouseListener),
 
-            return result;
+                         data.MovementSpeed,
+                         data.RotationSpeed,
+                         data.ZoomSpeed,
+                         data.position,
+                         data.Target);
+
+            return true;
         }
         /****************************************************************************/
 
@@ -568,34 +416,28 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Cylindrical Skin Mesh
         /****************************************************************************/
-        private CylindricalSkinMesh CreateCylindricalSkinMesh(GameObjectInstanceData data)
+        public bool CreateCylindricalSkinMesh(CylindricalSkinMesh result, CylindricalSkinMeshData data)
         {
-            CylindricalSkinMesh result = new CylindricalSkinMesh();
+            result.Init(renderingComponentsFactory.CreateMeshComponent( result,
+                                                                        data.Model,
+                                                                        data.Diffuse,
+                                                                        data.Specular,
+                                                                        data.Normals,
+                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)),
 
-            if (!DefaultObjectInit(result, data)) return result = null;
+                        physicsComponentFactory.CreateCylindricalSkinComponent( result,
+                                                                                data.Elasticity,
+                                                                                data.StaticRoughness,
+                                                                                data.DynamicRoughness,
+                                                                                data.World,
+                                                                                data.Lenght,
+                                                                                data.Radius,
+                                                                                data.Translation,
+                                                                                data.SkinYaw,
+                                                                                data.SkinPitch,
+                                                                                data.SkinRoll));
 
-            CylindricalSkinMeshData tdata = (CylindricalSkinMeshData)data;
-
-            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                            tdata.Model,
-                                                                            tdata.Diffuse,
-                                                                            tdata.Specular,
-                                                                            tdata.Normals,
-                                                                            Renderer.UIntToInstancingMode(tdata.InstancingMode)),
-                        physicsComponentFactory.CreateCylindricalSkinComponent(result,
-            tdata.Elasticity,
-            tdata.StaticRoughness,
-            tdata.DynamicRoughness,
-            tdata.World,
-            tdata.Lenght,
-            tdata.Radius,
-            tdata.Translation,
-            tdata.SkinYaw,
-            tdata.SkinPitch,
-            tdata.SkinRoll),
-                        tdata.World);
-
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -603,35 +445,29 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Square Skin Mesh
         /****************************************************************************/
-        private SquareSkinMesh CreateSquareSkinMesh(GameObjectInstanceData data)
+        public bool CreateSquareSkinMesh(SquareSkinMesh result, SquareSkinMeshData data)
         {
-            SquareSkinMesh result = new SquareSkinMesh();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            SquareSkinMeshData tdata = (SquareSkinMeshData)data;
-
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                            tdata.Model,
-                                                                            tdata.Diffuse,
-                                                                            tdata.Specular,
-                                                                            tdata.Normals,
-                                                                            Renderer.UIntToInstancingMode(tdata.InstancingMode)), 
-                        physicsComponentFactory.CreateSquareSkinComponent(result,
-            tdata.Elasticity,
-            tdata.StaticRoughness,
-            tdata.DynamicRoughness,
-            tdata.World,
-            tdata.Lenght,
-            tdata.Height,
-            tdata.Width,
-            tdata.Translation,
-            tdata.SkinYaw,
-            tdata.SkinPitch,
-            tdata.SkinRoll),
-                        tdata.World);
+                                                                        data.Model,
+                                                                        data.Diffuse,
+                                                                        data.Specular,
+                                                                        data.Normals,
+                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)),
 
-            return result;
+                        physicsComponentFactory.CreateSquareSkinComponent(result,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.World,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll));
+
+            return true;
         }
         /****************************************************************************/
 
@@ -639,33 +475,27 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Spherical Skin Mesh
         /****************************************************************************/
-        private SphericalSkinMesh CreateSphericalSkinMesh(GameObjectInstanceData data)
+        public bool CreateSphericalSkinMesh(SphericalSkinMesh result, SphericalSkinMeshData data)
         {
-            SphericalSkinMesh result = new SphericalSkinMesh();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            SphericalSkinMeshData tdata = (SphericalSkinMeshData)data;
-
-            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                            tdata.Model,
-                                                                            tdata.Diffuse,
-                                                                            tdata.Specular,
-                                                                            tdata.Normals,
-                                                                            Renderer.UIntToInstancingMode(tdata.InstancingMode)),
+            result.Init(renderingComponentsFactory.CreateMeshComponent( result,
+                                                                        data.Model,
+                                                                        data.Diffuse,
+                                                                        data.Specular,
+                                                                        data.Normals,
+                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)),
+                        
                         physicsComponentFactory.CreateSphericalSkinComponent(result,
-            tdata.Elasticity,
-            tdata.StaticRoughness,
-            tdata.DynamicRoughness,
-            tdata.World,
-            tdata.Radius,
-            tdata.Translation,
-            tdata.SkinYaw,
-            tdata.SkinPitch,
-            tdata.SkinRoll),
-                        tdata.World);
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.World,
+                                                                            data.Radius,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll));
 
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -673,40 +503,32 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Terrain
         /****************************************************************************/
-        private Terrain CreateTerrain(GameObjectInstanceData data)
+        public bool CreateTerrain(Terrain result, TerrainData data)
         {
-            Terrain result = new Terrain();
-            
-            if (!DefaultObjectInit(result, data)) return result = null; 
-
-            TerrainData tdata = (TerrainData)data;
-
             result.Init(renderingComponentsFactory.CreateTerrainComponent(result,
-                                                                            tdata.HeightMap,
-                                                                            tdata.BaseTexture,
-                                                                            tdata.RTexture,
-                                                                            tdata.GTexture,
-                                                                            tdata.BTexture,
-                                                                            tdata.WeightMap,
-                                                                            tdata.Width,
-                                                                            tdata.Length,
-                                                                            tdata.Height,
-                                                                            tdata.CellSize,
-                                                                            tdata.TextureTiling),
+                                                                            data.HeightMap,
+                                                                            data.BaseTexture,
+                                                                            data.RTexture,
+                                                                            data.GTexture,
+                                                                            data.BTexture,
+                                                                            data.WeightMap,
+                                                                            data.Width,
+                                                                            data.Length,
+                                                                            data.Height,
+                                                                            data.CellSize,
+                                                                            data.TextureTiling),
 
                          physicsComponentFactory.CreateTerrainSkinComponent(result,
-                                                                            tdata.HeightMap,
-                                                                            tdata.Width,
-                                                                            tdata.Length,
-                                                                            tdata.Height,
-                                                                            tdata.CellSize,
-                                                                            tdata.Elasticity,
-                                                                            tdata.StaticRoughness,
-                                                                            tdata.DynamicRoughness),
+                                                                            data.HeightMap,
+                                                                            data.Width,
+                                                                            data.Length,
+                                                                            data.Height,
+                                                                            data.CellSize,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness));
 
-                                                                            tdata.World);
-
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -714,29 +536,22 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Background Terrain
         /****************************************************************************/
-        private BackgroundTerrain CreateBackgroundTerrain(GameObjectInstanceData data)
+        public bool CreateBackgroundTerrain(BackgroundTerrain result, BackgroundTerrainData data)
         {
-            BackgroundTerrain result = new BackgroundTerrain();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            BackgroundTerrainData tdata = (BackgroundTerrainData)data;
-
             result.Init(renderingComponentsFactory.CreateTerrainComponent(result,
-                                                                            tdata.HeightMap,
-                                                                            tdata.BaseTexture,
-                                                                            tdata.RTexture,
-                                                                            tdata.GTexture,
-                                                                            tdata.BTexture,
-                                                                            tdata.WeightMap,
-                                                                            tdata.Width,
-                                                                            tdata.Length,
-                                                                            tdata.Height,
-                                                                            tdata.CellSize,
-                                                                            tdata.TextureTiling),                        
-                                                                            tdata.World);
+                                                                            data.HeightMap,
+                                                                            data.BaseTexture,
+                                                                            data.RTexture,
+                                                                            data.GTexture,
+                                                                            data.BTexture,
+                                                                            data.WeightMap,
+                                                                            data.Width,
+                                                                            data.Length,
+                                                                            data.Height,
+                                                                            data.CellSize,
+                                                                            data.TextureTiling));
 
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -744,20 +559,14 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Sun Light
         /****************************************************************************/
-        public Sunlight CreateSunlight(GameObjectInstanceData data)
+        public bool CreateSunlight(Sunlight result, SunlightData data)
         {
-            Sunlight result = new Sunlight();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            SunlightData sdata = (SunlightData)data;
-
             result.Init(renderingComponentsFactory.CreateSunlightComponent(result,
-                                                                           sdata.Diffuse,
-                                                                           sdata.Intensity,
-                                                                           sdata.Enabled),
-                                                                           sdata.World);
-            return result;
+                                                                           data.Diffuse,
+                                                                           data.Intensity,
+                                                                           data.Enabled));
+
+            return true;
         }
         /****************************************************************************/
 
@@ -765,117 +574,83 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Static Skinned Mesh
         /****************************************************************************/
-        public Creature CreateCreature(GameObjectInstanceData data)
+        public bool CreateCreature(Creature result, CreatureData data)
         {
-            Creature result = new Creature();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            CreatureData sdata = (CreatureData)data;
-
             result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
-                                                                              sdata.Model,
-                                                                              sdata.Diffuse,
-                                                                              sdata.Specular,
-                                                                              sdata.Normals,
-                                                                              sdata.TimeRatio,
-                                                                              sdata.CurrentClip,
-                                                                              sdata.CurrentKeyframe,
-                                                                              sdata.CurrentTime,
-                                                                              sdata.Pause,
-                                                                              sdata.Blend,
-                                                                              sdata.BlendClip,
-                                                                              sdata.BlendKeyframe,
-                                                                              sdata.BlendClipTime,
-                                                                              sdata.BlendDuration,
-                                                                              sdata.BlendTime),
+                                                                              data.Model,
+                                                                              data.Diffuse,
+                                                                              data.Specular,
+                                                                              data.Normals,
+                                                                              data.TimeRatio,
+                                                                              data.CurrentClip,
+                                                                              data.CurrentKeyframe,
+                                                                              data.CurrentTime,
+                                                                              data.Pause,
+                                                                              data.Blend,
+                                                                              data.BlendClip,
+                                                                              data.BlendKeyframe,
+                                                                              data.BlendClipTime,
+                                                                              data.BlendDuration,
+                                                                              data.BlendTime),
+
                         inputComponentsFactory.CreateKeyboardListenerComponent(result, true),
+
                         physicsComponentFactory.CreateCapsuleBodyComponent(result,
-                                                                          sdata.Mass,
-                                                                          sdata.Radius,
-                                                                          sdata.Length,
-                                                                          sdata.Elasticity,
-                                                                          sdata.StaticRoughness,
-                                                                          sdata.DynamicRoughness,
-                                                                          sdata.Immovable,
-                                                                          sdata.World,
-                                                                          sdata.Translation,
-                                                                          sdata.SkinYaw,
-                                                                          sdata.SkinPitch,
-                                                                          sdata.SkinRoll),
-                                                                              sdata.World);
-            return result;
-        }
-        /****************************************************************************/
+                                                                          data.Mass,
+                                                                          data.Radius,
+                                                                          data.Length,
+                                                                          data.Elasticity,
+                                                                          data.StaticRoughness,
+                                                                          data.DynamicRoughness,
+                                                                          data.Immovable,
+                                                                          data.World,
+                                                                          data.Translation,
+                                                                          data.SkinYaw,
+                                                                          data.SkinPitch,
+                                                                          data.SkinRoll));
 
-        /****************************************************************************/
-        /// Create Menu Button
-        /****************************************************************************/
-        private MenuButton CreateMenuButton(GameObjectInstanceData data)
-        {
-            MenuButton result = new MenuButton();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            MenuButtonData sdata = (MenuButtonData) data;
-
-            result.Init(guiComponentsFactory.createButtonComponent(sdata.Text,
-                                                                   sdata.Vertical,
-                                                                   sdata.Horizontal,
-                                                                   sdata.Size,
-                                                                   null),
-                                                                        sdata.World);
-            //TODO: sprawdzić, czy to już wszystko dla buttona.
-            return result;
-        }
-        /****************************************************************************/
-        
-
-        /****************************************************************************/
-        /// Default Object Init
-        /****************************************************************************/
-        private bool DefaultObjectInit(GameObjectInstance gameObject, GameObjectInstanceData data)
-        {
-            if (!gameObject.Init(data.ID, data.Definition))
-            {
-#if DEBUG
-                Diagnostics.PushLog("Creating Object " + data.Type + ", id: " + data.ID +
-                                    ", definition: " + data.Definition + ", failed.");
-#endif
-                return false;
-            }
             return true;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
+        /// Create Menu Button
+        /****************************************************************************/
+        public bool CreateMenuButton(MenuButton result, MenuButtonData data)
+        {
+            result.Init(guiComponentsFactory.createButtonComponent(data.Text,
+                                                                   data.Vertical,
+                                                                   data.Horizontal,
+                                                                   data.Size,
+                                                                   null));
+            //TODO: sprawdzić, czy to już wszystko dla buttona.
+            return true;
+        }
+        /****************************************************************************/
+        
+
+        /****************************************************************************/
         /// Create Water Surface
         /****************************************************************************/
-        private WaterSurface CreateWaterSurface(GameObjectInstanceData data)
+        public bool CreateWaterSurface(WaterSurface result, WaterSurfaceData data)
         {
-            WaterSurface result = new WaterSurface();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            WaterSurfaceData tdata = (WaterSurfaceData)data;
-
-            result.World = tdata.World;
             result.Init(renderingComponentsFactory.CreateWaterSurfaceComponent(result,
-                                                                            tdata.Width,
-                                                                            tdata.Length,
+                                                                            data.Width,
+                                                                            data.Length,
                                                                             0,
-                                                                            tdata.Color,
-                                                                            tdata.ColorAmount,
-                                                                            tdata.WaveLength,
-                                                                            tdata.WaveHeight,
-                                                                            tdata.WaveSpeed,
-                                                                            tdata.NormalMap,
-                                                                            tdata.Bias,
-                                                                            tdata.WTextureTiling,
-                                                                            tdata.ClipPlaneAdjustment,
-                                                                            tdata.SpecularStength));
-            return result;
+                                                                            data.Color,
+                                                                            data.ColorAmount,
+                                                                            data.WaveLength,
+                                                                            data.WaveHeight,
+                                                                            data.WaveSpeed,
+                                                                            data.NormalMap,
+                                                                            data.Bias,
+                                                                            data.WTextureTiling,
+                                                                            data.ClipPlaneAdjustment,
+                                                                            data.SpecularStength));
+
+            return true;
         }
         /****************************************************************************/
 
@@ -883,38 +658,32 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Create Point Light
         /****************************************************************************/
-        private PointLight CreatePointLight(GameObjectInstanceData data)
+        public bool CreatePointLight(PointLight result, PointLightData data)
         {
-            PointLight result = new PointLight();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            PointLightData pdata = (PointLightData)data;
-
             result.Init(renderingComponentsFactory.CreatePointLightComponent(result,
-                                                                             pdata.Enabled,
-                                                                             pdata.Color,
-                                                                             pdata.Specular,
-                                                                             pdata.Intensity,
-                                                                             pdata.LightRadius,
-                                                                             pdata.LinearAttenuation,
-                                                                             pdata.QuadraticAttenuation,
+                                                                             data.Enabled,
+                                                                             data.Color,
+                                                                             data.Specular,
+                                                                             data.Intensity,
+                                                                             data.LightRadius,
+                                                                             data.LinearAttenuation,
+                                                                             data.QuadraticAttenuation,
                                                                              Vector3.Zero),
-                        physicsComponentFactory.CreateSphericalBodyComponent(result,
-                                                                             pdata.Mass,
-                                                                             pdata.Radius,
-                                                                             pdata.Elasticity,
-                                                                             pdata.StaticRoughness,
-                                                                             pdata.DynamicRoughness,
-                                                                             pdata.Immovable,
-                                                                             pdata.World,
-                                                                             pdata.Translation,
-                                                                             pdata.SkinYaw,
-                                                                             pdata.SkinPitch,
-                                                                             pdata.SkinRoll),
-                                                                             pdata.World);
 
-            return result;
+                        physicsComponentFactory.CreateSphericalBodyComponent(result,
+                                                                             data.Mass,
+                                                                             data.Radius,
+                                                                             data.Elasticity,
+                                                                             data.StaticRoughness,
+                                                                             data.DynamicRoughness,
+                                                                             data.Immovable,
+                                                                             data.World,
+                                                                             data.Translation,
+                                                                             data.SkinYaw,
+                                                                             data.SkinPitch,
+                                                                             data.SkinRoll));
+
+            return true;
         }
         /****************************************************************************/
 
@@ -922,38 +691,32 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// CreateGlowStick
         /****************************************************************************/
-        public GlowStick CreateGlowStick(GameObjectInstanceData data)
+        public bool CreateGlowStick(GlowStick result, GlowStickData data)
         {
-            GlowStick result = new GlowStick();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            GlowStickData gdata = (GlowStickData)data;
-
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                                                                        "GlowStick",
-                                                                       gdata.Texture,
+                                                                       data.Texture,
                                                                        "GlowStick_Specular",
                                                                        "GlowStick_Normals",
-                                                                       Renderer.UIntToInstancingMode(gdata.InstancingMode)),
+                                                                       Renderer.UIntToInstancingMode(data.InstancingMode)),
                         
                         physicsComponentFactory.CreateCylindricalBodyComponent(result,
-                                                                               gdata.Mass,
+                                                                               data.Mass,
                                                                                0.08f,
                                                                                1.0f,
-                                                                               gdata.Elasticity,
-                                                                               gdata.StaticRoughness,
-                                                                               gdata.DynamicRoughness,
-                                                                               gdata.Immovable,
-                                                                               gdata.World,
+                                                                               data.Elasticity,
+                                                                               data.StaticRoughness,
+                                                                               data.DynamicRoughness,
+                                                                               data.Immovable,
+                                                                               data.World,
                                                                                Vector3.Zero,
                                                                                0,
                                                                                90,
                                                                                0),
                         
                         renderingComponentsFactory.CreatePointLightComponent(result,
-                                                                             gdata.Enabled,
-                                                                             gdata.Color,
+                                                                             data.Enabled,
+                                                                             data.Color,
                                                                              false,
                                                                              0.5f,
                                                                              2,
@@ -962,17 +725,16 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              new Vector3(0,0.5f,0)),
                         
                         renderingComponentsFactory.CreatePointLightComponent(result,
-                                                                             gdata.Enabled,
-                                                                             gdata.Color,
+                                                                             data.Enabled,
+                                                                             data.Color,
                                                                              false,
                                                                              0.5f,
                                                                              2,
                                                                              0,
                                                                              5,
-                                                                             new Vector3(0, -0.5f, 0)),
-                                                                             gdata.World);
-            
-            return result;
+                                                                             new Vector3(0, -0.5f, 0)));
+
+            return true;
         }
         /****************************************************************************/
 
@@ -980,30 +742,23 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// CreateSpotLight
         /****************************************************************************/
-        public SpotLight CreateSpotLight(GameObjectInstanceData data)
+        public bool CreateSpotLight(SpotLight result, SpotLightData data)
         {
-            SpotLight result = new SpotLight();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            SpotLightData sdata = (SpotLightData)data;
-
             result.Init(renderingComponentsFactory.CreateSpotLightComponent(result,
-                                                                            sdata.Enabled,
-                                                                            sdata.Color,
-                                                                            sdata.Specular,
-                                                                            sdata.Intensity,
-                                                                            sdata.Radius,
-                                                                            sdata.NearPlane,
-                                                                            sdata.FarPlane,
-                                                                            sdata.LinearAttenuation,
-                                                                            sdata.QuadraticAttenuation,
-                                                                            sdata.LocalTransform,
-                                                                            sdata.Texture,
-                                                                            sdata.ShadowsEnabled),
-                                                                            sdata.World);
+                                                                            data.Enabled,
+                                                                            data.Color,
+                                                                            data.Specular,
+                                                                            data.Intensity,
+                                                                            data.Radius,
+                                                                            data.NearPlane,
+                                                                            data.FarPlane,
+                                                                            data.LinearAttenuation,
+                                                                            data.QuadraticAttenuation,
+                                                                            data.LocalTransform,
+                                                                            data.Texture,
+                                                                            data.ShadowsEnabled));
 
-            return result;
+            return true;
         }
         /****************************************************************************/
 
@@ -1011,14 +766,8 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// CreateFlashlight
         /****************************************************************************/
-        public Flashlight CreateFlashLight(GameObjectInstanceData data)
+        public bool CreateFlashlight(Flashlight result, FlashlightData data)
         {
-            Flashlight result = new Flashlight();
-
-            if (!DefaultObjectInit(result, data)) return result = null;
-
-            FlashlightData sdata = (FlashlightData)data;
-
             Matrix spotlighttrans = Matrix.CreateLookAt(new Vector3(-0.02f, -0.02f, 0.35f), new Vector3(-0.02f, -1, 0.35f), Vector3.Right);
 
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
@@ -1026,38 +775,36 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        "flashlightdiff",
                                                                        "flashlightspec",
                                                                        String.Empty,
-                                                                       Renderer.UIntToInstancingMode(sdata.InstancingMode)),
+                                                                       Renderer.UIntToInstancingMode(data.InstancingMode)),
 
                         physicsComponentFactory.CreateCylindricalBodyComponent(result,
-                                                                               sdata.Mass,
+                                                                               data.Mass,
                                                                                0.06f,
                                                                                0.4f,
-                                                                               sdata.Elasticity,
-                                                                               sdata.StaticRoughness,
-                                                                               sdata.DynamicRoughness,
-                                                                               sdata.Immovable,
-                                                                               sdata.World,
+                                                                               data.Elasticity,
+                                                                               data.StaticRoughness,
+                                                                               data.DynamicRoughness,
+                                                                               data.Immovable,
+                                                                               data.World,
                                                                                new Vector3(-0.15f,0,0),
                                                                                0,
                                                                                0,
                                                                                90),
  
                         renderingComponentsFactory.CreateSpotLightComponent(result,
-                                                                            sdata.Enabled,
-                                                                            sdata.Color,
-                                                                            sdata.Specular,
-                                                                            sdata.Intensity,
-                                                                            sdata.Radius,
-                                                                            sdata.NearPlane,
-                                                                            sdata.FarPlane,
-                                                                            sdata.LinearAttenuation,
-                                                                            sdata.QuadraticAttenuation,
+                                                                            data.Enabled,
+                                                                            data.Color,
+                                                                            data.Specular,
+                                                                            data.Intensity,
+                                                                            data.Radius,
+                                                                            data.NearPlane,
+                                                                            data.FarPlane,
+                                                                            data.LinearAttenuation,
+                                                                            data.QuadraticAttenuation,
                                                                             spotlighttrans,
-                                                                            sdata.AttenuationTexture,
-                                                                            sdata.ShadowsEnabled),
-                                                                            sdata.World);
-
-            return result;
+                                                                            data.AttenuationTexture,
+                                                                            data.ShadowsEnabled));
+            return true;
         }
         /****************************************************************************/
 

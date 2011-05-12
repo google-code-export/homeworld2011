@@ -32,12 +32,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Initialization
         /****************************************************************************/
         public void Init(TerrainComponent      terrainComponent,
-                         TerrainSkinComponent terrainSkinComponent,
-                         Matrix world)
+                         TerrainSkinComponent terrainSkinComponent)
         {
             this.terrainComponent     = terrainComponent;
             this.terrainSkinComponent = terrainSkinComponent;
-            this.World                = world;
         }
         /****************************************************************************/
 

@@ -60,14 +60,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(CameraComponent            cameraComponent, 
                          KeyboardListenerComponent  keyboardListenerComponent,
                          MouseListenerComponent     mouseListenerComponent,
-                         Matrix                     world, 
                          float                      movementSpeed,
                          float                      rotationSpeed)
         {
             this.cameraComponent            = cameraComponent;
             this.keyboardListenerComponent  = keyboardListenerComponent;
             this.mouseListenerComponent     = mouseListenerComponent;
-            this.World                      = world;
             this.movementSpeed              = movementSpeed;
             this.rotationSpeed              = rotationSpeed;
 
