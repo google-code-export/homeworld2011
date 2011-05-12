@@ -67,8 +67,7 @@ namespace PlagueEngine
             this.title = title;
             Window.Title = title;
             this.IsMouseVisible = true;
-            this.Activated += new EventHandler<EventArgs>(Game_Activated);
-            this.Deactivated+=new EventHandler<EventArgs>(Game_Deactivated);
+            
 
             #if DEBUG
             Diagnostics.Game = this;
@@ -111,15 +110,7 @@ namespace PlagueEngine
 
         }
 
-        private void Game_Deactivated(object sender, EventArgs e)
-        {
-            input.Enabled = false;
-        }
-
-        void Game_Activated(object sender, EventArgs e)
-        {
-            input.Enabled = true;
-        }
+      
 
         /****************************************************************************/
 
