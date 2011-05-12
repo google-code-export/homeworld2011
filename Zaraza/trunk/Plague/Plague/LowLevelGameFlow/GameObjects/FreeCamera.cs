@@ -212,7 +212,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
 
 
-            if (!selectRectange.IsEmpty && mouseKeyAction==MouseKeyAction.LeftClick)
+            if (!selectRectange.IsEmpty && mouseKeyAction == MouseKeyAction.LeftClick && !objectController.IsConstraintEnabled)
             {
                 cameraComponent.Renderer.DrawSelectionRect(selectRectange);
             }
@@ -229,14 +229,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
             //przeciaganie
-            if (mouseKeyState.IsDown() && !mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick)
+            if (mouseKeyState.IsDown() && !mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick && !objectController.IsConstraintEnabled)
             {
                 selectRectange.Width = (int)mouseX - selectRectange.X;
                 selectRectange.Height =(int)mouseY - selectRectange.Y;
             }
 
             //zwolnienie klawisza
-            if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick && selectRectange.Width!=0 && selectRectange.Height!=0)
+            if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick && selectRectange.Width != 0 && selectRectange.Height != 0 && !objectController.IsConstraintEnabled)
             {
                 BoundingFrustum frustum = cameraComponent.GetFrustumFromRect(selectRectange);
                
