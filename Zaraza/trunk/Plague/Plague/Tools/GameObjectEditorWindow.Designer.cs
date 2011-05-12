@@ -67,6 +67,7 @@
             this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
             this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
             this.panel6 = new System.Windows.Forms.Panel();
+            this.inputEnable = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -415,6 +416,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.inputEnable);
             this.tabPage4.Controls.Add(this.checkBox2);
             this.tabPage4.Controls.Add(this.checkBox1);
             this.tabPage4.Controls.Add(this.checkBoxGamePaused);
@@ -489,6 +491,17 @@
             this.panel6.Size = new System.Drawing.Size(389, 492);
             this.panel6.TabIndex = 22;
             // 
+            // inputEnable
+            // 
+            this.inputEnable.AutoSize = true;
+            this.inputEnable.Location = new System.Drawing.Point(204, 113);
+            this.inputEnable.Name = "inputEnable";
+            this.inputEnable.Size = new System.Drawing.Size(80, 17);
+            this.inputEnable.TabIndex = 9;
+            this.inputEnable.Text = "Game input";
+            this.inputEnable.UseVisualStyleBackColor = true;
+            this.inputEnable.CheckedChanged += new System.EventHandler(this.inputEnable_CheckedChanged);
+            // 
             // GameObjectEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -560,6 +573,7 @@
         private System.Windows.Forms.CheckBox checkBoxGamePaused;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox inputEnable;
 
 
     }

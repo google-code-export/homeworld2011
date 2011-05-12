@@ -1210,14 +1210,15 @@ namespace PlagueEngine.Tools
 
         private void GameObjectEditorWindow_Activated(object sender, EventArgs e)
         {
-            input.Enabled = false;
+            inputEnable.Checked = input.Enabled;
+            //input.Enabled = false;
         }
 
         private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
         {
             if (releaseInput)
             {
-                input.Enabled = true;
+                //input.Enabled = true;
             }
         }
 
@@ -1249,6 +1250,11 @@ namespace PlagueEngine.Tools
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             renderer.ssaoEnabled = checkBox2.Checked;
+        }
+
+        private void inputEnable_CheckedChanged(object sender, EventArgs e)
+        {
+            input.Enabled = inputEnable.Checked;
         }
 
 
