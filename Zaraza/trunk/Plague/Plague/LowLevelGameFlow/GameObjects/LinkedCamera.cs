@@ -82,6 +82,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float mouseX, mouseY;
         
         private Vector3 moveToPosition;
+
+        private GameObjectInstance mercenariesManager = null;
         /****************************************************************************/
 
 
@@ -95,7 +97,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float rotationSpeed,
                          float zoomSpeed,
                          Vector3 position,
-                         Vector3 target)
+                         Vector3 target,
+                         GameObjectInstance mercenariesManager)
         {
             this.cameraComponent            = cameraComponent;
             this.keyboardListenerComponent  = keyboardListenerComponent;
@@ -118,6 +121,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             int screenWidth  = cameraComponent.ScreenWidth;
             int screenHeight = cameraComponent.ScreenHeight;
+
+            this.mercenariesManager = mercenariesManager;
 
             ///domyslne miejsca na ekranie do przesuwania mysza kamery
             mouseRegions.left   = new region(0, 0, (int)(screenWidth * 0.05), screenHeight);
@@ -337,6 +342,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 middleButton = false;
                 this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
+            }
+
+            if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.MiddleClick)
+            {
+                CollisionSkin skin;
+                Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                Vector3 pos, nor;
+                float dist;
+                Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
+                if (skin != null)
+                {
+                    SendEvent(new SelectedObjectEvent((GameObjectInstance)skin.ExternalData, pos), Priority.Normal, mercenariesManager);
+                }
             }
          
         }
@@ -656,6 +674,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ActiveMouseListener = this.mouselistenerComponent.Active;
             data.Position = this.position;
             data.Target = this.target;
+            data.MercenariesManager = this.mercenariesManager.ID;
 
             return data;
         }
@@ -748,6 +767,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             set { this.ActiveMouseListener = value; }
             get { return ActiveMouseListener; }
         }
+
+        public uint MercenariesManager { get; set; }
     }
     /********************************************************************************/
 

@@ -383,7 +383,7 @@ namespace PlagueEngine.Rendering
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
-            particleManager.DrawParticles(gameTime);
+            //particleManager.DrawParticles(gameTime);
 
             DrawMarkers(ViewProjection);
             DrawRect();
@@ -522,6 +522,8 @@ namespace PlagueEngine.Rendering
             Vector2 pos2;
             foreach (Marker marker in Markers)
             {
+                if (!marker.Enabled) continue;
+
                 position = Vector4.Transform(marker.GetPosition(), ViewProjection);
 
                 pos2.X = MathHelper.Clamp(0.5f * ((position.X / Math.Abs(position.W)) + 1.0f), 0.01f, 0.99f);

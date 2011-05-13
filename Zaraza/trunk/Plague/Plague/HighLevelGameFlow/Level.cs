@@ -159,21 +159,6 @@ namespace PlagueEngine.HighLevelGameFlow
             dddtata.Pitch = 90;
             gameObjectsFactory.Create(dddtata);
 
-            LinkedCameraData lcdata = new LinkedCameraData();
-            lcdata.Type = typeof(LinkedCamera);
-            lcdata.position = new Vector3(245, 80, 10);
-            lcdata.Target = new Vector3(245, 45, 35);
-            lcdata.MovementSpeed = 0.07f;
-            lcdata.RotationSpeed = 0.005f;
-            lcdata.ZoomSpeed = 0.01f;
-            lcdata.FoV = 60;
-            lcdata.ZNear = 1f;
-            lcdata.ZFar = 200;
-            lcdata.ActiveKeyListener = true;
-            lcdata.ActiveMouseListener = true;
-
-            LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
-
             //FreeCameraData fcdata = new FreeCameraData();
             //fcdata.Type = typeof(FreeCamera);
             //fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
@@ -488,6 +473,29 @@ namespace PlagueEngine.HighLevelGameFlow
 
             mddd.World = Matrix.CreateTranslation(260, 56, 30);
             gameObjectsFactory.Create(mddd);
+
+
+            MercenariesManagerData mcmd = new MercenariesManagerData();
+            mcmd.Type = typeof(MercenariesManager);
+            mcmd.SelectedMercenaries = new List<uint>();
+            
+            GameObjectInstance mm = gameObjectsFactory.Create(mcmd);
+
+            LinkedCameraData lcdata = new LinkedCameraData();
+            lcdata.Type = typeof(LinkedCamera);
+            lcdata.position = new Vector3(245, 80, 10);
+            lcdata.Target = new Vector3(245, 45, 35);
+            lcdata.MovementSpeed = 0.07f;
+            lcdata.RotationSpeed = 0.005f;
+            lcdata.ZoomSpeed = 0.01f;
+            lcdata.FoV = 60;
+            lcdata.ZNear = 1f;
+            lcdata.ZFar = 200;
+            lcdata.ActiveKeyListener = true;
+            lcdata.ActiveMouseListener = true;
+            lcdata.MercenariesManager = mm.ID;
+
+            LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
         }
         /****************************************************************************/
 
