@@ -7,44 +7,92 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using PlagueEngine.Resources;
 using PlagueEngine.Rendering;
+using PlagueEngine.Particles.Components;
+
+
+/********************************************************************************/
+/// PlagueEngine.Particles
+/********************************************************************************/
 namespace PlagueEngine.Particles
 {
+
+
+    /********************************************************************************/
+    /// ParticleManager
+    /********************************************************************************/
     class ParticleManager
     {
-        public List<ParticleEmitter> particleEmitters = new List<ParticleEmitter>();
-        public ParticleFactory particleFactory = null;
 
+
+        /********************************************************************************/
+        /// Fields
+        /********************************************************************************/
+        public List<ParticleEmitterComponent> particleEmitters = new List<ParticleEmitterComponent>();
+        public ParticleFactory particleFactory = null;
+        /********************************************************************************/
+
+
+        /********************************************************************************/
+        /// Constructor
+        /********************************************************************************/
         public ParticleManager()
         {
-            ParticleEmitter.particleManager = this;
+            ParticleEmitterComponent.particleManager = this;
         }
+        /********************************************************************************/
 
+
+
+        /********************************************************************************/
+        /// CreateFactory
+        /********************************************************************************/
         public void CreateFactory(ContentManager content,Renderer renderer)
         {
             particleFactory = new ParticleFactory(content);
             particleFactory.SetRenderer(renderer);
             
         }
+        /********************************************************************************/
 
 
 
+
+
+        /********************************************************************************/
+        /// Update
+        /********************************************************************************/
         public void Update(GameTime gameTime)
         {
 
-            foreach (ParticleEmitter emitter in particleEmitters)
+            foreach (ParticleEmitterComponent emitter in particleEmitters)
             {
                 emitter.Update(gameTime);
             }
         }
+        /********************************************************************************/
 
+
+
+
+        /********************************************************************************/
+        /// DrawParticles
+        /********************************************************************************/
         public void DrawParticles(GameTime gameTime)
         {
 
 
-            foreach (ParticleEmitter emmiter in particleEmitters)
+            foreach (ParticleEmitterComponent emmiter in particleEmitters)
             {
                 emmiter.Draw(gameTime);
             }
         }
+        /********************************************************************************/
+
+
+
     }
+    /********************************************************************************/
+
+
 }
+/********************************************************************************/

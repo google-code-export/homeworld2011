@@ -377,7 +377,7 @@ namespace PlagueEngine.Rendering
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
-            //particleManager.DrawParticles(gameTime);
+            particleManager.DrawParticles(gameTime);
             DrawRect();
 
             //Device.SetRenderTarget(null);

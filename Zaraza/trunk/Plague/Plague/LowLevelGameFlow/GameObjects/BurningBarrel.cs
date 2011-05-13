@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
-using PlagueEngine.Particles;
+using PlagueEngine.Particles.Components;
 
 /************************************************************************************/
 ///PlagueEngine.LowLevelGameFlow.GameObjects
@@ -18,26 +18,31 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// ParticleEmitterGO
+    /// BurningBarrel
     /********************************************************************************/
-    class ParticleEmitterGO : GameObjectInstance
+    class BurningBarrel : GameObjectInstance
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        ParticleEmitter particleEmitter = null;
+        ParticleEmitterComponent particleEmitter = null;
+        MeshComponent meshComponent = null;
+        CylindricalBodyComponent physicsComponent = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(ParticleEmitter particleEmitter)
+        public void Init(ParticleEmitterComponent particleEmitter,MeshComponent mesh,CylindricalBodyComponent physicsComponent)
         {
             this.particleEmitter = particleEmitter;
+            this.meshComponent = mesh;
+            this.physicsComponent = physicsComponent;
         }
         /****************************************************************************/
+
 
 
         /****************************************************************************/
@@ -45,7 +50,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
+            meshComponent.ReleaseMe();
             particleEmitter.ReleaseEmitter();
+            physicsComponent.ReleaseMe();
         }
         /****************************************************************************/
 
@@ -55,10 +62,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            ParticleEmitterGOData data = new ParticleEmitterGOData();
+            BurningBarrelData data = new BurningBarrelData();
 
             GetData(data);
 
+            data.Model = meshComponent.Model.Name;
+            data.Diffuse = (meshComponent.Textures.Diffuse == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
+            data.Specular = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
+            data.Normals = (meshComponent.Textures.Normals == null ? String.Empty : meshComponent.Textures.Normals.Name);
+
+            data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);
+
+            data.Mass = physicsComponent.Mass;
+            data.Elasticity = physicsComponent.Elasticity;
+            data.StaticRoughness = physicsComponent.StaticRoughness;
+            data.DynamicRoughness = physicsComponent.DynamicRoughness;
+            data.Lenght = physicsComponent.Length;
+            data.Radius = physicsComponent.Radius;
+            data.Immovable = physicsComponent.Immovable;
+            data.Translation = physicsComponent.SkinTranslation;
+            data.SkinPitch = physicsComponent.Pitch;
+            data.SkinRoll = physicsComponent.Roll;
+            data.SkinYaw = physicsComponent.Yaw;
           
                     if(particleEmitter.particleSystem.settings.BlendState==BlendState.Additive)
                     {
@@ -98,7 +123,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.minVerticalVelocity=particleEmitter.particleSystem.settings.MinVerticalVelocity;
             data.particleTexture=particleEmitter.particleSystem.settings.TextureName;
             data.particlesPerSecond=particleEmitter.particlesPerSecond;
-            data.initialPosition = particleEmitter.previousPosition;
+            data.particleTranslation = particleEmitter.particleTranslation;
 
 
 
@@ -112,11 +137,61 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
     /********************************************************************************/
-    /// ParticleEmitterGOData
+    /// BurningBarrelData
     /********************************************************************************/
     [Serializable]
-    public class ParticleEmitterGOData : GameObjectInstanceData
+    public class BurningBarrelData : GameObjectInstanceData
     {
+        [CategoryAttribute("Model")]
+        public String Model { get; set; }
+
+        [CategoryAttribute("Textures")]
+        public String Diffuse { get; set; }
+
+        [CategoryAttribute("Textures")]
+        public String Specular { get; set; }
+
+        [CategoryAttribute("Textures")]
+        public String Normals { get; set; }
+
+        [CategoryAttribute("Instancing"),
+        DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
+        public uint InstancingMode { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public float Mass { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public float Elasticity { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public float StaticRoughness { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public float DynamicRoughness { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public bool Immovable { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float Lenght { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float Radius { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public Vector3 Translation { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float SkinYaw { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float SkinPitch { get; set; }
+
+        [CategoryAttribute("Collision Skin")]
+        public float SkinRoll { get; set; }
+
+
 
 
         [CategoryAttribute("Time"),
@@ -127,8 +202,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
            public float durationRandomnes { get; set; }
 
         [CategoryAttribute("Initialization"),
-        DescriptionAttribute("Spawn point.")]
-           public Vector3 initialPosition { get; set; }
+        DescriptionAttribute("Translation against gameObject position.")]
+           public Vector3 particleTranslation { get; set; }
         [CategoryAttribute("Initialization"),
         DescriptionAttribute("Alpha blending settings.1 - Additive, 2 - AlphaBlend, 3 - NonPremultiplied, 4 - Opaque. ")]
            public int blendState { get; set; }

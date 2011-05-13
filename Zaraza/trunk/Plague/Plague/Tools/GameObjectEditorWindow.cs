@@ -352,11 +352,11 @@ namespace PlagueEngine.Tools
             SpotLight.dataClassType = typeof(SpotLightData);
             gameObjectClassNames.Add(SpotLight);
 
-            gameObjectsClassName ParticleEmitter = new gameObjectsClassName();
-            ParticleEmitter.className = "ParticleEmitterGO";
-            ParticleEmitter.ClassType = typeof(ParticleEmitterGO);
-            ParticleEmitter.dataClassType = typeof(ParticleEmitterGOData);
-            gameObjectClassNames.Add(ParticleEmitter);
+            gameObjectsClassName BurningBarrel = new gameObjectsClassName();
+            BurningBarrel.className = "BurningBarrel";
+            BurningBarrel.ClassType = typeof(BurningBarrel);
+            BurningBarrel.dataClassType = typeof(BurningBarrelData);
+            gameObjectClassNames.Add(BurningBarrel);
 
             gameObjectsClassName Flashlight = new gameObjectsClassName();
             Flashlight.className = "Flashlight";
