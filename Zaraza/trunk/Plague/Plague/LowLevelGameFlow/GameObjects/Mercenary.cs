@@ -42,7 +42,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.mesh = mesh;
             this.body = body;
 
-            this.marker = new Marker(this.GetWorld, markerPosition, true);
+            this.marker = new Marker(this.GetWorld, markerPosition, false);
 
             controller = new PhysicsController(body);
             controller.EnableControl();
@@ -62,6 +62,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else
                 return mesh.WorldTransforms[bone];
         }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public Marker Marker { get { return marker; } }
         /****************************************************************************/
 
 

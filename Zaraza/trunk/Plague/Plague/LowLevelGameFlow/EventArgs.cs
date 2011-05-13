@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Microsoft.Xna.Framework;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
@@ -43,4 +43,19 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
 
 
+    /********************************************************************************/
+    /// SelectedObjectEvent
+    /********************************************************************************/
+    class SelectedObjectEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+        public Vector3            position;
+
+        public SelectedObjectEvent(GameObjectInstance gameObject, Vector3 position)
+        {
+            this.gameObject = gameObject;
+            this.position   = position;
+        }
+    }
+    /********************************************************************************/
 }

@@ -452,7 +452,14 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Create Linked Camera
         /****************************************************************************/
         public bool CreateLinkedCamera(LinkedCamera result, LinkedCameraData data)
-        {            
+        {
+            GameObjectInstance mercMan = GetObject(data.MercenariesManager);
+            if (mercMan == null)
+            {
+                PushToWaitingRoom(result, data);
+                return false;
+            }
+
             result.Init(renderingComponentsFactory.CreateCameraComponent(result,
                                                                          data.FoV,
                                                                          data.ZNear,
@@ -468,7 +475,8 @@ namespace PlagueEngine.LowLevelGameFlow
                          data.RotationSpeed,
                          data.ZoomSpeed,
                          data.position,
-                         data.Target);
+                         data.Target,
+                         mercMan);
 
             return true;
         }
@@ -911,6 +919,34 @@ namespace PlagueEngine.LowLevelGameFlow
             return true;
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateMercenariesManager
+        /****************************************************************************/
+        public bool CreateMercenariesManager(MercenariesManager result, MercenariesManagerData data)
+        {
+            List<Mercenary> mercenaries = new List<Mercenary>();
+
+            Mercenary goi;
+            foreach (uint id in data.SelectedMercenaries)
+            {
+                goi = GetObject(id) as Mercenary;
+                
+                if (goi == null)
+                {
+                    PushToWaitingRoom(result, data);
+                    return false;
+                }
+                mercenaries.Add(goi);
+            }
+
+            result.Init(mercenaries);
+
+            return true;
+        }
+        /****************************************************************************/
+
 
     }
     /********************************************************************************/    

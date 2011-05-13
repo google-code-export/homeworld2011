@@ -192,6 +192,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\FreeCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BurningBarrel.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\MercenariesManager.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Mercenary.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\PointLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
