@@ -58,6 +58,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override void ReleaseComponents()
         {
+
+            
             meshComponent.ReleaseMe();
             physicsComponent.ReleaseMe();
         }

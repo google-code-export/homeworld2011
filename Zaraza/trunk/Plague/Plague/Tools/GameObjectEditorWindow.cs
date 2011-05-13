@@ -41,19 +41,22 @@ namespace PlagueEngine.Tools
 
             public override void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
             {
-                if (e.GetType().Equals(typeof(LowLevelGameFlow.GameObjectClicked)))
+                if (this.editor.Visible == true)
                 {
-                    editor.ShowGameObjectProperties(  ((LowLevelGameFlow.GameObjectClicked)e).gameObjectID);
-                    
-                    editor.renderer.debugDrawer.StartSelectiveDrawing(((LowLevelGameFlow.GameObjectClicked)e).gameObjectID);
+                    if (e.GetType().Equals(typeof(LowLevelGameFlow.GameObjectClicked)))
+                    {
+                        editor.ShowGameObjectProperties(((LowLevelGameFlow.GameObjectClicked)e).gameObjectID);
 
-       
+                        editor.renderer.debugDrawer.StartSelectiveDrawing(((LowLevelGameFlow.GameObjectClicked)e).gameObjectID);
+
+
+                    }
                 }
-
                 if (e.GetType().Equals(typeof(LowLevelGameFlow.GameObjectReleased)))
                 {
                     editor.renderer.debugDrawer.StopSelectiveDrawing();
                 }
+
 
             }
 
@@ -564,7 +567,7 @@ namespace PlagueEngine.Tools
         private void buttonNew_Click(object sender, EventArgs e)
         {
             bool NewCanceled = false;
-          
+           
 
             if (!levelSaved)
             {
@@ -778,10 +781,10 @@ namespace PlagueEngine.Tools
                         --i;
                     }
                 }
-
+                releaseInput = false;
                 DefinitionWindow definitionWindow = new DefinitionWindow(list,this.currentObject);
                 definitionWindow.ShowDialog();
-
+                releaseInput = true;
                 if (!definitionWindow.canceled)
                 {
                     GameObjectDefinition god = new GameObjectDefinition();
@@ -1097,10 +1100,10 @@ namespace PlagueEngine.Tools
                         --i;
                     }
                 }
-
+                releaseInput = false;
                 DefinitionWindow definitionWindow = new DefinitionWindow(list, this.currentEditGameObject);
                 definitionWindow.ShowDialog();
-
+                releaseInput = true;
                 if (!definitionWindow.canceled)
                 {
                     GameObjectDefinition god = new GameObjectDefinition();
@@ -1129,9 +1132,10 @@ namespace PlagueEngine.Tools
         private void buttonSaveAs_Click(object sender, EventArgs e)
         {
 
-
+                        releaseInput = false;
                         LevelNameMessageBox box = new LevelNameMessageBox("Level name:");
                         box.ShowDialog();
+                        releaseInput = true;
 
                         if (!box.canceled)
                         {
@@ -1211,14 +1215,14 @@ namespace PlagueEngine.Tools
         private void GameObjectEditorWindow_Activated(object sender, EventArgs e)
         {
             inputEnable.Checked = input.Enabled;
-            //input.Enabled = false;
+            input.Enabled = false;
         }
 
         private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
         {
             if (releaseInput)
             {
-                //input.Enabled = true;
+                input.Enabled = true;
             }
         }
 

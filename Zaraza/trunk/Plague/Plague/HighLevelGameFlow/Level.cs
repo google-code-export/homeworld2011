@@ -196,7 +196,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Type = typeof(Sunlight);
             sdata.World = Matrix.Identity;
             sdata.Enabled = true;
-            sdata.Diffuse = new Vector3(0.5f, 0.5f, 0.7f);
+            sdata.Diffuse = new Vector3(1f, 1f, 1f);
             sdata.Intensity = 1;
 
             Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
@@ -237,7 +237,7 @@ namespace PlagueEngine.HighLevelGameFlow
             pdata.InstancingMode = 3;
 
             Random random = new Random();
-            for (int i = 1; i < 50; i++)
+            for (int i = 1; i < 4; i++)
             {
                 pdata.World = Matrix.CreateTranslation(250 + random.Next() % 30,
                                                         60 + random.Next() % 10,
@@ -260,7 +260,7 @@ namespace PlagueEngine.HighLevelGameFlow
             ddwdtata.InstancingMode = 3;
             ddwdtata.Mass = 1;
 
-            for (int j = 0; j < 25; j++)
+            for (int j = 0; j < 4; j++)
             {
                 ddwdtata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
                                                           80 + random.Next() % 10,
@@ -323,7 +323,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sssdata.StaticRoughness = 0.8f;
             sssdata.Translation = new Vector3(0, 0.65f, 0);
 
-            for (int j = 0; j < 25; j++)
+            for (int j = 0; j < 3; j++)
             {
                 sssdata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
                                                          100 + random.Next() % 10,
@@ -348,7 +348,7 @@ namespace PlagueEngine.HighLevelGameFlow
             ddwdtata.SkinPitch = 90;
             ddwdtata.Mass = 1;
 
-            for (int j = 0; j < 25; j++)
+            for (int j = 0; j < 4; j++)
             {
                 ddwdtata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
                                                           50 + random.Next() % 10,

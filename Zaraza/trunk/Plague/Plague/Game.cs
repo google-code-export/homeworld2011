@@ -104,7 +104,7 @@ namespace PlagueEngine
 
             eventsSystem = new EventsSystem.EventsSystem(Level);
 
-            eventsHistorian = new EventsHistorian(20);
+            //eventsHistorian = new EventsHistorian(20);
 
             renderer.InitDebugDrawer(physicsManager);
 
@@ -356,7 +356,7 @@ namespace PlagueEngine
         /****************************************************************************/
         public void FlushEventsHistory()
         {
-            if (eventsHistorian != null) eventsHistorian.Flush();
+            //if (eventsHistorian != null) eventsHistorian.Flush();
         }
         /****************************************************************************/
 

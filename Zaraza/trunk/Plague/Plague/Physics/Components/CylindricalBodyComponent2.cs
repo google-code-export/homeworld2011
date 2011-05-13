@@ -96,8 +96,17 @@ namespace PlagueEngine.Physics.Components
             Body.SetBodyInertia(Ixx, Iyy, Izz);
             /***************************************/
 
-           
+
+            Vector3 translation = world.Translation;
+
             Matrix dummyWorld = world;
+            dummyWorld.M41 = 0;
+            dummyWorld.M42 = 0;
+            dummyWorld.M43 = 0;
+
+            Vector3 t = Vector3.Transform(skinTranslation, dummyWorld);
+            dummyWorld.Translation = translation + t;
+
           
 
             
@@ -117,7 +126,7 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
 
-            dummyWorld.Translation += skinTranslation;
+            //dummyWorld.Translation += skinTranslation;
             
             MoveTo(dummyWorld);
             Enable();
