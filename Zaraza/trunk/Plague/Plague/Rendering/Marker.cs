@@ -6,84 +6,67 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-
 /************************************************************************************/
 /// PlagueEngine.Rendering
 /************************************************************************************/
 namespace PlagueEngine.Rendering
 {
-
     /********************************************************************************/
-    /// Quad
+    /// Marker
     /********************************************************************************/
-    class Quad
+    class Marker
     {
-
+        
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private VertexBuffer vertexBuffer = null;
-        private IndexBuffer  indexBuffer  = null;
-        
         public static Renderer renderer = null;
+
+        public delegate Matrix GetWorldDelegate();
+        private GetWorldDelegate getWorld = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Quad(float left, float top, float right, float bottom)
+        public Marker(GetWorldDelegate getWorld,Vector3 position,bool enabled)
         {
-            VertexPositionTexture[] vertices = new VertexPositionTexture[]
-            {
-                new VertexPositionTexture(new Vector3(right,bottom,0),new Vector2(1,1)),
-                new VertexPositionTexture(new Vector3(left ,bottom,0),new Vector2(0,1)),
-                new VertexPositionTexture(new Vector3(left ,top,   0),new Vector2(0,0)),
-                new VertexPositionTexture(new Vector3(right,top,   0),new Vector2(1,0)),
-            };
+            this.getWorld = getWorld;
 
-            ushort[] indices = new ushort[] {0,1,2,2,3,0};
+            LocalPosition = position;
+            Enabled       = enabled;
 
-            vertexBuffer = new VertexBuffer(renderer.Device, typeof(VertexPositionTexture), 4, BufferUsage.WriteOnly);
-            vertexBuffer.SetData <VertexPositionTexture>(vertices);
-
-            indexBuffer = new IndexBuffer(renderer.Device, typeof(ushort), 6, BufferUsage.WriteOnly);
-            indexBuffer.SetData<ushort>(indices);
+            renderer.Markers.Add(this);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Draw
+        /// Get World
         /****************************************************************************/
-        public void Draw()
+        public Vector3 GetPosition()
         {
-            renderer.Device.SetVertexBuffer(vertexBuffer);
-            renderer.Device.Indices = indexBuffer;
-
-            renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
+            return Vector3.Transform(LocalPosition, getWorld());
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Set Buffers
+        /// Release Me
         /****************************************************************************/
-        public void SetBuffers()
+        public void ReleaseMe()
         {
-            renderer.Device.SetVertexBuffer(vertexBuffer);
-            renderer.Device.Indices = indexBuffer;            
+            renderer.Markers.Remove(this);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Just Draw
+        /// Properties
         /****************************************************************************/
-        public void JustDraw()
-        {
-            renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4, 0, 2);
-        }
+        public Vector3 LocalPosition { get; set; }
+        public bool    Enabled       { get; set; }
         /****************************************************************************/
 
     }

@@ -462,27 +462,32 @@ namespace PlagueEngine.HighLevelGameFlow
             gameObjectsFactory.Create(fldata);
 
 
-            //MercenaryData mddd = new MercenaryData();
-            //mddd.Type = typeof(Mercenary);
-            //mddd.Model = "mie";
-            //mddd.TimeRatio = 1.0f;
-            //mddd.Diffuse = "Miesniak_diff";
-            //mddd.Normals = "miesniak_norm";
-            //mddd.World *= Matrix.CreateTranslation(245, 56, 30);
-                        
-            //mddd.Mass = 60;
-            //mddd.StaticRoughness = 0.7f;
-            //mddd.DynamicRoughness = 0.7f;
-            //mddd.Elasticity = 0.3f;
+            MercenaryData mddd = new MercenaryData();
+            mddd.Type = typeof(Mercenary);
+            mddd.Model = "mie";
+            mddd.TimeRatio = 1.0f;
+            mddd.Diffuse = "Miesniak_diff";
+            mddd.Normals = "miesniak_norm";
+            mddd.World = Matrix.CreateTranslation(245, 56, 30);
 
-            //mddd.Length = 5;
-            //mddd.Radius = 1;
-            //mddd.Immovable = false;
-            //mddd.SkinPitch = 90;
-            //mddd.Translation = new Vector3(0, 2.2f, 0);
-            //mddd.Status = 3;
+            mddd.Mass = 60;
+            mddd.StaticRoughness = 0.7f;
+            mddd.DynamicRoughness = 0.7f;
+            mddd.Elasticity = 0.3f;
 
-            //gameObjectsFactory.Create(mddd);
+            mddd.Length = 5;
+            mddd.Radius = 1;
+            mddd.Immovable = false;
+            mddd.SkinPitch = 90;
+            mddd.Translation = new Vector3(0, 2.2f, 0);
+            mddd.Status = 3;
+            mddd.MarkerPosition = new Vector3(0, 6.2f, 1);
+
+            gameObjectsFactory.Create(mddd);
+
+
+            mddd.World = Matrix.CreateTranslation(260, 56, 30);
+            gameObjectsFactory.Create(mddd);
         }
         /****************************************************************************/
 

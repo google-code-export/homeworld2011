@@ -6,6 +6,7 @@ using System.ComponentModel;
 using Microsoft.Xna.Framework;
 
 using PlagueEngine.LowLevelGameFlow;
+using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Input.Components;
@@ -29,16 +30,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         SkinnedMeshComponent mesh       = null;
         CapsuleBodyComponent body       = null;
         PhysicsController    controller = null;
+        Marker               marker     = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(SkinnedMeshComponent mesh, CapsuleBodyComponent body)
+        public void Init(SkinnedMeshComponent mesh, CapsuleBodyComponent body,Vector3 markerPosition)
         {
             this.mesh = mesh;
             this.body = body;
+
+            this.marker = new Marker(this.GetWorld, markerPosition, true);
 
             controller = new PhysicsController(body);
             controller.EnableControl();
@@ -70,6 +74,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mesh = null;
             body.ReleaseMe();
             body = null;
+            marker.ReleaseMe();
+            marker = null;
         }
         /****************************************************************************/
 
@@ -114,6 +120,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.Radius = body.Radius;
             data.Length = body.Length;
+
+            data.MarkerPosition = marker.LocalPosition;
 
             return data;
         }
@@ -178,21 +186,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float Length { get; set; }
-
         [CategoryAttribute("Collision Skin")]
         public float Radius { get; set; }
-
         [CategoryAttribute("Collision Skin")]
         public Vector3 Translation { get; set; }
-
         [CategoryAttribute("Collision Skin")]
         public float SkinYaw { get; set; }
-
         [CategoryAttribute("Collision Skin")]
         public float SkinPitch { get; set; }
-
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
+
+
+        [CategoryAttribute("Marker")]
+        public Vector3 MarkerPosition { get; set; }
     }
     /********************************************************************************/
 }

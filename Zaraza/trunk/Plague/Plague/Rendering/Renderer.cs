@@ -91,6 +91,9 @@ namespace PlagueEngine.Rendering
         internal BatchedSkinnedMeshes batchedSkinnedMeshes = null;
         internal DebugDrawer          debugDrawer          = null;
         internal LightsManager        lightsManager        = null;
+        internal List<Marker>         Markers              = new List<Marker>();
+        private  SpriteBatch          spriteBatch          = null;
+        private  Texture2D            markerTexture        = null;
         /**********************/
 
 
@@ -166,6 +169,9 @@ namespace PlagueEngine.Rendering
             Quad.renderer                 = this;
             PointLightComponent.renderer  = this;
             SpotLightComponent.renderer   = this;
+            Marker.renderer               = this;
+
+            spriteBatch = new SpriteBatch(Device);
 
             ExtendedMouseMovementState.display = graphics.GraphicsDevice.DisplayMode;            
 
@@ -378,7 +384,10 @@ namespace PlagueEngine.Rendering
             fullScreenQuad.Draw();
 
             particleManager.DrawParticles(gameTime);
+
+            DrawMarkers(ViewProjection);
             DrawRect();
+
 
             //Device.SetRenderTarget(null);
 
@@ -493,6 +502,40 @@ namespace PlagueEngine.Rendering
             fullScreenQuad.JustDraw();
 
             Device.SetRenderTarget(null);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Draw Markers
+        /****************************************************************************/
+        private void DrawMarkers(Matrix ViewProjection)
+        {
+            if (spriteBatch.GraphicsDevice.IsDisposed)
+            {
+                spriteBatch = new SpriteBatch(Device);
+            }
+
+            spriteBatch.Begin();
+
+            Vector4 position;
+            Vector2 pos2;
+            foreach (Marker marker in Markers)
+            {
+                position = Vector4.Transform(marker.GetPosition(), ViewProjection);
+
+                pos2.X = MathHelper.Clamp(0.5f * ((position.X / Math.Abs(position.W)) + 1.0f), 0.01f, 0.99f);
+                pos2.X *= Device.PresentationParameters.BackBufferWidth;
+                pos2.X -= markerTexture.Width / 2;
+
+                pos2.Y  = MathHelper.Clamp(1.0f - (0.5f * ((position.Y / Math.Abs(position.W)) + 1.0f)), 0.01f, 0.99f);
+                pos2.Y *= (Device.PresentationParameters.BackBufferHeight);
+                pos2.Y -= markerTexture.Height / 2;                               
+                
+                spriteBatch.Draw(markerTexture, pos2, Color.White);
+            }
+
+            spriteBatch.End();
         }
         /****************************************************************************/
 
@@ -637,7 +680,7 @@ namespace PlagueEngine.Rendering
             ssaoEffect       = contentManager.LoadEffect("SSAO");
             ssaoBlurEffect   = contentManager.LoadEffect("GaussianBlur15");
             rectEffect       = contentManager.LoadEffect("SSLineEffect");
-
+                        
             composition.Parameters["GBufferColor"].SetValue(color);
             composition.Parameters["GBufferDepth"].SetValue(depth);
             composition.Parameters["LightMap"].SetValue(light);
@@ -647,6 +690,7 @@ namespace PlagueEngine.Rendering
             debugEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
                        
             ditherTexture = contentManager.LoadTexture2D("RandomNormals");
+            markerTexture = contentManager.LoadTexture2D("marker");
 
             ssaoEffect.Parameters["DitherTexture"].SetValue(ditherTexture);
             ssaoEffect.Parameters["GBufferNormal"].SetValue(normal);
@@ -734,8 +778,8 @@ namespace PlagueEngine.Rendering
 
             lightsManager = new LightsManager(normal, depth, light, fullScreenQuad, HalfPixel, this, contentManager);
 
-            float[] w = new float[7];
-            Vector2[] o = new Vector2[7];
+            //float[] w = new float[7];
+            //Vector2[] o = new Vector2[7];
 
             //calcSettings(1.0f/2048.0f, 1.0f/2048.0f,out w,out o);
 
