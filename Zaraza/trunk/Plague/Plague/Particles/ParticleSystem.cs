@@ -5,77 +5,56 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using PlagueEngine.Rendering.Components;
 
+
+
+/********************************************************************************/
+/// PlagueEngine.Particles
+/********************************************************************************/
 namespace PlagueEngine.Particles
 {
-    /// <summary>
-    /// The main component in charge of displaying particles.
-    /// </summary>
+
+
+    /********************************************************************************/
+    /// ParticleSystem
+    /********************************************************************************/
     class ParticleSystem
     {
-        #region Fields
 
 
-        // Settings class controls the appearance and animation of this particle system.
+
+
+        /********************************************************************************/
+        /// Fields
+        /********************************************************************************/
         public ParticleSettings settings = new ParticleSettings();
-
-
-
-
-        // Custom effect for drawing particles. This computes the particle
-        // animation entirely in the vertex shader: no per-particle CPU work required!
         Effect particleEffect;
-
-
-        // Shortcuts for accessing frequently changed effect parameters.
         EffectParameter effectViewParameter;
         EffectParameter effectProjectionParameter;
         EffectParameter effectViewportScaleParameter;
         EffectParameter effectTimeParameter;
-
-
-        // An array of particles, treated as a circular queue.
         ParticleVertex[] particles;
-
-
-        // A vertex buffer holding our particles. This contains the same data as
-        // the particles array, but copied across to where the GPU can access it.
         DynamicVertexBuffer vertexBuffer;
-
-
-        // Index buffer turns sets of four vertices into particle quads (pairs of triangles).
         IndexBuffer indexBuffer;
-
-
         int firstActiveParticle;
         int firstNewParticle;
         int firstFreeParticle;
         int firstRetiredParticle;
-
-
-        // Store the current time, in seconds.
         float currentTime;
-
-
-        // Count how many times Draw has been called. This is used to know
-        // when it is safe to retire old particles back into the free list.
         int drawCounter;
-
-
-        // Shared random number generator.
         static Random random = new Random();
-
-
         private GraphicsDevice graphics=null;
         private CameraComponent camera=null;
         public Texture2D texture=null;
-        #endregion
 
-        #region Initialization
+        /********************************************************************************/
 
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
+
+
+
+        /********************************************************************************/
+            /// Constructor
+        /********************************************************************************/
         public ParticleSystem(GraphicsDevice graphics,CameraComponent camera,Texture2D texture,Effect effect,ParticleSettings settings)
         {
             this.graphics = graphics;
@@ -88,15 +67,16 @@ namespace PlagueEngine.Particles
             LoadContent();
 
         }
+        /********************************************************************************/
 
 
-        /// <summary>
-        /// Initializes the component.
-        /// </summary>
+
+
+        /********************************************************************************/
+            /// Initialize
+        /********************************************************************************/
         private void Initialize()
         {
-
-            // Allocate the particle array, and fill in the corner fields (which never change).
             particles = new ParticleVertex[settings.MaxParticles * 4];
 
             for (int i = 0; i < settings.MaxParticles; i++)
@@ -108,22 +88,20 @@ namespace PlagueEngine.Particles
             }
 
         }
+        /********************************************************************************/
 
 
 
-
-        /// <summary>
-        /// Loads graphics for the particle system.
-        /// </summary>
+        /********************************************************************************/
+            /// LoadContent
+        /********************************************************************************/
         protected void LoadContent()
         {
             LoadParticleEffect();
 
-            // Create a dynamic vertex buffer.
             vertexBuffer = new DynamicVertexBuffer(graphics, ParticleVertex.VertexDeclaration,
                                                    settings.MaxParticles * 4, BufferUsage.WriteOnly);
 
-            // Create and populate the index buffer.
             ushort[] indices = new ushort[settings.MaxParticles * 6];
 
             for (int i = 0; i < settings.MaxParticles; i++)
@@ -141,24 +119,26 @@ namespace PlagueEngine.Particles
 
             indexBuffer.SetData(indices);
         }
+        /********************************************************************************/
 
 
-        /// <summary>
-        /// Helper for loading and initializing the particle effect.
-        /// </summary>
+
+
+
+
+        /********************************************************************************/
+        /// LoadParticleEffect
+        /********************************************************************************/
         void LoadParticleEffect()
         {
           
 
             EffectParameterCollection parameters = particleEffect.Parameters;
 
-            // Look up shortcuts for parameters that change every frame.
             effectViewParameter = parameters["View"];
             effectProjectionParameter = parameters["Projection"];
             effectViewportScaleParameter = parameters["ViewportScale"];
             effectTimeParameter = parameters["CurrentTime"];
-
-            // Set the values of parameters that do not change.
             parameters["Duration"].SetValue((float)settings.Duration.TotalSeconds);
             parameters["DurationRandomness"].SetValue(settings.DurationRandomness);
             parameters["Gravity"].SetValue(settings.Gravity);
@@ -179,15 +159,14 @@ namespace PlagueEngine.Particles
             parameters["Texture"].SetValue(texture);
         }
 
-
-        #endregion
-
-        #region Update and Draw
+        /********************************************************************************/
 
 
-        /// <summary>
-        /// Updates the particle system.
-        /// </summary>
+
+
+        /********************************************************************************/
+        /// ParticleSettings
+        /********************************************************************************/
         public void Update(GameTime gameTime)
         {
             if (gameTime == null)
@@ -198,84 +177,73 @@ namespace PlagueEngine.Particles
             RetireActiveParticles();
             FreeRetiredParticles();
 
-            // If we let our timer go on increasing for ever, it would eventually
-            // run out of floating point precision, at which point the particles
-            // would render incorrectly. An easy way to prevent this is to notice
-            // that the time value doesn't matter when no particles are being drawn,
-            // so we can reset it back to zero any time the active queue is empty.
-
             if (firstActiveParticle == firstFreeParticle)
                 currentTime = 0;
 
             if (firstRetiredParticle == firstActiveParticle)
                 drawCounter = 0;
         }
+        /********************************************************************************/
 
 
-        /// <summary>
-        /// Helper for checking when active particles have reached the end of
-        /// their life. It moves old particles from the active area of the queue
-        /// to the retired section.
-        /// </summary>
+
+        /********************************************************************************/
+        /// RetireActiveParticles
+        /********************************************************************************/
         void RetireActiveParticles()
         {
             float particleDuration = (float)settings.Duration.TotalSeconds;
 
             while (firstActiveParticle != firstNewParticle)
             {
-                // Is this particle old enough to retire?
-                // We multiply the active particle index by four, because each
-                // particle consists of a quad that is made up of four vertices.
+
                 float particleAge = currentTime - particles[firstActiveParticle * 4].Time;
 
                 if (particleAge < particleDuration)
                     break;
 
-                // Remember the time at which we retired this particle.
                 particles[firstActiveParticle * 4].Time = drawCounter;
 
-                // Move the particle from the active to the retired queue.
                 firstActiveParticle++;
 
                 if (firstActiveParticle >= settings.MaxParticles)
                     firstActiveParticle = 0;
             }
         }
+        /********************************************************************************/
 
 
-        /// <summary>
-        /// Helper for checking when retired particles have been kept around long
-        /// enough that we can be sure the GPU is no longer using them. It moves
-        /// old particles from the retired area of the queue to the free section.
-        /// </summary>
+
+
+
+        /********************************************************************************/
+        /// FreeRetiredParticles
+        /********************************************************************************/
         void FreeRetiredParticles()
         {
             while (firstRetiredParticle != firstActiveParticle)
             {
-                // Has this particle been unused long enough that
-                // the GPU is sure to be finished with it?
-                // We multiply the retired particle index by four, because each
-                // particle consists of a quad that is made up of four vertices.
+
                 int age = drawCounter - (int)particles[firstRetiredParticle * 4].Time;
 
-                // The GPU is never supposed to get more than 2 frames behind the CPU.
-                // We add 1 to that, just to be safe in case of buggy drivers that
-                // might bend the rules and let the GPU get further behind.
                 if (age < 3)
                     break;
 
-                // Move the particle from the retired to the free queue.
                 firstRetiredParticle++;
 
                 if (firstRetiredParticle >= settings.MaxParticles)
                     firstRetiredParticle = 0;
             }
         }
+        /********************************************************************************/
 
 
-        /// <summary>
-        /// Draws the particle system.
-        /// </summary>
+
+
+
+        /********************************************************************************/
+            /// Draw
+        /********************************************************************************/
         public void Draw(GameTime gameTime)
         {
 
@@ -283,54 +251,39 @@ namespace PlagueEngine.Particles
             effectViewParameter.SetValue(camera.View);
             effectProjectionParameter.SetValue(camera.Projection);
        
-            // Restore the vertex buffer contents if the graphics device was lost.
             if (vertexBuffer.IsContentLost)
             {
                 vertexBuffer.SetData(particles);
             }
 
-            // If there are any particles waiting in the newly added queue,
-            // we'd better upload them to the GPU ready for drawing.
             if (firstNewParticle != firstFreeParticle)
             {
                 AddNewParticlesToVertexBuffer();
             }
-
-            // If there are any active particles, draw them now!
             if (firstActiveParticle != firstFreeParticle)
             {
                 graphics.BlendState = settings.BlendState;
                 graphics.DepthStencilState = DepthStencilState.None;
 
-                // Set an effect parameter describing the viewport size. This is
-                // needed to convert particle sizes into screen space point sizes.
                 effectViewportScaleParameter.SetValue(new Vector2(0.5f / graphics.Viewport.AspectRatio, -0.5f));
 
-                // Set an effect parameter describing the current time. All the vertex
-                // shader particle animation is keyed off this value.
                 effectTimeParameter.SetValue(currentTime);
 
-                // Set the particle vertex and index buffer.
                 graphics.SetVertexBuffer(vertexBuffer);
                 graphics.Indices = indexBuffer;
 
-                // Activate the particle effect.
                 foreach (EffectPass pass in particleEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
 
                     if (firstActiveParticle < firstFreeParticle)
                     {
-                        // If the active particles are all in one consecutive range,
-                        // we can draw them all in a single call.
                         graphics.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
                                                      firstActiveParticle * 4, (firstFreeParticle - firstActiveParticle) * 4,
                                                      firstActiveParticle * 6, (firstFreeParticle - firstActiveParticle) * 2);
                     }
                     else
                     {
-                        // If the active particle range wraps past the end of the queue
-                        // back to the start, we must split them over two draw calls.
                         graphics.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
                                                      firstActiveParticle * 4, (settings.MaxParticles - firstActiveParticle) * 4,
                                                      firstActiveParticle * 6, (settings.MaxParticles - firstActiveParticle) * 2);
@@ -344,27 +297,23 @@ namespace PlagueEngine.Particles
                     }
                 }
 
-                // Reset some of the renderstates that we changed,
-                // so as not to mess up any other subsequent drawing.
                 graphics.DepthStencilState = DepthStencilState.Default;
             }
 
             drawCounter++;
         }
+        /********************************************************************************/
 
 
-        /// <summary>
-        /// Helper for uploading new particles from our managed
-        /// array to the GPU vertex buffer.
-        /// </summary>
+        /********************************************************************************/
+        /// AddNewParticlesToVertexBuffer
+        /********************************************************************************/
         void AddNewParticlesToVertexBuffer()
         {
             int stride = ParticleVertex.SizeInBytes;
 
             if (firstNewParticle < firstFreeParticle)
             {
-                // If the new particles are all in one consecutive range,
-                // we can upload them all in a single call.
                 vertexBuffer.SetData(firstNewParticle * stride * 4, particles,
                                      firstNewParticle * 4,
                                      (firstFreeParticle - firstNewParticle) * 4,
@@ -372,8 +321,6 @@ namespace PlagueEngine.Particles
             }
             else
             {
-                // If the new particle range wraps past the end of the queue
-                // back to the start, we must split them over two upload calls.
                 vertexBuffer.SetData(firstNewParticle * stride * 4, particles,
                                      firstNewParticle * 4,
                                      (settings.MaxParticles - firstNewParticle) * 4,
@@ -387,38 +334,29 @@ namespace PlagueEngine.Particles
                 }
             }
 
-            // Move the particles we just uploaded from the new to the active queue.
             firstNewParticle = firstFreeParticle;
         }
-
-
-        #endregion
-
-        #region Public Methods
+        /********************************************************************************/
 
 
 
 
-        /// <summary>
-        /// Adds a new particle to the system.
-        /// </summary>
+
+        /********************************************************************************/
+        /// AddParticle
+        /********************************************************************************/
         public void AddParticle(Vector3 position, Vector3 velocity)
         {
-            // Figure out where in the circular queue to allocate the new particle.
             int nextFreeParticle = firstFreeParticle + 1;
 
             if (nextFreeParticle >= settings.MaxParticles)
                 nextFreeParticle = 0;
 
-            // If there are no free particles, we just have to give up.
             if (nextFreeParticle == firstRetiredParticle)
                 return;
 
-            // Adjust the input velocity based on how much
-            // this particle system wants to be affected by it.
             velocity *= settings.EmitterVelocitySensitivity;
 
-            // Add in some random amount of horizontal velocity.
             float horizontalVelocity = MathHelper.Lerp(settings.MinHorizontalVelocity,
                                                        settings.MaxHorizontalVelocity,
                                                        (float)random.NextDouble());
@@ -428,19 +366,15 @@ namespace PlagueEngine.Particles
             velocity.X += horizontalVelocity * (float)Math.Cos(horizontalAngle);
             velocity.Z += horizontalVelocity * (float)Math.Sin(horizontalAngle);
 
-            // Add in some random amount of vertical velocity.
             velocity.Y += MathHelper.Lerp(settings.MinVerticalVelocity,
                                           settings.MaxVerticalVelocity,
                                           (float)random.NextDouble());
 
-            // Choose four random control values. These will be used by the vertex
-            // shader to give each particle a different size, rotation, and color.
             Color randomValues = new Color((byte)random.Next(255),
                                            (byte)random.Next(255),
                                            (byte)random.Next(255),
                                            (byte)random.Next(255));
 
-            // Fill in the particle vertex structure.
             for (int i = 0; i < 4; i++)
             {
                 particles[firstFreeParticle * 4 + i].Position = position;
@@ -451,8 +385,20 @@ namespace PlagueEngine.Particles
 
             firstFreeParticle = nextFreeParticle;
         }
+        /********************************************************************************/
 
 
-        #endregion
+
+
+       
     }
+    /********************************************************************************/
+
+
+
+
+
+
+
 }
+/********************************************************************************/

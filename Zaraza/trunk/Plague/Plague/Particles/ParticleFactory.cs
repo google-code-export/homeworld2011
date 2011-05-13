@@ -5,28 +5,63 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering;
-
 using PlagueEngine.Resources;
+using PlagueEngine.Particles.Components;
+using PlagueEngine.LowLevelGameFlow;
 
+/********************************************************************************/
+/// PlagueEngine.Particles
+/********************************************************************************/
 namespace PlagueEngine.Particles
 {
+
+    /********************************************************************************/
+    /// ParticleFactory
+    /********************************************************************************/
     class ParticleFactory
     {
+
+
+        /********************************************************************************/
+        /// Fields
+        /********************************************************************************/
         private ContentManager content = null;
         
         private Renderer renderer = null;
+        /********************************************************************************/
+
+
+
+
+
+        /********************************************************************************/
+        /// Constructor
+        /********************************************************************************/
         public ParticleFactory(ContentManager content)
         {
             this.content = content;
         }
+        /********************************************************************************/
 
 
+
+        /********************************************************************************/
+        /// SetRenderer
+        /********************************************************************************/
         public void SetRenderer(Renderer renderer)
         {
             this.renderer = renderer;
         }
+        /********************************************************************************/
 
-        public ParticleEmitter CreateParticleEmitter(
+
+
+
+        /********************************************************************************/
+        /// CreateParticleEmitter
+        /********************************************************************************/
+        public ParticleEmitterComponent CreateParticleEmitterComponent(
+            GameObjectInstance gameObject,
             int blendState,
             double duration,
             float durationRandomnes,
@@ -48,7 +83,8 @@ namespace PlagueEngine.Particles
             float minVerticalVelocity,
             String particleTexture,
             float particlesPerSecond,
-            Vector3 initialPosition)
+            Vector3 particleTranslation,
+            Matrix world)
         {
             ParticleSettings settings = new ParticleSettings();
             
@@ -93,12 +129,20 @@ namespace PlagueEngine.Particles
             Effect particleEffect = content.LoadEffect("ParticleEffect");
             particleEffect.Parameters["DepthTexture"].SetValue(renderer.depth);
             ParticleSystem particleSystem = new ParticleSystem(renderer.Device, renderer.CurrentCamera, content.LoadTexture2D(particleTexture), particleEffect.Clone(), settings);
-            ParticleEmitter result = new ParticleEmitter(particleSystem,particlesPerSecond,initialPosition);
+            ParticleEmitterComponent result = new ParticleEmitterComponent(particleSystem, particlesPerSecond, gameObject, particleTranslation,world);
             return result;
 
                 
                 
                 
         }
+        /********************************************************************************/
+
+
+
     }
+    /********************************************************************************/
+
+
 }
+/********************************************************************************/

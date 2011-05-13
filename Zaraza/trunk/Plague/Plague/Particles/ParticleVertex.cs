@@ -2,30 +2,42 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 
+
+
+
+/********************************************************************************/
+/// PlagueEngine.Particles
+/********************************************************************************/
 namespace PlagueEngine.Particles
 {
-    /// <summary>
-    /// Custom vertex structure for drawing particles.
-    /// </summary>
+
+
+
+
+    /********************************************************************************/
+    /// ParticleVertex
+    /********************************************************************************/
     struct ParticleVertex
     {
-        // Stores which corner of the particle quad this vertex represents.
+
+
+        /********************************************************************************/
+        /// Fields
+        /********************************************************************************/
         public Short2 Corner;
-
-        // Stores the starting position of the particle.
         public Vector3 Position;
-
-        // Stores the starting velocity of the particle.
         public Vector3 Velocity;
-
-        // Four random values, used to make each particle look slightly different.
         public Color Random;
-
-        // The time (in seconds) at which this particle was created.
         public float Time;
+        public const int SizeInBytes = 36;
+        /********************************************************************************/
 
 
-        // Describe the layout of this vertex structure.
+
+
+        /********************************************************************************/
+        /// VertexDeclaration
+        /********************************************************************************/
         public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Short2,
@@ -43,9 +55,12 @@ namespace PlagueEngine.Particles
             new VertexElement(32, VertexElementFormat.Single,
                                   VertexElementUsage.TextureCoordinate, 0)
         );
+        /********************************************************************************/
 
-
-        // Describe the size of this vertex structure.
-        public const int SizeInBytes = 36;
+        
     }
+    /********************************************************************************/
+
+
 }
+/********************************************************************************/

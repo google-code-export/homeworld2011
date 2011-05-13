@@ -191,8 +191,8 @@
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FreeCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\BurningBarrel.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Mercenary.cs" />
-    <Compile Include="LowLevelGameFlow\GameObjects\ParticleEmitterGO.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\PointLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalSkinMesh.cs" />
@@ -204,7 +204,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Sunlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\WaterSurface.cs" />
-    <Compile Include="Particles\ParticleEmitter.cs" />
+    <Compile Include="Particles\Components\ParticleEmitterComponent.cs" />
     <Compile Include="Particles\ParticleFactory.cs" />
     <Compile Include="Particles\ParticleManager.cs" />
     <Compile Include="Particles\ParticleSettings.cs" />

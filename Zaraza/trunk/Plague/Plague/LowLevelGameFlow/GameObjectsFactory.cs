@@ -206,11 +206,17 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
         /****************************************************************************/
-        /// Create Particle Emitter GO
+        /// CreateBurningBarell
         /****************************************************************************/
-        public bool CreateParticleEmitterGO(ParticleEmitterGO result, ParticleEmitterGOData data)
-        {                                                
-            result.Init(particleFactory.CreateParticleEmitter(
+        public bool CreateBurningBarrel(BurningBarrel result, BurningBarrelData data)
+        {           
+            
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
+            
+ 
+            result.Init(particleFactory.CreateParticleEmitterComponent(
+                                                                result,
                                                                 data.blendState,
                                                                 data.duration,
                                                                 data.durationRandomnes,
@@ -232,8 +238,32 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                 data.minVerticalVelocity,
                                                                 data.particleTexture,
                                                                 data.particlesPerSecond,
-                                                                data.initialPosition
-                                                                ));
+                                                                data.particleTranslation,
+                                                                data.World
+                                                                ),
+                                                                
+                                                                renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
+                                                                       InstancingMode),
+
+
+                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
+                                                                                data.Mass,
+                                                                                data.Radius,
+                                                                                data.Lenght,
+                                                                                data.Elasticity,
+                                                                                data.StaticRoughness,
+                                                                                data.DynamicRoughness,
+                                                                                data.Immovable,
+                                                                                data.World,
+                                                                                data.Translation,
+                                                                                data.SkinYaw,
+                                                                                data.SkinPitch,
+                                                                                data.SkinRoll)
+                                                                       );
 
             return true;
         }

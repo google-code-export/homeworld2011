@@ -394,39 +394,49 @@ namespace PlagueEngine.HighLevelGameFlow
             sssdata.World = Matrix.CreateTranslation(240, 60, 60);
             gameObjectsFactory.Create(sssdata);
 
-            ParticleEmitterGOData ddxdtata = new ParticleEmitterGOData();
-            ddxdtata.Type = (typeof(ParticleEmitterGO));
+
+
+
+
+            BurningBarrelData ddxdtata = new BurningBarrelData();
+            ddxdtata.Type = (typeof(BurningBarrel));
             ddxdtata.particleTexture = "fire";
-
             ddxdtata.maxParticles = 500;
-
             ddxdtata.duration = 3;
-
             ddxdtata.durationRandomnes = 1;
-
             ddxdtata.minHorizontalVelocity = 0;
             ddxdtata.maxHorizontalVelocity = 0;
-
             ddxdtata.minVerticalVelocity = 0;
             ddxdtata.maxVerticalVelocity = 10;
-
             ddxdtata.gravity = new Vector3(0, 5, 0);
-
             ddxdtata.minColor = new Color(255, 255, 255, 10);
             ddxdtata.maxColor = new Color(255, 255, 255, 255);
-
             ddxdtata.minStartSize = 5;
             ddxdtata.maxStartSize = 10;
-
             ddxdtata.minEndSize = 1;
             ddxdtata.maxEndSize = 2;
-
             ddxdtata.blendState = 1;
-
-            ddxdtata.initialPosition = new Vector3(245, 54, 35);
             ddxdtata.particlesPerSecond = 10;
+            ddxdtata.Model = "Barrel";
+            ddxdtata.Diffuse = "Barrel_diffuse";
+            ddxdtata.Specular = "Barrel_specular";
+            ddxdtata.Normals = "Barrel_normals";
+            ddxdtata.DynamicRoughness = 0.7f;
+            ddxdtata.Elasticity = 0.1f;
+            ddxdtata.StaticRoughness = 0.6f;
+            ddxdtata.Radius = 1.1f;
+            ddxdtata.Lenght = 3.3f;
+            ddxdtata.Immovable = false;
+            ddxdtata.InstancingMode = 3;
+            ddxdtata.Mass = 1;
+            ddxdtata.World = Matrix.CreateTranslation(255, 77, 35);
 
             gameObjectsFactory.Create(ddxdtata);
+            
+
+
+
+
 
             FlashlightData fldata = new FlashlightData();
             fldata.Type = (typeof(Flashlight));
@@ -451,27 +461,28 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.Status = 2;
             gameObjectsFactory.Create(fldata);
 
-            MercenaryData mddd = new MercenaryData();
-            mddd.Type = typeof(Mercenary);
-            mddd.Model = "mie";
-            mddd.TimeRatio = 1.0f;
-            mddd.Diffuse = "Miesniak_diff";
-            mddd.Normals = "miesniak_norm";
-            mddd.World *= Matrix.CreateTranslation(245, 56, 30);
+
+            //MercenaryData mddd = new MercenaryData();
+            //mddd.Type = typeof(Mercenary);
+            //mddd.Model = "mie";
+            //mddd.TimeRatio = 1.0f;
+            //mddd.Diffuse = "Miesniak_diff";
+            //mddd.Normals = "miesniak_norm";
+            //mddd.World *= Matrix.CreateTranslation(245, 56, 30);
                         
-            mddd.Mass = 60;
-            mddd.StaticRoughness = 0.7f;
-            mddd.DynamicRoughness = 0.7f;
-            mddd.Elasticity = 0.3f;
+            //mddd.Mass = 60;
+            //mddd.StaticRoughness = 0.7f;
+            //mddd.DynamicRoughness = 0.7f;
+            //mddd.Elasticity = 0.3f;
 
-            mddd.Length = 5;
-            mddd.Radius = 1;
-            mddd.Immovable = false;
-            mddd.SkinPitch = 90;
-            mddd.Translation = new Vector3(0, 2.2f, 0);
-            mddd.Status = 3;
+            //mddd.Length = 5;
+            //mddd.Radius = 1;
+            //mddd.Immovable = false;
+            //mddd.SkinPitch = 90;
+            //mddd.Translation = new Vector3(0, 2.2f, 0);
+            //mddd.Status = 3;
 
-            gameObjectsFactory.Create(mddd);
+            //gameObjectsFactory.Create(mddd);
         }
         /****************************************************************************/
 
