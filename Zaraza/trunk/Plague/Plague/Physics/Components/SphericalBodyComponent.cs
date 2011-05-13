@@ -57,7 +57,16 @@ namespace PlagueEngine.Physics.Components
             Skin.AddPrimitive(sphere, material);
             Vector3 com = SetMass();
 
+            Vector3 translation = world.Translation;
+
             Matrix dummyWorld = world;
+            dummyWorld.M41 = 0;
+            dummyWorld.M42 = 0;
+            dummyWorld.M43 = 0;
+
+            Vector3 t = Vector3.Transform(skinTranslation, dummyWorld);
+            dummyWorld.Translation = translation + t;
+            ;
 
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
             dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
@@ -73,7 +82,7 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
-            dummyWorld.Translation += skinTranslation;
+            //dummyWorld.Translation += skinTranslation;
             MoveTo(dummyWorld);
             Skin.ApplyLocalTransform(new Transform(-com, Matrix.Identity));
             Enable();
