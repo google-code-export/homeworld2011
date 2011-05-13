@@ -8,6 +8,7 @@ using Nuclex.Input;
 using Nuclex.UserInterface;
 using Nuclex.UserInterface.Controls;
 using PlagueEngine.Input.Components;
+using Microsoft.Xna.Framework.Graphics;
 
 
 // TODO: Rozwinąć input o mapowanie klawiszy
@@ -55,7 +56,7 @@ namespace PlagueEngine.Input
             public KeyboardListener(KeyboardListenerComponent listener, OnKey onKey)
             {
                 this.listener = listener;
-                this.onKey    = onKey;                
+                this.onKey    = onKey;
             }
             /************************************************************************/
 
@@ -120,7 +121,6 @@ namespace PlagueEngine.Input
 
 
         /****************************************************************************/
-
         /// Fields
         /****************************************************************************/
         public static bool inTextInputMode = false;
@@ -136,19 +136,31 @@ namespace PlagueEngine.Input
         private MouseState             oldMouseState;
         private int                    cursorLock;
         private bool                   enabled;
+
+
+        private SpriteBatch             spriteBatch   = null;
+        private Dictionary<String, int> cursors       = new Dictionary<String,int>();
+        private Texture2D               cursorTexture = null;
+        private Vector2                 cursorSize;
+        private int[]                   cursorGrid    = new int[2];
+        private int                     currentCursor = -1;
+        private Vector2                 cursorPosition;
+        private bool                    cursorIsVisible = true;
+        private Rectangle               cursorRect;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Input(Game game, GameServiceContainer services)
+        public Input(Game game, GameServiceContainer services,GraphicsDevice device)
         {
-            enabled = true;
-            this.game         = game;
-            inputManager = new InputManager(services, game.Window.Handle);
-            componentsFactory = new InputComponentsFactory(this);
+            enabled              = true;
+            this.game            = game;
+            inputManager         = new InputManager(services, game.Window.Handle);
+            componentsFactory    = new InputComponentsFactory(this);
             InputComponent.input = this;
+            spriteBatch          = new SpriteBatch(device);
         }
         /****************************************************************************/
 
@@ -309,6 +321,9 @@ namespace PlagueEngine.Input
         {
             MouseState state = inputManager.GetMouse().GetState();
 
+            cursorPosition.X = state.X;
+            cursorPosition.Y = state.Y;
+
             ExtendedMouseKeyState       mouseKeyState;
             ExtendedMouseMovementState  mouseMoveState;
 
@@ -415,6 +430,7 @@ namespace PlagueEngine.Input
             {
                 oldMouseState = Mouse.GetState();
                 game.IsMouseVisible = false;
+                cursorIsVisible = false;
             }
 
             ++cursorLock;
@@ -427,14 +443,18 @@ namespace PlagueEngine.Input
         /****************************************************************************/
         public void UnlockCursor()
         {
-            if (cursorLock != 0) --cursorLock;             
-            if (cursorLock == 0) game.IsMouseVisible = true;
+            if (cursorLock != 0) --cursorLock;
+            if (cursorLock == 0)
+            {
+                if(currentCursor < 0) game.IsMouseVisible = true;
+                cursorIsVisible = true;
+            }
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Components Factory
+        /// Properties
         /****************************************************************************/
         public InputComponentsFactory ComponentsFactory
         {
@@ -485,7 +505,82 @@ namespace PlagueEngine.Input
             get { return _guiScreen; }
             set { _guiScreen = value; }
         }
+        /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Draw
+        /****************************************************************************/
+        public void Draw()
+        {
+            if (currentCursor >= 0 && cursorIsVisible)
+            {
+                if (spriteBatch.GraphicsDevice.IsDisposed)
+                {
+                    spriteBatch = new SpriteBatch(game.GraphicsDevice);
+                }
+
+                spriteBatch.Begin();
+                spriteBatch.Draw(cursorTexture, cursorPosition, cursorRect, Color.White);
+                spriteBatch.End();
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Set Cursor Texture
+        /****************************************************************************/
+        public void SetCursorTexture(Texture2D texture, int width, int height, String[] cursors)
+        {
+            int i = 0;
+            foreach (String cursor in cursors)
+            {
+                this.cursors.Add(cursor, i++);
+            }
+
+            this.cursorTexture = texture;
+            this.cursorSize.X  = texture.Width  / width;
+            this.cursorSize.Y  = texture.Height / height;
+            cursorGrid[0] = width;
+            cursorGrid[1] = height;
+
+            currentCursor = 0;
+
+            cursorRect = new Rectangle((int)((currentCursor % cursorGrid[0]) * cursorSize.X),
+                                        (int)((currentCursor / cursorGrid[1]) * cursorSize.Y),
+                                        (int)cursorSize.X,
+                                        (int)cursorSize.Y);
+
+            game.IsMouseVisible = false;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Set Cursor
+        /****************************************************************************/
+        public void SetCursor(String cursor)
+        {
+            if (String.IsNullOrEmpty(cursor))
+            {
+                currentCursor = -1;
+                game.IsMouseVisible = true;
+            }
+            else
+            {
+                if (currentCursor != cursors[cursor])
+                {
+                    currentCursor = cursors[cursor];
+                    game.IsMouseVisible = false;
+
+                    cursorRect = new Rectangle((int)((currentCursor % cursorGrid[0]) * cursorSize.X),
+                                                (int)((currentCursor / cursorGrid[1]) * cursorSize.Y),
+                                                (int) cursorSize.X,
+                                                (int) cursorSize.Y);
+                }
+            }
+        }
         /****************************************************************************/
 
     }

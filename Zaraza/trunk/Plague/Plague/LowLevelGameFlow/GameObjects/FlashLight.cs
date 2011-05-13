@@ -52,7 +52,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             mesh.ReleaseMe();
             mesh = null;
-            body.ReleaseMe();
+            //body.ReleaseMe();
             body = null;
             light.ReleaseMe();
             light = null;
@@ -70,11 +70,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             GetData(data);
             data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
-            data.Mass = body.Mass;
-            data.Elasticity = body.Elasticity;
-            data.StaticRoughness = body.StaticRoughness;
-            data.DynamicRoughness = body.DynamicRoughness;
-            data.Immovable = body.Immovable;
+            //data.Mass = body.Mass;
+            //data.Elasticity = body.Elasticity;
+            //data.StaticRoughness = body.StaticRoughness;
+            //data.DynamicRoughness = body.DynamicRoughness;
+            //data.Immovable = body.Immovable;
 
             data.Enabled = light.Enabled;
             data.Color = light.Color;

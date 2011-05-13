@@ -477,7 +477,7 @@ namespace PlagueEngine.Rendering
                         {
                             if (!frustrum.Intersects(mesh.BoundingBox)) continue;
 
-                            transforms[i++] = mesh.GameObject.World;
+                            transforms[i++] = mesh.GameObject.GetWorld();
                         }
                         if (i == 0) continue;
 

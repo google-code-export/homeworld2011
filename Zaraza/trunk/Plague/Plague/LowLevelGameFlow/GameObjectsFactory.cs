@@ -64,6 +64,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Game Objects
         /****************************************************************************/
         public Dictionary<uint, GameObjectInstance> GameObjects                                       { get; set; }
+        public List<GameObjectInstance>             UpdatableObjects                                  { get; set; }
         public Dictionary<uint, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> WaitingRoom { get; set; }
         public bool ProcessWaitingRoom = false;
         public int  ProcessedObjects   = 0;
@@ -91,6 +92,9 @@ namespace PlagueEngine.LowLevelGameFlow
                                         new Object[] { result, data })) return null;
 
             GameObjects.Add(result.ID, result);
+
+            if (result.RequiresUpdate) UpdatableObjects.Add(result);
+
             if (ProcessWaitingRoom) ++ProcessedObjects;
             
             return result;
@@ -113,10 +117,19 @@ namespace PlagueEngine.LowLevelGameFlow
                     return false;
                 }
 
-                gameObject.Init(data.ID, data.Definition, data.World, owner, data.OwnerBone);
+                gameObject.Init(data.ID, 
+                                data.Definition,
+                                data.World,
+                                GameObjectInstance.UintToStatus(data.Status),
+                                owner, 
+                                data.OwnerBone);
+                return true;
             }
 
-            gameObject.Init(data.ID, data.Definition, data.World);
+            gameObject.Init(data.ID, 
+                            data.Definition, 
+                            data.World, 
+                            GameObjectInstance.UintToStatus(data.Status));
             return true;
         }
         /****************************************************************************/
@@ -168,6 +181,25 @@ namespace PlagueEngine.LowLevelGameFlow
                                             null, 
                                             data, 
                                             new Object[] { value.Value });
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Remove Game Object
+        /****************************************************************************/
+        public void RemoveGameObject(uint ID)
+        {            
+            if (GameObjects.ContainsKey(ID))
+            {
+                GameObjectInstance go = GameObjects[ID];
+                
+                if (go.RequiresUpdate) UpdatableObjects.Remove(go);
+
+                go.Dispose();
+
+                GameObjects.Remove(ID);
             }
         }
         /****************************************************************************/
@@ -777,19 +809,19 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        String.Empty,
                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)),
 
-                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
-                                                                               data.Mass,
-                                                                               0.06f,
-                                                                               0.4f,
-                                                                               data.Elasticity,
-                                                                               data.StaticRoughness,
-                                                                               data.DynamicRoughness,
-                                                                               data.Immovable,
-                                                                               data.World,
-                                                                               new Vector3(-0.15f,0,0),
-                                                                               0,
-                                                                               0,
-                                                                               90),
+                        null,//physicsComponentFactory.CreateCylindricalBodyComponent(result,
+                                                                               //data.Mass,
+                                                                               //0.06f,
+                                                                               //0.4f,
+                                                                               //data.Elasticity,
+                                                                               //data.StaticRoughness,
+                                                                               //data.DynamicRoughness,
+                                                                               //data.Immovable,
+                                                                               //data.World,
+                                                                               //new Vector3(-0.15f,0,0),
+                                                                               //0,
+                                                                               //0,
+                                                                               //90),
  
                         renderingComponentsFactory.CreateSpotLightComponent(result,
                                                                             data.Enabled,
@@ -804,6 +836,47 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             spotlighttrans,
                                                                             data.AttenuationTexture,
                                                                             data.ShadowsEnabled));
+            return true;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateMercenary
+        /****************************************************************************/
+        public bool CreateMercenary(Mercenary result, MercenaryData data)
+        {
+            result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
+                                                                  data.Model,
+                                                                  data.Diffuse,
+                                                                  data.Specular,
+                                                                  data.Normals,
+                                                                  data.TimeRatio,
+                                                                  data.CurrentClip,
+                                                                  data.CurrentKeyframe,
+                                                                  data.CurrentTime,
+                                                                  data.Pause,
+                                                                  data.Blend,
+                                                                  data.BlendClip,
+                                                                  data.BlendKeyframe,
+                                                                  data.BlendClipTime,
+                                                                  data.BlendDuration,
+                                                                  data.BlendTime),            
+
+            physicsComponentFactory.CreateCapsuleBodyComponent(result,
+                                                              data.Mass,
+                                                              data.Radius,
+                                                              data.Length,
+                                                              data.Elasticity,
+                                                              data.StaticRoughness,
+                                                              data.DynamicRoughness,
+                                                              data.Immovable,
+                                                              data.World,
+                                                              data.Translation,
+                                                              data.SkinYaw,
+                                                              data.SkinPitch,
+                                                              data.SkinRoll));
+
             return true;
         }
         /****************************************************************************/

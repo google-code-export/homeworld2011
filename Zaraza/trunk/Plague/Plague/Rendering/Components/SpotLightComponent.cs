@@ -132,7 +132,7 @@ namespace PlagueEngine.Rendering.Components
         { 
             get 
             {                 
-                return scale * LocalTransform * gameObject.World;
+                return scale * LocalTransform * gameObject.GetWorld();
             } 
         }
 
@@ -140,7 +140,7 @@ namespace PlagueEngine.Rendering.Components
         {
             get
             {
-                return Matrix.Invert(LocalTransform * gameObject.World) * Projection;
+                return Matrix.Invert(LocalTransform * gameObject.GetWorld()) * Projection;
             }
         }
 
