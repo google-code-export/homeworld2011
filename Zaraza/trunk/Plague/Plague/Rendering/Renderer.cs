@@ -131,7 +131,7 @@ namespace PlagueEngine.Rendering
         private RenderTarget2D ssaoDepth      = null;
         private RenderTarget2D ssaoBlur       = null;
         private float          ssaoBias       = 7.79f;
-        public  bool           ssaoEnabled    = true;
+        public  bool           ssaoEnabled    = false;
         /**********************/
 
 
@@ -377,7 +377,7 @@ namespace PlagueEngine.Rendering
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
-            particleManager.DrawParticles(gameTime);
+            //particleManager.DrawParticles(gameTime);
             DrawRect();
 
             //Device.SetRenderTarget(null);

@@ -25,8 +25,9 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Dictionary<uint, GameObjectInstance> gameObjects               = new Dictionary<uint,GameObjectInstance>();
-        private GameObjectsFactory                   gameObjectsFactory        = null;
+        private Dictionary<uint, GameObjectInstance> gameObjects        = new Dictionary<uint,GameObjectInstance>();
+        private GameObjectsFactory                   gameObjectsFactory = null;
+        private List<GameObjectInstance>             updatableObjects   = new List<GameObjectInstance>();
         /****************************************************************************/
 
 
@@ -35,8 +36,9 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         public Level(GameObjectsFactory gameObjectsFactory)
         {
-            this.gameObjectsFactory                      = gameObjectsFactory;
-            gameObjectsFactory.GameObjects               = gameObjects;
+            this.gameObjectsFactory             = gameObjectsFactory;
+            gameObjectsFactory.GameObjects      = gameObjects;
+            gameObjectsFactory.UpdatableObjects = updatableObjects;
         }
         /****************************************************************************/
 
@@ -100,6 +102,8 @@ namespace PlagueEngine.HighLevelGameFlow
         {
             foreach (GameObjectInstance goi in gameObjects.Values) goi.Dispose();
             gameObjects.Clear();
+            foreach (GameObjectInstance goi in updatableObjects) goi.Dispose();
+            updatableObjects.Clear();
         }
         /****************************************************************************/
 
@@ -110,6 +114,19 @@ namespace PlagueEngine.HighLevelGameFlow
         ~Level()
         {
             Clear();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        ///  Update
+        /****************************************************************************/
+        public void Update(TimeSpan deltaTime)
+        {
+            foreach (GameObjectInstance go in updatableObjects)
+            {
+                go.Update(deltaTime);
+            }
         }
         /****************************************************************************/
 
@@ -142,34 +159,34 @@ namespace PlagueEngine.HighLevelGameFlow
             dddtata.Pitch = 90;
             gameObjectsFactory.Create(dddtata);
 
-            //LinkedCameraData lcdata = new LinkedCameraData();
-            //lcdata.Type = typeof(LinkedCamera);
-            //lcdata.position = new Vector3(245, 80, 10);
-            //lcdata.Target = new Vector3(245, 45, 35);
-            //lcdata.MovementSpeed = 0.07f;
-            //lcdata.RotationSpeed = 0.005f;
-            //lcdata.ZoomSpeed = 0.01f;
-            //lcdata.FoV = 60;
-            //lcdata.ZNear = 1f;
-            //lcdata.ZFar = 200;
-            //lcdata.ActiveKeyListener = true;
-            //lcdata.ActiveMouseListener = true;
+            LinkedCameraData lcdata = new LinkedCameraData();
+            lcdata.Type = typeof(LinkedCamera);
+            lcdata.position = new Vector3(245, 80, 10);
+            lcdata.Target = new Vector3(245, 45, 35);
+            lcdata.MovementSpeed = 0.07f;
+            lcdata.RotationSpeed = 0.005f;
+            lcdata.ZoomSpeed = 0.01f;
+            lcdata.FoV = 60;
+            lcdata.ZNear = 1f;
+            lcdata.ZFar = 200;
+            lcdata.ActiveKeyListener = true;
+            lcdata.ActiveMouseListener = true;
 
-            //LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
+            LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
 
-            FreeCameraData fcdata = new FreeCameraData();
-            fcdata.Type = typeof(FreeCamera);
-            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
-                                                             new Vector3(240, 10, 70),
-                                                             new Vector3(0, 1, 0)));
-            fcdata.MovementSpeed = 0.05f;
-            fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-            fcdata.FoV = 60;
-            fcdata.ZNear = 1;
-            fcdata.ZFar = 200;
-            fcdata.ActiveKeyListener = true;
-            fcdata.ActiveMouseListener = true;
-            gameObjectsFactory.Create(fcdata);
+            //FreeCameraData fcdata = new FreeCameraData();
+            //fcdata.Type = typeof(FreeCamera);
+            //fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
+            //                                                 new Vector3(240, 10, 70),
+            //                                                 new Vector3(0, 1, 0)));
+            //fcdata.MovementSpeed = 0.05f;
+            //fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
+            //fcdata.FoV = 60;
+            //fcdata.ZNear = 1;
+            //fcdata.ZFar = 200;
+            //fcdata.ActiveKeyListener = true;
+            //fcdata.ActiveMouseListener = true;
+            //gameObjectsFactory.Create(fcdata);
 
 
             TerrainData tdata = new TerrainData();
@@ -202,28 +219,6 @@ namespace PlagueEngine.HighLevelGameFlow
             Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
             s.Direction = new Vector3(-1, -1, -1);
 
-            CreatureData ssdata = new CreatureData();
-            ssdata.Type = typeof(Creature);
-            ssdata.Model = "FleshCreature";
-            ssdata.TimeRatio = 1.0f;
-            ssdata.Diffuse = "flesh_diffuse";
-            ssdata.Normals = "flesh_normals";
-            ssdata.World *= Matrix.CreateTranslation(245, 56, 30);
-
-
-
-            ssdata.Mass = 60;
-            ssdata.StaticRoughness = 0.7f;
-            ssdata.DynamicRoughness = 0.7f;
-            ssdata.Elasticity = 0.3f;
-
-            ssdata.Length = 5;
-            ssdata.Radius = 1;
-            ssdata.Immovable = false;
-            ssdata.SkinPitch = 90;
-            ssdata.Translation = new Vector3(0, 2.2f, 0);
-            gameObjectsFactory.Create(ssdata);
-
             GlowStickData pdata = new GlowStickData();
             pdata.Type = typeof(GlowStick);
             pdata.Enabled = true;
@@ -235,6 +230,7 @@ namespace PlagueEngine.HighLevelGameFlow
             pdata.Color = new Vector3(0, 1, 0);
             pdata.Texture = "GlowStick_Diffuse";
             pdata.InstancingMode = 3;
+            pdata.Status = 2;
 
             Random random = new Random();
             for (int i = 1; i < 4; i++)
@@ -394,7 +390,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sssdata.Immovable = false;
             sssdata.StaticRoughness = 0.8f;
             sssdata.Translation = new Vector3(0, 1, 0);
-
+            sssdata.Status = 1;
             sssdata.World = Matrix.CreateTranslation(240, 60, 60);
             gameObjectsFactory.Create(sssdata);
 
@@ -452,8 +448,30 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.Specular = true;
             fldata.StaticRoughness = 1;
             fldata.World = Matrix.CreateTranslation(250, 60, 30);
-
+            fldata.Status = 2;
             gameObjectsFactory.Create(fldata);
+
+            MercenaryData mddd = new MercenaryData();
+            mddd.Type = typeof(Mercenary);
+            mddd.Model = "mie";
+            mddd.TimeRatio = 1.0f;
+            mddd.Diffuse = "Miesniak_diff";
+            mddd.Normals = "miesniak_norm";
+            mddd.World *= Matrix.CreateTranslation(245, 56, 30);
+                        
+            mddd.Mass = 60;
+            mddd.StaticRoughness = 0.7f;
+            mddd.DynamicRoughness = 0.7f;
+            mddd.Elasticity = 0.3f;
+
+            mddd.Length = 5;
+            mddd.Radius = 1;
+            mddd.Immovable = false;
+            mddd.SkinPitch = 90;
+            mddd.Translation = new Vector3(0, 2.2f, 0);
+            mddd.Status = 3;
+
+            gameObjectsFactory.Create(mddd);
         }
         /****************************************************************************/
 

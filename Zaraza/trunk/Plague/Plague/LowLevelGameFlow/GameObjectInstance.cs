@@ -49,6 +49,16 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
         /****************************************************************************/
+        /// Get World
+        /****************************************************************************/
+        public Matrix GetWorld()
+        {
+            return getWorld(-1);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Get My World 
         /****************************************************************************/
         protected virtual Matrix GetMyWorld(int bone)
@@ -61,9 +71,9 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Get Owner World 
         /****************************************************************************/
-        private Matrix GetOwnerWorld(int bone)
+        protected Matrix GetOwnerWorld(int bone)
         {
-            return owner.GetWorld(OwnerBone) * GetMyWorld(bone);
+            return GetMyWorld(bone) * owner.GetWorld(OwnerBone);
         }
         /****************************************************************************/
 
@@ -71,7 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public bool Init(uint id, String definition, Matrix world, GameObjectInstance owner = null,int ownerBone = -1)
+        public bool Init(uint id, String definition, Matrix world, GameObjectStatus status, GameObjectInstance owner = null,int ownerBone = -1)
         {
             if (id == 0) this.id = GenerateID();
             else
@@ -85,6 +95,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
             Owner     = owner;
             OwnerBone = ownerBone;
+            Status    = status;
 
             Broadcast(new CreateEvent());
 
@@ -189,6 +200,7 @@ namespace PlagueEngine.LowLevelGameFlow
             data.World         = this.World;
             data.Definition    = this.definition;
             data.Owner         = (this.Owner == null ? 0 : this.Owner.ID);
+            data.Status        = GameObjectInstance.StatusToUint(this.Status);
             data.OwnerBone     = this.OwnerBone;
         }
         /****************************************************************************/
@@ -200,6 +212,9 @@ namespace PlagueEngine.LowLevelGameFlow
         public String Definition { get { return definition; } }        
         public uint   ID         { get { return id; } }
         public int    OwnerBone  { get; set; }
+        
+        public bool             RequiresUpdate { get; protected set; }
+        public GameObjectStatus Status         { get; protected set; }
         /****************************************************************************/
 
 
@@ -212,11 +227,8 @@ namespace PlagueEngine.LowLevelGameFlow
             set
             {
                 if (value == null) getWorld = this.GetMyWorld;
-                else
-                {
-                    getWorld = this.GetOwnerWorld;
-                    owner = value;
-                }
+                else getWorld = this.GetOwnerWorld;
+                owner = value;
             }
         }
         /****************************************************************************/
@@ -263,6 +275,16 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
         /****************************************************************************/
+        /// Update
+        /****************************************************************************/
+        public virtual void Update(TimeSpan deltaTime)
+        { 
+        
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Get String
         /****************************************************************************/
         public override String ToString()
@@ -276,6 +298,56 @@ namespace PlagueEngine.LowLevelGameFlow
         } 
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// StatusToUint
+        /****************************************************************************/
+        public static uint StatusToUint(GameObjectStatus status)
+        { 
+            switch(status)
+            {
+                case GameObjectStatus.Nothing:      return 0;
+                case GameObjectStatus.Interesting:  return 1;
+                case GameObjectStatus.Pickable:     return 2;
+                case GameObjectStatus.Mercenary:    return 3;
+                case GameObjectStatus.Targetable:   return 4;
+                default: return 0;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// UintToStatus
+        /****************************************************************************/
+        public static GameObjectStatus UintToStatus(uint status)
+        {
+            switch (status)
+            {
+                case 0:  return GameObjectStatus.Nothing;
+                case 1:  return GameObjectStatus.Interesting;
+                case 2:  return GameObjectStatus.Pickable;
+                case 3:  return GameObjectStatus.Mercenary;
+                case 4:  return GameObjectStatus.Targetable;
+                default: return GameObjectStatus.Nothing;
+            }
+        }
+        /****************************************************************************/
+
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// GameObjectStatus
+    /********************************************************************************/
+    enum GameObjectStatus
+    { 
+        Nothing,
+        Interesting,
+        Pickable,
+        Mercenary,
+        Targetable
     }
     /********************************************************************************/
 
@@ -288,74 +360,28 @@ namespace PlagueEngine.LowLevelGameFlow
     {
         public uint     ID              = 0;
         public Type     Type            = null;
-        public String   Definition      = String.Empty;
         public Matrix   World           = Matrix.Identity;
 
-        public String definition
-        {
-            get { return this.Definition; }
-            set { this.Definition = value; }
-        }
+        [CategoryAttribute("Definition")]
+        public String Definition { get; set; }
 
+        [CategoryAttribute("Position")]        
+        public Vector3 Position { get { return this.World.Translation; } set { this.World.Translation = value; } }
         
-        public Vector3 Position
-        {
-            get { return this.World.Translation; }
-
-            set { this.World.Translation = value; }
-        }
-
-
-
-
         [CategoryAttribute("Rotation")]
-        public float Roll
-        {
-            set
-            {
-                Rotate(World.Forward, value);               
-            }
-
-            get
-            {
-                return 0;
-            }
-
-        }
+        public float Roll  { set { Rotate(World.Forward, value); } get { return 0; } }
         [CategoryAttribute("Rotation")]
-        public float Yaw
-        {
-            set
-            {
-                Rotate(World.Up, value); 
-            }
-
-            get
-            {
-                return 0;
-            }
-
-        }
+        public float Yaw   { set { Rotate(World.Up,      value); } get { return 0; } }
         [CategoryAttribute("Rotation")]
-        public float Pitch
-        {
-            set
-            {
-                Rotate(World.Right, value);
-            }
-
-            get
-            {
-                return 0;
-            }
-
-        }
-
-
+        public float Pitch { set { Rotate(World.Right,   value); } get { return 0; } }
+        
         [CategoryAttribute("Owner")]
         public uint Owner     { get; set; }
         [CategoryAttribute("Owner")]
         public int  OwnerBone { get; set; }
+
+        [CategoryAttribute("Status")]
+        public uint Status { get; set; }
 
         /****************************************************************************/
         /// Rotate

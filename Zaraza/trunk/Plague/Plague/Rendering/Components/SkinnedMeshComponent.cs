@@ -305,7 +305,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public Matrix[]      SkinTransforms  { get { return currentAnimation.SkinTransforms;  } }
+        public Matrix[] SkinTransforms  { get { return currentAnimation.SkinTransforms;  } }
+        public Matrix[] WorldTransforms { get { return currentAnimation.WorldTransforms; } }
 
         public PlagueEngineSkinnedModel Model           { get; private set; }
         public TexturesPack             Textures        { get; private set; }        

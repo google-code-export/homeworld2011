@@ -75,7 +75,8 @@ namespace PlagueEngine.Rendering.Components
         {
             get
             {                
-                Vector3.Transform(model.BoundingBox.GetCorners().ToArray(), ref gameObject.World, corners);
+                Matrix world = gameObject.GetWorld();
+                Vector3.Transform(model.BoundingBox.GetCorners().ToArray(), ref world, corners);
                 return BoundingBox.CreateFromPoints(corners);
             }
         }

@@ -66,26 +66,26 @@ namespace PlagueEngine.GUI
 
             //TODO: Usunąć ten hard-kodowany guzik po zrobieniu GUI do końca.
             
-            // Button through which the user can quit the application
-//            ButtonControl quitButton = new ButtonControl();
-//            quitButton.Text = "Exit";
-//            quitButton.Bounds = new UniRectangle(
-//              new UniScalar(1.0f, -80.0f), new UniScalar(1.0f, -32.0f), 80, 32
-//            );
-//            quitButton.Pressed += delegate(object sender, EventArgs arguments) { 
-//#if DEBUG
-//                Diagnostics.PushLog("Quit button clicked!!");
-//#endif
-//            };
+             //Button through which the user can quit the application
+            ButtonControl quitButton = new ButtonControl();
+            quitButton.Text = "Exit";
+            quitButton.Bounds = new UniRectangle(
+              new UniScalar(1.0f, -80.0f), new UniScalar(1.0f, -32.0f), 80, 32
+            );
+            quitButton.Pressed += delegate(object sender, EventArgs arguments) { 
+#if DEBUG
+                Diagnostics.PushLog("Quit button clicked!!");
+#endif
+            };
 
-//            InputControl inputControl = new InputControl();
-//            inputControl.Enabled = true;
-//            inputControl.Bounds = new UniRectangle(
-//              new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -132.0f), 150, 32
-//            );
+            InputControl inputControl = new InputControl();
+            inputControl.Enabled = true;
+            inputControl.Bounds = new UniRectangle(
+              new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -132.0f), 150, 32
+            );
 
-//            mainScreen.Desktop.Children.Add(inputControl);
-//            mainScreen.Desktop.Children.Add(quitButton);
+            mainScreen.Desktop.Children.Add(inputControl);
+            mainScreen.Desktop.Children.Add(quitButton);
            
         }
 

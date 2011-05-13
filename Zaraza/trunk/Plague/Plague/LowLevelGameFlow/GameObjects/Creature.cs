@@ -119,7 +119,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (key == Keys.J && state.IsDown())
             {
-                controller.Rotate(-1);
+                controller.Rotate(-1);                
             }
             
 
@@ -169,6 +169,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 meshComponent.BlendTo("Idle", TimeSpan.FromSeconds(0.3));
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get World
+        /****************************************************************************/
+        protected override Matrix GetMyWorld(int bone)
+        {
+            if (bone == -1)
+                return World;
+            else
+                return meshComponent.WorldTransforms[bone];
         }
         /****************************************************************************/
 

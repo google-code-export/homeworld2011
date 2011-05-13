@@ -80,13 +80,15 @@ namespace PlagueEngine
 
             contentManager = new ContentManager(this, "Content");
 
-            input = new Input.Input(this, Services);
-
-            gui = new GUI.GUI(this, Services,input.ComponentsFactory.CreateMouseListenerComponent(null,true));
 
             particleManager = new ParticleManager();
 
             InitRenderer();
+
+            input = new Input.Input(this, Services,renderer.Device);
+
+            gui = new GUI.GUI(this, Services, input.ComponentsFactory.CreateMouseListenerComponent(null, true));
+
 
             particleManager.CreateFactory(contentManager, renderer);
 
@@ -165,6 +167,11 @@ namespace PlagueEngine
         protected override void LoadContent()
         {
             renderer.LoadEffects();
+            input.SetCursorTexture(contentManager.LoadTexture2D("cursor"), 4, 4, 
+                                   new String[] { "Default","QuestionMark","Footsteps","Target",
+                                                  "Hand",   "Person",      "Targeting","0",
+                                                  "1",      "2",            "3",       "4",
+                                                  "Up",     "Down",         "Left",    "Right" });
 #if DEBUG
             Diagnostics.PushLog("Loading content complete");
 #endif
@@ -221,8 +228,11 @@ namespace PlagueEngine
             }
 
             particleManager.Update(gameTime);
+
+            Level.Update(gameTime.ElapsedGameTime);
         }
         /****************************************************************************/
+
 
         /****************************************************************************/
         /// Draw
@@ -235,12 +245,11 @@ namespace PlagueEngine
         {
             renderer.Draw(gameTime.ElapsedGameTime,gameTime);
             gui.Draw(gameTime);
+            input.Draw();
             base.Draw(gameTime);
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// On Exiting
@@ -257,9 +266,7 @@ namespace PlagueEngine
 #endif
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// Title

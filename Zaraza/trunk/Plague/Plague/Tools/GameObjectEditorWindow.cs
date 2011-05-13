@@ -363,6 +363,12 @@ namespace PlagueEngine.Tools
             Flashlight.ClassType = typeof(Flashlight);
             Flashlight.dataClassType = typeof(FlashlightData);
             gameObjectClassNames.Add(Flashlight);
+            
+            gameObjectsClassName Mercenary = new gameObjectsClassName();
+            Mercenary.className = "Mercenary";
+            Mercenary.ClassType = typeof(Mercenary);
+            Mercenary.dataClassType = typeof(MercenaryData);
+            gameObjectClassNames.Add(Mercenary);
         }
         /********************************************************************************/
 
@@ -452,7 +458,7 @@ namespace PlagueEngine.Tools
 
 
                 currentDefinition = contentManager.GameObjectsDefinitions[ComboboxDefinitions.SelectedItem.ToString()];
-                currentObject.definition = ComboboxDefinitions.SelectedItem.ToString();
+                currentObject.Definition = ComboboxDefinitions.SelectedItem.ToString();
 
                 PropertyInfo[] propInfo = currentClassName.dataClassType.GetProperties();
 
@@ -871,7 +877,7 @@ namespace PlagueEngine.Tools
                     {
                         foreach (GameObjectInstanceData gameObjectdata in levelData.gameObjects)
                         {
-                            if (gameObjectdata.definition == ComboboxDefinitions.SelectedItem.ToString())
+                            if (gameObjectdata.Definition == ComboboxDefinitions.SelectedItem.ToString())
                             {
                                 dc.count++;
                                 allDefinitions++;
@@ -1027,7 +1033,7 @@ namespace PlagueEngine.Tools
                 comboboxGameObjectId.SelectedIndex = -1;
                 comboboxGameObjectId.SelectedIndex = -1;
 
-                factory.GameObjects.Remove(currentEditGameObject.ID);
+                factory.RemoveGameObject(currentEditGameObject.ID);
                 currentEditGameObject = null;
                 propertyGrid2.SelectedObject = null;
                 

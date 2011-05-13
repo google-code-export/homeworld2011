@@ -21,22 +21,19 @@ using JigLibX.Physics;
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
-
-    /************************************************************************************/
+    /********************************************************************************/
     /// Regions
-    /************************************************************************************/
+    /********************************************************************************/
     public struct regions
     {
         public region left, right, top, bottom;
     }
-    /************************************************************************************/
+    /********************************************************************************/
 
 
-
-
-    /************************************************************************************/
+    /********************************************************************************/
     /// Region
-    /************************************************************************************/
+    /********************************************************************************/
     public struct region
     {
         public int x, y, width, height;
@@ -48,9 +45,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             height = Height;
         }
     }
-    /************************************************************************************/
-
-
+    /********************************************************************************/
+    
 
     /********************************************************************************/
     /// LinkedCamera
@@ -67,22 +63,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private float movementSpeed = 0;
         private float rotationSpeed = 0;
-        private float zoomSpeed = 0;
+        private float zoomSpeed     = 0;
  
         private Vector3 position = Vector3.Zero;
-        private Vector3 target = Vector3.Zero;
+        private Vector3 target   = Vector3.Zero;
 
         private Clock clock = TimeControl.CreateClock();
 
-        private bool shiftDown = false;
+        private bool    shiftDown = false;
         private regions mouseRegions;
 
         private GameObjectInstance tracedObject = null;
-        private uint frameCounterID = 0;
-        private bool middleButton = false;
-        private bool rmb = false;
-        private bool isOnWindow = false;
+        private uint               frameCounterID = 0;
+        private bool               middleButton = false;
+        private bool               rmb = false;
+        private bool               isOnWindow = false;
+        
         private float mouseX, mouseY;
+        
         private Vector3 moveToPosition;
         /****************************************************************************/
 
@@ -112,21 +110,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.World = Matrix.CreateLookAt(this.position, this.target, Vector3.Up);
 
             this.keyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,
-                                                   Keys.D, Keys.Q, Keys.E, Keys.LeftShift,Keys.F1,Keys.F2);
+                                                               Keys.D, Keys.Q, Keys.E, 
+                                                               Keys.LeftShift, Keys.F1, Keys.F2);
 
             this.mouselistenerComponent.SubscribeMouseMove(onMouseMove,MouseMoveAction.Move,MouseMoveAction.Scroll);
             this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick,MouseKeyAction.RightClick);
 
-            int screenWidth = cameraComponent.ScreenWidth;
+            int screenWidth  = cameraComponent.ScreenWidth;
             int screenHeight = cameraComponent.ScreenHeight;
 
             ///domyslne miejsca na ekranie do przesuwania mysza kamery
-            mouseRegions.left = new region(0, 0, (int)(screenWidth * 0.05), screenHeight);
-            mouseRegions.right = new region((int)(screenWidth * 0.95), 0, (int)(screenWidth * 0.05), screenHeight);
-            mouseRegions.top = new region(0, 0, screenWidth, (int)(screenHeight * 0.05));
-            mouseRegions.bottom = new region(0, (int)(screenHeight * 0.95), screenWidth, (int)(screenHeight * 0.05));
+            mouseRegions.left   = new region(0, 0, (int)(screenWidth * 0.05), screenHeight);
+            mouseRegions.right  = new region((int)(screenWidth * 0.95), 0, (int)(screenWidth * 0.05), screenHeight);
+            mouseRegions.top    = new region(0, 0, screenWidth, (int)(screenHeight * 0.05));
+            mouseRegions.bottom = new region(0, (int)(screenHeight * 0.95), screenWidth, (int)(screenHeight * 0.05));       
 
-       
+            RequiresUpdate = true;
         }
         /****************************************************************************/
 
@@ -137,13 +136,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public regions Regions
         {
             get { return mouseRegions; }
-            set { this.mouseRegions = value; }
-            
+            set { this.mouseRegions = value; }            
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// StartMoveToPoint
@@ -157,28 +153,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 frameCounterID = TimeControl.CreateFrameCounter(1, -1, MoveToPoint);
             }
         }
-
-        /************************************************************************************/
-
-
-
-
+        /****************************************************************************/
+        
 
         /****************************************************************************/
         /// StopMovingToPoint
         /****************************************************************************/
         public void StopMovingToPoint()
         {
-
-
             TimeControl.ReleaseFrameCounter(frameCounterID);
             frameCounterID = 0;
         }
-
-        /************************************************************************************/
-
-
-
+        /****************************************************************************/
+        
 
         /****************************************************************************/
         /// MoveToPoint
@@ -200,29 +187,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
             }
         }
+        /****************************************************************************/
 
 
-        /************************************************************************************/
-
-
-
-
-
-
-        /************************************************************************************/
-        /// setTarget
-        /************************************************************************************/
+        /****************************************************************************/
+        /// SetTarget
+        /****************************************************************************/
         public void setTarget(GameObjectInstance target)
         {
-            this.tracedObject = target;
-            
+            this.tracedObject = target;            
         }
         /****************************************************************************/
 
 
-        /************************************************************************************/
+        /****************************************************************************/
         /// Start Tracing
-        /************************************************************************************/
+        /****************************************************************************/
         public void startTracing()
         {
             StopMovingToPoint();
@@ -234,48 +214,32 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
 
 
-
-
-        /************************************************************************************/
+        /****************************************************************************/
         /// Stop Tracing 
-        /************************************************************************************/
+        /****************************************************************************/
         public void stopTracking()
-        {
-            
-            
+        {                        
             TimeControl.ReleaseFrameCounter(frameCounterID);
-            frameCounterID = 0;
-            
+            frameCounterID = 0;            
         }
         /****************************************************************************/
 
 
-
-
-        /************************************************************************************/
+        /****************************************************************************/
         /// RealeseTarget
-        /************************************************************************************/
+        /****************************************************************************/
         public void RealeseTarget()
         {
-
             tracedObject = null;
-
         }
         /****************************************************************************/
 
 
-
-
-        /************************************************************************************/
+        /****************************************************************************/
         /// Trace Target
-        /************************************************************************************/
+        /****************************************************************************/
         private void traceTarget()
-        {
-
-
-
-
-            
+        {           
             Vector3 targetPosition = tracedObject.World.Translation;
            
             if (targetPosition != target)
@@ -296,45 +260,44 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
 
 
-
-        /************************************************************************************/
+        /****************************************************************************/
         /// Is Mouse In Region
-        /************************************************************************************/
+        /****************************************************************************/
         private bool isMouseInRegion(region testedRegion, ExtendedMouseMovementState mouseState)
         {
-
-            if ((mouseState.Position.X >= testedRegion.x) && (mouseState.Position.Y >= testedRegion.y) && (mouseState.Position.X <= (testedRegion.x + testedRegion.width)) && (mouseState.Position.Y <= (testedRegion.y + testedRegion.height)))
+            if ((mouseState.Position.X >= testedRegion.x) && 
+                (mouseState.Position.Y >= testedRegion.y) && 
+                (mouseState.Position.X <= (testedRegion.x + testedRegion.width)) && 
+                (mouseState.Position.Y <= (testedRegion.y + testedRegion.height)))
             {
                 return true;
             }
             
             return false;
         }
-
-        /************************************************************************************/
-
+        /****************************************************************************/
 
 
-
-        /************************************************************************************/
+        /****************************************************************************/
         /// OnMouseKey
-        /************************************************************************************/
+        /****************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
         {
-            if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.RightClick)
+
+            if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.RightClick)
             {
                 rmb = true;
+                mouselistenerComponent.LockCursor();
             }
-            if (mouseKeyState.IsUp() && mouseKeyAction == MouseKeyAction.RightClick)
+            if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.RightClick)
             {
                 rmb = false;
+                mouselistenerComponent.UnlockCursor();
             }
-
-
+            
 
             if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.MiddleClick)
             {
-
                 if (middleButton == false && isOnWindow)
                 {
                     CollisionSkin skin;
@@ -377,15 +340,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
          
         }
-
         /****************************************************************************/
-
 
 
         /****************************************************************************/
         /// CanIMove
         /****************************************************************************/
-
         private bool CanIMove(Vector3 position, Vector3 desiredPosition)
         {
             CollisionSkin skin;
@@ -400,10 +360,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             return false;
         }
-        /****************************************************************************/
-
-        
-
+        /****************************************************************************/         
 
 
         /****************************************************************************/
@@ -459,89 +416,100 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
                 case MouseMoveAction.Move:
-
-                    if (rmb)
                     {
-                        Vector3 tmp = position;
-                        tmp -= target;
-                        tmp = Vector3.Transform(tmp, Matrix.CreateRotationY(time * rotationSpeed* (mouseMoveState.Position.X-mouseMoveState.OldPosition.X)));
-                        tmp += target;
+                        bool flag = true;
 
-                        if (CanIMove(position, tmp))
+                        if (rmb)
                         {
-                            position -= target;
-                            position = Vector3.Transform(position, Matrix.CreateRotationY(time * rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
-                            position += target;
-                        }
-                    }
-                  
-                        
-                   
-                    direction.Y = 0;
-                    perpendicular.Y = 0;
-                    if (isMouseInRegion(mouseRegions.left, mouseMoveState))
-                    {
-                        Vector3 tmp = position;
-                        tmp += perpendicular * movementSpeed * time;
-                        if (CanIMove(position, tmp))
-                        {
+                            Vector3 tmp = position;
+                            tmp -= target;
+                            tmp = Vector3.Transform(tmp, Matrix.CreateRotationY(rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
+                            tmp += target;
 
-                            position += perpendicular * movementSpeed * time;
-                            target += perpendicular * movementSpeed * time;
-
-                            stopTracking();
-                            StopMovingToPoint();
-                        }
-                        
-                    }
-
-                    if (isMouseInRegion(mouseRegions.right, mouseMoveState))
-                    {
-                       Vector3 tmp = position;
-                       tmp -= perpendicular * movementSpeed * time;
-                       if (CanIMove(position, tmp))
-                        {
-
-                            position -= perpendicular * movementSpeed * time;
-                            target -= perpendicular * movementSpeed * time;
-
-                            stopTracking();
-                            StopMovingToPoint();
+                            if (CanIMove(position, tmp))
+                            {
+                                position -= target;
+                                position = Vector3.Transform(position, Matrix.CreateRotationY(rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
+                                position += target;
+                            }
                         }
 
+                        direction.Y = 0;
+                        perpendicular.Y = 0;
+                        if (isMouseInRegion(mouseRegions.left, mouseMoveState))
+                        {
+                            Vector3 tmp = position;
+                            tmp += perpendicular * movementSpeed * time;
+                            if (CanIMove(position, tmp))
+                            {
+                                mouselistenerComponent.SetCursor("Left");
+
+                                position += perpendicular * movementSpeed * time;
+                                target += perpendicular * movementSpeed * time;
+
+                                stopTracking();
+                                StopMovingToPoint();
+                                flag = false;
+                            }
+
+                        }
+
+                        if (isMouseInRegion(mouseRegions.right, mouseMoveState))
+                        {
+                            Vector3 tmp = position;
+                            tmp -= perpendicular * movementSpeed * time;
+                            if (CanIMove(position, tmp))
+                            {
+                                mouselistenerComponent.SetCursor("Right");
+
+                                position -= perpendicular * movementSpeed * time;
+                                target -= perpendicular * movementSpeed * time;
+
+                                stopTracking();
+                                StopMovingToPoint();
+                                flag = false;
+                            }
+
+                        }
+
+                        if (isMouseInRegion(mouseRegions.top, mouseMoveState))
+                        {
+                            Vector3 tmp = position;
+                            tmp += direction * movementSpeed * time;
+                            if (CanIMove(position, tmp))
+                            {
+                                mouselistenerComponent.SetCursor("Up");
+
+                                position += direction * movementSpeed * time;
+                                target += direction * movementSpeed * time;
+
+                                stopTracking();
+                                StopMovingToPoint();
+                                flag = false;
+                            }
+
+                        }
+
+                        if (isMouseInRegion(mouseRegions.bottom, mouseMoveState))
+                        {
+                            Vector3 tmp = position;
+                            tmp -= direction * movementSpeed * time;
+                            if (CanIMove(position, tmp))
+                            {
+                                mouselistenerComponent.SetCursor("Down");
+
+                                position -= direction * movementSpeed * time;
+                                target -= direction * movementSpeed * time;
+
+                                stopTracking();
+                                StopMovingToPoint();
+                                flag = false;
+                            }
+
+                        }
+
+                        if (flag) mouselistenerComponent.SetCursor("Default");
                     }
-
-                    if (isMouseInRegion(mouseRegions.top, mouseMoveState))
-                    {
-                       Vector3 tmp = position;
-                       tmp += direction * movementSpeed * time;
-                       if (CanIMove(position, tmp))
-                       {
-                           position += direction * movementSpeed * time;
-                           target += direction * movementSpeed * time;
-
-                           stopTracking();
-                           StopMovingToPoint();
-                       }
-
-                    }
-
-                    if (isMouseInRegion(mouseRegions.bottom, mouseMoveState))
-                    {
-                       Vector3 tmp = position;
-                       tmp -= direction * movementSpeed * time;
-                       if (CanIMove(position, tmp))
-                       {
-
-                           position -= direction * movementSpeed * time;
-                           target -= direction * movementSpeed * time;
-
-                           stopTracking();
-                           StopMovingToPoint();
-                       }
-
-                    }
-
                     break;
             }
 
@@ -549,9 +517,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             cameraComponent.LookAt(position, target, Vector3.Up);
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// On Key
@@ -652,9 +618,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                     
                     break;
-
-
-
             }
 
         
@@ -698,6 +661,32 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Update
+        /****************************************************************************/
+        public override void Update(TimeSpan deltaTime)
+        {
+            CollisionSkin skin;
+            Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+            Vector3 pos, nor;
+            float dist;
+            bool hit = false;
+            hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
+            if (skin != null)
+            {
+                switch (((GameObjectInstance)skin.ExternalData).Status)
+                {
+                    case GameObjectStatus.Interesting: mouselistenerComponent.SetCursor("QuestionMark"); break;
+                    case GameObjectStatus.Pickable:    mouselistenerComponent.SetCursor("Hand");         break;
+                    case GameObjectStatus.Targetable:  mouselistenerComponent.SetCursor("Target");       break;
+                    case GameObjectStatus.Mercenary:   mouselistenerComponent.SetCursor("Person");       break;
+                }
+            }
+        }
+        /****************************************************************************/
+
+
     }
     /********************************************************************************/
 
@@ -720,8 +709,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Vector3 Target { get; set; }
 
         public float movementSpeed
-        {
-            
+        {            
             set { this.MovementSpeed = value; }
             get { return MovementSpeed; }
         }
@@ -761,10 +749,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             set { this.ActiveMouseListener = value; }
             get { return ActiveMouseListener; }
         }
-
-
-
-
     }
     /********************************************************************************/
 
