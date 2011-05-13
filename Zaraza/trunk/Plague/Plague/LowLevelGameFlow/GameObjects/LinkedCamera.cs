@@ -671,8 +671,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
             Vector3 pos, nor;
             float dist;
-            bool hit = false;
-            hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
+            Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
             if (skin != null)
             {
                 switch (((GameObjectInstance)skin.ExternalData).Status)

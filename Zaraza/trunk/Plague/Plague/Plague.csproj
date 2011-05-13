@@ -243,6 +243,7 @@
     <Compile Include="Rendering\DebugDrawer.cs" />
     <Compile Include="Rendering\EventArgs.cs" />
     <Compile Include="Rendering\LightsManager.cs" />
+    <Compile Include="Rendering\Marker.cs" />
     <Compile Include="Rendering\PlagueEngineModel.cs" />
     <Compile Include="Rendering\PlagueEngineSkinnedModel.cs" />
     <Compile Include="Rendering\Quad.cs" />
