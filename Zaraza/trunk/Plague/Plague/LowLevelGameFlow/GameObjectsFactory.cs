@@ -698,7 +698,48 @@ namespace PlagueEngine.LowLevelGameFlow
             return true;
         }
         /****************************************************************************/
-        
+
+        /****************************************************************************/
+        /// Create Menu Panel
+        /****************************************************************************/
+        public bool CreatePanel(Panel result, PanelData data)
+        {
+            result.Init(guiComponentsFactory.createPanelComponent( data.Vertical,
+                                                                   data.Horizontal,
+                                                                   data.Size));
+            //TODO: sprawdzić, czy to już wszystko dla panelu.
+            return true;
+        }
+        /****************************************************************************/
+
+        /****************************************************************************/
+        /// Create Menu Label
+        /****************************************************************************/
+        public bool CreateLabel(Label result, LabelData data)
+        {
+            result.Init(guiComponentsFactory.createLabelComponent(data.Text,
+                                                                   data.Vertical,
+                                                                   data.Horizontal,
+                                                                   data.Size));
+            //TODO: sprawdzić, czy to już wszystko dla panelu.
+            return true;
+        }
+        /****************************************************************************/
+
+        /****************************************************************************/
+        /// Create Menu Input
+        /****************************************************************************/
+        public bool CreateInput(GameObjects.Input result, InputData data)
+        {
+            result.Init(guiComponentsFactory.createInputComponent( data.Text,
+                                                                   data.Vertical,
+                                                                   data.Horizontal,
+                                                                   data.Size));
+            //TODO: sprawdzić, czy to już wszystko dla panelu.
+            return true;
+        }
+        /****************************************************************************/
+
 
         /****************************************************************************/
         /// Create Water Surface

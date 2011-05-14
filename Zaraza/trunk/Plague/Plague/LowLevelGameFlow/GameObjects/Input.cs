@@ -14,58 +14,44 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
-    class MenuButton : GameObjectInstance
+    class Input : GameObjectInstance
     {
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
-        ButtonComponent buttonComponent = null;
-        //TODO: wywalić zbedne komenty
-
+        InputComponent inputComponent = null;
         /********************************************************************************/
-
-
-
 
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(ButtonComponent buttonComponent)
+        public void Init(InputComponent inputComponent)
         {
-            this.buttonComponent = buttonComponent;
+            this.inputComponent = inputComponent;
         }
         /********************************************************************************/
-
-
-        
-
 
         /********************************************************************************/
         /// Release Components
         /********************************************************************************/
         public override void ReleaseComponents()
         {
-            this.buttonComponent.ReleaseMe();
+            this.inputComponent.ReleaseMe();
         }
         /********************************************************************************/
-
-
-
 
         /********************************************************************************/
         /// GetData
         /********************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            MenuButtonData data = new MenuButtonData();
+            InputData data = new InputData();
             GetData(data);
-            //TODO: uzupełnić GO buttona
-            data.Text = this.buttonComponent.button.Text;
+            //TODO: uzupełnić GO inputu
+            data.Text = this.inputComponent.input.Text;
             return data;
         }
         /********************************************************************************/
-
-
 
     }
     /********************************************************************************/
@@ -75,7 +61,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// CylindricalBodyMeshData
     /********************************************************************************/
     [Serializable]
-    public class MenuButtonData : GameObjectInstanceData
+    public class InputData : GameObjectInstanceData
     {
         [CategoryAttribute("Text"),
         DescriptionAttribute("Button's text / label")]

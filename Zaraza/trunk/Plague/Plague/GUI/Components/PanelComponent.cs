@@ -1,56 +1,52 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Nuclex.Input;
-using Nuclex.UserInterface.Controls.Desktop;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Nuclex.UserInterface.Controls.Arcade;
 using Nuclex.UserInterface;
-
-using PlagueEngine.Input.Components;
-
+using Nuclex.UserInterface.Controls;
 
 /************************************************************************************/
 /// PlagueEngine.GUI.Components
 /************************************************************************************/
 namespace PlagueEngine.GUI.Components
 {
-
     /********************************************************************************/
-    /// GUI Button Component
+    /// GUI Panel Component
     /********************************************************************************/
-    class ButtonComponent : GUIComponent
+    class PanelComponent : GUIComponent
     {
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public ButtonControl button {  get; private set; }
+        public PanelControl panel { get; private set; }
         /****************************************************************************/
-        
+
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public ButtonComponent():base(null)
+        public PanelComponent()
+            : base(null)
         {
-            button = new ButtonControl();
+            panel = new PanelControl();
         }
         /****************************************************************************/
 
         /****************************************************************************/
         /// initialize
         /****************************************************************************/
-        public bool Initialize(String text, UniRectangle bounds)
+        public bool Initialize(UniRectangle bounds)
         {
-            if (button != null && gui!=null)
+            if (panel != null && gui != null)
             {
-                button.Text = text;
-                button.Bounds = bounds;
+                panel.Bounds = bounds;
 #if DEBUG
-                Diagnostics.PushLog("Button component initialized successfully");
+                Diagnostics.PushLog("Label component initialized successfully");
 #endif
                 return true;
             }
 #if DEBUG
-            Diagnostics.PushLog("Button component wasn't initialized");
+            Diagnostics.PushLog("Label component wasn't initialized");
 #endif
             return false;
         }
@@ -61,30 +57,38 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         public override void register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.button);
+            gui.Manager.Screen.Desktop.Children.Add(this.panel);
         }
+        /****************************************************************************/
 
         /****************************************************************************/
-        /// setDelegate
+        /// add
         /****************************************************************************/
-        public void setDelegate(EventHandler handler)
+        public void add(Control control)
         {
-            button.Pressed += handler;
+            this.panel.Children.Add(control);
         }
         /****************************************************************************/
 
-
-
+        /****************************************************************************/
+        /// dispose
+        /****************************************************************************/
+        public void dispose()
+        {
+            this.panel.Children.Clear();
+        }
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Release Me 
         /****************************************************************************/
         public override void ReleaseMe()
-        {   
-            gui.Manager.Screen.Desktop.Children.Remove(this.button);
+        {
+            gui.Manager.Screen.Desktop.Children.Remove(this.panel);
             base.ReleaseMe();
         }
         /****************************************************************************/
     }
-    /********************************************************************************/
 }
+    
+

@@ -369,6 +369,24 @@ namespace PlagueEngine.Tools
             Mercenary.ClassType = typeof(Mercenary);
             Mercenary.dataClassType = typeof(MercenaryData);
             gameObjectClassNames.Add(Mercenary);
+
+            gameObjectsClassName Label = new gameObjectsClassName();
+            Label.className = "Label";
+            Label.ClassType = typeof(PlagueEngine.LowLevelGameFlow.GameObjects.Label);
+            Label.dataClassType = typeof(LabelData);
+            gameObjectClassNames.Add(Label);
+
+            gameObjectsClassName Input = new gameObjectsClassName();
+            Input.className = "Input";
+            Input.ClassType = typeof(PlagueEngine.LowLevelGameFlow.GameObjects.Input);
+            Input.dataClassType = typeof(InputData);
+            gameObjectClassNames.Add(Input);
+
+            gameObjectsClassName Panel = new gameObjectsClassName();
+            Panel.className = "Panel";
+            Panel.ClassType = typeof(PlagueEngine.LowLevelGameFlow.GameObjects.Panel);
+            Panel.dataClassType = typeof(PanelData);
+            gameObjectClassNames.Add(Panel);
         }
         /********************************************************************************/
 

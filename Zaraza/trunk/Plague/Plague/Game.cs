@@ -96,7 +96,7 @@ namespace PlagueEngine
 
             gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
                                                         input.ComponentsFactory,
-                                                        null,
+                                                        gui.ComponentsFactory,
                                                         contentManager.GameObjectsDefinitions,
                                                         physicsManager.physicsComponentFactory,
                                                         particleManager.particleFactory);
