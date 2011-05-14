@@ -847,19 +847,19 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        String.Empty,
                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)),
 
-                        null,//physicsComponentFactory.CreateCylindricalBodyComponent(result,
-                                                                               //data.Mass,
-                                                                               //0.06f,
-                                                                               //0.4f,
-                                                                               //data.Elasticity,
-                                                                               //data.StaticRoughness,
-                                                                               //data.DynamicRoughness,
-                                                                               //data.Immovable,
-                                                                               //data.World,
-                                                                               //new Vector3(-0.15f,0,0),
-                                                                               //0,
-                                                                               //0,
-                                                                               //90),
+                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
+                                                                               data.Mass,
+                                                                               0.06f,
+                                                                               0.4f,
+                                                                               data.Elasticity,
+                                                                               data.StaticRoughness,
+                                                                               data.DynamicRoughness,
+                                                                               data.Immovable,
+                                                                               data.World,
+                                                                               new Vector3(-0.15f, 0, 0),
+                                                                               0,
+                                                                               0,
+                                                                               90),
  
                         renderingComponentsFactory.CreateSpotLightComponent(result,
                                                                             data.Enabled,
@@ -914,7 +914,12 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                            data.SkinYaw,
                                                                            data.SkinPitch,
                                                                            data.SkinRoll),
-                        data.MarkerPosition);
+                        data.MarkerPosition,
+                        data.RotationSpeed,
+                        data.MovingSpeed,
+                        data.DistancePrecision,
+                        data.AnglePrecision,
+                        data.GripBone);
 
             return true;
         }

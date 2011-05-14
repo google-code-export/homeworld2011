@@ -445,6 +445,7 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.StaticRoughness = 1;
             fldata.World = Matrix.CreateTranslation(250, 60, 30);
             fldata.Status = 2;
+
             gameObjectsFactory.Create(fldata);
 
 
@@ -468,13 +469,38 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.Translation = new Vector3(0, 2.2f, 0);
             mddd.Status = 3;
             mddd.MarkerPosition = new Vector3(0, 6.2f, 1);
+            mddd.RotationSpeed = 7.5f;
+            mddd.MovingSpeed = 750.0f;
+            mddd.DistancePrecision = 1.0f;
+            mddd.AnglePrecision = 0.1f;
+            mddd.GripBone = "Bip001_R_Hand001";
 
             gameObjectsFactory.Create(mddd);
 
 
             mddd.World = Matrix.CreateTranslation(260, 56, 30);
             gameObjectsFactory.Create(mddd);
+            
+            mddd.World = Matrix.CreateTranslation(265, 56, 30);
+            gameObjectsFactory.Create(mddd);
+            
+            mddd.World = Matrix.CreateTranslation(270, 56, 30);
+            gameObjectsFactory.Create(mddd);
+            
+            mddd.World = Matrix.CreateTranslation(275, 56, 30);
+            gameObjectsFactory.Create(mddd);
 
+            mddd.World = Matrix.CreateTranslation(260, 56, 35);
+            gameObjectsFactory.Create(mddd);
+
+            mddd.World = Matrix.CreateTranslation(265, 56, 35);
+            gameObjectsFactory.Create(mddd);
+
+            mddd.World = Matrix.CreateTranslation(270, 56, 35);
+            gameObjectsFactory.Create(mddd);
+
+            mddd.World = Matrix.CreateTranslation(275, 56, 35);
+            gameObjectsFactory.Create(mddd);
 
             MercenariesManagerData mcmd = new MercenariesManagerData();
             mcmd.Type = typeof(MercenariesManager);
