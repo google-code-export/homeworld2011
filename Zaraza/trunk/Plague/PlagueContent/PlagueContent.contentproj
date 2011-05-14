@@ -672,25 +672,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\FleshCreature.X">
-      <Name>FleshCreature</Name>
-      <Importer>XImporter</Importer>
-      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
-      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
-      <ProcessorParameters_AnimationClip1>Idle</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1Start>103</ProcessorParameters_AnimationClip1Start>
-      <ProcessorParameters_AnimationClip1End>165</ProcessorParameters_AnimationClip1End>
-      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
-      <ProcessorParameters_AnimationClip2>Walk</ProcessorParameters_AnimationClip2>
-      <ProcessorParameters_AnimationClip2Start>27</ProcessorParameters_AnimationClip2Start>
-      <ProcessorParameters_AnimationClip2End>59</ProcessorParameters_AnimationClip2End>
-      <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
-      <ProcessorParameters_AnimationClip3>Attack</ProcessorParameters_AnimationClip3>
-      <ProcessorParameters_AnimationClip3Start>64</ProcessorParameters_AnimationClip3Start>
-      <ProcessorParameters_AnimationClip3End>94</ProcessorParameters_AnimationClip3End>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\miesniak_norm.BMP">
       <Name>miesniak_norm</Name>
       <Importer>TextureImporter</Importer>

@@ -102,21 +102,21 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Nuclex.Input, Version=4.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
+    <Reference Include="Nuclex.Input, Version=4.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Nuclex.Input.dll</HintPath>
+      <HintPath>..\Nuclex.Input.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.Support, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=MSIL">
+    <Reference Include="Nuclex.Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Nuclex.Support.dll</HintPath>
+      <HintPath>..\Nuclex.Support.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Testing.Xna, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Nuclex.Testing.Xna.dll</HintPath>
+      <HintPath>..\Nuclex.Testing.Xna.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.UserInterface, Version=4.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
+    <Reference Include="Nuclex.UserInterface, Version=4.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Nuclex.UserInterface.dll</HintPath>
+      <HintPath>..\Nuclex.UserInterface.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.5.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -157,6 +157,9 @@
     <Compile Include="EventsSystem\EventsSystem.cs" />
     <Compile Include="EventsSystem\EventsSender.cs" />
     <Compile Include="GUI\Components\ButtonComponent.cs" />
+    <Compile Include="GUI\Components\InputComponent.cs" />
+    <Compile Include="GUI\Components\LabelComponent.cs" />
+    <Compile Include="GUI\Components\PanelComponent.cs" />
     <Compile Include="GUI\GUI.cs" />
     <Compile Include="GUI\GUIComponent.cs" />
     <Compile Include="GUI\GUIComponentsFactory.cs" />
@@ -185,6 +188,8 @@
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Flashlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\GlowStick.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Input.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Label.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MenuButton.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\EventArgs.cs" />
@@ -194,6 +199,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\BurningBarrel.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MercenariesManager.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Mercenary.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Panel.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\PointLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalSkinMesh.cs" />

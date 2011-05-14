@@ -1,37 +1,32 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Nuclex.Input;
-using Nuclex.UserInterface.Controls.Desktop;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Nuclex.UserInterface.Controls;
 using Nuclex.UserInterface;
-
-using PlagueEngine.Input.Components;
-
 
 /************************************************************************************/
 /// PlagueEngine.GUI.Components
 /************************************************************************************/
 namespace PlagueEngine.GUI.Components
 {
-
     /********************************************************************************/
-    /// GUI Button Component
+    /// GUI Label Component
     /********************************************************************************/
-    class ButtonComponent : GUIComponent
+    class LabelComponent : GUIComponent
     {
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public ButtonControl button {  get; private set; }
+        public LabelControl label {  get; private set; }
         /****************************************************************************/
         
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public ButtonComponent():base(null)
+        public LabelComponent():base(null)
         {
-            button = new ButtonControl();
+            label = new LabelControl();
         }
         /****************************************************************************/
 
@@ -40,17 +35,17 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         public bool Initialize(String text, UniRectangle bounds)
         {
-            if (button != null && gui!=null)
+            if (label != null && gui!=null)
             {
-                button.Text = text;
-                button.Bounds = bounds;
+                label.Text = text;
+                label.Bounds = bounds;
 #if DEBUG
-                Diagnostics.PushLog("Button component initialized successfully");
+                Diagnostics.PushLog("Label component initialized successfully");
 #endif
                 return true;
             }
 #if DEBUG
-            Diagnostics.PushLog("Button component wasn't initialized");
+            Diagnostics.PushLog("Label component wasn't initialized");
 #endif
             return false;
         }
@@ -61,15 +56,7 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         public override void register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.button);
-        }
-
-        /****************************************************************************/
-        /// setDelegate
-        /****************************************************************************/
-        public void setDelegate(EventHandler handler)
-        {
-            button.Pressed += handler;
+            gui.Manager.Screen.Desktop.Children.Add(this.label);
         }
         /****************************************************************************/
 
@@ -81,10 +68,9 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {   
-            gui.Manager.Screen.Desktop.Children.Remove(this.button);
+            gui.Manager.Screen.Desktop.Children.Remove(this.label);
             base.ReleaseMe();
         }
         /****************************************************************************/
     }
-    /********************************************************************************/
 }
