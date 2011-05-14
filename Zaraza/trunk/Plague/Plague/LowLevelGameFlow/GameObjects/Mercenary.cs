@@ -105,48 +105,40 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             // TODO: zrobić zeby się poruszało
 
-            //float rotationSpeed  = 1.0f;
-            //float movingSpeed    = 10.0f;
-            //float distance       = 10.0f;
-            //float anglePrecision = 0.5f;
-                       
-            //if (moving)
-            //{
-            //    if (Vector3.Distance(World.Translation, target) < distance)
-            //    {
-            //        moving = false;
-            //        controller.StopMoving();
-            //        mesh.BlendTo("Idle",TimeSpan.FromSeconds(0.5f));
-            //    }
+            float rotationSpeed = 0.1f;
+            float movingSpeed = 10.0f;
+            float distance = 5.0f;
+            float anglePrecision = 0.1f;
 
-            //  //  Vector3 direction = target - World.Translation;
+            if (moving)
+            {
+                if (Vector3.Distance(World.Translation, target) < distance)
+                {
+                    moving = false;
+                    controller.StopMoving();
+                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.5f));
+                }
 
-            //    //direction.Y = 0;
-            //    //direction = Vector3.Normalize(direction);
+                Vector3 direction = World.Translation - target;
 
-            //    //float angle = (float)Math.Acos((double)Vector3.Dot(Vector3.Normalize(World.Forward), Vector3.Normalize(direction)));
-            //    //Diagnostics.PushLog(direction.ToString() + " ; " + angle.ToString());                
-                
-            //    //if (angle > MathHelper.PiOver2) angle -= (float)Math.PI;
+                Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
+
+                float angle = (float)Math.Acos((double)Vector2.Dot(v1,v2));
+
+                //Diagnostics.PushLog(MathHelper.ToDegrees(angle).ToString() + " : " + dot.ToString());
+
+                if (angle > MathHelper.Pi) angle -= (float)Math.PI*2;
+
+                if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed);
                                 
-            //    //if(Math.Abs(angle) > 0.3f) controller.Rotate(MathHelper.ToDegrees(angle));
-                
-            //    //Matrix m = Matrix.Identity;
-            //    //m.Forward = Vector3.Up;
-            //    //m.Up = direction;
-            //    //m.Right = Vector3.Cross(Vector3.Up, direction);
+                controller.MoveForward(movingSpeed);
 
-            //    //m *= Matrix.CreateRotationY(-MathHelper.PiOver2);
-
-            //    //controller.Desiredorientation = m;
-
-            //    controller.MoveForward(movingSpeed);
-
-            //    if (mesh.currentAnimation.Clip.Name != "Run")
-            //    {
-            //        mesh.StartClip("Run");
-            //    }
-            //}
+                if (mesh.currentAnimation.Clip.Name != "Run")
+                {
+                    mesh.StartClip("Run");
+                }
+            }
         }
         /****************************************************************************/
 
