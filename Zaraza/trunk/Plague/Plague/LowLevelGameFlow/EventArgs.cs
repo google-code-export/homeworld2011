@@ -62,6 +62,29 @@ namespace PlagueEngine.LowLevelGameFlow
     }
     /********************************************************************************/
 
+    
+    /********************************************************************************/
+    /// CommandOnObjectEvent
+    /********************************************************************************/
+    class CommandOnObjectEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+        public Vector3 position;
+
+        public CommandOnObjectEvent(GameObjectInstance gameObject, Vector3 position)
+        {
+            this.gameObject = gameObject;
+            this.position = position;
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null) return "ID: " + gameObject.ID.ToString() + ", Position: " + position.ToString();
+            else return "Null, Position: " + position.ToString();
+        }
+    }
+    /********************************************************************************/
+
 
     /********************************************************************************/
     /// ExSwitchEvent
@@ -125,4 +148,25 @@ namespace PlagueEngine.LowLevelGameFlow
         }
     }
     /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// MoveToPointCommandEvent
+    /********************************************************************************/
+    class MoveToPointCommandEvent : EventArgs
+    {
+        public Vector3 point;
+
+        public MoveToPointCommandEvent(Vector3 point)
+        {
+            this.point = point;
+        }
+
+        public override string ToString()
+        {
+            return point.ToString();
+        }
+    }
+    /********************************************************************************/
+
 }

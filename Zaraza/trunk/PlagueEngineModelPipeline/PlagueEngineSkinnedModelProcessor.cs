@@ -81,6 +81,7 @@ namespace PlagueEngineModelPipeline
 
             ProcessAnimation(skeleton.Animations.ElementAt(0).Value);
 
+
             outputModel.SkinningData = new  SkinningData(animationClips,
                                                          bindPose,
                                                          inverseBindPose,

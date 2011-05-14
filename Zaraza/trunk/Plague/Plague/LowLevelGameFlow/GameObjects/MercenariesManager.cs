@@ -23,6 +23,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields        
         /****************************************************************************/
         private List<Mercenary> SelectedMercenaries = null;
+        private bool            commandMode         = false;
         /****************************************************************************/
 
 
@@ -70,6 +71,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     foreach (Mercenary merc in SelectedMercenaries) merc.Marker.Enabled = false;
                     SelectedMercenaries.Clear();
                     SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                    commandMode = false;
                     return;
                 }
 
@@ -79,11 +81,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     foreach (Mercenary merc in SelectedMercenaries) merc.Marker.Enabled = false;
                     SelectedMercenaries.Clear();
-                    
+
                     SelectedMercenaries.Add(m);
                     m.Marker.Enabled = true;
 
                     SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
+                    commandMode = true;
                 }
             }
             /*************************************/
@@ -101,6 +104,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     m.Marker.Enabled = true;
 
                     SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
+                    commandMode = true;
                 }
             }
             /*************************************/
@@ -120,9 +124,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     if (SelectedMercenaries.Count == 0)
                     {
                         SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                        commandMode = false;
                     }
                 }
             }
+            /*************************************/
+            /// CommandOnObjectEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(CommandOnObjectEvent)))
+            {
+                if (commandMode)
+                {
+                    CommandOnObjectEvent commandOnObjectEvent = e as CommandOnObjectEvent;
+
+                    switch (commandOnObjectEvent.gameObject.Status)
+                    {
+                        case GameObjectStatus.Walk: 
+                            SendEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), Priority.High, SelectedMercenaries.ToArray());
+                            break;
+                    }
+                }                               
+            }
+            /*************************************/
 
         }
         /****************************************************************************/

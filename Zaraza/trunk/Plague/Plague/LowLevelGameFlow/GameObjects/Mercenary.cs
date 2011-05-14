@@ -27,10 +27,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        SkinnedMeshComponent mesh       = null;
-        CapsuleBodyComponent body       = null;
-        PhysicsController    controller = null;
-        Marker               marker     = null;
+        private SkinnedMeshComponent mesh       = null;
+        private CapsuleBodyComponent body       = null;
+        private PhysicsController    controller = null;
+        private Marker               marker     = null;
+        
+        private Vector3 target;
+        private bool    moving = false;
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public Marker Marker { get { return marker; } }
         /****************************************************************************/
 
 
@@ -48,6 +58,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             controller.EnableControl();
 
             mesh.StartClip("Idle");
+
+            RequiresUpdate = true;
         }
         /****************************************************************************/
 
@@ -66,9 +78,76 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// Properties
+        /// On Event
         /****************************************************************************/
-        public Marker Marker { get { return marker; } }
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {                        
+            /*************************************/
+            /// MoveToPointCommandEvent
+            /*************************************/
+            if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
+            {
+                MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
+
+                target = moveToPointCommandEvent.point;
+                moving = true;
+            }
+            /*************************************/
+
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Update
+        /****************************************************************************/
+        public override void Update(TimeSpan deltaTime)
+        {
+            // TODO: zrobić zeby się poruszało
+
+            //float rotationSpeed  = 1.0f;
+            //float movingSpeed    = 10.0f;
+            //float distance       = 10.0f;
+            //float anglePrecision = 0.5f;
+                       
+            //if (moving)
+            //{
+            //    if (Vector3.Distance(World.Translation, target) < distance)
+            //    {
+            //        moving = false;
+            //        controller.StopMoving();
+            //        mesh.BlendTo("Idle",TimeSpan.FromSeconds(0.5f));
+            //    }
+
+            //  //  Vector3 direction = target - World.Translation;
+
+            //    //direction.Y = 0;
+            //    //direction = Vector3.Normalize(direction);
+
+            //    //float angle = (float)Math.Acos((double)Vector3.Dot(Vector3.Normalize(World.Forward), Vector3.Normalize(direction)));
+            //    //Diagnostics.PushLog(direction.ToString() + " ; " + angle.ToString());                
+                
+            //    //if (angle > MathHelper.PiOver2) angle -= (float)Math.PI;
+                                
+            //    //if(Math.Abs(angle) > 0.3f) controller.Rotate(MathHelper.ToDegrees(angle));
+                
+            //    //Matrix m = Matrix.Identity;
+            //    //m.Forward = Vector3.Up;
+            //    //m.Up = direction;
+            //    //m.Right = Vector3.Cross(Vector3.Up, direction);
+
+            //    //m *= Matrix.CreateRotationY(-MathHelper.PiOver2);
+
+            //    //controller.Desiredorientation = m;
+
+            //    controller.MoveForward(movingSpeed);
+
+            //    if (mesh.currentAnimation.Clip.Name != "Run")
+            //    {
+            //        mesh.StartClip("Run");
+            //    }
+            //}
+        }
         /****************************************************************************/
 
 
@@ -77,12 +156,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            mesh.ReleaseMe();
-            mesh = null;
-            body.ReleaseMe();
-            body = null;
-            marker.ReleaseMe();
-            marker = null;
+            if (mesh != null)
+            {
+                mesh.ReleaseMe();
+                mesh = null;
+            }
+
+            if (body != null)
+            {
+                body.ReleaseMe();
+                body = null;
+            }
+
+            if (marker != null)
+            {
+                marker.ReleaseMe();
+                marker = null;
+            }
         }
         /****************************************************************************/
 

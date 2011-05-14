@@ -584,7 +584,7 @@
       <ProcessorParameters_AnimationClip3Start>51</ProcessorParameters_AnimationClip3Start>
       <ProcessorParameters_AnimationClip3End>76</ProcessorParameters_AnimationClip3End>
       <ProcessorParameters_AnimationClip3Loop>True</ProcessorParameters_AnimationClip3Loop>
-      <ProcessorParameters_AnimationClip4>CarabineFrieshot</ProcessorParameters_AnimationClip4>
+      <ProcessorParameters_AnimationClip4>CarabineFireshot</ProcessorParameters_AnimationClip4>
       <ProcessorParameters_AnimationClip4Start>147</ProcessorParameters_AnimationClip4Start>
       <ProcessorParameters_AnimationClip4End>157</ProcessorParameters_AnimationClip4End>
     </Compile>
