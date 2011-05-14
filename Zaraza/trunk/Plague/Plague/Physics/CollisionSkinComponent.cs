@@ -34,6 +34,13 @@ namespace PlagueEngine.Physics
         private float pitch;
         private float roll;
         private List<Type> subscribedGameObjectTypesEvents = new List<Type>();
+        private List<Type> gameObjectsTypeToColide = new List<Type>();
+        private List<Type> gameObjectsTypeToNotColide = new List<Type>();
+
+
+        private List<uint> subsribedGameObjectEvents = new List<uint>();
+        private List<uint> gameObjectsToColide = new List<uint>();
+        private List<uint> gameObjectsToNotColide = new List<uint>();
         /****************************************************************************/
 
 
@@ -57,11 +64,25 @@ namespace PlagueEngine.Physics
 
 
 
+
         /****************************************************************************/
         /// Handle Collision Detection
         /****************************************************************************/
         private bool HandleCollisionDetection(CollisionSkin owner, CollisionSkin collidee)
         {
+
+            if (subsribedGameObjectEvents.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+            {
+
+
+                this.GameObject.SendEvent(
+                    new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                    EventsSystem.Priority.Normal,
+                    this.GameObject);
+
+            }
+
+
 
             if (subscribedGameObjectTypesEvents.Contains(collidee.ExternalData.GetType()))
             {
@@ -74,7 +95,161 @@ namespace PlagueEngine.Physics
 
             }
 
-            return true;
+
+
+            if (gameObjectsToNotColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+            {
+                return false;
+            }
+
+            if (gameObjectsToColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+            {
+                return true;
+            }
+
+
+
+
+            if (gameObjectsTypeToNotColide.Contains(collidee.ExternalData.GetType()))
+            {
+                return false;
+            }
+
+            if (gameObjectsTypeToColide.Count == 0) return true;
+
+            if (gameObjectsTypeToColide.Contains(collidee.ExternalData.GetType()))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// CollideWithGameObjects
+        /****************************************************************************/
+        public void CollideWithGameObjects(params uint[] gameObjects)
+        {
+            this.gameObjectsToColide.AddRange(gameObjects);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CancelCollisionWithGameObjects
+        /****************************************************************************/
+        public void CancelCollisionWithGameObjects(params uint[] gameObjects)
+        {
+            foreach (uint gameObject in gameObjects)
+            {
+                this.gameObjectsToColide.Remove(gameObject);
+            }
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// DontCollideWithGameObjects
+        /****************************************************************************/
+        public void DontCollideWithGameObjects(params uint[] gameObjects)
+        {
+            this.gameObjectsToNotColide.AddRange(gameObjects);
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// CancelNoCollisionWithGameObjects
+        /****************************************************************************/
+        public void CancelNoCollisionWithGameObjects(params uint[] gameObjects)
+        {
+            foreach (uint gameObject in gameObjects)
+            {
+                this.gameObjectsToNotColide.Remove(gameObject);
+            }
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Subscribe Collision Event
+        /****************************************************************************/
+        public void SubscribeCollisionEvent(params uint[] gameObjects)
+        {
+            this.subsribedGameObjectEvents.AddRange(gameObjects);
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Cancel Subscribe Collision Event
+        /****************************************************************************/
+        public void CancelSubscribeCollisionEvent(params uint[] gameObjects)
+        {
+            foreach (uint gameObject in gameObjects)
+            {
+                this.subsribedGameObjectEvents.Remove(gameObject);
+            }
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// CollideWithGameObjectsType
+        /****************************************************************************/
+        public void CollideWithGameObjectsType(params Type[] gameObjectTypes)
+        {
+            this.gameObjectsTypeToColide.AddRange(gameObjectTypes);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CancelCollisionWithGameObjectsType
+        /****************************************************************************/
+        public void CancelCollisionWithGameObjectsType(params Type[] gameObjectTypes)
+        {
+            foreach (Type gameObjectType in gameObjectTypes)
+            {
+                this.gameObjectsTypeToColide.Remove(gameObjectType);
+            }
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// DontCollideWithGameObjectsType
+        /****************************************************************************/
+        public void DontCollideWithGameObjectsType(params Type[] gameObjectTypes)
+        {
+            this.gameObjectsTypeToNotColide.AddRange(gameObjectTypes);
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// CancelNoCollisionWithGameObjectsType
+        /****************************************************************************/
+        public void CancelNoCollisionWithGameObjectsType(params Type[] gameObjectTypes)
+        {
+            foreach (Type gameObjectType in gameObjectTypes)
+            {
+                this.gameObjectsTypeToNotColide.Remove(gameObjectType);
+            }
         }
         /****************************************************************************/
 
