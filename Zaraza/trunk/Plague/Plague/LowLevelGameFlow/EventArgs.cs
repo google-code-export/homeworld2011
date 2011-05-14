@@ -13,15 +13,15 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
     /// Empty Events
     /********************************************************************************/
-    class CreateEvent  : EventArgs { };
-    class DestroyEvent : EventArgs { };
+    class CreateEvent        : EventArgs { };
+    class DestroyEvent       : EventArgs { };
+    class SwitchEvent        : EventArgs { };
+    class GameObjectReleased : EventArgs { };
     /********************************************************************************/
 
-
-
-
+    
     /********************************************************************************/
-    /// GameObjectClicked && GameObjectReleased
+    /// GameObjectClicked
     /********************************************************************************/
     class GameObjectClicked : EventArgs
     {
@@ -36,10 +36,7 @@ namespace PlagueEngine.LowLevelGameFlow
             {
                 return "gameObjectID :" + gameObjectID.ToString();
             }
-    }
-
-
-    class GameObjectReleased : EventArgs { }
+    }    
     /********************************************************************************/
 
 
@@ -55,6 +52,76 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             this.gameObject = gameObject;
             this.position   = position;
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null) return "ID: " + gameObject.ID.ToString() + ", Position: " + position.ToString();
+            else return "Null, Position: " + position.ToString(); 
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// ExSwitchEvent
+    /********************************************************************************/
+    class ExSwitchEvent : EventArgs
+    {
+        public String name;
+        public bool   value;
+
+        public ExSwitchEvent(String name, bool value)
+        {
+            this.name  = name;
+            this.value = value;
+        }
+
+        public override string ToString()
+        {
+            return name + ": " + value.ToString();
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// AddToSelectionEvent
+    /********************************************************************************/
+    class AddToSelectionEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+
+        public AddToSelectionEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null) return "ID: " + gameObject.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// RemoveFromSelectionEvent
+    /********************************************************************************/
+    class RemoveFromSelectionEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+
+        public RemoveFromSelectionEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null) return "ID: " + gameObject.ID.ToString();
+            else return "Null";
         }
     }
     /********************************************************************************/

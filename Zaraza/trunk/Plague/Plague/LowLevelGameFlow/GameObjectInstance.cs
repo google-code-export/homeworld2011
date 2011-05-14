@@ -311,6 +311,7 @@ namespace PlagueEngine.LowLevelGameFlow
                 case GameObjectStatus.Pickable:     return 2;
                 case GameObjectStatus.Mercenary:    return 3;
                 case GameObjectStatus.Targetable:   return 4;
+                case GameObjectStatus.Walk:         return 5;
                 default: return 0;
             }
         }
@@ -329,6 +330,7 @@ namespace PlagueEngine.LowLevelGameFlow
                 case 2:  return GameObjectStatus.Pickable;
                 case 3:  return GameObjectStatus.Mercenary;
                 case 4:  return GameObjectStatus.Targetable;
+                case 5:  return GameObjectStatus.Walk;
                 default: return GameObjectStatus.Nothing;
             }
         }
@@ -347,7 +349,8 @@ namespace PlagueEngine.LowLevelGameFlow
         Interesting,
         Pickable,
         Mercenary,
-        Targetable
+        Targetable,
+        Walk
     }
     /********************************************************************************/
 
@@ -380,7 +383,13 @@ namespace PlagueEngine.LowLevelGameFlow
         [CategoryAttribute("Owner")]
         public int  OwnerBone { get; set; }
 
-        [CategoryAttribute("Status")]
+        [CategoryAttribute("Status"),
+         DescriptionAttribute("0: - GameObjectStatus.Nothing\n"     + 
+                              "1: - GameObjectStatus.Interesting\n" +
+                              "2: - GameObjectStatus.Pickable\n"    +
+                              "3: - GameObjectStatus.Mercenary\n"   +
+                              "4: - GameObjectStatus.Targetable\n"  + 
+                              "5: - GameObjectStatus.Walk\n")]        
         public uint Status { get; set; }
 
         /****************************************************************************/

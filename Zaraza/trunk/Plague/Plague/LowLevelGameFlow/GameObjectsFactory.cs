@@ -941,7 +941,18 @@ namespace PlagueEngine.LowLevelGameFlow
                 mercenaries.Add(goi);
             }
 
-            result.Init(mercenaries);
+            LinkedCamera linkedCamera = null;
+            if (data.LinkedCamera != 0)
+            {
+                linkedCamera = GetObject(data.LinkedCamera) as LinkedCamera;
+                if (linkedCamera == null)
+                {
+                    PushToWaitingRoom(result, data);
+                    return false;
+                }
+            }
+
+            result.Init(mercenaries,linkedCamera);
 
             return true;
         }

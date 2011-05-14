@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
+
 using PlagueEngine.EventsSystem;
 
 
@@ -25,11 +27,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public LinkedCamera LinkedCamera { get; set; }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(List<Mercenary> mercenaries)
+        public void Init(List<Mercenary> mercenaries,LinkedCamera linkedCamera)
         {
             SelectedMercenaries = mercenaries;
+            LinkedCamera        = linkedCamera;
         }
         /****************************************************************************/
 
@@ -48,9 +58,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void OnEvent(EventsSender sender, EventArgs e)
         {
+            /*************************************/
+            /// SelectedObjectEvent
+            /*************************************/
             if (e.GetType().Equals(typeof(SelectedObjectEvent)))
             {
-                Mercenary m = ((SelectedObjectEvent)e).gameObject as Mercenary;
+                SelectedObjectEvent selectedObjectEvent = e as SelectedObjectEvent;
+
+                if (selectedObjectEvent.gameObject == null)
+                {
+                    foreach (Mercenary merc in SelectedMercenaries) merc.Marker.Enabled = false;
+                    SelectedMercenaries.Clear();
+                    SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                    return;
+                }
+
+                Mercenary m = selectedObjectEvent.gameObject as Mercenary;
 
                 if (m != null)
                 {
@@ -59,8 +82,48 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     
                     SelectedMercenaries.Add(m);
                     m.Marker.Enabled = true;
+
+                    SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
                 }
             }
+            /*************************************/
+            /// AddToSelectionEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(AddToSelectionEvent)))
+            {
+                AddToSelectionEvent addToSelectionEvent = e as AddToSelectionEvent;
+
+                Mercenary m = addToSelectionEvent.gameObject as Mercenary;
+
+                if (m != null)
+                {
+                    SelectedMercenaries.Add(m);
+                    m.Marker.Enabled = true;
+
+                    SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
+                }
+            }
+            /*************************************/
+            /// RemoveFromSelectionEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(RemoveFromSelectionEvent)))
+            {
+                RemoveFromSelectionEvent removeFromSelectionEvent = e as RemoveFromSelectionEvent;
+
+                Mercenary m = removeFromSelectionEvent.gameObject as Mercenary;
+
+                if (m != null)
+                {
+                    SelectedMercenaries.Remove(m);
+                    m.Marker.Enabled = false;
+
+                    if (SelectedMercenaries.Count == 0)
+                    {
+                        SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                    }
+                }
+            }
+
         }
         /****************************************************************************/
 
@@ -75,6 +138,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     public class MercenariesManagerData : GameObjectInstanceData
     {
         public List<uint> SelectedMercenaries { get; set; }
+
+        [CategoryAttribute("References")]
+        public uint LinkedCamera { get; set; }
     }
     /********************************************************************************/
 

@@ -191,6 +191,7 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.Elasticity = 0.1f;
             tdata.StaticRoughness = 0.9f;
             tdata.DynamicRoughness = 0.9f;
+            tdata.Status = 5;
 
             gameObjectsFactory.Create(tdata);
 
@@ -496,6 +497,8 @@ namespace PlagueEngine.HighLevelGameFlow
             lcdata.MercenariesManager = mm.ID;
 
             LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
+
+            (mm as MercenariesManager).LinkedCamera = camera;
         }
         /****************************************************************************/
 
