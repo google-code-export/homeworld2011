@@ -114,12 +114,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (key == Keys.G && state.IsDown())
             {
-                controller.Rotate(1);
+                this.body.DisableBody();
             }
 
             if (key == Keys.J && state.IsDown())
             {
-                controller.Rotate(-1);                
+                this.body.EnableBody();               
             }
             
 

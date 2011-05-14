@@ -40,6 +40,7 @@ namespace PlagueEngine.Physics
         private float yaw;
         private float pitch;
         private float roll;
+        private bool enabled = true;
 
         private List<Type> subscribedGameObjectTypesEvents = new List<Type>();
         private List<Type> gameObjectsTypeToColide = new List<Type>();
@@ -138,6 +139,41 @@ namespace PlagueEngine.Physics
             }
 
             return false;
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// DisableBody
+        /****************************************************************************/
+        public void DisableBody()
+        {
+            if (enabled)
+            {
+                this.body.DisableBody();
+                PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(this.skin);
+                physicsManager.rigidBodies.Remove(this.gameObject.ID);
+                enabled = false;
+            }
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// EnableBody
+        /****************************************************************************/
+        public void EnableBody()
+        {
+            if (!enabled)
+            {
+                PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(this.skin);
+                this.body.EnableBody();
+                physicsManager.rigidBodies.Add(this.gameObject.ID, this);
+                enabled = true;
+            }
         }
         /****************************************************************************/
 
