@@ -70,11 +70,11 @@ namespace PlagueEngine
             
 
             #if DEBUG
-            Diagnostics.Game = this;
-            Diagnostics.ShowDiagnostics = true;
-            Diagnostics.ForceGCOnUpdate = true;
+            Diagnostics.Game                = this;
+            Diagnostics.ShowDiagnostics     = true;
+            Diagnostics.ForceGCOnUpdate     = true;
             Diagnostics.LimitUpdateTimeStep = false;
-            Diagnostics.ShowLogWindow = true;
+            Diagnostics.ShowLogWindow       = true;
             Diagnostics.OpenLogFile("log");
             #endif
 
@@ -106,7 +106,7 @@ namespace PlagueEngine
 
             eventsSystem = new EventsSystem.EventsSystem(Level);
 
-            //eventsHistorian = new EventsHistorian(20);
+            eventsHistorian = new EventsHistorian(20);
 
             renderer.InitDebugDrawer(physicsManager);
 
@@ -285,11 +285,7 @@ namespace PlagueEngine
             }
         }
         /****************************************************************************/
-
-
-
-
-
+        
 
         /****************************************************************************/
         /// ParticleManager
@@ -320,9 +316,6 @@ namespace PlagueEngine
                 contentManager.SaveConfiguration(defaultRenderConfig);
             }
             renderer = new Renderer(this, renderConfig);
-
-
-
         }
         /****************************************************************************/
 
@@ -363,7 +356,7 @@ namespace PlagueEngine
         /****************************************************************************/
         public void FlushEventsHistory()
         {
-            //if (eventsHistorian != null) eventsHistorian.Flush();
+            if (eventsHistorian != null) eventsHistorian.Flush();
         }
         /****************************************************************************/
 
