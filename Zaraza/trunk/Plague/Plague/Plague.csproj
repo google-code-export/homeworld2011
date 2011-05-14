@@ -149,6 +149,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />
     <Compile Include="EventsSystem\EventsSniffer.cs" />
