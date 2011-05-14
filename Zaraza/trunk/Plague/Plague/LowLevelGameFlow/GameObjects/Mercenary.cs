@@ -105,41 +105,41 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             // TODO: zrobić zeby się poruszało
 
-            float rotationSpeed = 0.1f;
-            float movingSpeed = 10.0f;
-            float distance = 5.0f;
+            float rotationSpeed = 7.5f;
+            float movingSpeed = 500.0f;
+            float distance = 1.0f;
             float anglePrecision = 0.1f;
 
             if (moving)
             {
-                if (Vector3.Distance(World.Translation, target) < distance)
+                if (Vector2.Distance(new Vector2(World.Translation.X,
+                                                 World.Translation.Z),
+                                     new Vector2(target.X,
+                                                 target.Z)) < distance)
                 {
                     moving = false;
                     controller.StopMoving();
                     mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.5f));
                 }
-
-                if (moving)
+                else
                 {
                     Vector3 direction = World.Translation - target;
-
                     Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
                     Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
 
+                    float det = v1.X * v2.Y - v1.Y * v2.X;
                     float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
 
-                    //Diagnostics.PushLog(MathHelper.ToDegrees(angle).ToString() + " : " + dot.ToString());
+                    if (det < 0) angle = -angle;
 
-                    if (angle > MathHelper.Pi) angle -= (float)Math.PI * 2;
-
-                    if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed);
-
-                    controller.MoveForward(movingSpeed);
-
+                    if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                    
+                    controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                                        
                     if (mesh.currentAnimation.Clip.Name != "Run")
                     {
                         mesh.StartClip("Run");
-                    }
+                    }                    
                 }
             }
         }
