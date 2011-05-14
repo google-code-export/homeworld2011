@@ -95,6 +95,26 @@ namespace PlagueEngine.Rendering.Components
 
 
         /****************************************************************************/
+        /// Current Clip
+        /****************************************************************************/
+        public String CurrentClip
+        {
+            get
+            {
+                if (Blend)
+                {
+                    if (blendAnimation.Clip != null) return blendAnimation.Clip.Name;
+                }
+
+                if (currentAnimation.Clip != null) return currentAnimation.Clip.Name;
+
+                return String.Empty;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Blend 
         /****************************************************************************/
         public void BlendTo(String animation, TimeSpan duration)
@@ -265,7 +285,8 @@ namespace PlagueEngine.Rendering.Components
 
                 for (int bone = 0; bone < currentAnimation.SkinTransforms.Length; bone++)
                 {
-                    currentAnimation.SkinTransforms[bone] = Matrix.Lerp(currentAnimation.SkinTransforms[bone], blendAnimation.SkinTransforms[bone], BlendRatio);
+                    currentAnimation.WorldTransforms[bone] = Matrix.Lerp(currentAnimation.WorldTransforms[bone], blendAnimation.WorldTransforms[bone], BlendRatio);
+                    currentAnimation.SkinTransforms [bone] = Matrix.Lerp(currentAnimation.SkinTransforms [bone], blendAnimation.SkinTransforms [bone], BlendRatio);
                 }
             }
         }

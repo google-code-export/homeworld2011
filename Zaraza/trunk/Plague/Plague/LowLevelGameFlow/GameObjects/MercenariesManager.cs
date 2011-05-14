@@ -142,6 +142,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         case GameObjectStatus.Walk: 
                             SendEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), Priority.High, SelectedMercenaries.ToArray());
                             break;
+                        case GameObjectStatus.Interesting:
+                        case GameObjectStatus.Mercenary:
+                        case GameObjectStatus.Pickable:
+                            SendEvent(new MoveToObjectCommandEvent(commandOnObjectEvent.gameObject), Priority.High, SelectedMercenaries.ToArray());
+                            break;
                     }
                 }                               
             }

@@ -19,7 +19,7 @@ namespace PlagueEngine.Physics
     /****************************************************************************/
     class CollisionEvent : EventArgs
     {
-        GameObjectInstance gameObject=null;
+        public GameObjectInstance gameObject=null;
 
         public CollisionEvent(GameObjectInstance gameObject)
         {

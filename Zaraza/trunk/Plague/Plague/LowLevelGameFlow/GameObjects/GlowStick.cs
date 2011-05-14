@@ -49,14 +49,37 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// On Owning
+        /****************************************************************************/
+        protected override void OnOwning(GameObjectInstance owner)
+        {
+            if (owner != null)
+            {
+                World = Matrix.Identity;
+                body.ReleaseMe();
+                body = null;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Release Components
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            mesh.ReleaseMe();
-            mesh = null;
-            body.ReleaseMe();
-            body = null;
+            if (mesh != null)
+            {
+                mesh.ReleaseMe();
+                mesh = null;
+            }
+            
+            if (body != null)
+            {
+                body.ReleaseMe();
+                body = null;
+            }
+
             light1.ReleaseMe();
             light1 = null;
             light2.ReleaseMe();

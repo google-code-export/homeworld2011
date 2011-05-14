@@ -169,4 +169,25 @@ namespace PlagueEngine.LowLevelGameFlow
     }
     /********************************************************************************/
 
+
+    /********************************************************************************/
+    /// MoveToObjectCommandEvent
+    /********************************************************************************/
+    class MoveToObjectCommandEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+
+        public MoveToObjectCommandEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null) return "ID: " + gameObject.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
 }

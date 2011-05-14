@@ -226,9 +226,10 @@ namespace PlagueEngine.LowLevelGameFlow
             get { return owner; }
             set
             {
+                OnOwning(value);
                 if (value == null) getWorld = this.GetMyWorld;
                 else getWorld = this.GetOwnerWorld;
-                owner = value;
+                owner = value;                
             }
         }
         /****************************************************************************/
@@ -278,6 +279,16 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Update
         /****************************************************************************/
         public virtual void Update(TimeSpan deltaTime)
+        { 
+        
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Owning
+        /****************************************************************************/
+        protected virtual void OnOwning(GameObjectInstance owner)
         { 
         
         }
