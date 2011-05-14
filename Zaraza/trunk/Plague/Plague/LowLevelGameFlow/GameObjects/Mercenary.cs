@@ -119,24 +119,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.5f));
                 }
 
-                Vector3 direction = World.Translation - target;
-
-                Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
-
-                float angle = (float)Math.Acos((double)Vector2.Dot(v1,v2));
-
-                //Diagnostics.PushLog(MathHelper.ToDegrees(angle).ToString() + " : " + dot.ToString());
-
-                if (angle > MathHelper.Pi) angle -= (float)Math.PI*2;
-
-                if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed);
-                                
-                controller.MoveForward(movingSpeed);
-
-                if (mesh.currentAnimation.Clip.Name != "Run")
+                if (moving)
                 {
-                    mesh.StartClip("Run");
+                    Vector3 direction = World.Translation - target;
+
+                    Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                    Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
+
+                    float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+
+                    //Diagnostics.PushLog(MathHelper.ToDegrees(angle).ToString() + " : " + dot.ToString());
+
+                    if (angle > MathHelper.Pi) angle -= (float)Math.PI * 2;
+
+                    if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed);
+
+                    controller.MoveForward(movingSpeed);
+
+                    if (mesh.currentAnimation.Clip.Name != "Run")
+                    {
+                        mesh.StartClip("Run");
+                    }
                 }
             }
         }
