@@ -499,6 +499,33 @@ namespace PlagueEngine.HighLevelGameFlow
             LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
 
             (mm as MercenariesManager).LinkedCamera = camera;
+
+
+
+            CreatureData ssdata = new CreatureData();
+            ssdata.Type = typeof(Creature);
+            ssdata.Model = "FleshCreature";
+            ssdata.TimeRatio = 1.0f;
+            ssdata.Diffuse = "flesh_diffuse";
+            ssdata.Normals = "flesh_normals";
+            ssdata.World *= Matrix.CreateTranslation(245, 66, 33);
+
+
+
+            ssdata.Mass = 60;
+            ssdata.StaticRoughness = 0.7f;
+            ssdata.DynamicRoughness = 0.7f;
+            ssdata.Elasticity = 0.3f;
+
+            ssdata.Length = 5;
+            ssdata.Radius = 1;
+            ssdata.Immovable = false;
+            ssdata.SkinPitch = 90;
+            ssdata.Translation = new Vector3(0, 2.2f, 0);
+            gameObjectsFactory.Create(ssdata);
+
+
+
         }
         /****************************************************************************/
 

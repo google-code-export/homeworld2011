@@ -33,7 +33,7 @@ namespace PlagueEngine.Physics
 
         private ConstraintWorldPoint constraintPoint = new ConstraintWorldPoint();
         private ConstraintVelocity constraintVelocity = new ConstraintVelocity();
-
+        
         /****************************************************************************/
 
 

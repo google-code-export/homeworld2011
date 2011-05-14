@@ -75,7 +75,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 else if(state.IsDown())
                 {
-                    controller.MoveForward(5.0f);
+                    controller.MoveForward(15.0f);
                 }
                 else if(state.WasReleased())
                 {
@@ -99,7 +99,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 else if (state.IsDown())
                 {
-                    controller.MoveBackward(5.0f);
+                    controller.MoveBackward(15.0f);
                 }
                 else if (state.WasReleased())
                 {

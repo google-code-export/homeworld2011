@@ -44,6 +44,12 @@ namespace PlagueEngine.Physics
         private List<Type> subscribedGameObjectTypesEvents = new List<Type>();
         private List<Type> gameObjectsTypeToColide = new List<Type>();
         private List<Type> gameObjectsTypeToNotColide = new List<Type>();
+
+
+        private List<uint> subsribedGameObjectEvents = new List<uint>();
+        private List<uint> gameObjectsToColide = new List<uint>();
+        private List<uint> gameObjectsToNotColide = new List<uint>();
+
         /****************************************************************************/
 
 
@@ -80,6 +86,19 @@ namespace PlagueEngine.Physics
         private bool HandleCollisionDetection(CollisionSkin owner, CollisionSkin collidee)
         {
 
+            if (subsribedGameObjectEvents.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+            {
+
+
+                this.GameObject.SendEvent(
+                    new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                    EventsSystem.Priority.Normal,
+                    this.GameObject);
+
+            }
+
+
+
             if (subscribedGameObjectTypesEvents.Contains(collidee.ExternalData.GetType()))
             {
 
@@ -90,6 +109,19 @@ namespace PlagueEngine.Physics
                     this.GameObject);
                
             }
+
+
+
+            if (gameObjectsToNotColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+            {
+                return false;
+            }
+
+            if (gameObjectsToColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+            {
+                return true;
+            }
+
 
 
 
@@ -109,6 +141,82 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
+
+
+
+        /****************************************************************************/
+        /// CollideWithGameObjects
+        /****************************************************************************/
+        public void CollideWithGameObjects(params uint[] gameObjects)
+        {
+            this.gameObjectsToColide.AddRange(gameObjects);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CancelCollisionWithGameObjects
+        /****************************************************************************/
+        public void CancelCollisionWithGameObjects(params uint[] gameObjects)
+        {
+            foreach (uint gameObject in gameObjects)
+            {
+                this.gameObjectsToColide.Remove(gameObject);
+            }
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// DontCollideWithGameObjects
+        /****************************************************************************/
+        public void DontCollideWithGameObjects(params uint[] gameObjects)
+        {
+            this.gameObjectsToNotColide.AddRange(gameObjects);
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// CancelNoCollisionWithGameObjects
+        /****************************************************************************/
+        public void CancelNoCollisionWithGameObjects(params uint[] gameObjects)
+        {
+            foreach (uint gameObject in gameObjects)
+            {
+                this.gameObjectsToNotColide.Remove(gameObject);
+            }
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Subscribe Collision Event
+        /****************************************************************************/
+        public void SubscribeCollisionEvent(params uint[] gameObjects)
+        {
+            this.subsribedGameObjectEvents.AddRange(gameObjects);
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Cancel Subscribe Collision Event
+        /****************************************************************************/
+        public void CancelSubscribeCollisionEvent(params uint[] gameObjects)
+        {
+            foreach (uint gameObject in gameObjects)
+            {
+                this.subsribedGameObjectEvents.Remove(gameObject);
+            }
+        }
+        /****************************************************************************/
 
 
 
