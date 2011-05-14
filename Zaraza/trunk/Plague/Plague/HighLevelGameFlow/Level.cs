@@ -456,10 +456,10 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.Normals = "miesniak_norm";
             mddd.World = Matrix.CreateTranslation(245, 56, 30);
 
-            mddd.Mass = 60;
-            mddd.StaticRoughness = 0.7f;
-            mddd.DynamicRoughness = 0.7f;
-            mddd.Elasticity = 0.3f;
+            mddd.Mass = 90;
+            mddd.StaticRoughness = 1f;
+            mddd.DynamicRoughness = 1f;
+            mddd.Elasticity = 0f;
 
             mddd.Length = 5;
             mddd.Radius = 1;

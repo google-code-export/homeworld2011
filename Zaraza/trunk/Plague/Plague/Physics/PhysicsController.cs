@@ -141,7 +141,11 @@ namespace PlagueEngine.Physics
         public void Rotate(float dt)
         {
             body.DesiredOrientation *= Matrix.CreateRotationY(MathHelper.ToRadians(dt));
+
         }
+
+        public Matrix Desiredorientation { get { return body.DesiredOrientation; } set { body.DesiredOrientation = value; } }
+
         /****************************************************************************/
         /// Set Veolicty
         /****************************************************************************/

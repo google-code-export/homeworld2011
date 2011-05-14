@@ -237,7 +237,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
         {
-          
+         
+            /****************************/
+            /// Middle Button
+            /****************************/
             if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.MiddleClick)
             {
                 if (++rotateCamera == 1)
@@ -276,8 +279,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 //this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
                 if (--rotateCamera == 0) mouselistenerComponent.UnlockCursor();
             }
+            /****************************/
 
 
+            /****************************/
+            /// Left Button
+            /****************************/
             if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
                 CollisionSkin skin;
@@ -290,22 +297,36 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (skin != null)
                 {
-                    if (!useCommands)
-                    {
-                        if ((skin.ExternalData as GameObjectInstance).Status != GameObjectStatus.Nothing)
-                            goi = skin.ExternalData as GameObjectInstance;
-                    }
-                    else
-                    {
-                        if ((skin.ExternalData as GameObjectInstance).Status == GameObjectStatus.Mercenary)
-                            goi = skin.ExternalData as GameObjectInstance;
-                    }
+                    if ((skin.ExternalData as GameObjectInstance).Status == GameObjectStatus.Mercenary) goi = skin.ExternalData as GameObjectInstance;                    
                 }
 
                 if      (addToSelection)      SendEvent(new AddToSelectionEvent     (goi),      Priority.Normal, mercenariesManager);
                 else if (removeFromSelection) SendEvent(new RemoveFromSelectionEvent(goi),      Priority.Normal, mercenariesManager);
                 else                          SendEvent(new SelectedObjectEvent     (goi, pos), Priority.Normal, mercenariesManager);
             }
+            /****************************/
+
+
+            /****************************/
+            /// Right Button
+            /****************************/
+            if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.RightClick && useCommands)
+            {
+                CollisionSkin skin;
+                Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                Vector3 pos, nor;
+                float dist;
+                Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
+
+                if (skin != null)
+                {
+                    if ((skin.ExternalData as GameObjectInstance).Status != GameObjectStatus.Nothing)
+                    {
+                        SendEvent(new CommandOnObjectEvent(skin.ExternalData as GameObjectInstance, pos), Priority.Normal, mercenariesManager);
+                    }
+                }                
+            }
+            /****************************/
          
         }
         /****************************************************************************/
@@ -409,26 +430,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
-            if (key == Keys.LeftShift)   shiftDown           = state.IsDown();
-            if (key == Keys.LeftControl) addToSelection      = state.IsDown();
-            if (key == Keys.LeftAlt)     removeFromSelection = state.IsDown();  
+            if (key == Keys.LeftShift)   shiftDown      = state.IsDown();
+            if (key == Keys.LeftControl) addToSelection = state.IsDown();
 
-            if (key == Keys.Q && state.WasPressed())
+            if (key == Keys.LeftAlt) 
             {
-                if (++rotateCamera == 1) mouselistenerComponent.LockCursor();
-            }
-            else if (key == Keys.Q && state.WasReleased())
-            {
-                if (--rotateCamera == 0) mouselistenerComponent.UnlockCursor();
-            }
+                removeFromSelection = state.IsDown();
 
+                if (key == Keys.LeftAlt && state.WasPressed())
+                {
+                    if (++rotateCamera == 1) mouselistenerComponent.LockCursor();
+                }
+                else if (key == Keys.LeftAlt && state.WasReleased())
+                {
+                    if (--rotateCamera == 0) mouselistenerComponent.UnlockCursor();
+                }
+            }
 
             if (!state.IsDown()) return;
 
             Vector3 direction = Vector3.Normalize(target - position);
             direction.Y = 0;
 
-            
+
             Vector3 perpendicular = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f)));
             //perpendicular = Vector3.Normalize(perpendicular);
             perpendicular.Y = 0;
@@ -440,52 +464,52 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 case Keys.W:
 
-                            tmp += direction * time * movementSpeed;
+                    tmp += direction * time * movementSpeed;
 
-                            if (CanIMove(position, tmp))
-                            {
-                                position += direction * time * movementSpeed;
-                                target += direction * time * movementSpeed;
-                                stopTracking();
-                            }
-                            break;
+                    if (CanIMove(position, tmp))
+                    {
+                        position += direction * time * movementSpeed;
+                        target += direction * time * movementSpeed;
+                        stopTracking();
+                    }
+                    break;
 
                 case Keys.S:
 
-                            tmp -= direction * time * movementSpeed ;
-                            if (CanIMove(position, tmp))
-                            {
-                                position -= direction * time * movementSpeed;
-                                target -= direction * time * movementSpeed;
-                                stopTracking();
-                            }
-                            break;
+                    tmp -= direction * time * movementSpeed;
+                    if (CanIMove(position, tmp))
+                    {
+                        position -= direction * time * movementSpeed;
+                        target -= direction * time * movementSpeed;
+                        stopTracking();
+                    }
+                    break;
 
                 case Keys.A:
 
-                            tmp += perpendicular * time * movementSpeed;
-                            if (CanIMove(position, tmp))
-                            {
-                                position += perpendicular * time * movementSpeed;
-                                target += perpendicular * time * movementSpeed;
-                                stopTracking();
-                            }
-                            break;
+                    tmp += perpendicular * time * movementSpeed;
+                    if (CanIMove(position, tmp))
+                    {
+                        position += perpendicular * time * movementSpeed;
+                        target += perpendicular * time * movementSpeed;
+                        stopTracking();
+                    }
+                    break;
 
                 case Keys.D:
 
-                            tmp -= perpendicular * time * movementSpeed;
-                            if (CanIMove(position, tmp))
-                            {
-                                position -= perpendicular * time * movementSpeed;
-                                target -= perpendicular * time * movementSpeed;
-                                stopTracking();
-                            }
-                            break;
+                    tmp -= perpendicular * time * movementSpeed;
+                    if (CanIMove(position, tmp))
+                    {
+                        position -= perpendicular * time * movementSpeed;
+                        target -= perpendicular * time * movementSpeed;
+                        stopTracking();
+                    }
+                    break;
             }
 
-        
-            cameraComponent.LookAt(position,target, Vector3.Up);
+
+            cameraComponent.LookAt(position, target, Vector3.Up);
         }
         /****************************************************************************/
 
