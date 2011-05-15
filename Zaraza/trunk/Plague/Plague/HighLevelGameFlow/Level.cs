@@ -200,7 +200,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.World = Matrix.Identity;
             sdata.Enabled = true;
             sdata.Diffuse = new Vector3(1f, 1f, 1f);
-            sdata.Intensity = 1;
+            sdata.Intensity = 0.2f;
 
             Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
             s.Direction = new Vector3(-1, -1, -1);
@@ -223,7 +223,7 @@ namespace PlagueEngine.HighLevelGameFlow
             {
                 pdata.World = Matrix.CreateTranslation(250 + random.Next() % 30,
                                                         60 + random.Next() % 10,
-                                                        80 + random.Next() % 30);
+                                                        120 + random.Next() % 30);
                 gameObjectsFactory.Create(pdata);
             }
 
@@ -431,15 +431,15 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.DynamicRoughness = 1;
             fldata.Elasticity = 1;
             fldata.Enabled = true;
-            fldata.FarPlane = 20;
+            fldata.FarPlane = 30;
             fldata.Immovable = false;
             fldata.InstancingMode = 3;
-            fldata.Intensity = 2;
-            fldata.LinearAttenuation = 0;
+            fldata.Intensity = 10;
+            fldata.LinearAttenuation = 1;
             fldata.Mass = 1;
             fldata.NearPlane = 1;
             fldata.QuadraticAttenuation = 5;
-            fldata.Radius = 45;
+            fldata.Radius = 75;
             fldata.ShadowsEnabled = true;
             fldata.Specular = true;
             fldata.StaticRoughness = 1;
@@ -447,7 +447,9 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.Status = 2;
 
             gameObjectsFactory.Create(fldata);
+            fldata.World = Matrix.CreateTranslation(252, 60, 30);
 
+            gameObjectsFactory.Create(fldata);
 
             MercenaryData mddd = new MercenaryData();
             mddd.Type = typeof(Mercenary);
@@ -460,7 +462,7 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.Mass = 90;
             mddd.StaticRoughness = 1f;
             mddd.DynamicRoughness = 1f;
-            mddd.Elasticity = 0f;
+            mddd.Elasticity = 0.01f;
 
             mddd.Length = 5;
             mddd.Radius = 1;
@@ -528,27 +530,27 @@ namespace PlagueEngine.HighLevelGameFlow
 
 
 
-            CreatureData ssdata = new CreatureData();
-            ssdata.Type = typeof(Creature);
-            ssdata.Model = "FleshCreature";
-            ssdata.TimeRatio = 1.0f;
-            ssdata.Diffuse = "flesh_diffuse";
-            ssdata.Normals = "flesh_normals";
-            ssdata.World *= Matrix.CreateTranslation(245, 66, 33);
+            //CreatureData ssdata = new CreatureData();
+            //ssdata.Type = typeof(Creature);
+            //ssdata.Model = "FleshCreature";
+            //ssdata.TimeRatio = 1.0f;
+            //ssdata.Diffuse = "flesh_diffuse";
+            //ssdata.Normals = "flesh_normals";
+            //ssdata.World *= Matrix.CreateTranslation(245, 66, 33);
 
 
 
-            ssdata.Mass = 60;
-            ssdata.StaticRoughness = 0.7f;
-            ssdata.DynamicRoughness = 0.7f;
-            ssdata.Elasticity = 0.3f;
+            //ssdata.Mass = 60;
+            //ssdata.StaticRoughness = 0.7f;
+            //ssdata.DynamicRoughness = 0.7f;
+            //ssdata.Elasticity = 0.3f;
 
-            ssdata.Length = 5;
-            ssdata.Radius = 1;
-            ssdata.Immovable = false;
-            ssdata.SkinPitch = 90;
-            ssdata.Translation = new Vector3(0, 2.2f, 0);
-            gameObjectsFactory.Create(ssdata);
+            //ssdata.Length = 5;
+            //ssdata.Radius = 1;
+            //ssdata.Immovable = false;
+            //ssdata.SkinPitch = 90;
+            //ssdata.Translation = new Vector3(0, 2.2f, 0);
+            //gameObjectsFactory.Create(ssdata);
 
 
 

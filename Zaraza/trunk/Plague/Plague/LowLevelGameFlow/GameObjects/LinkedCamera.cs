@@ -471,6 +471,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         position += direction * time * movementSpeed;
                         target += direction * time * movementSpeed;
                         stopTracking();
+                        StopMovingToPoint();
                     }
                     break;
 
@@ -482,6 +483,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         position -= direction * time * movementSpeed;
                         target -= direction * time * movementSpeed;
                         stopTracking();
+                        StopMovingToPoint();
                     }
                     break;
 
@@ -493,6 +495,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         position += perpendicular * time * movementSpeed;
                         target += perpendicular * time * movementSpeed;
                         stopTracking();
+                        StopMovingToPoint();
                     }
                     break;
 
@@ -504,6 +507,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         position -= perpendicular * time * movementSpeed;
                         target -= perpendicular * time * movementSpeed;
                         stopTracking();
+                        StopMovingToPoint();
                     }
                     break;
             }

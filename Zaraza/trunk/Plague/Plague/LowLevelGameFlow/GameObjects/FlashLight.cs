@@ -53,9 +53,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (owner != null)
             {
                 World = Matrix.Identity;
-                World *= Matrix.CreateRotationY(MathHelper.ToRadians(180));                    
-                body.ReleaseMe();
-                body = null;
+                World *= Matrix.CreateRotationY(MathHelper.ToRadians(180));
+                body.DisableBody();
+            }
+            else
+            {
+                if (getWorld != null) World = GetWorld();
+                if(body != null) body.EnableBody();
             }
         }
         /****************************************************************************/

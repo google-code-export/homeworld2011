@@ -118,7 +118,7 @@ float4 Phong(float3 Position, float3 N, float radialAttenuation, float SpecularP
 	float distance = saturate(1.0f - length(L)/LightFarPlane);
 	float attenuation = (LinearAttenuation * distance) + (QuadraticAttenuation * distance * distance);
 	attenuation = min(attenuation,radialAttenuation);
-
+	
 	L = normalize(L);
 
 	float3 Diffuse = 0;
@@ -158,7 +158,7 @@ float4 Lambert(float3 Position, float3 N, float radialAttenuation)
 	float distance = saturate(1.0f - length(L)/LightFarPlane);
 	float attenuation = (LinearAttenuation * distance) + (QuadraticAttenuation * distance * distance);
 	attenuation = min(attenuation,radialAttenuation);
-
+	
 	L = normalize(L);
 
 	float3 Diffuse = 0;
@@ -240,6 +240,8 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 		}
 	}
 
+	float3 L = LightPosition - Position.xyz;
+	
     return ShadowFactor * Phong(Position.xyz,Normal,Attenuation,NormalData.w);
 }
 /****************************************************/

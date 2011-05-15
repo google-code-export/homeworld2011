@@ -56,8 +56,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (owner != null)
             {
                 World = Matrix.Identity;
-                body.ReleaseMe();
-                body = null;
+                body.DisableBody();
+            }
+            else
+            {                
+                if(getWorld != null) World = GetWorld();
+                if(body != null) body.EnableBody();
             }
         }
         /****************************************************************************/
