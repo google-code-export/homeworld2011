@@ -33,8 +33,8 @@ namespace PlagueEngine.LowLevelGameFlow
 
         private GameObjectInstance owner     = null;        
         
-        private delegate Matrix GetWorldDelegate(int bone);
-        private GetWorldDelegate getWorld = null;
+        protected delegate Matrix GetWorldDelegate(int bone);
+        protected GetWorldDelegate getWorld = null;
         /****************************************************************************/
 
 

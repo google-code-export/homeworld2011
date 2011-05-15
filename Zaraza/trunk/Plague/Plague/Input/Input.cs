@@ -384,6 +384,10 @@ namespace PlagueEngine.Input
         {
 
             KeyboardState state = Keyboard.GetState();
+
+            if (state.IsKeyDown(Keys.F1)) this.game.gameStopped = true;
+            if (state.IsKeyDown(Keys.F2)) this.game.gameStopped = false;
+
             ExtendedKeyState keyState;
             foreach (Keys key in keyListeners.Keys)
             {

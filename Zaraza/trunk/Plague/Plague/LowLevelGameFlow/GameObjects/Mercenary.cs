@@ -145,6 +145,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (currentObject != null)
                         {
+                            currentObject.World.Translation += Vector3.Normalize(World.Forward) * 2; 
                             currentObject.Owner = null;
                             currentObject.OwnerBone = -1;
                         }
@@ -205,10 +206,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             else if (moving == 2)
             {
-                if (objectTarget.IsDisposed())
+                if (objectTarget.IsDisposed() || objectTarget.Owner != null)
                 {
                     objectTarget = null;
                     moving = 0;
+                    controller.StopMoving();
+                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                     return;
                 }
 

@@ -152,7 +152,7 @@ namespace PlagueEngine.Physics
         {
             if (enabled)
             {
-                this.body.DisableBody();
+                this.body.DisableBody();                
                 PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(this.skin);
                 physicsManager.rigidBodies.Remove(this.gameObject.ID);
                 enabled = false;
@@ -171,6 +171,7 @@ namespace PlagueEngine.Physics
             {
                 PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(this.skin);
                 this.body.EnableBody();
+                this.MoveTo(gameObject.World);
                 physicsManager.rigidBodies.Add(this.gameObject.ID, this);
                 enabled = true;
             }

@@ -830,7 +830,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              data.Color,
                                                                              false,
                                                                              0.5f,
-                                                                             2,
+                                                                             5,
                                                                              0,
                                                                              5,
                                                                              new Vector3(0,0.5f,0)),
@@ -840,7 +840,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              data.Color,
                                                                              false,
                                                                              0.5f,
-                                                                             2,
+                                                                             5,
                                                                              0,
                                                                              5,
                                                                              new Vector3(0, -0.5f, 0)));
