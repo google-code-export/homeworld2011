@@ -152,7 +152,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         currentObject = objectTarget;
                         objectTarget.Owner = this;
-                        objectTarget.OwnerBone = mesh.Model.SkinningData.BoneMap[gripBone];
+                        objectTarget.OwnerBone = mesh.BoneMap[gripBone];
                     }
 
                     objectTarget = null;

@@ -34,8 +34,8 @@ namespace PlagueEngine.Rendering
         public int           Keyframe    { get; private set; }
 
         public Matrix[] BoneTransforms   { get; private set; }
-        public Matrix[] WorldTransforms  { get; private set; }
-        public Matrix[] SkinTransforms   { get; private set; }
+        public Matrix[] WorldTransforms  { get; set; }
+        public Matrix[] SkinTransforms   { get; set; }
 
         public SkinningData skinningData { get; private set; }
 

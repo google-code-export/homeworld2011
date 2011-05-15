@@ -65,6 +65,8 @@ namespace PlagueEngine.Rendering.Components
 
             renderer.skinnedMeshes.Add(this);
             renderer.batchedSkinnedMeshes.AddSkinnedMeshComponent(technique, this);
+
+            AnimationControl = true;
         }
         /****************************************************************************/
 
@@ -255,9 +257,12 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void Update(TimeSpan time, Matrix rootTransform)
         {
-            if (Pause) return;
+            if (!AnimationControl) return;
 
-            TimeSpan deltaTime = TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
+            TimeSpan deltaTime;
+
+            if (Pause) deltaTime = TimeSpan.Zero;
+            else       deltaTime = TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
 
             currentAnimation.Update(deltaTime, rootTransform);
 
@@ -298,13 +303,27 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public void UpdateBoneTransforms(TimeSpan time)
         {
-            if (Pause) return;
+            if (!AnimationControl) return;
 
-            TimeSpan deltaTime = TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
+            TimeSpan deltaTime;
+
+            if (Pause) deltaTime = TimeSpan.Zero;
+            else       deltaTime = TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
 
             currentAnimation.UpdateBoneTransforms(deltaTime);
 
             if(Blend) blendAnimation.UpdateBoneTransforms(deltaTime);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Update Bone Transforms
+        /****************************************************************************/
+        public void UpdateBoneTransforms(Matrix[] WorldTransforms)
+        {
+            currentAnimation.WorldTransforms = WorldTransforms;
+            currentAnimation.UpdateSkinTransforms();
         }
         /****************************************************************************/
 
@@ -341,6 +360,11 @@ namespace PlagueEngine.Rendering.Components
         public AnimationPlayer blendAnimation   { get; private set; }
 
         public float TimeRatio { get; set; }
+        
+        public List<int>                SkeletonHierarchy { get { return Model.SkinningData.SkeletonHierarchy; } }
+        public Dictionary<String, int>  BoneMap           { get { return Model.SkinningData.BoneMap;           } }
+        
+        public bool AnimationControl { get; set; }
         /****************************************************************************/
 
     }
