@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Nuclex.UserInterface.Controls.Desktop;
 using Nuclex.UserInterface;
@@ -15,22 +14,23 @@ namespace PlagueEngine.GUI
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public GuiManager Manager = null;
-        public GUIComponentsFactory ComponentsFactory = null;
-        public WindowControl window = null;
-        private MouseListenerComponent mouseListenerComponent = null;
+        public GuiManager Manager;
+        public GUIComponentsFactory ComponentsFactory;
+        public WindowControl Window;
+        private readonly MouseListenerComponent _mouseListenerComponent;
 
         /****************************************************************************/
         
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public GUI(Microsoft.Xna.Framework.Game game, GameServiceContainer services, MouseListenerComponent mouseListenerComponent)
+        public GUI(GameServiceContainer services, MouseListenerComponent mouseListenerComponent)
         {
             ComponentsFactory = new GUIComponentsFactory(this);
             Manager = new GuiManager(services);
-            this.mouseListenerComponent = mouseListenerComponent;
-            this.mouseListenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.RightClick, MouseKeyAction.LeftClick,MouseKeyAction.MiddleClick);
+            _mouseListenerComponent = mouseListenerComponent;
+            _mouseListenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.RightClick, MouseKeyAction.LeftClick, MouseKeyAction.MiddleClick);
+            _mouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
         }
         /****************************************************************************/
 
@@ -49,7 +49,7 @@ namespace PlagueEngine.GUI
             
             Viewport viewport = graphicsDevice.Viewport;
             Screen mainScreen = new Screen(viewport.Width, viewport.Height);
-            this.Manager.Screen = mainScreen;
+            Manager.Screen = mainScreen;
 
             // Each screen has a 'desktop' control. This invisible control by default
             // stretches across the whole screen and serves as the root of the control
@@ -61,7 +61,7 @@ namespace PlagueEngine.GUI
               new UniScalar(0.1f, 0.0f), new UniScalar(0.1f, 0.0f), // x and y = 10%
               new UniScalar(0.8f, 0.0f), new UniScalar(0.8f, 0.0f) // width and height = 80%
             );
-            this.Manager.Initialize();
+            Manager.Initialize();
 
 
             //TODO: Usunąć ten hard-kodowany guzik po zrobieniu GUI do końca.
@@ -72,11 +72,10 @@ namespace PlagueEngine.GUI
             quitButton.Bounds = new UniRectangle(
               new UniScalar(1.0f, -80.0f), new UniScalar(1.0f, -32.0f), 80, 32
             );
-            quitButton.Pressed += delegate(object sender, EventArgs arguments) { 
+
 #if DEBUG
-                Diagnostics.PushLog("Quit button clicked!!");
+            quitButton.Pressed += (sender, arguments) => Diagnostics.PushLog("Quit button clicked!!");
 #endif
-            };
 
             InputControl inputControl = new InputControl();
             inputControl.Enabled = true;
@@ -116,15 +115,29 @@ namespace PlagueEngine.GUI
         }
 
         // Odznaczanie zaznaczonych kontrolek przy kliknięciu dowolnym przyciskiem myszy nie na kontrolce
-        private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
+        private void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState)
         {
-            if (Updateable)
+            if (!Updateable) return;
+            if (!mouseKeyState.WasPressed()) return;
+
+            if(!Manager.Screen.IsMouseOverGui)
             {
-                if (!Manager.Screen.IsMouseOverGui && mouseKeyState.WasPressed())
-                {
-                    Manager.Screen.FocusedControl = null;
-                }
+                Manager.Screen.FocusedControl = null;
             }
+            else
+            {
+                mouseKeyState.Propagate = false;
+            }
+        }
+
+        private void OnMouseMove(MouseMoveAction mouseMoveAction, ref ExtendedMouseMovementState mouseMovementState)
+        {
+            if (!Updateable) return;
+
+            if (!Manager.Screen.IsMouseOverGui) return;
+
+            mouseMovementState.Propagate = false;
+            _mouseListenerComponent.SetCursor("Default");
         }
     }
 }

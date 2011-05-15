@@ -173,7 +173,7 @@ namespace PlagueEngine.Rendering
 
             spriteBatch = new SpriteBatch(Device);
 
-            ExtendedMouseMovementState.display = graphics.GraphicsDevice.DisplayMode;            
+            ExtendedMouseMovementState.Display = graphics.GraphicsDevice.DisplayMode;            
 
             fogColor = clearColor.ToVector3();
 

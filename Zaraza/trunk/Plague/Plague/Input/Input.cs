@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nuclex.Input;
 using Nuclex.UserInterface;
-using Nuclex.UserInterface.Controls;
 using PlagueEngine.Input.Components;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -25,8 +23,8 @@ namespace PlagueEngine.Input
     /********************************************************************************/
     delegate void OnKey(Keys key, ExtendedKeyState state);
 
-    delegate void OnMouseKey (MouseKeyAction  mouseKeyAction, ExtendedMouseKeyState      mouseKeyState);
-    delegate void OnMouseMove(MouseMoveAction mouseMoveAction,ExtendedMouseMovementState mouseMovementState);
+    delegate void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState);
+    delegate void OnMouseMove(MouseMoveAction mouseMoveAction,ref ExtendedMouseMovementState mouseMovementState);
     /********************************************************************************/
 
 
@@ -319,55 +317,30 @@ namespace PlagueEngine.Input
         /****************************************************************************/
         private void CheckMouse()
         {
-            MouseState state = inputManager.GetMouse().GetState();
+            MouseState state = Mouse.GetState();
 
             cursorPosition.X = state.X;
             cursorPosition.Y = state.Y;
 
-            ExtendedMouseKeyState       mouseKeyState;
-            ExtendedMouseMovementState  mouseMoveState;
 
-            foreach(MouseMoveAction mouseMoveAction in mouseMoveListeners.Keys)
+            
+            foreach(var mouseMoveAction in mouseMoveListeners.Keys)
             {
-                mouseMoveState=new ExtendedMouseMovementState(
-                    state.X,state.Y,state.ScrollWheelValue,
-                    oldMouseState.X,oldMouseState.Y,oldMouseState.ScrollWheelValue);
-
-                foreach(MouseMoveListener mouseMoveListener in mouseMoveListeners[mouseMoveAction] )
+                var mouseMoveState = new ExtendedMouseMovementState(state.X, state.Y, state.ScrollWheelValue, oldMouseState.X, oldMouseState.Y, oldMouseState.ScrollWheelValue);
+                foreach(var mouseMoveListener in mouseMoveListeners[mouseMoveAction] )
                 {
-                    if(mouseMoveListener.mouseListenerComponent.Active) mouseMoveListener.onMouseMove(mouseMoveAction,mouseMoveState);
+                    if(mouseMoveListener.mouseListenerComponent.Active) mouseMoveListener.onMouseMove(mouseMoveAction,ref mouseMoveState);
+                    if (!mouseMoveState.Propagate) break;
                 }
             }
-            
-            foreach(MouseKeyAction mouseKeyAction in mouseKeyListeners.Keys)
+
+            foreach (MouseKeyAction mouseKeyAction in mouseKeyListeners.Keys)
             {
-                bool down=false;
-                bool changed=false;
-
-                switch(mouseKeyAction)
+                var currentState = ExtendedMouseKeyStateFactory(state, mouseKeyAction);
+                foreach (var mouseKeyListener in mouseKeyListeners[mouseKeyAction])
                 {
-
-                    case MouseKeyAction.LeftClick:
-                        down    = (state.LeftButton == ButtonState.Pressed ? true : false);
-                        changed = (oldMouseState.LeftButton != state.LeftButton ? true : false);
-                        break;
-
-                    case MouseKeyAction.RightClick:
-                        down    = (state.RightButton == ButtonState.Pressed ? true : false);
-                        changed = (oldMouseState.RightButton != state.RightButton ? true : false);
-                        break;
-
-                    case MouseKeyAction.MiddleClick:
-                        down    = (state.MiddleButton == ButtonState.Pressed ? true : false);
-                        changed = (oldMouseState.MiddleButton != state.MiddleButton? true : false);
-                        break;
-                }
-
-
-                mouseKeyState=new ExtendedMouseKeyState(down,changed);
-                foreach(MouseKeyListener mouseKeyListener in mouseKeyListeners[mouseKeyAction] )
-                {
-                    if(mouseKeyListener.mouseListenerComponent.Active)mouseKeyListener.onMouseKey(mouseKeyAction,mouseKeyState);
+                    if (mouseKeyListener.mouseListenerComponent.Active) mouseKeyListener.onMouseKey(mouseKeyAction, ref currentState);
+                    if (!currentState.Propagate) break;
                 }
             }
 
@@ -375,7 +348,30 @@ namespace PlagueEngine.Input
             else oldMouseState = state;
         }
         /****************************************************************************/
+        private ExtendedMouseKeyState ExtendedMouseKeyStateFactory(MouseState state, MouseKeyAction mouseKeyAction)
+        {
+            var down = false;
+            var changed = false;
+            switch (mouseKeyAction)
+            {
 
+                case MouseKeyAction.LeftClick:
+                    down = (state.LeftButton == ButtonState.Pressed ? true : false);
+                    changed = (oldMouseState.LeftButton != state.LeftButton ? true : false);
+                    break;
+
+                case MouseKeyAction.RightClick:
+                    down = (state.RightButton == ButtonState.Pressed ? true : false);
+                    changed = (oldMouseState.RightButton != state.RightButton ? true : false);
+                    break;
+
+                case MouseKeyAction.MiddleClick:
+                    down = (state.MiddleButton == ButtonState.Pressed ? true : false);
+                    changed = (oldMouseState.MiddleButton != state.MiddleButton ? true : false);
+                    break;
+            }
+            return new ExtendedMouseKeyState(down, changed);
+        }
 
         /****************************************************************************/
         /// Check Keyboard
@@ -385,8 +381,8 @@ namespace PlagueEngine.Input
 
             KeyboardState state = Keyboard.GetState();
 
-            if (state.IsKeyDown(Keys.F1)) this.game.gameStopped = true;
-            if (state.IsKeyDown(Keys.F2)) this.game.gameStopped = false;
+            if (state.IsKeyDown(Keys.F1)) this.game.GameStopped = true;
+            if (state.IsKeyDown(Keys.F2)) this.game.GameStopped = false;
 
             ExtendedKeyState keyState;
             foreach (Keys key in keyListeners.Keys)

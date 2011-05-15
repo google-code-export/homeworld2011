@@ -1252,7 +1252,7 @@ namespace PlagueEngine.Tools
 
         private void checkBoxGamePaused_CheckedChanged(object sender, EventArgs e)
         {
-            this.game.gameStopped = checkBoxGamePaused.Checked;
+            this.game.GameStopped = checkBoxGamePaused.Checked;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
