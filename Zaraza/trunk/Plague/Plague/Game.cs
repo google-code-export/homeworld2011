@@ -1,29 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-
-
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.Resources;
 using PlagueEngine.Rendering;
 using PlagueEngine.LowLevelGameFlow;
-using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.HighLevelGameFlow;
-using PlagueEngine.Input;
 using PlagueEngine.Tools;
 using PlagueEngine.Physics;
-using PlagueEngine.EventsSystem;
-using PlagueEngine.GUI;
-using Nuclex.Input;
 using PlagueEngine.Particles;
 
-/************************************************************************************/
-/// PlagueEngine
-/************************************************************************************/
 namespace PlagueEngine
 {
-
 
     /********************************************************************************/
     /// Game
@@ -32,92 +19,72 @@ namespace PlagueEngine
     {
 
         /****************************************************************************/
-        /// Fields
+        public string Title { get; set; }
+        internal Renderer Renderer { get; private set; }
+        internal GUI.GUI GUI { get; private set; }
+        internal ContentManager ContentManager { get; set; }
+        internal EventsHistorian EventsHistorian { get; private set; }
+        internal ParticleManager ParticleManager { get; private set; }
+        internal Input.Input Input { get; private set; }
+        internal GameObjectsFactory GameObjectsFactory { get; private set; }
+        internal PhysicsManager PhysicsManager { get; private set; }
+        internal EventsSystem.EventsSystem EventsSystem { get; private set; }
+        internal Level Level { get; private set; }
+        private readonly RenderConfig _defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
+        public bool GameStopped { get;  set; }
         /****************************************************************************/
-        private String title = String.Empty;
-
-
-        private GUI.GUI gui = null;
-        private Renderer renderer = null;
-        private ContentManager contentManager = null;
-        private Input.Input input = null;
-        private GameObjectsFactory gameObjectsFactory = null;
-        private PhysicsManager physicsManager = null;
-        private EventsSystem.EventsSystem eventsSystem = null;
-        private EventsHistorian eventsHistorian = null;
-        
-        private ParticleManager particleManager = null;
-
-        private Level Level = null;
-
-        private readonly RenderConfig defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
-
-
-        public bool gameStopped = false;
-        /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
         public Game(String title)
         {
-            this.title = title;
+            Title = title;
             Window.Title = title;
-            this.IsMouseVisible = true;
-            
+            IsMouseVisible = true;
 
-            #if DEBUG
+#if DEBUG
             Diagnostics.Game                = this;
             Diagnostics.ShowDiagnostics     = true;
             Diagnostics.ForceGCOnUpdate     = true;
             Diagnostics.LimitUpdateTimeStep = false;
             Diagnostics.ShowLogWindow       = true;
             Diagnostics.OpenLogFile("log");
-            #endif
+#endif
 
-            contentManager = new ContentManager(this, "Content");
+            ContentManager = new ContentManager(this, "Content");
 
-
-            particleManager = new ParticleManager();
+            ParticleManager = new ParticleManager();
 
             InitRenderer();
 
-            input = new Input.Input(this, Services,renderer.Device);
+            Input = new Input.Input(this, Services,Renderer.Device);
 
-            gui = new GUI.GUI(this, Services, input.ComponentsFactory.CreateMouseListenerComponent(null, true));
+            GUI = new GUI.GUI(Services, Input.ComponentsFactory.CreateMouseListenerComponent(null, true));
+
+            ParticleManager.CreateFactory(ContentManager, Renderer);
+
+            PhysicsManager = new PhysicsManager(ContentManager);
+
+            GameObjectsFactory = new GameObjectsFactory(Renderer.ComponentsFactory,
+                                                        Input.ComponentsFactory,
+                                                        GUI.ComponentsFactory,
+                                                        ContentManager.GameObjectsDefinitions,
+                                                        PhysicsManager.physicsComponentFactory,
+                                                        ParticleManager.particleFactory);
 
 
-            particleManager.CreateFactory(contentManager, renderer);
+            Level = new Level(GameObjectsFactory);
 
-            physicsManager = new PhysicsManager(contentManager);
+            EventsSystem = new EventsSystem.EventsSystem(Level);
 
-            gameObjectsFactory = new GameObjectsFactory(renderer.ComponentsFactory,
-                                                        input.ComponentsFactory,
-                                                        gui.ComponentsFactory,
-                                                        contentManager.GameObjectsDefinitions,
-                                                        physicsManager.physicsComponentFactory,
-                                                        particleManager.particleFactory);
+            EventsHistorian = new EventsHistorian(20);
 
-
-            Level = new Level(gameObjectsFactory);
-
-            eventsSystem = new EventsSystem.EventsSystem(Level);
-
-            eventsHistorian = new EventsHistorian(20);
-
-            renderer.InitDebugDrawer(physicsManager);
+            Renderer.InitDebugDrawer(PhysicsManager);
 
         }
 
-      
-
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         /// Initialize
@@ -131,19 +98,19 @@ namespace PlagueEngine
         protected override void Initialize()
         {
 
-            renderer.InitHelpers();
+            Renderer.InitHelpers();
             
             Level.PutSomeObjects();
 
             //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
             //Level.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
 
-            renderer.batchedMeshes.CommitMeshTransforms();
+            Renderer.batchedMeshes.CommitMeshTransforms();
             
-            #if DEBUG
-            GameObjectEditorWindow gameObjectEditor = new GameObjectEditorWindow(gameObjectsFactory, contentManager, renderer, input, this);
+#if DEBUG
+            var gameObjectEditor = new GameObjectEditorWindow(GameObjectsFactory, ContentManager, Renderer, Input, this);
             gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
-            #endif
+#endif
 
             InitGUI();  
             
@@ -166,9 +133,9 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void LoadContent()
         {
-            renderer.LoadEffects();
-            input.SetCursorTexture(contentManager.LoadTexture2D("cursor"), 4, 4, 
-                                   new String[] { "Default","QuestionMark","Footsteps","Target",
+            Renderer.LoadEffects();
+            Input.SetCursorTexture(ContentManager.LoadTexture2D("cursor"), 4, 4, 
+                                   new[] { "Default","QuestionMark","Footsteps","Target",
                                                   "Hand",   "Person",      "Targeting","0",
                                                   "1",      "2",            "3",       "4",
                                                   "Up",     "Down",         "Left",    "Right" });
@@ -190,7 +157,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void UnloadContent()
         {
-            contentManager.Unload();
+            ContentManager.Unload();
 #if DEBUG
             Diagnostics.PushLog("Unloading content complete");
             Diagnostics.CloseLogFile(); 
@@ -216,19 +183,15 @@ namespace PlagueEngine
 #endif
             TimeControl.Update(gameTime.ElapsedGameTime);
 
-            input.Update();
-            //TODO: sprawdziæ czy konieczne i usun¹æ jeli niepotrzebne
-            gui.Update(gameTime);
-            
-            eventsSystem.Update();
-            if (!gameStopped)
+            Input.Update();
+            GUI.Update(gameTime);
+            EventsSystem.Update();
+            if (!GameStopped)
             {
-                physicsManager.Update(((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond));
+                PhysicsManager.Update(((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond));
                 base.Update(gameTime);
             }
-
-            particleManager.Update(gameTime);
-
+            ParticleManager.Update(gameTime);
             Level.Update(gameTime.ElapsedGameTime);
         }
         /****************************************************************************/
@@ -243,10 +206,10 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Draw(GameTime gameTime)
         {
-            renderer.pause = gameStopped;
-            renderer.Draw(gameTime.ElapsedGameTime,gameTime);
-            gui.Draw(gameTime);
-            input.Draw();
+            Renderer.pause = GameStopped;
+            Renderer.Draw(gameTime.ElapsedGameTime,gameTime);
+            GUI.Draw(gameTime);
+            Input.Draw();
             base.Draw(gameTime);
         }
         /****************************************************************************/
@@ -258,9 +221,7 @@ namespace PlagueEngine
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
-
-            contentManager.SaveDefaultProfile();
-            //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
+            ContentManager.SaveDefaultProfile();
 
 #if DEBUG
             Diagnostics.PushLog("Exiting");
@@ -270,53 +231,21 @@ namespace PlagueEngine
         
 
         /****************************************************************************/
-        /// Title
-        /****************************************************************************/
-        public String Title
-        {
-            set
-            {
-                title = value;
-            }
-
-
-            get
-            {
-                return title;
-            }
-        }
-        /****************************************************************************/
-        
-
-        /****************************************************************************/
-        /// ParticleManager
-        /****************************************************************************/
-        internal ParticleManager ParticleManager
-        {
-            get
-            {
-                return this.particleManager;
-            }
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
         /// Init Renderer
         /****************************************************************************/
         private void InitRenderer()
         {
-            RenderConfig renderConfig = null;
+            RenderConfig renderConfig;
             try
             {
-                renderConfig = contentManager.LoadConfiguration<RenderConfig>();
+                renderConfig = ContentManager.LoadConfiguration<RenderConfig>();
             }
             catch (System.IO.IOException)
             {
-                renderConfig = defaultRenderConfig;
-                contentManager.SaveConfiguration(defaultRenderConfig);
+                renderConfig = _defaultRenderConfig;
+                ContentManager.SaveConfiguration(_defaultRenderConfig);
             }
-            renderer = new Renderer(this, renderConfig);
+            Renderer = new Renderer(this, renderConfig);
         }
         /****************************************************************************/
 
@@ -326,38 +255,16 @@ namespace PlagueEngine
         /****************************************************************************/
         private void InitGUI()
         {
-            //GraphicsDevice.Reset();
-            gui.Initialize(GraphicsDevice);
-            //GraphicsDevice.Reset();
-            //gui.Initialize(GraphicsDevice);
-            //this.Components.Add(gui.Manager);
+            GUI.Initialize(GraphicsDevice);
         }
         /****************************************************************************/
-
-
-
-
-        /****************************************************************************/
-        /// Content Manager
-        /****************************************************************************/
-        internal ContentManager ContentManager
-        {
-            get
-            {
-                return contentManager;
-            }
-        }
-        /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         /// Flush Events History
         /****************************************************************************/
         public void FlushEventsHistory()
         {
-            if (eventsHistorian != null) eventsHistorian.Flush();
+            if (EventsHistorian != null) EventsHistorian.Flush();
         }
         /****************************************************************************/
 

@@ -30,38 +30,38 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private CameraComponent           cameraComponent           = null;
+        private CameraComponent cameraComponent = null;
         private KeyboardListenerComponent keyboardListenerComponent = null;
-        private MouseListenerComponent    mouselistenerComponent    = null;
+        private MouseListenerComponent mouselistenerComponent = null;
 
         private float movementSpeed = 0;
         private float rotationSpeed = 0;
-        private float zoomSpeed     = 0;
- 
+        private float zoomSpeed = 0;
+
         private Vector3 position = Vector3.Zero;
-        private Vector3 target   = Vector3.Zero;
+        private Vector3 target = Vector3.Zero;
 
         private Clock clock = TimeControl.CreateClock();
 
-        private bool    shiftDown = false;
+        private bool shiftDown = false;
 
         private GameObjectInstance tracedObject = null;
-        private Vector3            moveToPosition;
+        private Vector3 moveToPosition;
 
-        private int  rotateCamera  = -1;
-        private bool isOnWindow    = false;
-        private bool useCommands   = false;
+        private int rotateCamera = -1;
+        private bool isOnWindow = false;
+        private bool useCommands = false;
         private bool movingToPoint = false;
-        private bool tracing       = false;
+        private bool tracing = false;
 
-        private bool addToSelection      = false;
+        private bool addToSelection = false;
         private bool removeFromSelection = false;
 
         private int maxTop, minTop, maxBottom, minBottom, maxLeft, minLeft, maxRight, minRight;
 
-        private float mouseX, mouseY;  
-        private String cursor;
-        
+        private float mouseX, mouseY;
+
+
         private GameObjectInstance mercenariesManager = null;
         /****************************************************************************/
 
@@ -79,30 +79,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Vector3 target,
                          GameObjectInstance mercenariesManager)
         {
-            this.cameraComponent            = cameraComponent;
-            this.keyboardListenerComponent  = keyboardListenerComponent;
-            this.mouselistenerComponent     = mouseListenerComponent;
+            this.cameraComponent = cameraComponent;
+            this.keyboardListenerComponent = keyboardListenerComponent;
+            this.mouselistenerComponent = mouseListenerComponent;
 
-            this.movementSpeed              = movementSpeed;
-            this.rotationSpeed              = rotationSpeed;
-            this.zoomSpeed                  = zoomSpeed;
-            this.position                   = position;
-            this.target                     = target;
+            this.movementSpeed = movementSpeed;
+            this.rotationSpeed = rotationSpeed;
+            this.zoomSpeed = zoomSpeed;
+            this.position = position;
+            this.target = target;
 
             this.World = Matrix.CreateLookAt(this.position, this.target, Vector3.Up);
 
             this.keyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,
-                                                               Keys.D, Keys.Q, Keys.E, 
+                                                               Keys.D, Keys.Q, Keys.E,
                                                                Keys.LeftShift, Keys.LeftControl, Keys.LeftAlt);
 
-            this.mouselistenerComponent.SubscribeMouseMove(onMouseMove,MouseMoveAction.Move,MouseMoveAction.Scroll);
-            this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick,MouseKeyAction.RightClick,MouseKeyAction.LeftClick);
+            this.mouselistenerComponent.SubscribeMouseMove(onMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
+            this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick, MouseKeyAction.RightClick, MouseKeyAction.LeftClick);
 
-            int screenWidth  = cameraComponent.ScreenWidth;
+            int screenWidth = cameraComponent.ScreenWidth;
             int screenHeight = cameraComponent.ScreenHeight;
 
             this.mercenariesManager = mercenariesManager;
-                        
+
             // TODO: jest na pałę, a powinno być z edytora
             maxTop = 0;
             minTop = (int)(screenHeight * 0.05);
@@ -115,11 +115,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             maxRight = screenWidth;
             minRight = (int)(screenWidth * 0.95);
-            
+
             RequiresUpdate = true;
         }
         /****************************************************************************/
-     
+
 
         /****************************************************************************/
         /// StartMoveToPoint
@@ -131,7 +131,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             stopTracking();
         }
         /****************************************************************************/
-        
+
 
         /****************************************************************************/
         /// StopMovingToPoint
@@ -141,7 +141,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             movingToPoint = false;
         }
         /****************************************************************************/
-        
+
 
         /****************************************************************************/
         /// MoveToPoint
@@ -171,7 +171,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void setTarget(GameObjectInstance target)
         {
-            this.tracedObject = target;            
+            this.tracedObject = target;
         }
         /****************************************************************************/
 
@@ -192,7 +192,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void stopTracking()
         {
-            tracing = false;      
+            tracing = false;
         }
         /****************************************************************************/
 
@@ -211,9 +211,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Trace Target
         /****************************************************************************/
         private void traceTarget()
-        {           
+        {
             Vector3 targetPosition = tracedObject.World.Translation;
-           
+
             if (targetPosition != target)
             {
                 if (Vector3.Distance(target, targetPosition) < 0.01f)
@@ -227,7 +227,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     position += distanceVec / 50.0f;
                 }
             }
-   
+
         }
         /****************************************************************************/
 
@@ -235,9 +235,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// OnMouseKey
         /****************************************************************************/
-        private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
+        private void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState)
         {
-         
+
             /****************************/
             /// Middle Button
             /****************************/
@@ -292,17 +292,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 Vector3 pos, nor;
                 float dist;
                 Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
-                
+
                 GameObjectInstance goi = null;
 
                 if (skin != null)
                 {
-                    if ((skin.ExternalData as GameObjectInstance).Status == GameObjectStatus.Mercenary) goi = skin.ExternalData as GameObjectInstance;                    
+                    if ((skin.ExternalData as GameObjectInstance).Status == GameObjectStatus.Mercenary) goi = skin.ExternalData as GameObjectInstance;
                 }
 
-                if      (addToSelection)      SendEvent(new AddToSelectionEvent     (goi),      Priority.Normal, mercenariesManager);
-                else if (removeFromSelection) SendEvent(new RemoveFromSelectionEvent(goi),      Priority.Normal, mercenariesManager);
-                else                          SendEvent(new SelectedObjectEvent     (goi, pos), Priority.Normal, mercenariesManager);
+                if (addToSelection) SendEvent(new AddToSelectionEvent(goi), Priority.Normal, mercenariesManager);
+                else if (removeFromSelection) SendEvent(new RemoveFromSelectionEvent(goi), Priority.Normal, mercenariesManager);
+                else SendEvent(new SelectedObjectEvent(goi, pos), Priority.Normal, mercenariesManager);
             }
             /****************************/
 
@@ -324,10 +324,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         SendEvent(new CommandOnObjectEvent(skin.ExternalData as GameObjectInstance, pos), Priority.Normal, mercenariesManager);
                     }
-                }                
+                }
             }
             /****************************/
-         
+
         }
         /****************************************************************************/
 
@@ -338,10 +338,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private bool CanIMove(Vector3 position, Vector3 desiredPosition)
         {
             CollisionSkin skin;
-            Vector3 pos, nor;  
+            Vector3 pos, nor;
             float dist;
 
-            Physics.PhysicsUlitities.RayTest(position, desiredPosition+(desiredPosition-position)*10, out dist, out skin, out pos, out nor);
+            Physics.PhysicsUlitities.RayTest(position, desiredPosition + (desiredPosition - position) * 10, out dist, out skin, out pos, out nor);
 
             if (skin == null)
             {
@@ -349,19 +349,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             return false;
         }
-        /****************************************************************************/         
+        /****************************************************************************/
 
 
         /****************************************************************************/
         /// On Mouse Move 
         /****************************************************************************/
-        private void onMouseMove(MouseMoveAction mouseMoveAction, ExtendedMouseMovementState mouseMoveState)
+        private void onMouseMove(MouseMoveAction mouseMoveAction, ref ExtendedMouseMovementState mouseMoveState)
         {
-            Vector3 direction = Vector3.Normalize(target - position);            
+            Vector3 direction = Vector3.Normalize(target - position);
 
             isOnWindow = mouseMoveState.IsOnWindow;
-            mouseX     = mouseMoveState.Position.X;
-            mouseY     = mouseMoveState.Position.Y;            
+            mouseX = mouseMoveState.Position.X;
+            mouseY = mouseMoveState.Position.Y;
 
             Vector3 perpendicular = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
 
@@ -373,28 +373,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                     Vector3 testPosition = position + direction * zoomSpeed * mouseMoveState.ScrollDifference;
                     float distance = Vector3.Distance(target, testPosition);
-                    if (distance>3.0f && testPosition.Y>target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
-                    {                        
+                    if (distance > 3.0f && testPosition.Y > target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
+                    {
                         if (shiftDown)
                         {
                             Vector3 tmp = position;
-                            tmp.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference *(Vector3.Distance(position, target) / 20);
+                            tmp.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
 
                             if (CanIMove(position, tmp))
                             {
-                                position.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20); 
+                                position.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
                             }
                         }
                         else
-                        {                            
+                        {
                             Vector3 tmp = position;
-                            tmp += zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20); 
-                               
+                            tmp += zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
+
                             if (CanIMove(position, tmp))
                             {
                                 position += zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
                             }
-                        }                       
+                        }
                     }
 
                     break;
@@ -415,25 +415,55 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 position = Vector3.Transform(position, Matrix.CreateRotationY(rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
                                 position += target;
                             }
-                        }                                              
+                        }
+                        CollisionSkin skin;
+                        Vector3 direction1 = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                        Vector3 pos, nor;
+                        String cursor;
+                        float dist;
+                        Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction1 * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
+                        if (skin != null)
+                        {
+                            if (useCommands)
+                            {
+                                switch (((GameObjectInstance)skin.ExternalData).Status)
+                                {
+                                    case GameObjectStatus.Interesting: cursor = "QuestionMark"; break;
+                                    case GameObjectStatus.Pickable: cursor = "Hand"; break;
+                                    case GameObjectStatus.Targetable: cursor = "Target"; break;
+                                    case GameObjectStatus.Walk: cursor = "Footsteps"; break;
+                                    case GameObjectStatus.Mercenary: cursor = "Person"; break;
+                                    default: cursor = "Default"; break;
+                                }
+                            }
+                            else
+                            {
+                                switch (((GameObjectInstance)skin.ExternalData).Status)
+                                {
+                                    case GameObjectStatus.Mercenary: cursor = "Person"; break;
+                                    default: cursor = "Default"; break;
+                                }
+                            }
+                            mouselistenerComponent.SetCursor(cursor);
+                        }
                     }
                     break;
             }
-            
+
             cameraComponent.LookAt(position, target, Vector3.Up);
         }
         /****************************************************************************/
-        
+
 
         /****************************************************************************/
         /// On Key
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
-            if (key == Keys.LeftShift)   shiftDown      = state.IsDown();
+            if (key == Keys.LeftShift) shiftDown = state.IsDown();
             if (key == Keys.LeftControl) addToSelection = state.IsDown();
 
-            if (key == Keys.LeftAlt) 
+            if (key == Keys.LeftAlt)
             {
                 removeFromSelection = state.IsDown();
 
@@ -562,53 +592,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
 
             /***************************************/
-            /// Check Objects
-            /***************************************/
-            CollisionSkin skin;
-            Vector3 direction1 = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
-            Vector3 pos, nor;
-            float dist;
-            Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction1 * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
-            if (skin != null)
-            {
-                if (useCommands)
-                {
-                    switch (((GameObjectInstance)skin.ExternalData).Status)
-                    {
-                        case GameObjectStatus.Interesting:  cursor = "QuestionMark"; break;
-                        case GameObjectStatus.Pickable:     cursor = "Hand";         break;
-                        case GameObjectStatus.Targetable:   cursor = "Target";       break;
-                        case GameObjectStatus.Walk:         cursor = "Footsteps";    break;
-                        case GameObjectStatus.Mercenary:    cursor = "Person";       break;
-                        default: cursor = "Default"; break;
-                    }
-                }
-                else
-                {
-                    switch (((GameObjectInstance)skin.ExternalData).Status)
-                    {
-                        case GameObjectStatus.Mercenary: cursor = "Person"; break;
-                        default: cursor = "Default"; break;                       
-                    }
-                }               
-            }
-            /***************************************/
-            
+
             if (movingToPoint) MoveToPoint();
-            if (tracing)       traceTarget();
-            
+            if (tracing) traceTarget();
+
             /***************************************/
             /// Check Borders
             /***************************************/
             if (!(mouseX < minRight && mouseX > minLeft && mouseY < minBottom && mouseY > minTop))
             {
-                Vector3 direction       = Vector3.Normalize(target - position);
-                float distanceFactor    = Vector3.Distance(target, position) / 50;
-                Vector3 perpendicular   = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
-                
+                Vector3 direction = Vector3.Normalize(target - position);
+                float distanceFactor = Vector3.Distance(target, position) / 50;
+                Vector3 perpendicular = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
+
                 float time = (float)(deltaTime.TotalMilliseconds);
 
-                direction.Y     = 0;
+                direction.Y = 0;
                 perpendicular.Y = 0;
 
                 Vector3 offset = perpendicular * movementSpeed * time * distanceFactor;
@@ -616,15 +615,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 /// Left Border
                 /************************/
                 if (mouseX < minLeft && mouseX > maxLeft)
-                {                                        
+                {
                     if (CanIMove(position, position + offset))
                     {
-                        cursor    = "Left";
+                        mouselistenerComponent.SetCursor("Left");
                         position += offset;
-                        target   += offset;
+                        target += offset;
 
                         stopTracking();
-                        StopMovingToPoint();                                
+                        StopMovingToPoint();
                     }
                 }
                 /************************/
@@ -637,9 +636,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     if (CanIMove(position, position - offset))
                     {
-                        cursor    = "Right";
+                        mouselistenerComponent.SetCursor("Right");
                         position -= offset;
-                        target   -= offset;
+                        target -= offset;
 
                         stopTracking();
                         StopMovingToPoint();
@@ -653,12 +652,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 /// Top Border
                 /************************/
                 if (mouseY < minTop && mouseY > maxTop)
-                {                    
+                {
                     if (CanIMove(position, position + offset))
                     {
-                        cursor    = "Up";
+                        mouselistenerComponent.SetCursor("Up");
                         position += offset;
-                        target   += offset;
+                        target += offset;
 
                         stopTracking();
                         StopMovingToPoint();
@@ -674,9 +673,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     if (CanIMove(position, position - offset))
                     {
-                        cursor    = "Down";
+                        mouselistenerComponent.SetCursor("Down");
                         position -= offset;
-                        target   -= offset;
+                        target -= offset;
 
                         stopTracking();
                         StopMovingToPoint();
@@ -687,7 +686,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             /***************************************/
 
-            mouselistenerComponent.SetCursor(cursor);
+
         }
         /****************************************************************************/
 
@@ -729,7 +728,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Vector3 Target { get; set; }
 
         public float movementSpeed
-        {            
+        {
             set { this.MovementSpeed = value; }
             get { return MovementSpeed; }
         }

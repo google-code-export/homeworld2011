@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-/****************************************************************************/
-/// PlagueEngine.Input.Components
-/****************************************************************************/
-namespace PlagueEngine.Input.Components
+﻿namespace PlagueEngine.Input.Components
 {
     /****************************************************************************/
     /// Extended MouseKey State
@@ -17,8 +9,8 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private bool isDown;
-        private bool changed;
+        private readonly bool _isDown;
+        private readonly bool _changed;
         /****************************************************************************/
 
 
@@ -26,21 +18,21 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public ExtendedMouseKeyState(bool isDown, bool changed)
+        public ExtendedMouseKeyState(bool isDown, bool changed) : this()
         {
-            this.isDown = isDown;
-            this.changed = changed;
+            _isDown = isDown;
+            _changed = changed;
+            Propagate = true;
         }
         /****************************************************************************/
 
+        public bool Propagate { get; set; }
 
-
-        /****************************************************************************/
         /// Is Down
         /****************************************************************************/
         public bool IsDown()
         {
-            return isDown;
+            return _isDown;
         }
         /****************************************************************************/
 
@@ -50,7 +42,7 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         public bool IsUp()
         {
-            return !isDown;
+            return !_isDown;
         }
         /****************************************************************************/
 
@@ -60,7 +52,7 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         public bool WasPressed()
         {
-            return (isDown && changed ? true : false);
+            return (_isDown && _changed ? true : false);
         }
         /****************************************************************************/
 
@@ -70,9 +62,10 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         public bool WasReleased()
         {
-            return (!isDown && changed ? true : false);
+            return (!_isDown && _changed ? true : false);
         }
         /****************************************************************************/
+
     }
     /****************************************************************************/
 }

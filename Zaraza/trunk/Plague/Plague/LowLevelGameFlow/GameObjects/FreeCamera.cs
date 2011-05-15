@@ -198,7 +198,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// On Mouse Key
         /****************************************************************************/
-        private void OnMouseKey(MouseKeyAction mouseKeyAction, ExtendedMouseKeyState mouseKeyState)
+        private void OnMouseKey(MouseKeyAction mouseKeyAction,ref ExtendedMouseKeyState mouseKeyState)
         {
             if (mouseKeyState.WasPressed() && mouseKeyAction==MouseKeyAction.RightClick)
             {
@@ -319,7 +319,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// On Mouse Move
         /****************************************************************************/
-        private void OnMouseMove(MouseMoveAction mouseMoveAction, ExtendedMouseMovementState mouseMovementState)
+        private void OnMouseMove(MouseMoveAction mouseMoveAction,ref ExtendedMouseMovementState mouseMovementState)
         {
             mouseX = mouseMovementState.Position.X;
             mouseY = mouseMovementState.Position.Y;

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-/****************************************************************************/
-/// PlagueEngine.Input.Components
-/****************************************************************************/
+
 namespace PlagueEngine.Input.Components
 {
     /****************************************************************************/
@@ -16,69 +10,54 @@ namespace PlagueEngine.Input.Components
     {
 
         /****************************************************************************/
-        /// Fields
-        /****************************************************************************/
-        private Vector3 position;
-        private Vector3 oldPosition;
-        private Vector3 difference;//o ile zmienilo sie polozenie w x,y,z
-        private bool moved; //zmiana w x,y,z
-        private bool scrolled;//zmiana w z, tj bylo scrollniecie:D
-        private float scrollDifference;//zmiana wartosci scrolla
-        internal static DisplayMode display = null;
+        internal static DisplayMode Display = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public ExtendedMouseMovementState(int x,int y,int z,int oldX,int oldY,int oldZ)
+        public ExtendedMouseMovementState(int x,int y,int z,int oldX,int oldY,int oldZ) : this()
         {
-            moved = false;
-            scrolled = false;
+            Moved = false;
+            Scrolled = false;
 
-            scrollDifference = oldZ - z;
+            ScrollDifference = oldZ - z;
 
-            position = new Vector3(x, y, z);
-            oldPosition = new Vector3(oldX, oldY, oldZ);
+            Position = new Vector3(x, y, z);
+            OldPosition = new Vector3(oldX, oldY, oldZ);
 
-            difference = position - oldPosition;
+            Difference = Position - OldPosition;
 
             if (x!=oldX || y!=oldY)
             {
-                moved = true;
+                Moved = true;
             }
 
             if (z != oldZ)
             {
-                scrolled = true;
+                Scrolled = true;
             }
-            
+
+            Propagate = true;
         }
         /****************************************************************************/
 
-
+        public bool Propagate { get; set; }
 
         /****************************************************************************/
+
         /// ScrollDifference
         /****************************************************************************/
-        public float ScrollDifference
-        {
-            get { return scrollDifference; }
-        }
-        /****************************************************************************/
-
-
+        public float ScrollDifference { get; private set; }
 
         /****************************************************************************/
+
         /// Scrolled
         /****************************************************************************/
-        public bool Scrolled
-        {
-            get { return this.scrolled; }
-        }
+        public bool Scrolled { get; private set; }
+
         /****************************************************************************/
-
-
 
 
         /****************************************************************************/
@@ -86,61 +65,35 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         public bool IsOnWindow
         {
-            get 
+            get
             {
-                if (position.X < 0 || position.Y < 0 || position.X > display.Width || position.Y > display.Height)
-                {
-                    return false;
-                }
-                return true;
+                return ((Position.X >= 0 && Position.Y >= 0) && Position.X <= Display.Width) && Position.Y <= Display.Height;
             }
         }
         /****************************************************************************/
 
-
-
-
-        /****************************************************************************/
         /// Position
         /****************************************************************************/
-        public Vector3 Position
-        {
-            get { return position; }
-        }
-        /****************************************************************************/
-
-
-
+        public Vector3 Position { get; private set; }
 
         /****************************************************************************/
+
         /// OldPosition
         /****************************************************************************/
-        public Vector3 OldPosition
-        {
-            get { return oldPosition; }
-        }
-        /****************************************************************************/
-
-
+        public Vector3 OldPosition { get; private set; }
 
         /****************************************************************************/
+
         /// Difference
         /****************************************************************************/
-        public Vector3 Difference
-        {
-            get { return difference; }
-        }
-        /****************************************************************************/
-
-
+        public Vector3 Difference { get; private set; }
 
         /****************************************************************************/
+
         /// Moved
         /****************************************************************************/
-        public bool Moved
-        {
-            get { return moved; }
-        }
+        public bool Moved { get; private set; }
+
         /****************************************************************************/
 
 
