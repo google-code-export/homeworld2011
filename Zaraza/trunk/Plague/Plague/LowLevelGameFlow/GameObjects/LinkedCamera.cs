@@ -371,28 +371,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 case MouseMoveAction.Scroll:
 
-                    Vector3 testPosition = position + direction * zoomSpeed * time * mouseMoveState.ScrollDifference;
+                    Vector3 testPosition = position + direction * zoomSpeed * mouseMoveState.ScrollDifference;
                     float distance = Vector3.Distance(target, testPosition);
                     if (distance>3.0f && testPosition.Y>target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
                     {                        
                         if (shiftDown)
                         {
                             Vector3 tmp = position;
-                            tmp.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference;// *(Vector3.Distance(position, target) / 10.0f);
+                            tmp.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference *(Vector3.Distance(position, target) / 20);
 
                             if (CanIMove(position, tmp))
                             {
-                                position.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference;// *(Vector3.Distance(position, target) / 10.0f); 
+                                position.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20); 
                             }
                         }
                         else
                         {                            
                             Vector3 tmp = position;
-                            tmp += zoomSpeed * direction * mouseMoveState.ScrollDifference;// *(Vector3.Distance(position, target) / 10.0f); 
+                            tmp += zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20); 
                                
                             if (CanIMove(position, tmp))
                             {
-                                position += zoomSpeed * direction * mouseMoveState.ScrollDifference;// *(Vector3.Distance(position, target) / 10.0f);
+                                position += zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
                             }
                         }                       
                     }
@@ -452,7 +452,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Vector3 direction = Vector3.Normalize(target - position);
             direction.Y = 0;
 
-
+            float distanceFactor = Vector3.Distance(target, position) / 50;
             Vector3 perpendicular = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f)));
             //perpendicular = Vector3.Normalize(perpendicular);
             perpendicular.Y = 0;
@@ -464,12 +464,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 case Keys.W:
 
-                    tmp += direction * time * movementSpeed;
+                    tmp += direction * time * movementSpeed * distanceFactor;
 
                     if (CanIMove(position, tmp))
                     {
-                        position += direction * time * movementSpeed;
-                        target += direction * time * movementSpeed;
+                        position += direction * time * movementSpeed * distanceFactor;
+                        target += direction * time * movementSpeed * distanceFactor;
                         stopTracking();
                         StopMovingToPoint();
                     }
@@ -477,11 +477,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case Keys.S:
 
-                    tmp -= direction * time * movementSpeed;
+                    tmp -= direction * time * movementSpeed * distanceFactor;
                     if (CanIMove(position, tmp))
                     {
-                        position -= direction * time * movementSpeed;
-                        target -= direction * time * movementSpeed;
+                        position -= direction * time * movementSpeed * distanceFactor;
+                        target -= direction * time * movementSpeed * distanceFactor;
                         stopTracking();
                         StopMovingToPoint();
                     }
@@ -489,11 +489,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case Keys.A:
 
-                    tmp += perpendicular * time * movementSpeed;
+                    tmp += perpendicular * time * movementSpeed * distanceFactor;
                     if (CanIMove(position, tmp))
                     {
-                        position += perpendicular * time * movementSpeed;
-                        target += perpendicular * time * movementSpeed;
+                        position += perpendicular * time * movementSpeed * distanceFactor;
+                        target += perpendicular * time * movementSpeed * distanceFactor;
                         stopTracking();
                         StopMovingToPoint();
                     }
@@ -501,11 +501,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case Keys.D:
 
-                    tmp -= perpendicular * time * movementSpeed;
+                    tmp -= perpendicular * time * movementSpeed * distanceFactor;
                     if (CanIMove(position, tmp))
                     {
-                        position -= perpendicular * time * movementSpeed;
-                        target -= perpendicular * time * movementSpeed;
+                        position -= perpendicular * time * movementSpeed * distanceFactor;
+                        target -= perpendicular * time * movementSpeed * distanceFactor;
                         stopTracking();
                         StopMovingToPoint();
                     }
@@ -602,16 +602,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /***************************************/
             if (!(mouseX < minRight && mouseX > minLeft && mouseY < minBottom && mouseY > minTop))
             {
-                Vector3 direction     = Vector3.Normalize(target - position);
-                Vector3 perpendicular = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
+                Vector3 direction       = Vector3.Normalize(target - position);
+                float distanceFactor    = Vector3.Distance(target, position) / 50;
+                Vector3 perpendicular   = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
                 
                 float time = (float)(deltaTime.TotalMilliseconds);
 
                 direction.Y     = 0;
-                perpendicular.Y = 0;                
+                perpendicular.Y = 0;
 
-                Vector3 offset = perpendicular * movementSpeed * time;
-
+                Vector3 offset = perpendicular * movementSpeed * time * distanceFactor;
                 /************************/
                 /// Left Border
                 /************************/
@@ -647,7 +647,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 /************************/
 
-                offset = direction * movementSpeed * time;
+                offset = direction * movementSpeed * time * distanceFactor;
 
                 /************************/
                 /// Top Border
