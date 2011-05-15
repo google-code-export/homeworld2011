@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Text;
 using PlagueEngine.TimeControlSystem;
 using System.Diagnostics;
 
-
-/************************************************************************************/
-/// PlagueEngine
-/************************************************************************************/
 namespace PlagueEngine
 {
 
@@ -19,25 +14,22 @@ namespace PlagueEngine
     {
 
         /****************************************************************************/
-        /// Fields
-        /****************************************************************************/
-        private static long         fPS                 = 0;
-        private static long         frames              = 0;
-        private static TimeSpan     elapsedTime         = TimeSpan.Zero;
-        private static TimeSpan     totalElapsedTime    = TimeSpan.Zero;
+        private static long         _frames;
+        private static TimeSpan     _elapsedTime         = TimeSpan.Zero;
+        private static TimeSpan     _totalElapsedTime    = TimeSpan.Zero;
         
-        private static bool         forceGCOnUpdate     = false;
+        private static bool         _forceGCOnUpdate;
         
-        private static Game         game                = null;
-        private static bool         showDiagnostics     = true;
-        private static TextWriter   textWriter          = null;
-        private static String       logFile             = String.Empty;
-        private static LogWindow    logWindow           = null;
-        private static bool         showLogWindow       = false;
-        private static long         allocatedMemory     = -1;
-        private static TimeSpan     memoryElapsedTime   = TimeSpan.Zero;
-
-        private static uint         timerID             = 0;
+        private static Game         _game;
+        private static bool         _showDiagnostics     = true;
+        private static TextWriter   _textWriter;
+        private static String       _logFile             = String.Empty;
+        private static LogWindow    _logWindow;
+        private static bool         _showLogWindow;
+        private static long         _allocatedMemory     = -1;
+        private static TimeSpan     _memoryElapsedTime   = TimeSpan.Zero;
+        private static string       _lineBrake           = "-------------------------";
+        private static uint         _timerId;
         /****************************************************************************/
 
 
@@ -46,31 +38,31 @@ namespace PlagueEngine
         /****************************************************************************/
         public static void Update(TimeSpan deltaTime)
         {
-            ++frames;
-            if (allocatedMemory == -1)
+            ++_frames;
+            if (_allocatedMemory == -1)
             {
-                Diagnostics.AllocatedManagedMemoryUpdate();
+                AllocatedManagedMemoryUpdate();
             }
 
-            elapsedTime += deltaTime;
-            totalElapsedTime += deltaTime;
-            memoryElapsedTime += deltaTime;
+            _elapsedTime += deltaTime;
+            _totalElapsedTime += deltaTime;
+            _memoryElapsedTime += deltaTime;
 
-            if (elapsedTime.Seconds >= 1)
+            if (_elapsedTime.Seconds >= 1)
             {
-                fPS = frames / elapsedTime.Seconds;
-                frames = 0;
-                elapsedTime = TimeSpan.Zero;
+                FPS = _frames / _elapsedTime.Seconds;
+                _frames = 0;
+                _elapsedTime = TimeSpan.Zero;
             }
 
-            if (memoryElapsedTime.Seconds >= 10)
+            if (_memoryElapsedTime.Seconds >= 10)
             {
-                Diagnostics.AllocatedManagedMemoryUpdate();
-                memoryElapsedTime = TimeSpan.Zero;
+                AllocatedManagedMemoryUpdate();
+                _memoryElapsedTime = TimeSpan.Zero;
             }
 
-            if (forceGCOnUpdate) GC.Collect();
-            if (showDiagnostics) game.Window.Title = game.Title + " | " + Diagnostics.ToString();
+            if (_forceGCOnUpdate) GC.Collect();
+            if (_showDiagnostics) _game.Window.Title = _game.Title + " | " + ToString();
         }
         /****************************************************************************/
 
@@ -80,20 +72,20 @@ namespace PlagueEngine
         /****************************************************************************/
         public static bool OpenLogFile(String directory = null)
         {
-            if (textWriter == null)
+            if (_textWriter == null)
             {
-                logFile = (directory == null ? String.Empty : directory + "\\") + DateTime.Now.ToString(@"HH-mm-ss dd-MM-yy") + ".txt";
+                _logFile = (directory == null ? String.Empty : directory + "\\") + DateTime.Now.ToString(@"HH-mm-ss dd-MM-yy") + ".txt";
 
                 try
                 {
-                    textWriter = new StreamWriter(logFile);
+                    _textWriter = new StreamWriter(_logFile);
                 }
                 catch (IOException)
                 {
                     if (directory != null)
                     {
                         Directory.CreateDirectory(directory + "\\");
-                        textWriter = new StreamWriter(logFile);
+                        _textWriter = new StreamWriter(_logFile);
                     }
                     else
                     {
@@ -101,16 +93,18 @@ namespace PlagueEngine
                     }
                 }
                 
-                textWriter.WriteLine(game.Title);
-                textWriter.WriteLine(DateTime.Now.ToString());
-                textWriter.WriteLine("-------------------------");
-                textWriter.Flush();
+                _textWriter.WriteLine(_game.Title);
+                _textWriter.WriteLine(DateTime.Now.ToString());
+                _textWriter.WriteLine(_lineBrake);
+                _textWriter.Flush();
 
-                if (logWindow != null)
+                if (_logWindow != null)
                 {
-                    logWindow.TextBox.Text += game.Title                  + System.Environment.NewLine;
-                    logWindow.TextBox.Text += DateTime.Now.ToString()     + System.Environment.NewLine;
-                    logWindow.TextBox.Text += "-------------------------" + System.Environment.NewLine;
+                    var sb = new StringBuilder();
+                    sb.AppendLine(_game.Title);
+                    sb.AppendLine(DateTime.Now.ToString());
+                    sb.AppendLine(_lineBrake);
+                    _logWindow.TextBox.Text += sb.ToString();
                 }
 
                 return true;
@@ -126,22 +120,42 @@ namespace PlagueEngine
         /****************************************************************************/
         public static void PushLog(String text)
         {
-            if (textWriter == null) return;
+            if (_textWriter == null) return;
+            if (_logWindow == null) return;
 
-            //textWriter.WriteLine(">> " + DateTime.Now.ToString(@"HH\:mm\:ss")     + " | "
-            //                           + totalElapsedTime.ToString(@"hh\:mm\:ss") + " >> "
-            //                           + text);
-            //textWriter.Flush();
-
-            if (logWindow != null)
-            {
-                logWindow.TextBox.Text += ">> " + DateTime.Now.ToString(@"HH\:mm\:ss") + " | "
-                                       + totalElapsedTime.ToString(@"hh\:mm\:ss")      + " >> "
-                                       + text + System.Environment.NewLine;
+            var sb = new StringBuilder();
+            sb.Append(">> ");
+            sb.Append(DateTime.Now.ToString(@"HH\:mm\:ss"));
+            sb.Append(" | ");
+            sb.Append(_totalElapsedTime.ToString(@"hh\:mm\:ss"));
+            sb.Append(" >> ");
+            sb.Append(text);
+            sb.AppendLine();
+            _logWindow.TextBox.Text += sb.ToString();
                 
-                logWindow.TextBox.SelectionStart = logWindow.TextBox.TextLength;
-                logWindow.TextBox.ScrollToCaret();
-            }
+            _logWindow.TextBox.SelectionStart = _logWindow.TextBox.TextLength;
+            _logWindow.TextBox.ScrollToCaret();
+        }
+
+        public static void PushLog(Object obj, String text)
+        {
+            if (_textWriter == null) return;
+            if (_logWindow == null) return;
+
+            var sb = new StringBuilder();
+            sb.Append(">> ");
+            sb.Append(DateTime.Now.ToString(@"HH\:mm\:ss"));
+            sb.Append(" | ");
+            sb.Append(_totalElapsedTime.ToString(@"hh\:mm\:ss"));
+            sb.Append(" >> ");
+            sb.Append(obj.GetType().Name);
+            sb.Append(":");
+            sb.Append(text);
+            sb.AppendLine();
+            _logWindow.TextBox.Text += sb.ToString();
+
+            _logWindow.TextBox.SelectionStart = _logWindow.TextBox.TextLength;
+            _logWindow.TextBox.ScrollToCaret();
         }
         /****************************************************************************/
 
@@ -151,18 +165,18 @@ namespace PlagueEngine
         /****************************************************************************/
         public static void CloseLogFile()
         {
-            if (textWriter != null)
+            if (_textWriter != null)
             {
-                textWriter.WriteLine("-------------------------");
-                textWriter.WriteLine("Run Time: " + totalElapsedTime.ToString(@"hh\:mm\:ss"));
-                textWriter.Flush();
-                textWriter.Close();
+                _textWriter.WriteLine(_lineBrake);
+                _textWriter.WriteLine("Run Time: " + _totalElapsedTime.ToString(@"hh\:mm\:ss"));
+                _textWriter.Flush();
+                _textWriter.Close();
 
-                if (logWindow != null)
+                if (_logWindow != null)
                 {
-                    logWindow.Close();
-                    logWindow       = null;
-                    showLogWindow   = false;
+                    _logWindow.Close();
+                    _logWindow       = null;
+                    _showLogWindow   = false;
                 }
             }
         }
@@ -170,15 +184,11 @@ namespace PlagueEngine
                      
 
         /****************************************************************************/
+
         /// FPS
         /****************************************************************************/
-        public static long FPS
-        {
-            get
-            {
-                return fPS;                        
-            }
-        }
+        public static long FPS { get; private set; }
+
         /****************************************************************************/
 
 
@@ -189,7 +199,7 @@ namespace PlagueEngine
         {
             get
             {
-                return totalElapsedTime;
+                return _totalElapsedTime;
             }
         }
         /****************************************************************************/
@@ -202,11 +212,11 @@ namespace PlagueEngine
         {
             get
             {
-                return allocatedMemory;
+                return _allocatedMemory;
             }
             set
             {
-                allocatedMemory = value;
+                _allocatedMemory = value;
             }
         }
         /****************************************************************************/
@@ -219,12 +229,12 @@ namespace PlagueEngine
         {
             set
             {
-                forceGCOnUpdate = value;
+                _forceGCOnUpdate = value;
             }
 
             get
             {
-                return forceGCOnUpdate;
+                return _forceGCOnUpdate;
             }
         }
         /****************************************************************************/
@@ -237,7 +247,7 @@ namespace PlagueEngine
         {
             set 
             {
-                game = value;
+                _game = value;
             }
         }
         /****************************************************************************/
@@ -250,12 +260,12 @@ namespace PlagueEngine
         {
             set
             {
-                game.IsFixedTimeStep = value;
+                _game.IsFixedTimeStep = value;
             }
 
             get
             {
-                return game.IsFixedTimeStep;
+                return _game.IsFixedTimeStep;
             }
         }
         /****************************************************************************/
@@ -268,8 +278,8 @@ namespace PlagueEngine
         {
             set
             {
-                showDiagnostics = value;
-                if (!showDiagnostics) game.Window.Title = game.Title;
+                _showDiagnostics = value;
+                if (!_showDiagnostics) _game.Window.Title = _game.Title;
             }
         }
         /****************************************************************************/
@@ -282,30 +292,30 @@ namespace PlagueEngine
         {
             set
             {
-                showLogWindow = value;
+                _showLogWindow = value;
                 
-                if (showLogWindow && logWindow == null && textWriter != null)
+                if (_showLogWindow && _logWindow == null && _textWriter != null)
                 {
-                    logWindow = new LogWindow();
-                    logWindow.Show();
-                    textWriter.Close();
+                    _logWindow = new LogWindow();
+                    _logWindow.Show();
+                    _textWriter.Close();
 
-                    using (TextReader textReader = new StreamReader(logFile))
+                    using (TextReader textReader = new StreamReader(_logFile))
                     {
-                        logWindow.TextBox.Text += textReader.ReadToEnd();
+                        _logWindow.TextBox.Text += textReader.ReadToEnd();
                     }
 
-                    textWriter = new StreamWriter(logFile,true);
+                    _textWriter = new StreamWriter(_logFile,true);
                 }
-                else if (showLogWindow && logWindow == null && textWriter == null)
+                else if (_showLogWindow && _logWindow == null && _textWriter == null)
                 {
-                    logWindow = new LogWindow();
-                    logWindow.Show();                
+                    _logWindow = new LogWindow();
+                    _logWindow.Show();                
                 }
-                else if (!showLogWindow && logWindow != null)
+                else if (!_showLogWindow && _logWindow != null)
                 {
-                    logWindow.Close();
-                    logWindow = null;
+                    _logWindow.Close();
+                    _logWindow = null;
                 }
             }
         }
@@ -318,8 +328,7 @@ namespace PlagueEngine
         public static void DiagnosticSnapshot()
         { 
             #if DEBUG
-                Diagnostics.PushLog("FPS: " + fPS.ToString() + " | Allocated Managed Memory: "  
-                                + Diagnostics.allocatedMemory.ToString() + " kb");  
+                PushLog(string.Format("FPS: {0} | Allocated Managed Memory: {1} kb", FPS, _allocatedMemory));  
             #endif 
         }
         /****************************************************************************/
@@ -330,8 +339,8 @@ namespace PlagueEngine
         /****************************************************************************/
         public static void StartDiagnosticSnapshots(TimeSpan time)
         {
-            if (timerID == 0) timerID = TimeControl.CreateTimer(time, -1, TimerCallback);
-            else TimeControl.ResetTimer(timerID,time,-1);
+            if (_timerId == 0) _timerId = TimeControl.CreateTimer(time, -1, TimerCallback);
+            else TimeControl.ResetTimer(_timerId,time,-1);
         }
         /****************************************************************************/
 
@@ -341,8 +350,8 @@ namespace PlagueEngine
         /****************************************************************************/
         public static void StopDiagnosticSnapshots()
         {
-            TimeControl.ReleaseTimer(timerID);
-            timerID = 0;
+            TimeControl.ReleaseTimer(_timerId);
+            _timerId = 0;
         }
         /****************************************************************************/
 
@@ -352,7 +361,7 @@ namespace PlagueEngine
         /****************************************************************************/
         private static void TimerCallback()
         {
-            Diagnostics.DiagnosticSnapshot();
+            DiagnosticSnapshot();
         }
         /****************************************************************************/
 
@@ -362,7 +371,7 @@ namespace PlagueEngine
         /****************************************************************************/
         private static void AllocatedManagedMemoryUpdate()
         {
-            Diagnostics.allocatedMemory=Process.GetCurrentProcess().PrivateMemorySize64 / 1024;
+            _allocatedMemory=Process.GetCurrentProcess().PrivateMemorySize64 / 1024;
         }
         /****************************************************************************/
 
@@ -370,11 +379,9 @@ namespace PlagueEngine
         /****************************************************************************/
         /// To String
         /****************************************************************************/
-        public static String ToString()
+        public new static String ToString()
         {
-            return "FPS: "                 + fPS.ToString()                           + 
-                   " | Run Time: "         + totalElapsedTime.ToString(@"hh\:mm\:ss") +
-                   " | Allocated Memory: " +  Diagnostics.allocatedMemory.ToString()  + " kb";
+            return string.Format("FPS: {0} | Run Time: {1} | Allocated Memory: {2} kb", FPS, _totalElapsedTime.ToString(@"hh\:mm\:ss"), _allocatedMemory);
         }
         /****************************************************************************/
 
