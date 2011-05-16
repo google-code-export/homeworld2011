@@ -39,9 +39,9 @@ namespace PlagueEngine.EventsSystem
         /****************************************************************************/
         /// Send Event (2)
         /****************************************************************************/
-        public void SendEvent(EventArgs eventArgs, Priority priority, params uint[] receivers)
+        public void SendEvent(EventArgs eventArgs, Priority priority, params int[] receivers)
         {
-            foreach (uint receiver in receivers)
+            foreach (int receiver in receivers)
             {
                 eventsSystem.AddEvent(new Event(eventsSystem.GetGameObject(receiver), this, eventArgs), priority);
             }

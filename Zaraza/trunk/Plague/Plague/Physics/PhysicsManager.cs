@@ -28,8 +28,8 @@ namespace PlagueEngine.Physics
         ///  Fields
         /****************************************************************************/
         private  PhysicsSystem                              physicsSystem            = null;
-        internal Dictionary<uint, RigidBodyComponent>       rigidBodies              = new Dictionary<uint, RigidBodyComponent>();
-        internal Dictionary<uint, CollisionSkinComponent>   collisionSkins           = new Dictionary<uint, CollisionSkinComponent>();
+        internal Dictionary<int, RigidBodyComponent>        rigidBodies              = new Dictionary<int, RigidBodyComponent>();
+        internal Dictionary<int, CollisionSkinComponent>    collisionSkins           = new Dictionary<int, CollisionSkinComponent>();
         internal List<PhysicsController>                    controllers              = new List<PhysicsController>();
         internal PhysicsComponentFactory                    physicsComponentFactory  = null;
         /****************************************************************************/
@@ -45,8 +45,10 @@ namespace PlagueEngine.Physics
             physicsComponentFactory       = new PhysicsComponentFactory(content);
             physicsSystem                 = new PhysicsSystem();
             
-            physicsSystem.CollisionSystem = new CollisionSystemBrute();
-            
+            //physicsSystem.CollisionSystem = new CollisionSystemBrute();
+
+            physicsSystem.CollisionSystem = new CollisionSystemSAP();
+
             physicsSystem.SolverType = PhysicsSystem.Solver.Accumulated;
             physicsSystem.EnableFreezing                = true;
             physicsSystem.IsShockStepEnabled = true;

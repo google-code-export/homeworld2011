@@ -23,13 +23,13 @@ namespace PlagueEngine.EventsSystem
 
         private bool globalSubscription           = false;
         
-        private uint receiverInstanceSubscription = 0;
-        private uint receiverTypeSubscription     = 0;
+        private int receiverInstanceSubscription = 0;
+        private int receiverTypeSubscription     = 0;
         
-        private uint senderInstanceSubscription   = 0;
-        private uint senderTypeSubscription       = 0;
+        private int senderInstanceSubscription   = 0;
+        private int senderTypeSubscription       = 0;
         
-        private uint eventSubscription            = 0;
+        private int eventSubscription            = 0;
         /****************************************************************************/
 
 
@@ -83,10 +83,10 @@ namespace PlagueEngine.EventsSystem
         /****************************************************************************/
         /// Subscribe Receivers (2)
         /****************************************************************************/
-        public void SubscribeReceivers(params uint[] receivers)
+        public void SubscribeReceivers(params int[] receivers)
         {
             IEventsReceiver receiver;
-            foreach (uint receiverID in receivers)
+            foreach (int receiverID in receivers)
             {
                 receiver = eventsSystem.GetGameObject(receiverID);
 
@@ -164,10 +164,10 @@ namespace PlagueEngine.EventsSystem
         /****************************************************************************/
         /// Subscribe Senders (2)
         /****************************************************************************/
-        public void SubscribeSenders(params uint[] senders)
+        public void SubscribeSenders(params int[] senders)
         {
             EventsSender sender;
-            foreach (uint senderID in senders)
+            foreach (int senderID in senders)
             {
                 sender = eventsSystem.GetGameObject(senderID);
 
@@ -287,11 +287,11 @@ namespace PlagueEngine.EventsSystem
         /****************************************************************************/
         /// Cancel Receivers Subscription (2)
         /****************************************************************************/
-        public void CancelReceiversSubsciption(params uint[] receivers)
+        public void CancelReceiversSubsciption(params int[] receivers)
         {
             List<IEventsReceiver> delete = new List<IEventsReceiver>();
 
-            foreach (uint receiverID in receivers)
+            foreach (int receiverID in receivers)
             {
                 IEventsReceiver receiver = eventsSystem.GetGameObject(receiverID);
 
@@ -409,11 +409,11 @@ namespace PlagueEngine.EventsSystem
         /****************************************************************************/
         /// Cancel Sender Subscriiption (2)
         /****************************************************************************/
-        public void CancelSenderSubscription(params uint[] senders)
+        public void CancelSenderSubscription(params int[] senders)
         {
             List<EventsSender> delete = new List<EventsSender>();
             
-            foreach (uint senderID in senders)
+            foreach (int senderID in senders)
             {
                 EventsSender sender = eventsSystem.GetGameObject(senderID);
 

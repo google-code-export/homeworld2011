@@ -32,7 +32,7 @@ namespace PlagueEngine.Rendering
         private PhysicsManager            physicsManager = null;
         private bool                      enabled        = false;
         private bool                      selectiveDrawing = false;
-        private uint                      gameObjectID;
+        private int                      gameObjectID;
         private bool                      drawHeightmapSkin = false;
         /****************************************************************************/
 
@@ -54,7 +54,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// StartSelectiveDrawing
         /****************************************************************************/
-        public void StartSelectiveDrawing(uint gameObjectID)
+        public void StartSelectiveDrawing(int gameObjectID)
         {
           selectiveDrawing=true;
           this.gameObjectID=gameObjectID;

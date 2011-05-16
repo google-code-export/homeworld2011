@@ -260,7 +260,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
                         if (skin != null)
                         {
-                            //this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
+                            //this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
                             if (skin.ExternalData.GetType().Equals(typeof(Terrain)))
                             {
                                 StartMoveToPoint(pos);
@@ -764,7 +764,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             get { return ActiveMouseListener; }
         }
 
-        public uint MercenariesManager { get; set; }
+        public int MercenariesManager { get; set; }
     }
     /********************************************************************************/
 

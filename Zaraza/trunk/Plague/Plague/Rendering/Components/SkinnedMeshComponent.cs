@@ -279,8 +279,8 @@ namespace PlagueEngine.Rendering.Components
                     currentAnimation = blendAnimation;                    
                     blendAnimation   = tmp;
                     
-                    blendAnimation.Stop();
-                    
+                    blendAnimation.Stop();                    
+
                     return;
                 }
 
