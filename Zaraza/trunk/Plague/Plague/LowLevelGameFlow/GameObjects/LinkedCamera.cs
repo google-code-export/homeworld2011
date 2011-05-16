@@ -43,8 +43,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private Clock clock = TimeControl.CreateClock();
 
-        private bool shiftDown = false;
-
         private GameObjectInstance tracedObject = null;
         private Vector3 moveToPosition;
 
@@ -56,6 +54,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private bool addToSelection = false;
         private bool removeFromSelection = false;
+        private bool zoom = false;
 
         private int maxTop, minTop, maxBottom, minBottom, maxLeft, minLeft, maxRight, minRight;
 
@@ -93,7 +92,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.keyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,
                                                                Keys.D, Keys.Q, Keys.E,
-                                                               Keys.LeftShift, Keys.LeftControl, Keys.LeftAlt);
+                                                               Keys.LeftControl, Keys.LeftAlt);
 
             this.mouselistenerComponent.SubscribeMouseMove(onMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
             this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick, MouseKeyAction.RightClick, MouseKeyAction.LeftClick);
@@ -375,7 +374,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     float distance = Vector3.Distance(target, testPosition);
                     if (distance > 3.0f && testPosition.Y > target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
                     {
-                        if (shiftDown)
+                        if (zoom)
                         {
                             Vector3 tmp = position;
                             tmp.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
@@ -461,12 +460,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
-            if (key == Keys.LeftShift) shiftDown = state.IsDown();
             if (key == Keys.LeftControl) addToSelection = state.IsDown();
 
             if (key == Keys.LeftAlt)
             {
                 removeFromSelection = state.IsDown();
+                zoom = state.IsDown();
 
                 if (key == Keys.LeftAlt && state.WasPressed())
                 {

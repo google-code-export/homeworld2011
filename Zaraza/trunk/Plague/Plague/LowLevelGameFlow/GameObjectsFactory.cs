@@ -1041,6 +1041,36 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// CreateFirearm
+        /****************************************************************************/
+        public bool CreateFirearm(Firearm result, FirearmData data)
+        { 
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
+                                                                       Renderer.UIntToInstancingMode(data.InstancingMode)),
+                        physicsComponentFactory.CreateSquareBodyComponent(result,
+                                                                          data.Mass,
+                                                                          data.Lenght,
+                                                                          data.Height,
+                                                                          data.Width,
+                                                                          data.Elasticity,
+                                                                          data.StaticRoughness,
+                                                                          data.DynamicRoughness,
+                                                                          data.Immovable,
+                                                                          data.World,
+                                                                          data.Translation,
+                                                                          data.SkinYaw,
+                                                                          data.SkinPitch,
+                                                                          data.SkinRoll));
+            return true;
+        }
+        /****************************************************************************/
+        
     }
     /********************************************************************************/    
 
