@@ -77,13 +77,80 @@ namespace PlagueEngine.LowLevelGameFlow
             {
                 writer.WriteStartElement(key);
                 writer.WriteAttributeString("Type", Properties[key].GetType().ToString());
-                writer.WriteValue(Properties[key]);
+                writer.WriteValue(Properties[key]);                
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Get Data
+        /****************************************************************************/
+        public GameObjectDefinitionData GetData()
+        {
+            GameObjectDefinitionData data = new GameObjectDefinitionData();
+
+            data.Name = Name;
+            data.GameObjectClass = GameObjectClass;
+
+            StringObjectPair sopair;
+            foreach (KeyValuePair<String, Object> pair in Properties)
+            {
+                sopair = new StringObjectPair();
+                sopair.String = pair.Key;
+                sopair.Object = pair.Value;
+                data.Properties.Add(sopair);
+            }
+
+            return data;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Set
+        /****************************************************************************/
+        public void Set(GameObjectDefinitionData data)
+        {
+            Name = data.Name;
+            GameObjectClass = data.GameObjectClass;
+
+            Properties.Clear();
+
+            foreach (StringObjectPair pair in data.Properties)
+            {
+                Properties.Add(pair.String, pair.Object);
+            }
+        }
+        /****************************************************************************/
+
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// Game Object Definition
+    /********************************************************************************/
+    [Serializable]
+    public class GameObjectDefinitionData
+    {
+        public String                 Name            = String.Empty;
+        public String                 GameObjectClass = String.Empty;
+        public List<StringObjectPair> Properties      = new List<StringObjectPair>();
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// StringObjectPair
+    /********************************************************************************/
+    [Serializable]
+    public class StringObjectPair
+    {
+        public String String = String.Empty;
+        public Object Object = null;
     }
     /********************************************************************************/
 

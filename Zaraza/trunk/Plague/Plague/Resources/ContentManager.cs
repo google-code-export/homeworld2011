@@ -59,22 +59,22 @@ namespace PlagueEngine.Resources
             DetectProfiles();
             LoadDefaultProfile();
             
-            //LoadGameObjectsDefinitions();
+            LoadGameObjectsDefinitions();
 
-            GameObjectDefinition god = new GameObjectDefinition();
-            god.Name            = "Rusty Barrel";
-            god.GameObjectClass = "StaticMesh";
-            
-            god.Properties.Add("Model",    "Barrel");
-            god.Properties.Add("Diffuse",  "Barrel_diffuse");
-            god.Properties.Add("Specular", "Barrel_specular");
-            god.Properties.Add("Normals",  "Barrel_normals");
-            
-            god.Properties.Add("InstancingMode", Renderer.InstancingModeToUInt(InstancingModes.DynamicInstancing));
-            
-            gameObjectsDefinitions.Add(god.Name, god);
+            //GameObjectDefinition god = new GameObjectDefinition();
+            //god.Name = "Rusty Barrel";
+            //god.GameObjectClass = "StaticMesh";
 
-            SaveGameObjectsDefinitions();
+            //god.Properties.Add("Model", "Barrel");
+            //god.Properties.Add("Diffuse", "Barrel_diffuse");
+            //god.Properties.Add("Specular", "Barrel_specular");
+            //god.Properties.Add("Normals", "Barrel_normals");
+
+            //god.Properties.Add("InstancingMode", Renderer.InstancingModeToUInt(InstancingModes.DynamicInstancing));
+
+            //gameObjectsDefinitions.Add(god.Name, god);
+
+            //SaveGameObjectsDefinitions();
         }
         /****************************************************************************/
 
@@ -411,38 +411,51 @@ namespace PlagueEngine.Resources
         /// Load Game Objects Definitions
         /****************************************************************************/
         public void LoadGameObjectsDefinitions()
-        {            
-            List<GameObjectDefinition> temp = new List<GameObjectDefinition>();
-            
-            XmlSerializer serializer = new XmlSerializer(typeof(List<GameObjectDefinition>));
-            TextReader textReader = null;
+        {
+            List<GameObjectDefinitionData> temp = new List<GameObjectDefinitionData>();
 
-            try
-            {
-                textReader = new StreamReader(dataDirectory + "\\" + objectsDefinitions + ".xml");
-            }
-            catch (System.IO.IOException e)
-            {
-#if DEBUG
-                Diagnostics.PushLog("Loading game objects definitions: " + e.Message);
-#endif
-                throw e;
-            }
+            //XmlSerializer serializer = new XmlSerializer(typeof(List<GameObjectDefinitionData>));
+            //TextReader textReader = null;
 
-            temp = (List<GameObjectDefinition>)serializer.Deserialize(textReader);
-            textReader.Close();
+            Stream stream = new FileStream(dataDirectory + "\\" + objectsDefinitions + ".def", System.IO.FileMode.Open);
+
+            IFormatter formatter = new BinaryFormatter();
+            temp = (List<GameObjectDefinitionData>)formatter.Deserialize(stream);
+
+            stream.Close();
+
+//            try
+//            {
+//                textReader = new StreamReader(dataDirectory + "\\" + objectsDefinitions + ".xml");
+//            }
+//            catch (System.IO.IOException e)
+//            {
+//#if DEBUG
+//                Diagnostics.PushLog("Loading game objects definitions: " + e.Message);
+//#endif
+//                throw e;
+//            }
+
+//            temp = (List<GameObjectDefinitionData>)serializer.Deserialize(textReader);
+//            textReader.Close();
 
             gameObjectsDefinitions.Clear();
 
-            foreach (GameObjectDefinition god in temp)
+            GameObjectDefinition godd;
+            foreach (GameObjectDefinitionData god in temp)
             {
-                gameObjectsDefinitions.Add(god.Name, god);
+                godd = new GameObjectDefinition();
+                godd.Set(god);
+                gameObjectsDefinitions.Add(godd.Name, godd);
 #if DEBUG
                 Diagnostics.PushLog("Loading object definition: " + god.Name + ".");
 #endif
             }
 
             temp.Clear();
+
+
+
         }
         /****************************************************************************/
 
@@ -452,20 +465,27 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public void SaveGameObjectsDefinitions()
         {
-            List<GameObjectDefinition> temp = new List<GameObjectDefinition>();
+            List<GameObjectDefinitionData> temp = new List<GameObjectDefinitionData>();
             
             foreach (GameObjectDefinition god in gameObjectsDefinitions.Values)
             {
-                temp.Add(god);
+                temp.Add(god.GetData());
             }
 
-            XmlSerializer serializer = new XmlSerializer(typeof(List<GameObjectDefinition>));
-            TextWriter textWriter = null;
-            textWriter = new StreamWriter(dataDirectory + "\\" + objectsDefinitions + ".xml");
-            serializer.Serialize(textWriter, temp);
-            textWriter.Close();
+            //XmlSerializer serializer = new XmlSerializer(typeof(List<GameObjectDefinitionData>));
+            //TextWriter textWriter = null;
+            //textWriter = new StreamWriter(dataDirectory + "\\" + objectsDefinitions + ".xml");
+            //serializer.Serialize(textWriter, temp);
+            //textWriter.Close();
 
-            temp.Clear();
+            //temp.Clear();
+
+            Stream stream = new FileStream(dataDirectory + "\\" + objectsDefinitions + ".def", System.IO.FileMode.Create);
+
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, temp);
+
+            stream.Close();
         }
         /****************************************************************************/
 

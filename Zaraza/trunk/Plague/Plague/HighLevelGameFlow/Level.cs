@@ -94,6 +94,8 @@ namespace PlagueEngine.HighLevelGameFlow
             Clear(true);
             eventsSystem.Reset();
                         
+            // TODO: dodać wywoływanie metody w globalnych przy przejsci do kolejngo levelu, tak by mogły się dostosować
+
             Dictionary<int,KeyValuePair<GameObjectInstance,GameObjectInstanceData>> waitroom = new Dictionary<int,KeyValuePair<GameObjectInstance,GameObjectInstanceData>>();
 
             GameObjectsFactory.WaitingRoom = waitroom;

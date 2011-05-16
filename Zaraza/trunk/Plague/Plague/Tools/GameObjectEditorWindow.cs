@@ -384,6 +384,12 @@ namespace PlagueEngine.Tools
             Panel.ClassType = typeof(PlagueEngine.LowLevelGameFlow.GameObjects.Panel);
             Panel.dataClassType = typeof(PanelData);
             gameObjectClassNames.Add(Panel);
+
+            gameObjectsClassName Firearm = new gameObjectsClassName();
+            Firearm.className = "Firearm";
+            Firearm.ClassType = typeof(Firearm);
+            Firearm.dataClassType = typeof(FirearmData);
+            gameObjectClassNames.Add(Firearm);
         }
         /********************************************************************************/
 
@@ -1134,11 +1140,19 @@ namespace PlagueEngine.Tools
                             god.Properties.Add(field.label.Text, currentClassName.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
                         }
                     }
-                    contentManager.GameObjectsDefinitions.Add(god.Name, god);
+                    
+                    if (contentManager.GameObjectsDefinitions.ContainsKey(god.Name))
+                    {
+                        contentManager.GameObjectsDefinitions[god.Name] = god;
+                    }                    
+                    else
+                    {
+                        contentManager.GameObjectsDefinitions.Add(god.Name, god);
+                        ComboboxDefinitions.Items.Add(definitionWindow.textbox.Text);
+                    }
+
                     contentManager.SaveGameObjectsDefinitions();
 
-
-                    ComboboxDefinitions.Items.Add(definitionWindow.textbox.Text);
 
 
                 }
