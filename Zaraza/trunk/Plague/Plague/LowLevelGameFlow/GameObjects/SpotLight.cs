@@ -68,6 +68,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Intensity      = light.Intensity;
             data.ShadowsEnabled = light.ShadowsEnabled;
             data.Specular       = light.Specular;
+            data.DepthBias      = light.DepthBias;
 
             return data;
         }
@@ -112,6 +113,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Shadows")]
         public bool ShadowsEnabled  { get; set; }
+        [CategoryAttribute("Shadows")]
+        public float DepthBias { get; set; }
     }
     /********************************************************************************/
 

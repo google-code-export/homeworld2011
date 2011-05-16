@@ -416,6 +416,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 position += target;
                             }
                         }
+
                         CollisionSkin skin;
                         Vector3 direction1 = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
                         Vector3 pos, nor;
@@ -479,27 +480,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (!state.IsDown()) return;
 
-            Vector3 direction = Vector3.Normalize(target - position);
-            direction.Y = 0;
-
-            float distanceFactor = Vector3.Distance(target, position) / 50;
-            Vector3 perpendicular = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f)));
-            //perpendicular = Vector3.Normalize(perpendicular);
-            perpendicular.Y = 0;
-
-            float time = (float)(clock.DeltaTime.TotalMilliseconds);
-            Vector3 tmp = position;
+            
+            
+            Vector3 direction      = Vector3.Normalize(target - position); direction.Y = 0;                        
+            float   distanceFactor = Vector3.Distance(target, position) / 50;
+            Vector3 perpendicular  = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))); perpendicular.Y = 0;            
+            float   time           = (float)(clock.DeltaTime.TotalMilliseconds);
+            Vector3 offset         = direction * time * movementSpeed * distanceFactor;
 
             switch (key)
             {
                 case Keys.W:
 
-                    tmp += direction * time * movementSpeed * distanceFactor;
-
-                    if (CanIMove(position, tmp))
+                    if (CanIMove(position, position + offset))
                     {
-                        position += direction * time * movementSpeed * distanceFactor;
-                        target += direction * time * movementSpeed * distanceFactor;
+                        position += offset;
+                        target   += offset;
                         stopTracking();
                         StopMovingToPoint();
                     }
@@ -507,11 +503,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case Keys.S:
 
-                    tmp -= direction * time * movementSpeed * distanceFactor;
-                    if (CanIMove(position, tmp))
+                    if (CanIMove(position, position - offset))
                     {
-                        position -= direction * time * movementSpeed * distanceFactor;
-                        target -= direction * time * movementSpeed * distanceFactor;
+                        position -= offset;
+                        target   -= offset;
                         stopTracking();
                         StopMovingToPoint();
                     }
@@ -519,11 +514,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case Keys.A:
 
-                    tmp += perpendicular * time * movementSpeed * distanceFactor;
-                    if (CanIMove(position, tmp))
+                    offset = perpendicular * time * movementSpeed * distanceFactor;
+
+                    if (CanIMove(position, position + offset))
                     {
-                        position += perpendicular * time * movementSpeed * distanceFactor;
-                        target += perpendicular * time * movementSpeed * distanceFactor;
+                        position += offset;
+                        target   += offset;
                         stopTracking();
                         StopMovingToPoint();
                     }
@@ -531,11 +527,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case Keys.D:
 
-                    tmp -= perpendicular * time * movementSpeed * distanceFactor;
-                    if (CanIMove(position, tmp))
+                    offset = perpendicular * time * movementSpeed * distanceFactor;
+
+                    if (CanIMove(position, position - offset))
                     {
-                        position -= perpendicular * time * movementSpeed * distanceFactor;
-                        target -= perpendicular * time * movementSpeed * distanceFactor;
+                        position -= offset;
+                        target   -= offset;
                         stopTracking();
                         StopMovingToPoint();
                     }
@@ -589,9 +586,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Update
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
-        {
-
-            /***************************************/
+        {            
 
             if (movingToPoint) MoveToPoint();
             if (tracing) traceTarget();

@@ -49,7 +49,8 @@ namespace PlagueEngine.Rendering.Components
                                    float             quadraticAttenuation,
                                    Matrix            localTransform,
                                    Texture2D         attenuation,
-                                   bool              shadows)
+                                   bool              shadows,
+                                   float             depthBias)
             : base(gameObject)
         {
             Enabled              = enabled;
@@ -63,6 +64,7 @@ namespace PlagueEngine.Rendering.Components
             LocalTransform       = localTransform;
             Attenuation          = attenuation;
             Specular             = specular;
+            DepthBias            = depthBias;
                      
             CalculateProjection();
             CalculateScale();
@@ -183,7 +185,8 @@ namespace PlagueEngine.Rendering.Components
         public bool    Specular        { get; private set; }
         public int     ShadowMap       { get; private set; }
         public Vector2 ShadowMapOffset { get; private set; }
-        public bool    ShadowsEnabled  { get { return (ShadowMap >= 0 ? true : false); } }        
+        public bool    ShadowsEnabled  { get { return (ShadowMap >= 0 ? true : false); } }
+        public float   DepthBias       { get; set; }
         /****************************************************************************/
 
     }

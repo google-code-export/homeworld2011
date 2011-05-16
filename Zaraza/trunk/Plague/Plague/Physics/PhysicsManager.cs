@@ -34,6 +34,7 @@ namespace PlagueEngine.Physics
         internal PhysicsComponentFactory                    physicsComponentFactory  = null;
         /****************************************************************************/
 
+
         /****************************************************************************/
         ///  Constructor
         /****************************************************************************/
@@ -67,8 +68,7 @@ namespace PlagueEngine.Physics
         ///  Update
         /****************************************************************************/
         public void Update(float timeStep)
-        {
-
+        {            
             if (timeStep < 1.0f / 60.0f) physicsSystem.Integrate(timeStep);
             else physicsSystem.Integrate(1.0f / 60.0f);
 

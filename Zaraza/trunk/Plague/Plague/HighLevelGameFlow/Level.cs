@@ -444,7 +444,8 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.Specular = true;
             fldata.StaticRoughness = 1;
             fldata.World = Matrix.CreateTranslation(250, 60, 30);
-            fldata.Status = 2;
+            fldata.Status = 2;            
+            fldata.DepthBias = 0.05f;
 
             gameObjectsFactory.Create(fldata);
             fldata.World = Matrix.CreateTranslation(252, 60, 30);
