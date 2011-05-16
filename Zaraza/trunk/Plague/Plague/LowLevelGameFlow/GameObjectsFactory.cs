@@ -13,7 +13,7 @@ using PlagueEngine.Physics;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.GUI;
 using PlagueEngine.Particles;
-
+using PlagueEngine.HighLevelGameFlow;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
@@ -33,22 +33,48 @@ namespace PlagueEngine.LowLevelGameFlow
         private RenderingComponentsFactory               renderingComponentsFactory = null;
         private InputComponentsFactory                   inputComponentsFactory     = null;
         private PhysicsComponentFactory                  physicsComponentFactory    = null;
-        private GUIComponentsFactory                     guiComponentsFactory        = null;
-        private ParticleFactory                          particleFactory = null;
+        private GUIComponentsFactory                     guiComponentsFactory       = null;
+        private ParticleFactory                          particleFactory            = null;
 
-        private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;        
+        private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;
+        private Game game = null;
         /****************************************************************************/
 
 
+        /****************************************************************************/
+        /// Game Objects
+        /****************************************************************************/
+        private Dictionary<int, GameObjectInstance> GameObjects;
+        private List<GameObjectInstance> UpdatableObjects;
+
+        public Dictionary<int, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> WaitingRoom { get; set; }
+        public bool ProcessWaitingRoom = false;
+        public int ProcessedObjects = 0;
+        /****************************************************************************/
+        
+        
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public GameObjectsFactory(RenderingComponentsFactory               renderingComponentsFactory,
-                                  InputComponentsFactory                   inputComponentsFactory,
-                                  GUIComponentsFactory                     guiComponentsFactory,
-                                  Dictionary<String, GameObjectDefinition> gameObjectsDefinitions,
-                                  PhysicsComponentFactory                  physicsComponentFactory,
-                                  ParticleFactory                          particleFactory)
+        public GameObjectsFactory(Dictionary<int, GameObjectInstance> gameObjects,
+                                  List<GameObjectInstance> updatableObjects)
+        {
+            GameObjects      = gameObjects;
+            UpdatableObjects = updatableObjects;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Init
+        /****************************************************************************/
+        public void Init(RenderingComponentsFactory               renderingComponentsFactory,
+                         InputComponentsFactory                   inputComponentsFactory,
+                         GUIComponentsFactory                     guiComponentsFactory,
+                         Dictionary<String, GameObjectDefinition> gameObjectsDefinitions,
+                         PhysicsComponentFactory                  physicsComponentFactory,
+                         ParticleFactory                          particleFactory,
+                         Game                                     game)
         {
             this.renderingComponentsFactory = renderingComponentsFactory;
             this.inputComponentsFactory     = inputComponentsFactory;
@@ -56,18 +82,8 @@ namespace PlagueEngine.LowLevelGameFlow
             this.gameObjectsDefinitions     = gameObjectsDefinitions;
             this.physicsComponentFactory    = physicsComponentFactory;
             this.particleFactory            = particleFactory;
+            this.game                       = game;
         }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Game Objects
-        /****************************************************************************/
-        public Dictionary<uint, GameObjectInstance> GameObjects                                       { get; set; }
-        public List<GameObjectInstance>             UpdatableObjects                                  { get; set; }
-        public Dictionary<uint, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> WaitingRoom { get; set; }
-        public bool ProcessWaitingRoom = false;
-        public int  ProcessedObjects   = 0;
         /****************************************************************************/
 
 
@@ -85,11 +101,19 @@ namespace PlagueEngine.LowLevelGameFlow
 
             UseDefinition(data);
 
-            if (!(bool)this.GetType().InvokeMember("Create" + data.Type.Name,
-                                        BindingFlags.InvokeMethod,
-                                        null,
-                                        this,
-                                        new Object[] { result, data })) return null;
+            try
+            {
+                if (!(bool)this.GetType().InvokeMember("Create" + data.Type.Name,
+                                            BindingFlags.InvokeMethod,
+                                            null,
+                                            this,
+                                            new Object[] { result, data })) return null;
+            }
+            catch (Exception e)
+            {
+                Diagnostics.PushLog(e.InnerException.Message);
+                return null;
+            }
 
             GameObjects.Add(result.ID, result);
 
@@ -138,7 +162,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Get Object
         /****************************************************************************/
-        private GameObjectInstance GetObject(uint id)
+        private GameObjectInstance GetObject(int id)
         {
             if (GameObjects.ContainsKey(id)) return GameObjects[id];
 
@@ -189,7 +213,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Remove Game Object
         /****************************************************************************/
-        public void RemoveGameObject(uint ID)
+        public void RemoveGameObject(int ID)
         {            
             if (GameObjects.ContainsKey(ID))
             {
@@ -977,7 +1001,7 @@ namespace PlagueEngine.LowLevelGameFlow
             List<Mercenary> mercenaries = new List<Mercenary>();
 
             Mercenary goi;
-            foreach (uint id in data.SelectedMercenaries)
+            foreach (int id in data.SelectedMercenaries)
             {
                 goi = GetObject(id) as Mercenary;
                 
@@ -1006,6 +1030,16 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// CreateGameController
+        /****************************************************************************/
+        public bool CreateGameController(GameController result, GameControllerData data)
+        {
+            result.Init(game);
+            return true;
+        }
+        /****************************************************************************/
 
     }
     /********************************************************************************/    

@@ -260,7 +260,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     if (skin != null)
                     {
 
-                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((uint)((GameObjectInstance)skin.ExternalData).ID));
+                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
                     }
                     else
                     {

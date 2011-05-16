@@ -265,6 +265,38 @@ namespace PlagueEngine.Resources
 
 
         /****************************************************************************/
+        /// LoadGlobalGameObjectsData
+        /****************************************************************************/
+        public GlobalGameObjectsData LoadGlobalGameObjectsData()
+        {
+            Stream stream = new FileStream(dataDirectory + "\\globals.dat", System.IO.FileMode.Open);
+
+            IFormatter formatter = new BinaryFormatter();
+            GlobalGameObjectsData globalGameObjectsData = (GlobalGameObjectsData)formatter.Deserialize(stream);
+
+            stream.Close();
+
+            return globalGameObjectsData;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// SaveGlobalGameObjectsData
+        /****************************************************************************/
+        public void SaveGlobalGameObjectsData(GlobalGameObjectsData globalGameObjectsData)
+        {
+            Stream stream = new FileStream(dataDirectory + "\\globals.dat", System.IO.FileMode.Create);
+
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, globalGameObjectsData);
+
+            stream.Close();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Profiles
         /****************************************************************************/
         public String[] Profiles

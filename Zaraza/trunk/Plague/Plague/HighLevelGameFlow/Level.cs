@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+
+using PlagueEngine.Resources;
+using PlagueEngine.EventsSystem;
 
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Physics;
-using Microsoft.Xna.Framework;
 
 
 /************************************************************************************/
@@ -25,20 +28,58 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Dictionary<uint, GameObjectInstance> gameObjects        = new Dictionary<uint,GameObjectInstance>();
-        private GameObjectsFactory                   gameObjectsFactory = null;
-        private List<GameObjectInstance>             updatableObjects   = new List<GameObjectInstance>();
+        private List<GameObjectInstance>  updatableObjects = new List<GameObjectInstance>();
+        private ContentManager            contentManager   = null;
+        private EventsSystem.EventsSystem eventsSystem     = null;
+
+        private int       lastGlobalID  = 0;
+        private List<int> freeGlobalIDs = new List<int>();
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public Dictionary<int, GameObjectInstance>  GameObjects         { get; private set; }
+        public GameObjectsFactory                   GameObjectsFactory  { get; private set; }
+
+        private Dictionary<String, List<GameObjectInstanceData>> GlobalGameObjectsData = new Dictionary<String, List<GameObjectInstanceData>>();
+
+        public String CurrentLevel { get; private set; }
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Level(GameObjectsFactory gameObjectsFactory)
+        public Level(ContentManager contentManager)
         {
-            this.gameObjectsFactory             = gameObjectsFactory;
-            gameObjectsFactory.GameObjects      = gameObjects;
-            gameObjectsFactory.UpdatableObjects = updatableObjects;
+            this.contentManager = contentManager;
+
+            eventsSystem = new EventsSystem.EventsSystem(this);
+
+            GameObjects        = new Dictionary<int, GameObjectInstance>();
+            GameObjectsFactory = new GameObjectsFactory(GameObjects,updatableObjects);
+
+
+            // TODO: usunąc linię 66 i 67 
+            RegisterGlobalObject(new GameControllerData(),false,false);
+            SaveGlobalGameObjectsData();
+            LoadGlobalGameObjectsData();
+
+            SpawnGlobalGameObjects(String.Empty);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// New Level
+        /****************************************************************************/
+        public void NewLevel(String levelName)
+        {            
+            Clear(true);
+            eventsSystem.Reset();
+            CurrentLevel = levelName;
         }
         /****************************************************************************/
 
@@ -46,34 +87,41 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         /// Load Level
         /****************************************************************************/
-        public void LoadLevel(LevelData levelData)
+        public void LoadLevel(String levelName)
         {
-            Clear();
+            LevelData levelData = contentManager.LoadLevel(levelName);
 
-            Dictionary<uint,KeyValuePair<GameObjectInstance,GameObjectInstanceData>> waitroom = new Dictionary<uint,KeyValuePair<GameObjectInstance,GameObjectInstanceData>>();
+            Clear(true);
+            eventsSystem.Reset();
+                        
+            Dictionary<int,KeyValuePair<GameObjectInstance,GameObjectInstanceData>> waitroom = new Dictionary<int,KeyValuePair<GameObjectInstance,GameObjectInstanceData>>();
 
-            gameObjectsFactory.WaitingRoom = waitroom;
+            GameObjectsFactory.WaitingRoom = waitroom;
+
+            SpawnGlobalGameObjects(levelName);
 
             foreach (GameObjectInstanceData goid in levelData.gameObjects)
             {
-                gameObjectsFactory.Create(goid);                
+                GameObjectsFactory.Create(goid);                
             }
 
-            gameObjectsFactory.ProcessWaitingRoom = true;
-            gameObjectsFactory.ProcessedObjects   = 0;
+            GameObjectsFactory.ProcessWaitingRoom = true;
+            GameObjectsFactory.ProcessedObjects   = 0;
 
-            foreach (KeyValuePair<uint, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> goid in waitroom)
+            foreach (KeyValuePair<int, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> goid in waitroom)
             {
-                gameObjectsFactory.Create(goid.Value.Value);
+                GameObjectsFactory.Create(goid.Value.Value);
             }
 
-            if (waitroom.Count > gameObjectsFactory.ProcessedObjects)
+            if (waitroom.Count > GameObjectsFactory.ProcessedObjects)
             {
                 throw new Exception("Game Objects (" + waitroom.Count.ToString() + ") stucked in waitroom");
             }
             
-            gameObjectsFactory.WaitingRoom = null;
-            gameObjectsFactory.ProcessWaitingRoom = false;
+            GameObjectsFactory.WaitingRoom        = null;
+            GameObjectsFactory.ProcessWaitingRoom = false;
+
+            CurrentLevel = levelName;
         }
         /****************************************************************************/
 
@@ -81,16 +129,130 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         /// Save Level
         /****************************************************************************/
-        public LevelData SaveLevel()
+        public void SaveLevel(String levelName = null)
         {
+            if (String.IsNullOrEmpty(levelName)) levelName = CurrentLevel;
+
             LevelData levelData = new LevelData();
             
-            foreach (GameObjectInstance goi in gameObjects.Values)
+            foreach (GameObjectInstance goi in GameObjects.Values)
             {
-                levelData.gameObjects.Add(goi.GetData());                
+                if(goi.ID > 0) levelData.gameObjects.Add(goi.GetData());                
             }
 
-            return levelData;
+            contentManager.SaveLevel(levelName, levelData);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Spawn Global Game Objects
+        /****************************************************************************/
+        public void SpawnGlobalGameObjects(String levelName)
+        {
+            if (GlobalGameObjectsData.ContainsKey(levelName))
+            {
+                foreach (GameObjectInstanceData goid in GlobalGameObjectsData[levelName])
+                {
+                    if(!GameObjects.ContainsKey(goid.ID)) GameObjectsFactory.Create(goid);
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Register Global Object
+        /****************************************************************************/
+        public GameObjectInstance RegisterGlobalObject(GameObjectInstanceData data, bool currentLevel,bool spawn)
+        {
+            int id;
+            if (freeGlobalIDs.Count != 0)
+            {
+                id = freeGlobalIDs[freeGlobalIDs.Count - 1];
+                freeGlobalIDs.RemoveAt(freeGlobalIDs.Count - 1);                
+            }
+            else
+            {
+                id = --lastGlobalID;
+            }
+
+            String levelName;
+            if (currentLevel) levelName = CurrentLevel;
+            else levelName = String.Empty;
+
+            if (!GlobalGameObjectsData.ContainsKey(levelName))
+            {
+                GlobalGameObjectsData.Add(levelName, new List<GameObjectInstanceData>());
+            }
+
+            data.ID = id;
+            GlobalGameObjectsData[levelName].Add(data);
+
+            if (spawn)
+            {
+                if (!GameObjects.ContainsKey(data.ID)) return GameObjectsFactory.Create(data);
+                else return null;
+            }
+            else return null;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Spawn Global Object
+        /****************************************************************************/
+        public GameObjectInstance SpawnGlobalObject(GameObjectInstanceData data)
+        {
+            int id;
+            if (freeGlobalIDs.Count != 0)
+            {
+                id = freeGlobalIDs[freeGlobalIDs.Count - 1];
+                freeGlobalIDs.RemoveAt(freeGlobalIDs.Count - 1);
+            }
+            else
+            {
+                id = --lastGlobalID;
+            }
+
+            return GameObjectsFactory.Create(data);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Unregister Global Object
+        /****************************************************************************/
+        public void UnregisterGlobalObject(int id)
+        {
+            if (freeGlobalIDs.Contains(id)) return;
+
+            if (id > lastGlobalID) return;
+            else if (id == lastGlobalID)
+            {
+                ++lastGlobalID;
+                return;
+            }
+
+            freeGlobalIDs.Add(id);
+
+            GameObjectInstanceData delete = null;
+            foreach (KeyValuePair<String, List<GameObjectInstanceData>> global in GlobalGameObjectsData)
+            {                
+                foreach (GameObjectInstanceData goid in global.Value)
+                {
+                    if (goid.ID == id)
+                    {
+                        delete = goid;
+                        break;
+                    }
+                }
+                if (delete != null)
+                {
+                    global.Value.Remove(delete);
+                    break;
+                }
+            }
         }
         /****************************************************************************/
 
@@ -98,12 +260,37 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         /// Clear
         /****************************************************************************/
-        public void Clear()
+        public void Clear(bool onlyLocalObjects)
         {
-            foreach (GameObjectInstance goi in gameObjects.Values) goi.Dispose();
-            gameObjects.Clear();
-            foreach (GameObjectInstance goi in updatableObjects) goi.Dispose();
-            updatableObjects.Clear();
+            if (!onlyLocalObjects)
+            {
+                foreach (GameObjectInstance goi in GameObjects.Values) goi.Dispose();
+                GameObjects.Clear();
+
+                foreach (GameObjectInstance goi in updatableObjects) goi.Dispose();
+                updatableObjects.Clear();
+            }
+            else
+            {
+                List<GameObjectInstance> delete = new List<GameObjectInstance>();
+
+                foreach (GameObjectInstance goi in GameObjects.Values)
+                {
+                    if (goi.ID > 0)
+                    {
+                        goi.Dispose();
+                        delete.Add(goi);
+                    }
+                }
+
+                foreach (GameObjectInstance goi in delete)
+                {
+                    GameObjects.Remove(goi.ID);
+                    updatableObjects.Remove(goi);
+                }
+
+                delete.Clear();                
+            }
         }
         /****************************************************************************/
 
@@ -113,19 +300,74 @@ namespace PlagueEngine.HighLevelGameFlow
         /****************************************************************************/
         ~Level()
         {
-            Clear();
+            Clear(false);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        ///  Update
+        /// Update
         /****************************************************************************/
         public void Update(TimeSpan deltaTime)
         {
             foreach (GameObjectInstance go in updatableObjects)
             {
                 go.Update(deltaTime);
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Update Events System
+        /****************************************************************************/
+        public void UpdateEventsSystem()
+        {
+            eventsSystem.Update();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        // Save Global Game Objects Data
+        /****************************************************************************/
+        public void SaveGlobalGameObjectsData()
+        {
+            GlobalGameObjectsData globalGameObjectsData = new GlobalGameObjectsData();
+
+            globalGameObjectsData.FreeGlobalIDs = freeGlobalIDs;
+            globalGameObjectsData.LastGlobalID  = lastGlobalID;
+
+            foreach (KeyValuePair<String, List<GameObjectInstanceData>> pair in GlobalGameObjectsData)
+            { 
+                StringListPair slpair = new StringListPair();
+                slpair.String      = pair.Key;
+                slpair.GameObjects = pair.Value;
+
+                globalGameObjectsData.GameObjectsData.Add(slpair);
+            }
+
+            contentManager.SaveGlobalGameObjectsData(globalGameObjectsData);
+        }
+        /****************************************************************************/
+        
+        
+        /****************************************************************************/
+        /// LoadGlobalGameObjectsData
+        /****************************************************************************/
+        private void LoadGlobalGameObjectsData()
+        {
+            GlobalGameObjectsData globalGameObjectsData;
+            globalGameObjectsData = contentManager.LoadGlobalGameObjectsData();
+
+            freeGlobalIDs = globalGameObjectsData.FreeGlobalIDs;
+            lastGlobalID  = globalGameObjectsData.LastGlobalID;
+
+            GlobalGameObjectsData = new Dictionary<String, List<GameObjectInstanceData>>();
+
+            foreach (StringListPair pair in globalGameObjectsData.GameObjectsData)
+            {
+                GlobalGameObjectsData.Add(pair.String, pair.GameObjects);
             }
         }
         /****************************************************************************/
@@ -157,7 +399,7 @@ namespace PlagueEngine.HighLevelGameFlow
 
             dddtata.World = Matrix.CreateTranslation(245, 54, 35);
             dddtata.Pitch = 90;
-            gameObjectsFactory.Create(dddtata);
+            GameObjectsFactory.Create(dddtata);
 
             //FreeCameraData fcdata = new FreeCameraData();
             //fcdata.Type = typeof(FreeCamera);
@@ -193,7 +435,7 @@ namespace PlagueEngine.HighLevelGameFlow
             tdata.DynamicRoughness = 0.9f;
             tdata.Status = 5;
 
-            gameObjectsFactory.Create(tdata);
+            GameObjectsFactory.Create(tdata);
 
             SunlightData sdata = new SunlightData();
             sdata.Type = typeof(Sunlight);
@@ -202,7 +444,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.Diffuse = new Vector3(1f, 1f, 1f);
             sdata.Intensity = 0.2f;
 
-            Sunlight s = (Sunlight)gameObjectsFactory.Create(sdata);
+            Sunlight s = (Sunlight)GameObjectsFactory.Create(sdata);
             s.Direction = new Vector3(-1, -1, -1);
 
             GlowStickData pdata = new GlowStickData();
@@ -224,7 +466,7 @@ namespace PlagueEngine.HighLevelGameFlow
                 pdata.World = Matrix.CreateTranslation(250 + random.Next() % 30,
                                                         60 + random.Next() % 10,
                                                         120 + random.Next() % 30);
-                gameObjectsFactory.Create(pdata);
+                GameObjectsFactory.Create(pdata);
             }
 
             CylindricalBodyMeshData ddwdtata = new CylindricalBodyMeshData();
@@ -247,7 +489,7 @@ namespace PlagueEngine.HighLevelGameFlow
                 ddwdtata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
                                                           80 + random.Next() % 10,
                                                           80 + random.Next() % 70);
-                gameObjectsFactory.Create(ddwdtata);
+                GameObjectsFactory.Create(ddwdtata);
             }
 
             SpotLightData spdata = new SpotLightData();
@@ -265,27 +507,27 @@ namespace PlagueEngine.HighLevelGameFlow
             spdata.QuadraticAttenuation = 20;
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(245, 60, 95), new Vector3(285, 50, 100), Vector3.Up));
 
-            gameObjectsFactory.Create(spdata);
+            GameObjectsFactory.Create(spdata);
 
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(315, 60, 95), new Vector3(285, 50, 100), Vector3.Up));
             spdata.Color = new Vector3(0, 1, 0);
-            gameObjectsFactory.Create(spdata);
+            GameObjectsFactory.Create(spdata);
 
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(275, 60, 120), new Vector3(285, 50, 100), Vector3.Up));
             spdata.Color = new Vector3(0, 0, 1);
             spdata.Specular = true;
-            gameObjectsFactory.Create(spdata);
+            GameObjectsFactory.Create(spdata);
 
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(275, 60, 150), new Vector3(285, 50, 120), Vector3.Up));
             spdata.Color = new Vector3(1, 1, 0);
             spdata.Specular = true;
-            gameObjectsFactory.Create(spdata);
+            GameObjectsFactory.Create(spdata);
 
             spdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(295, 80, 110), new Vector3(285, 50, 120), Vector3.Up));
             spdata.Color = new Vector3(1, 0, 1);
             spdata.Texture = "Horse";
             spdata.Specular = true;
-            gameObjectsFactory.Create(spdata);
+            GameObjectsFactory.Create(spdata);
 
             SquareBodyMeshData sssdata = new SquareBodyMeshData();
             sssdata.Type = typeof(SquareBodyMesh);
@@ -310,7 +552,7 @@ namespace PlagueEngine.HighLevelGameFlow
                 sssdata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
                                                          100 + random.Next() % 10,
                                                          80 + random.Next() % 70);
-                gameObjectsFactory.Create(sssdata);
+                GameObjectsFactory.Create(sssdata);
             }
 
 
@@ -335,7 +577,7 @@ namespace PlagueEngine.HighLevelGameFlow
                 ddwdtata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
                                                           50 + random.Next() % 10,
                                                           70 + random.Next() % 70);
-                gameObjectsFactory.Create(ddwdtata);
+                GameObjectsFactory.Create(ddwdtata);
             }
 
 
@@ -357,7 +599,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sssdata.Translation = new Vector3(0, 3, 0);
 
             sssdata.World = Matrix.CreateTranslation(351, 100, 152);
-            gameObjectsFactory.Create(sssdata);
+            GameObjectsFactory.Create(sssdata);
 
 
             sssdata.Type = typeof(SquareBodyMesh);
@@ -378,7 +620,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sssdata.Translation = new Vector3(0, 1, 0);
             sssdata.Status = 1;
             sssdata.World = Matrix.CreateTranslation(240, 60, 60);
-            gameObjectsFactory.Create(sssdata);
+            GameObjectsFactory.Create(sssdata);
 
 
 
@@ -417,7 +659,7 @@ namespace PlagueEngine.HighLevelGameFlow
             ddxdtata.Mass = 1;
             ddxdtata.World = Matrix.CreateTranslation(255, 77, 35);
 
-            gameObjectsFactory.Create(ddxdtata);
+            GameObjectsFactory.Create(ddxdtata);
             
 
 
@@ -447,10 +689,10 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.Status = 2;            
             fldata.DepthBias = 0.05f;
 
-            gameObjectsFactory.Create(fldata);
+            GameObjectsFactory.Create(fldata);
             fldata.World = Matrix.CreateTranslation(252, 60, 30);
 
-            gameObjectsFactory.Create(fldata);
+            GameObjectsFactory.Create(fldata);
 
             MercenaryData mddd = new MercenaryData();
             mddd.Type = typeof(Mercenary);
@@ -478,38 +720,38 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.AnglePrecision = 0.1f;
             mddd.GripBone = "Bip001_R_Hand001";
 
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
 
 
             mddd.World = Matrix.CreateTranslation(260, 56, 30);
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
             
             mddd.World = Matrix.CreateTranslation(265, 56, 30);
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
             
             mddd.World = Matrix.CreateTranslation(270, 56, 30);
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
             
             mddd.World = Matrix.CreateTranslation(275, 56, 30);
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
 
             mddd.World = Matrix.CreateTranslation(260, 56, 35);
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
 
             mddd.World = Matrix.CreateTranslation(265, 56, 35);
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
 
             mddd.World = Matrix.CreateTranslation(270, 56, 35);
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
 
             mddd.World = Matrix.CreateTranslation(275, 56, 35);
-            gameObjectsFactory.Create(mddd);
+            GameObjectsFactory.Create(mddd);
 
             MercenariesManagerData mcmd = new MercenariesManagerData();
             mcmd.Type = typeof(MercenariesManager);
-            mcmd.SelectedMercenaries = new List<uint>();
+            mcmd.SelectedMercenaries = new List<int>();
             
-            GameObjectInstance mm = gameObjectsFactory.Create(mcmd);
+            GameObjectInstance mm = GameObjectsFactory.Create(mcmd);
 
             LinkedCameraData lcdata = new LinkedCameraData();
             lcdata.Type = typeof(LinkedCamera);
@@ -525,7 +767,7 @@ namespace PlagueEngine.HighLevelGameFlow
             lcdata.ActiveMouseListener = true;
             lcdata.MercenariesManager = mm.ID;
 
-            LinkedCamera camera = (LinkedCamera)(gameObjectsFactory.Create(lcdata));
+            LinkedCamera camera = (LinkedCamera)(GameObjectsFactory.Create(lcdata));
 
             (mm as MercenariesManager).LinkedCamera = camera;
 
@@ -551,26 +793,13 @@ namespace PlagueEngine.HighLevelGameFlow
             //ssdata.Immovable = false;
             //ssdata.SkinPitch = 90;
             //ssdata.Translation = new Vector3(0, 2.2f, 0);
-            //gameObjectsFactory.Create(ssdata);
+            //GameObjectsFactory.Create(ssdata);
 
 
 
         }
         /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Get Game Object
-        /****************************************************************************/
-        public Dictionary<uint, GameObjectInstance> GameObjects
-        {
-            get
-            {
-                return gameObjects;
-            }
-        }
-        /****************************************************************************/
-        
+       
     }
     /********************************************************************************/
 

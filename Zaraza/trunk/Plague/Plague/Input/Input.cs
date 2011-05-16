@@ -378,11 +378,7 @@ namespace PlagueEngine.Input
         /****************************************************************************/
         private void CheckKeyboard()
         {
-
             KeyboardState state = Keyboard.GetState();
-
-            if (state.IsKeyDown(Keys.F1)) this.game.GameStopped = true;
-            if (state.IsKeyDown(Keys.F2)) this.game.GameStopped = false;
 
             ExtendedKeyState keyState;
             foreach (Keys key in keyListeners.Keys)

@@ -19,19 +19,24 @@ namespace PlagueEngine
     {
 
         /****************************************************************************/
-        public string Title { get; set; }
-        internal Renderer Renderer { get; private set; }
-        internal GUI.GUI GUI { get; private set; }
-        internal ContentManager ContentManager { get; set; }
-        internal EventsHistorian EventsHistorian { get; private set; }
-        internal ParticleManager ParticleManager { get; private set; }
-        internal Input.Input Input { get; private set; }
-        internal GameObjectsFactory GameObjectsFactory { get; private set; }
-        internal PhysicsManager PhysicsManager { get; private set; }
-        internal EventsSystem.EventsSystem EventsSystem { get; private set; }
+        public   String                    Title              { get; set; }
+        internal Renderer                  Renderer           { get; private set; }
+        internal GUI.GUI                   GUI                { get; private set; }
+        internal ContentManager            ContentManager     { get; set; }
+        internal EventsHistorian           EventsHistorian    { get; private set; }
+        internal ParticleManager           ParticleManager    { get; private set; }
+        internal Input.Input               Input              { get; private set; }
+        internal GameObjectsFactory        GameObjectsFactory { get; private set; }
+        internal PhysicsManager            PhysicsManager     { get; private set; }
+        
         internal Level Level { get; private set; }
+        
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
+        
         public bool GameStopped { get;  set; }
+
+        internal Clock RendererClock = null;
+        internal Clock PhysicsClock  = null;
         /****************************************************************************/
 
         /****************************************************************************/
@@ -66,25 +71,24 @@ namespace PlagueEngine
 
             PhysicsManager = new PhysicsManager(ContentManager);
 
-            GameObjectsFactory = new GameObjectsFactory(Renderer.ComponentsFactory,
-                                                        Input.ComponentsFactory,
-                                                        GUI.ComponentsFactory,
-                                                        ContentManager.GameObjectsDefinitions,
-                                                        PhysicsManager.physicsComponentFactory,
-                                                        ParticleManager.particleFactory);
-
-
-            Level = new Level(GameObjectsFactory);
-
-            EventsSystem = new EventsSystem.EventsSystem(Level);
+            Level = new Level(ContentManager);
+            Level.GameObjectsFactory.Init(Renderer.ComponentsFactory,
+                                          Input.ComponentsFactory,
+                                          GUI.ComponentsFactory,
+                                          ContentManager.GameObjectsDefinitions,
+                                          PhysicsManager.physicsComponentFactory,
+                                          ParticleManager.particleFactory,
+                                          this);
 
             EventsHistorian = new EventsHistorian(20);
 
             Renderer.InitDebugDrawer(PhysicsManager);
 
+            RendererClock = TimeControl.CreateClock();
+            PhysicsClock  = TimeControl.CreateClock();
         }
-
         /****************************************************************************/
+
 
         /****************************************************************************/
         /// Initialize
@@ -99,17 +103,14 @@ namespace PlagueEngine
         {
 
             Renderer.InitHelpers();
-            
-            Level.PutSomeObjects();
 
-            //contentManager.SaveLevel("TestLevel2.lvl", testLevel.SaveLevel());
-            //Level.LoadLevel(contentManager.LoadLevel("TestLevel2.lvl"));
+            Level.NewLevel("TestLevel.lvl");
+            Level.PutSomeObjects();
 
             Renderer.batchedMeshes.CommitMeshTransforms();
             
 #if DEBUG
-            var gameObjectEditor = new GameObjectEditorWindow(GameObjectsFactory, ContentManager, Renderer, Input, this);
-            gameObjectEditor.setLevel(Level, "TestLevel2.lvl");
+            var gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
 #endif
 
             InitGUI();  
@@ -183,16 +184,21 @@ namespace PlagueEngine
 #endif
             TimeControl.Update(gameTime.ElapsedGameTime);
 
-            Input.Update();
+            Input.Update();            
             GUI.Update(gameTime);
-            EventsSystem.Update();
+
+            Level.UpdateEventsSystem();
+            
             if (!GameStopped)
             {
-                PhysicsManager.Update(((float)gameTime.ElapsedGameTime.Ticks / TimeSpan.TicksPerSecond));
-                base.Update(gameTime);
+                PhysicsManager.Update((float)PhysicsClock.DeltaTime.TotalSeconds);                
             }
+
             ParticleManager.Update(gameTime);
+            
             Level.Update(gameTime.ElapsedGameTime);
+
+            base.Update(gameTime);
         }
         /****************************************************************************/
 
@@ -207,7 +213,7 @@ namespace PlagueEngine
         protected override void Draw(GameTime gameTime)
         {
             Renderer.pause = GameStopped;
-            Renderer.Draw(gameTime.ElapsedGameTime,gameTime);
+            Renderer.Draw(RendererClock.DeltaTime,gameTime);
             GUI.Draw(gameTime);
             Input.Draw();
             base.Draw(gameTime);
@@ -258,6 +264,7 @@ namespace PlagueEngine
             GUI.Initialize(GraphicsDevice);
         }
         /****************************************************************************/
+
 
         /****************************************************************************/
         /// Flush Events History

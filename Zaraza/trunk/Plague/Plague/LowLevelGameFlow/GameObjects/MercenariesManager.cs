@@ -5,6 +5,7 @@ using System.Text;
 using System.ComponentModel;
 
 using PlagueEngine.EventsSystem;
+using PlagueEngine.HighLevelGameFlow;
 
 
 /************************************************************************************/
@@ -41,15 +42,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             SelectedMercenaries = mercenaries;
             LinkedCamera        = linkedCamera;
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// ReleaseComponents
-        /****************************************************************************/
-        public override void ReleaseComponents()
-        {            
         }
         /****************************************************************************/
 
@@ -165,10 +157,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class MercenariesManagerData : GameObjectInstanceData
     {
-        public List<uint> SelectedMercenaries { get; set; }
+        public List<int> SelectedMercenaries { get; set; }
 
         [CategoryAttribute("References")]
-        public uint LinkedCamera { get; set; }
+        public int LinkedCamera { get; set; }
     }
     /********************************************************************************/
 

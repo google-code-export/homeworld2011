@@ -70,7 +70,7 @@ namespace PlagueEngine.EventsSystem
         /****************************************************************************/
         /// Get GameObject
         /****************************************************************************/
-        public GameObjectInstance GetGameObject(uint id)
+        public GameObjectInstance GetGameObject(int id)
         {
             return level.GameObjects[id];
         }
@@ -191,6 +191,17 @@ namespace PlagueEngine.EventsSystem
             Dictionary<Priority,Queue<Event>> tmp = inactiveQueues;
             inactiveQueues = activeQueues;
             activeQueues = tmp;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Reset
+        /****************************************************************************/
+        public void Reset()
+        {
+            foreach (KeyValuePair<Priority,Queue<Event>>  queue in activeQueues)   queue.Value.Clear();
+            foreach (KeyValuePair<Priority, Queue<Event>> queue in inactiveQueues) queue.Value.Clear();            
         }
         /****************************************************************************/
 

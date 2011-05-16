@@ -25,9 +25,9 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
     class GameObjectClicked : EventArgs
     {
-            public uint gameObjectID;
+            public int gameObjectID;
 
-            public GameObjectClicked(uint gameObjectID)
+            public GameObjectClicked(int gameObjectID)
             {
                 this.gameObjectID = gameObjectID;
             }
@@ -186,6 +186,86 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             if (gameObject != null) return "ID: " + gameObject.ID.ToString();
             else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// ChangeLevelEvent
+    /********************************************************************************/
+    class ChangeLevelEvent : EventArgs
+    {
+        public String Level;
+
+        public ChangeLevelEvent(String level)
+        {
+            Level = level;
+        }
+
+        public override string ToString()
+        {
+            return Level;
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// CreateObjectEvent
+    /********************************************************************************/
+    class CreateObjectEvent : EventArgs
+    {
+        public GameObjectInstanceData Data;
+
+        public CreateObjectEvent(GameObjectInstanceData data)
+        {
+            Data = data;
+        }
+
+        public override string ToString()
+        {
+            return Data.ToString();
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// ObjectCreatedEvent
+    /********************************************************************************/
+    class ObjectCreatedEvent : EventArgs
+    {
+        public GameObjectInstance GameObject;
+
+        public ObjectCreatedEvent(GameObjectInstance gameObject)
+        {
+            GameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            return GameObject.ID.ToString();
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// DestroyObjectEvent
+    /********************************************************************************/
+    class DestroyObjectEvent : EventArgs
+    {
+        public int ID;
+
+        public DestroyObjectEvent(int id)
+        {
+            ID = id;
+        }
+
+        public override string ToString()
+        {
+            return ID.ToString();
         }
     }
     /********************************************************************************/

@@ -191,6 +191,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\GlowStick.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Input.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Label.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\GameController.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MenuButton.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\EventArgs.cs" />

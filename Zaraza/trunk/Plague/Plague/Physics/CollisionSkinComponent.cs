@@ -38,9 +38,9 @@ namespace PlagueEngine.Physics
         private List<Type> gameObjectsTypeToNotColide = new List<Type>();
 
 
-        private List<uint> subsribedGameObjectEvents = new List<uint>();
-        private List<uint> gameObjectsToColide = new List<uint>();
-        private List<uint> gameObjectsToNotColide = new List<uint>();
+        private List<int> subsribedGameObjectEvents = new List<int>();
+        private List<int> gameObjectsToColide       = new List<int>();
+        private List<int> gameObjectsToNotColide    = new List<int>();
         /****************************************************************************/
 
 
@@ -132,7 +132,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// CollideWithGameObjects
         /****************************************************************************/
-        public void CollideWithGameObjects(params uint[] gameObjects)
+        public void CollideWithGameObjects(params int[] gameObjects)
         {
             this.gameObjectsToColide.AddRange(gameObjects);
         }
@@ -142,9 +142,9 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// CancelCollisionWithGameObjects
         /****************************************************************************/
-        public void CancelCollisionWithGameObjects(params uint[] gameObjects)
+        public void CancelCollisionWithGameObjects(params int[] gameObjects)
         {
-            foreach (uint gameObject in gameObjects)
+            foreach (int gameObject in gameObjects)
             {
                 this.gameObjectsToColide.Remove(gameObject);
             }
@@ -157,7 +157,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// DontCollideWithGameObjects
         /****************************************************************************/
-        public void DontCollideWithGameObjects(params uint[] gameObjects)
+        public void DontCollideWithGameObjects(params int[] gameObjects)
         {
             this.gameObjectsToNotColide.AddRange(gameObjects);
         }
@@ -168,9 +168,9 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// CancelNoCollisionWithGameObjects
         /****************************************************************************/
-        public void CancelNoCollisionWithGameObjects(params uint[] gameObjects)
+        public void CancelNoCollisionWithGameObjects(params int[] gameObjects)
         {
-            foreach (uint gameObject in gameObjects)
+            foreach (int gameObject in gameObjects)
             {
                 this.gameObjectsToNotColide.Remove(gameObject);
             }
@@ -182,7 +182,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Subscribe Collision Event
         /****************************************************************************/
-        public void SubscribeCollisionEvent(params uint[] gameObjects)
+        public void SubscribeCollisionEvent(params int[] gameObjects)
         {
             this.subsribedGameObjectEvents.AddRange(gameObjects);
         }
@@ -194,9 +194,9 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Cancel Subscribe Collision Event
         /****************************************************************************/
-        public void CancelSubscribeCollisionEvent(params uint[] gameObjects)
+        public void CancelSubscribeCollisionEvent(params int[] gameObjects)
         {
-            foreach (uint gameObject in gameObjects)
+            foreach (int gameObject in gameObjects)
             {
                 this.subsribedGameObjectEvents.Remove(gameObject);
             }
