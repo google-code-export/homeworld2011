@@ -35,6 +35,7 @@ sampler AttenuationTextureSampler = sampler_state
 /****************************************************/
 bool   ShadowsEnabled;
 float  DepthPrecision;
+float  DepthBias;
 float2 ShadowMapOffset;
 
 texture ShadowMap;
@@ -219,22 +220,22 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 	if(ShadowsEnabled)
 	{			
-		float realDepth = (length(LightPosition - Position) / DepthPrecision);
-	
+		half realDepth = (length(LightPosition - Position) / DepthPrecision) - DepthBias;
+				
 		if (realDepth < 1)
 		{
 			float2 moments = tex2D(ShadowMapSampler, LightUV);
 		
-			float lit_factor = (realDepth <= moments.x);
+			half lit_factor = (realDepth <= moments.x);
 		
-			float E_x2 = moments.y;
-			float Ex_2 = moments.x * moments.x;
+			half E_x2 = moments.y;
+			half Ex_2 = moments.x * moments.x;
 
-			float variance = min(max(E_x2 - Ex_2, 0.0) + 1.0f / 10000.0f, 1.0);
+			half variance = min(max(E_x2 - Ex_2, 0.0) + 1.0f / 10000.0f, 1.0);
 
-			float m_d = (moments.x - realDepth);
+			half m_d = (moments.x - realDepth);
 
-			float p = variance / (variance + m_d * m_d);
+			half p = variance / (variance + m_d * m_d);
 		
 			ShadowFactor = saturate(max(lit_factor, p));
 		}
@@ -284,23 +285,23 @@ float4 PixelShaderFunction2(VertexShaderOutput input) : COLOR0
 	LightUV.y += ShadowMapOffset.y * 0.25f;
 
 	if(ShadowsEnabled)
-	{		
-		float realDepth = (length(LightPosition - Position) / DepthPrecision);
-
+	{			
+		half realDepth = (length(LightPosition - Position) / DepthPrecision) - DepthBias;
+				
 		if (realDepth < 1)
 		{
 			float2 moments = tex2D(ShadowMapSampler, LightUV);
 		
-			float lit_factor = (realDepth <= moments.x);
+			half lit_factor = (realDepth <= moments.x);
 		
-			float E_x2 = moments.y;
-			float Ex_2 = moments.x * moments.x;
+			half E_x2 = moments.y;
+			half Ex_2 = moments.x * moments.x;
 
-			float variance = min(max(E_x2 - Ex_2, 0.0) + 1.0f / 10000.0f, 1.0);
+			half variance = min(max(E_x2 - Ex_2, 0.0) + 1.0f / 10000.0f, 1.0);
 
-			float m_d = (moments.x - realDepth);
+			half m_d = (moments.x - realDepth);
 
-			float p = variance / (variance + m_d * m_d);
+			half p = variance / (variance + m_d * m_d);
 		
 			ShadowFactor = saturate(max(lit_factor, p));
 		}

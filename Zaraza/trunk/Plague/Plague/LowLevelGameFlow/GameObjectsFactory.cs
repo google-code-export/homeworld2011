@@ -867,7 +867,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.QuadraticAttenuation,
                                                                             data.LocalTransform,
                                                                             data.Texture,
-                                                                            data.ShadowsEnabled));
+                                                                            data.ShadowsEnabled,
+                                                                            data.DepthBias));
 
             return true;
         }
@@ -914,7 +915,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.QuadraticAttenuation,
                                                                             spotlighttrans,
                                                                             data.AttenuationTexture,
-                                                                            data.ShadowsEnabled));
+                                                                            data.ShadowsEnabled,
+                                                                            data.DepthBias));
             return true;
         }
         /****************************************************************************/

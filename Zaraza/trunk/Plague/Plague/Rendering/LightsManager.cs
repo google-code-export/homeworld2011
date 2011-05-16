@@ -297,6 +297,7 @@ namespace PlagueEngine.Rendering
                         spotLight.Parameters["ShadowsEnabled"].SetValue(true);
                         spotLight.Parameters["DepthPrecision"].SetValue(spotLightcomponent.FarPlane);
                         spotLight.Parameters["ShadowMap"].SetValue(shadowMap);
+                        spotLight.Parameters["DepthBias"].SetValue(spotLightcomponent.DepthBias);
                         spotLight.Parameters["ShadowMapOffset"].SetValue(spotLightcomponent.ShadowMapOffset);
                     }
                     else
@@ -364,6 +365,7 @@ namespace PlagueEngine.Rendering
                         spotLight.Parameters["ShadowsEnabled" ].SetValue(true);
                         spotLight.Parameters["DepthPrecision" ].SetValue(spotLightcomponent.FarPlane);
                         spotLight.Parameters["ShadowMap"      ].SetValue(shadowMap);
+                        spotLight.Parameters["DepthBias"].SetValue(spotLightcomponent.DepthBias);
                         spotLight.Parameters["ShadowMapOffset"].SetValue(spotLightcomponent.ShadowMapOffset);
                     }
                     else

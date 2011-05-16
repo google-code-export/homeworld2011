@@ -268,7 +268,8 @@ namespace PlagueEngine.Rendering
                                                            float quadraticAttenuation,
                                                            Matrix localTransform,
                                                            String attenuation,
-                                                           bool shadowsEnabled)
+                                                           bool shadowsEnabled,
+                                                           float depthBias)
         { 
 
             Texture2D Attenuation = content.LoadTexture2D(attenuation);
@@ -285,7 +286,8 @@ namespace PlagueEngine.Rendering
                                                                quadraticAttenuation,
                                                                localTransform,
                                                                Attenuation,
-                                                               shadowsEnabled);
+                                                               shadowsEnabled,
+                                                               depthBias);
 
             return result;        
         }

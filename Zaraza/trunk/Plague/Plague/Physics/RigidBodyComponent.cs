@@ -51,6 +51,8 @@ namespace PlagueEngine.Physics
         private List<uint> gameObjectsToColide = new List<uint>();
         private List<uint> gameObjectsToNotColide = new List<uint>();
 
+
+        private int frame = 0;
         /****************************************************************************/
 
 
@@ -89,26 +91,26 @@ namespace PlagueEngine.Physics
 
             if (subsribedGameObjectEvents.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
             {
-
-
-                this.GameObject.SendEvent(
-                    new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
-                    EventsSystem.Priority.Normal,
-                    this.GameObject);
-
+                if (++frame == 1)
+                {
+                    this.GameObject.SendEvent(
+                        new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                        EventsSystem.Priority.Normal,
+                        this.GameObject);
+                }
             }
 
 
 
             if (subscribedGameObjectTypesEvents.Contains(collidee.ExternalData.GetType()))
             {
-
-
-                this.GameObject.SendEvent(
-                    new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
-                    EventsSystem.Priority.Normal,
-                    this.GameObject);
-               
+                if (++frame == 1)
+                {
+                    this.GameObject.SendEvent(
+                        new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                        EventsSystem.Priority.Normal,
+                        this.GameObject);
+                }       
             }
 
 
@@ -122,8 +124,6 @@ namespace PlagueEngine.Physics
             {
                 return true;
             }
-
-
 
 
             if (gameObjectsTypeToNotColide.Contains(collidee.ExternalData.GetType()))
@@ -362,6 +362,8 @@ namespace PlagueEngine.Physics
 
 
             gameObject.World.Translation = body.Position - t;
+
+            frame = 0;
         }
         /****************************************************************************/
 

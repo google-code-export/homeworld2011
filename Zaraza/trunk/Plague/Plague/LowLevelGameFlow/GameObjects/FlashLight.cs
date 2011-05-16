@@ -54,7 +54,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 World = Matrix.Identity;
                 World *= Matrix.CreateRotationY(MathHelper.ToRadians(180));
-                body.DisableBody();
+                if(body != null) body.DisableBody();
             }
             else
             {
@@ -93,11 +93,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             GetData(data);
             data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
-            //data.Mass = body.Mass;
-            //data.Elasticity = body.Elasticity;
-            //data.StaticRoughness = body.StaticRoughness;
-            //data.DynamicRoughness = body.DynamicRoughness;
-            //data.Immovable = body.Immovable;
+            data.Mass = body.Mass;
+            data.Elasticity = body.Elasticity;
+            data.StaticRoughness = body.StaticRoughness;
+            data.DynamicRoughness = body.DynamicRoughness;
+            data.Immovable = body.Immovable;
 
             data.Enabled = light.Enabled;
             data.Color = light.Color;
@@ -112,6 +112,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Intensity = light.Intensity;
             data.ShadowsEnabled = light.ShadowsEnabled;
             data.Specular = light.Specular;
+            data.DepthBias = light.DepthBias;
 
             return data;
         }
@@ -175,6 +176,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Shadows")]
         public bool ShadowsEnabled { get; set; }
+        [CategoryAttribute("Shadows")]
+        public float DepthBias { get; set; }
     }
     /********************************************************************************/
 }
