@@ -714,6 +714,7 @@ namespace PlagueEngine.LowLevelGameFlow
         public bool CreateMenuButton(MenuButton result, MenuButtonData data)
         {
             result.Init(guiComponentsFactory.createButtonComponent(data.Text,
+                                                                   data.Tag,
                                                                    data.Vertical,
                                                                    data.Horizontal,
                                                                    data.Size,
