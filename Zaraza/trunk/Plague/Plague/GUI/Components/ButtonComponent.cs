@@ -23,7 +23,9 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
+        //TODO: sprawdzić czemu tu public
         public ButtonControl button {  get; private set; }
+        public String tag {get; private set; }
         /****************************************************************************/
         
         /****************************************************************************/
@@ -38,12 +40,13 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// initialize
         /****************************************************************************/
-        public bool Initialize(String text, UniRectangle bounds)
+        public bool Initialize(String text, UniRectangle bounds, String tag)
         {
             if (button != null && gui!=null)
             {
                 button.Text = text;
                 button.Bounds = bounds;
+                this.tag = tag;
 #if DEBUG
                 Diagnostics.PushLog("Button component initialized successfully");
 #endif
@@ -63,6 +66,8 @@ namespace PlagueEngine.GUI.Components
         {
             gui.Manager.Screen.Desktop.Children.Add(this.button);
         }
+        /****************************************************************************/
+
 
         /****************************************************************************/
         /// setDelegate
@@ -72,8 +77,7 @@ namespace PlagueEngine.GUI.Components
             button.Pressed += handler;
         }
         /****************************************************************************/
-
-
+        
 
 
         /****************************************************************************/

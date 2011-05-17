@@ -40,6 +40,7 @@ namespace PlagueEngine.GUI
         /// Create Button Component
         /****************************************************************************/
         public ButtonComponent createButtonComponent(String text,
+                                                     String tag,
                                                      Vector2 vertical,
                                                      Vector2 horizontal,
                                                      Vector2 other,
@@ -51,10 +52,8 @@ namespace PlagueEngine.GUI
             UniRectangle rectangle = new UniRectangle(ver, hor, other.X, other.Y);
 
             ButtonComponent component = new ButtonComponent();
-            if (component.Initialize(text == null ? String.Empty : text, rectangle))
+            if (component.Initialize(text == null ? String.Empty : text, rectangle, tag))
             {
-                EventHandler evth = new EventHandler(onClick);
-                component.setDelegate(evth);
                 component.register();
                 return component;
             }

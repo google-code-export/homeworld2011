@@ -33,10 +33,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(ButtonComponent buttonComponent)
         {
             this.buttonComponent = buttonComponent;
+            EventHandler handler = new EventHandler(handle);
+            buttonComponent.setDelegate(handler);
         }
         /********************************************************************************/
 
-
+        /****************************************************************************/
+        /// Handle - sending event here
+        /****************************************************************************/
+        public void handle(object oSender, EventArgs oEventArgs)
+        {
+            Diagnostics.PushLog("BUTTON " + this.buttonComponent.tag + " PRESSED");
+        }
+        /****************************************************************************/
         
 
 
@@ -80,6 +89,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Text"),
         DescriptionAttribute("Button's text / label")]
         public String Text { get; set; }
+
+        [CategoryAttribute("Tag"),
+        DescriptionAttribute("Button's event tag")]
+        public String Tag { get; set; }
 
         [CategoryAttribute("Bounds"),
         DescriptionAttribute("Vertical position of the button. First value describes % of the screen height, and second offset in pixels")]
