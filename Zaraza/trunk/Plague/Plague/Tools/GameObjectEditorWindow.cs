@@ -281,6 +281,12 @@ namespace PlagueEngine.Tools
             CylindricalBodyMesh.dataClassType = typeof(CylindricalBodyMeshData);
             gameObjectClassNames.Add(CylindricalBodyMesh);
 
+            gameObjectsClassName CylindricalBodyMesh2 = new gameObjectsClassName();
+            CylindricalBodyMesh2.className = "CylindricalBodyMesh2";
+            CylindricalBodyMesh2.ClassType = typeof(CylindricalBodyMesh2);
+            CylindricalBodyMesh2.dataClassType = typeof(CylindricalBodyMeshData2);
+            gameObjectClassNames.Add(CylindricalBodyMesh2);
+
 
             gameObjectsClassName SquareBodyMesh = new gameObjectsClassName();
             SquareBodyMesh.className = "SquareBodyMesh";
@@ -372,6 +378,52 @@ namespace PlagueEngine.Tools
             Firearm.ClassType = typeof(Firearm);
             Firearm.dataClassType = typeof(FirearmData);
             gameObjectClassNames.Add(Firearm);
+
+
+            gameObjectsClassName CylindricalSkinMesh = new gameObjectsClassName();
+            CylindricalSkinMesh.className = "CylindricalSkinMesh";
+            CylindricalSkinMesh.ClassType = typeof(CylindricalSkinMesh);
+            CylindricalSkinMesh.dataClassType = typeof(CylindricalSkinMeshData);
+            gameObjectClassNames.Add(CylindricalSkinMesh);
+
+            gameObjectsClassName GameController = new gameObjectsClassName();
+            GameController.className = "GameController";
+            GameController.ClassType = typeof(GameController);
+            GameController.dataClassType = typeof(GameControllerData);
+            gameObjectClassNames.Add(GameController);
+
+
+
+            gameObjectsClassName MercenariesManager = new gameObjectsClassName();
+            MercenariesManager.className = "MercenariesManager";
+            MercenariesManager.ClassType = typeof(MercenariesManager);
+            MercenariesManager.dataClassType = typeof(MercenariesManagerData);
+            gameObjectClassNames.Add(MercenariesManager);
+
+
+
+            gameObjectsClassName SphericalBodyMesh = new gameObjectsClassName();
+            SphericalBodyMesh.className = "SphericalBodyMesh";
+            SphericalBodyMesh.ClassType = typeof(SphericalBodyMesh);
+            SphericalBodyMesh.dataClassType = typeof(SphericalBodyMeshData);
+            gameObjectClassNames.Add(SphericalBodyMesh);
+
+
+            gameObjectsClassName SphericalSkinMesh = new gameObjectsClassName();
+            SphericalSkinMesh.className = "SphericalSkinMesh";
+            SphericalSkinMesh.ClassType = typeof(SphericalSkinMesh);
+            SphericalSkinMesh.dataClassType = typeof(SphericalSkinMeshData);
+            gameObjectClassNames.Add(SphericalSkinMesh);
+
+
+            gameObjectsClassName SquareSkinMesh = new gameObjectsClassName();
+            SquareSkinMesh.className = "SquareSkinMesh";
+            SquareSkinMesh.ClassType = typeof(SquareSkinMesh);
+            SquareSkinMesh.dataClassType = typeof(SquareSkinMeshData);
+            gameObjectClassNames.Add(SquareSkinMesh);
+
+
+
         }
         /********************************************************************************/
 
