@@ -79,6 +79,7 @@ namespace PlagueEngine
                                           PhysicsManager.physicsComponentFactory,
                                           ParticleManager.particleFactory,
                                           this);
+            Level.Init();
 
             EventsHistorian = new EventsHistorian(20);
 

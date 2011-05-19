@@ -270,4 +270,44 @@ namespace PlagueEngine.LowLevelGameFlow
     }
     /********************************************************************************/
 
+
+    /********************************************************************************/
+    /// SelectedActionEvent
+    /********************************************************************************/
+    class SelectedActionEvent : EventArgs
+    {
+        public String Action;
+
+        public SelectedActionEvent(String action)
+        {
+            Action = action;
+        }
+
+        public override string ToString()
+        {
+            return Action;
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// ChangeSpeedEvent
+    /********************************************************************************/
+    class ChangeSpeedEvent : EventArgs
+    {
+        public float Amount;
+
+        public ChangeSpeedEvent(float amount)
+        {
+            Amount = amount;
+        }
+
+        public override string ToString()
+        {
+            return Amount.ToString();
+        }
+    }
+    /********************************************************************************/
+
 }

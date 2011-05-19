@@ -19,7 +19,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Flashlight
     /********************************************************************************/
-    class Flashlight : GameObjectInstance
+    class Flashlight : GameObjectInstance, IActiveGameObject
     {
 
         /****************************************************************************/
@@ -61,6 +61,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (getWorld != null) World = GetWorld();
                 if(body != null) body.EnableBody();
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// GetActions
+        /****************************************************************************/
+        public String[] GetActions()
+        {
+            return new String[] { "Grab", "Examine" };
         }
         /****************************************************************************/
 

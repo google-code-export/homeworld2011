@@ -126,6 +126,9 @@ namespace PlagueEngine.Input
         private Dictionary<MouseKeyAction,List<MouseKeyListener>>   mouseKeyListeners  = new Dictionary<MouseKeyAction,List<MouseKeyListener>>();
         private Dictionary<MouseMoveAction,List<MouseMoveListener>> mouseMoveListeners = new Dictionary<MouseMoveAction,List<MouseMoveListener>>();
 
+        internal Stack<MouseListenerComponent>    ModalsMouseListeners    = new Stack<MouseListenerComponent>();
+        internal Stack<KeyboardListenerComponent> ModalsKeyboardListeners = new Stack<KeyboardListenerComponent>();
+
         private InputManager           inputManager;
         private Screen                 _guiScreen;   
         private Game                   game;
@@ -143,7 +146,7 @@ namespace PlagueEngine.Input
         private int[]                   cursorGrid    = new int[2];
         private int                     currentCursor = -1;
         private Vector2                 cursorPosition;
-        private bool                    cursorIsVisible = true;
+        internal bool                    cursorIsVisible = true;
         private Rectangle               cursorRect;
         /****************************************************************************/
 
@@ -329,8 +332,19 @@ namespace PlagueEngine.Input
                 var mouseMoveState = new ExtendedMouseMovementState(state.X, state.Y, state.ScrollWheelValue, oldMouseState.X, oldMouseState.Y, oldMouseState.ScrollWheelValue);
                 foreach(var mouseMoveListener in mouseMoveListeners[mouseMoveAction] )
                 {
-                    if(mouseMoveListener.mouseListenerComponent.Active) mouseMoveListener.onMouseMove(mouseMoveAction,ref mouseMoveState);
-                    if (!mouseMoveState.Propagate) break;
+                    if (ModalsMouseListeners.Count > 0)
+                    {
+                        if (mouseMoveListener.mouseListenerComponent.Active && ModalsMouseListeners.Peek() == mouseMoveListener.mouseListenerComponent)
+                        {
+                            mouseMoveListener.onMouseMove(mouseMoveAction, ref mouseMoveState);
+                            break;
+                        }                        
+                    }
+                    else
+                    {
+                        if (mouseMoveListener.mouseListenerComponent.Active) mouseMoveListener.onMouseMove(mouseMoveAction, ref mouseMoveState);
+                        if (!mouseMoveState.Propagate) break;                    
+                    }
                 }
             }
 
@@ -339,8 +353,19 @@ namespace PlagueEngine.Input
                 var currentState = ExtendedMouseKeyStateFactory(state, mouseKeyAction);
                 foreach (var mouseKeyListener in mouseKeyListeners[mouseKeyAction])
                 {
-                    if (mouseKeyListener.mouseListenerComponent.Active) mouseKeyListener.onMouseKey(mouseKeyAction, ref currentState);
-                    if (!currentState.Propagate) break;
+                    if (ModalsMouseListeners.Count > 0)
+                    {
+                        if (mouseKeyListener.mouseListenerComponent.Active && ModalsMouseListeners.Peek() == mouseKeyListener.mouseListenerComponent)
+                        {
+                            mouseKeyListener.onMouseKey(mouseKeyAction, ref currentState);
+                            break;
+                        }                        
+                    }
+                    else
+                    {
+                        if (mouseKeyListener.mouseListenerComponent.Active) mouseKeyListener.onMouseKey(mouseKeyAction, ref currentState);
+                        if (!currentState.Propagate) break;                    
+                    }
                 }
             }
 
@@ -408,7 +433,18 @@ namespace PlagueEngine.Input
 
                 foreach (KeyboardListener keyboardListener in keyListeners[key])
                 {
-                    if(keyboardListener.listener.Active) keyboardListener.onKey(key,keyState);
+                    if (ModalsKeyboardListeners.Count > 0)
+                    {
+                        if (keyboardListener.listener.Active && keyboardListener.listener == ModalsKeyboardListeners.Peek())
+                        {
+                            keyboardListener.onKey(key, keyState);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (keyboardListener.listener.Active) keyboardListener.onKey(key, keyState);
+                    }
                 }
             }
 

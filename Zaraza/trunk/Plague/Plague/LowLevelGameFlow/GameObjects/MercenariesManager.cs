@@ -32,6 +32,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private EventsSnifferComponent    sniffer  = new EventsSnifferComponent();
         private KeyboardListenerComponent keyboard = null;
+
+        private GameObjectInstance targetGameObject = null;
         /****************************************************************************/
 
 
@@ -148,20 +150,40 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     CommandOnObjectEvent commandOnObjectEvent = e as CommandOnObjectEvent;
 
-                    switch (commandOnObjectEvent.gameObject.Status)
-                    {
-                        case GameObjectStatus.Walk: 
-                            SendEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), Priority.High, SelectedMercenaries.ToArray());
-                            break;
-                        case GameObjectStatus.Interesting:
-                        case GameObjectStatus.Mercenary:
-                        case GameObjectStatus.Pickable:
-                            SendEvent(new MoveToObjectCommandEvent(commandOnObjectEvent.gameObject), Priority.High, SelectedMercenaries.ToArray());
-                            break;
+                    if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Walk)
+                    { 
+                        SendEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), Priority.High, SelectedMercenaries.ToArray());
                     }
+                    else if (commandOnObjectEvent.gameObject.Status != GameObjectStatus.Nothing)
+                    {
+                        IActiveGameObject activeGameObject = commandOnObjectEvent.gameObject as IActiveGameObject;
+                        if (activeGameObject != null)
+                        {
+                            ActionSwitchData data = new ActionSwitchData();
+                            data.Feedback = this.ID;
+                            data.Actions  = activeGameObject.GetActions();
+                            data.Position = commandOnObjectEvent.position;
+
+                            SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                            targetGameObject = commandOnObjectEvent.gameObject;
+                        }
+                    }                                        
                 }                               
             }
             /*************************************/
+            /// SelectedActionEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(SelectedActionEvent)))
+            {
+                SelectedActionEvent SelectedActionEvent = e as SelectedActionEvent;
+
+                switch (SelectedActionEvent.Action)
+                {
+                    case "Grab":    SendEvent(new MoveToObjectCommandEvent(targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
+                    case "Examine": SendEvent(new MoveToObjectCommandEvent(targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
+                    case "Follow" : SendEvent(new MoveToObjectCommandEvent(targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
+                }
+            }
 
         }
         /****************************************************************************/

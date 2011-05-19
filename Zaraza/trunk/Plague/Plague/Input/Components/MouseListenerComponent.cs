@@ -43,7 +43,8 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private bool  active = true;
+        private bool active = true;
+        private bool modal  = false;
         /****************************************************************************/
 
 
@@ -127,6 +128,41 @@ namespace PlagueEngine.Input.Components
         public void SetCursor(String cursor)
         {
             input.SetCursor(cursor);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Modal
+        /****************************************************************************/
+        public bool Modal
+        {
+            get { return modal; }
+            
+            set
+            {
+                if (!modal && value)
+                {
+                    input.ModalsMouseListeners.Push(this);
+                    modal = true;                    
+                }
+                else if (modal && !value && input.ModalsMouseListeners.Peek() == this)
+                {
+                    input.ModalsMouseListeners.Pop();
+                    modal = false;
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Cursor Visible
+        /****************************************************************************/
+        public bool CursorVisible
+        {
+            get { return input.cursorIsVisible;  }
+            set { input.cursorIsVisible = value; }
         }
         /****************************************************************************/
 

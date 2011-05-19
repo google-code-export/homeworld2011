@@ -22,7 +22,8 @@ namespace PlagueEngine.Input.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private bool          active = true;
+        private bool active = true;
+        private bool modal = false;
         /****************************************************************************/
 
 
@@ -62,6 +63,30 @@ namespace PlagueEngine.Input.Components
             foreach (Keys key in keys)
             {
                 input.SubscribeKeyboardListener(this, key, onKey);
+            }
+        }
+        /****************************************************************************/
+
+        
+        /****************************************************************************/
+        /// Modal
+        /****************************************************************************/
+        public bool Modal
+        {
+            get { return modal; }
+
+            set
+            {
+                if (!modal && value)
+                {
+                    input.ModalsKeyboardListeners.Push(this);
+                    modal = true;
+                }
+                else if (modal && !value && input.ModalsKeyboardListeners.Peek() == this)
+                {
+                    input.ModalsKeyboardListeners.Pop();
+                    modal = false;
+                }
             }
         }
         /****************************************************************************/

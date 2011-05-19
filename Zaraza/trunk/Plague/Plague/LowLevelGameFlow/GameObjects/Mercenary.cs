@@ -22,7 +22,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Mercenary
     /********************************************************************************/
-    class Mercenary : GameObjectInstance
+    class Mercenary : GameObjectInstance, IActiveGameObject
     {
 
         /****************************************************************************/
@@ -51,8 +51,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public bool                 Marker { get; set; }
-        public SkinnedMeshComponent mesh   { get; private set; }
+        public bool                 Marker     { get; set; }
+        public SkinnedMeshComponent mesh       { get; private set; }
         /****************************************************************************/
 
 
@@ -168,8 +168,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
                 }
             }
-            /*************************************/            
-            
         }
         /****************************************************************************/
 
@@ -342,6 +340,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// GetActions
+        /****************************************************************************/
+        public String[] GetActions()
+        {
+            return new String[] { "Follow" };
+        }
+        /****************************************************************************/
     }
     /********************************************************************************/
 
