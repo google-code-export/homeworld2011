@@ -715,7 +715,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
         /****************************************************************************/
         /// Create Menu Button
-        /****************************************************************************/
+        /****************************************************************************
         public bool CreateMenuButton(MenuButton result, MenuButtonData data)
         {
             result.Init(guiComponentsFactory.createButtonComponent(data.Text,
@@ -744,7 +744,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
         /****************************************************************************/
         /// Create Menu Label
-        /****************************************************************************/
+        /****************************************************************************
         public bool CreateLabel(Label result, LabelData data)
         {
             result.Init(guiComponentsFactory.createLabelComponent(data.Text,
@@ -1092,6 +1092,35 @@ namespace PlagueEngine.LowLevelGameFlow
             return true;
         }
         /****************************************************************************/
+
+        
+        /****************************************************************************/
+        /// CreateDescriptionWindow
+        /****************************************************************************/
+        public bool CreateDescriptionWindow(DescriptionWindow result, DescriptionWindowData data)
+        { 
+            result.Init(guiComponentsFactory.CreateWindowComponent(data.Title,
+                                                                   (game.GraphicsDevice.PresentationParameters.BackBufferWidth/2)  - (data.Width/2) ,
+                                                                   (game.GraphicsDevice.PresentationParameters.BackBufferHeight/2) - (data.Height/2),
+                                                                   data.Width,
+                                                                   data.Height,
+                                                                   true),
+                        guiComponentsFactory.CreateButtonComponent("OK",
+                                                                   "OK",
+                                                                   2,
+                                                                   data.Height - 30, 
+                                                                   data.Width  - 4,
+                                                                   30),
+                        guiComponentsFactory.CreateLabelComponent(data.Text,
+                                                                  10,
+                                                                  - (data.Height/2) + 60,
+                                                                  data.Width  - 20, 
+                                                                  data.Height - 40));
+
+            return true;
+        }
+        /****************************************************************************/
+
         
     }
     /********************************************************************************/    

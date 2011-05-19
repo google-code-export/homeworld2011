@@ -10,5 +10,7 @@ namespace PlagueEngine.LowLevelGameFlow
     interface IActiveGameObject
     {
         String[] GetActions();
+        
+        String[] GetActions(Mercenary mercenary);
     }
 }

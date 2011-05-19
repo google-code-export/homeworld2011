@@ -25,8 +25,7 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public PanelComponent()
-            : base(null)
+        public PanelComponent() : base()
         {
             panel = new PanelControl();
         }
@@ -55,7 +54,7 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// register
         /****************************************************************************/
-        public override void register()
+        public override void Register()
         {
             gui.Manager.Screen.Desktop.Children.Add(this.panel);
         }

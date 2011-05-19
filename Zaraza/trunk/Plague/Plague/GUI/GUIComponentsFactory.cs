@@ -29,66 +29,45 @@ namespace PlagueEngine.GUI
             this.gui = gui;
         }
         /****************************************************************************/
-        public void onClick(object oSender, EventArgs oEventArgs)
-        {
-#if DEBUG
-            Diagnostics.PushLog("Button pressed");
-#endif
-        }
+
 
         /****************************************************************************/
         /// Create Button Component
         /****************************************************************************/
-        public ButtonComponent createButtonComponent(String text,
+        public ButtonComponent CreateButtonComponent(String text,
                                                      String tag,
-                                                     Vector2 vertical,
-                                                     Vector2 horizontal,
-                                                     Vector2 other,
-                                                     GameObjectInstance go)
+                                                     int x, int y,
+                                                     int width, int height)
         {
-            UniScalar ver =  new UniScalar(  vertical.X,   vertical.Y);
-            UniScalar hor =  new UniScalar(horizontal.X, horizontal.Y);
-            
-            UniRectangle rectangle = new UniRectangle(ver, hor, other.X, other.Y);
 
-            ButtonComponent component = new ButtonComponent();
-            if (component.Initialize(text == null ? String.Empty : text, rectangle, tag))
-            {
-                component.register();
-                return component;
-            }
-#if DEBUG
-            Diagnostics.PushLog("Creating button component failed due to initialization failure");
-#endif
-            return null;
+            ButtonComponent result = new ButtonComponent(text,
+                                                         new UniRectangle(new UniScalar(x),
+                                                                          new UniScalar(y),
+                                                                          new UniScalar(width),
+                                                                          new UniScalar(height)),
+                                                        tag);
+            return result;
         }
         /****************************************************************************/
+
 
         /****************************************************************************/
         /// Create Label Component
         /****************************************************************************/
-        public LabelComponent createLabelComponent(String text,
-                                                     Vector2 vertical,
-                                                     Vector2 horizontal,
-                                                     Vector2 other)
+        public LabelComponent CreateLabelComponent(String text,
+                                                   int x, int y,
+                                                   int width, int height)
         {
-            UniScalar ver = new UniScalar(vertical.X, vertical.Y);
-            UniScalar hor = new UniScalar(horizontal.X, horizontal.Y);
+            LabelComponent result = new LabelComponent(text, 
+                                                       new UniRectangle(new UniScalar(x),
+                                                                        new UniScalar(y),
+                                                                        new UniScalar(width),
+                                                                        new UniScalar(height)));
 
-            UniRectangle rectangle = new UniRectangle(ver, hor, other.X, other.Y);
-
-            LabelComponent component = new LabelComponent();
-            if (component.Initialize(text == null ? String.Empty : text, rectangle))
-            {
-                component.register();
-                return component;
-            }
-#if DEBUG
-            Diagnostics.PushLog("Creating label component failed due to initialization failure");
-#endif
-            return null;
+            return result;
         }
         /****************************************************************************/
+
 
         /****************************************************************************/
         /// Create Input Component
@@ -106,7 +85,7 @@ namespace PlagueEngine.GUI
             InputComponent component = new InputComponent();
             if (component.Initialize(text == null ? String.Empty : text, rectangle))
             {
-                component.register();
+                component.Register();
                 return component;
             }
 #if DEBUG
@@ -132,7 +111,7 @@ namespace PlagueEngine.GUI
             PanelComponent component = new PanelComponent();
             if (component.Initialize(rectangle))
             {
-                component.register();
+                component.Register();
                 return component;
             }
 #if DEBUG
@@ -140,6 +119,26 @@ namespace PlagueEngine.GUI
 #endif
             return null;
         }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateWindowComponent
+        /****************************************************************************/
+        public WindowComponent CreateWindowComponent(String title,
+                                                     int x, int y,
+                                                     int width, int height,
+                                                     bool enableDragging)
+        {
+            WindowComponent result = new WindowComponent(title,
+                                                         new UniRectangle(new UniScalar(x),
+                                                                          new UniScalar(y),
+                                                                          new UniScalar(width),
+                                                                          new UniScalar(height)),
+                                                         enableDragging);            
+
+            return result;
+        }                                                     
         /****************************************************************************/
     }
 }

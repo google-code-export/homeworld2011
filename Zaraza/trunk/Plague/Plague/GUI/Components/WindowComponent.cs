@@ -1,13 +1,10 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Nuclex.Input;
-using Nuclex.UserInterface.Controls.Desktop;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Nuclex.UserInterface;
-
-using PlagueEngine.Input.Components;
-
+using Nuclex.UserInterface.Controls;
+using Nuclex.UserInterface.Controls.Desktop;
 
 /************************************************************************************/
 /// PlagueEngine.GUI.Components
@@ -16,35 +13,35 @@ namespace PlagueEngine.GUI.Components
 {
 
     /********************************************************************************/
-    /// GUI Button Component
+    /// WindowComponent
     /********************************************************************************/
-    class ButtonComponent : GUIComponent
+    class WindowComponent : GUIComponent
     {
+
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        //TODO: sprawdzić czemu tu public
-        public ButtonControl Control { get; private set; }
-        public String Tag            { get; private set; }
+        public WindowControl Control { get; private set; }
         /****************************************************************************/
-        
+
+
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public ButtonComponent(String text, UniRectangle bounds, String tag)
-            : base()
+        public WindowComponent(String title,UniRectangle bounds,bool enableDragging)            
         {
-            Control = new ButtonControl();
-            Control.Text = text;
-            Control.Bounds = bounds;
+            Control                = new WindowControl();
+            Control.Title          = title;
+            Control.Bounds         = bounds;
+            Control.EnableDragging = enableDragging;
 
-            Tag = tag;
+            Register();
         }
         /****************************************************************************/
 
-
+                
         /****************************************************************************/
-        /// register
+        /// Register
         /****************************************************************************/
         public override void Register()
         {
@@ -54,25 +51,37 @@ namespace PlagueEngine.GUI.Components
 
 
         /****************************************************************************/
-        /// setDelegate
+        /// Add Control
         /****************************************************************************/
-        public void setDelegate(EventHandler handler)
+        public void AddControl(Control control)
         {
-            Control.Pressed += handler;            
+            Control.Children.Add(control);
         }
         /****************************************************************************/
-        
 
 
         /****************************************************************************/
-        /// Release Me 
+        /// Remove Control
+        /****************************************************************************/
+        public void RemoveControl(Control control)
+        {
+            Control.Children.Remove(control);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Release Me
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            Control.Parent.Children.Remove(Control);
+            gui.Manager.Screen.Desktop.Children.Remove(Control);                
             base.ReleaseMe();
         }
         /****************************************************************************/
+
     }
     /********************************************************************************/
+
 }
+/************************************************************************************/

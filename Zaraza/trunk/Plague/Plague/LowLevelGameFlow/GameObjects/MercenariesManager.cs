@@ -34,6 +34,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private KeyboardListenerComponent keyboard = null;
 
         private GameObjectInstance targetGameObject = null;
+        private Mercenary          currentMercenary = null;
         /****************************************************************************/
 
 
@@ -161,10 +162,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             ActionSwitchData data = new ActionSwitchData();
                             data.Feedback = this.ID;
-                            data.Actions  = activeGameObject.GetActions();
+
+                            if (SelectedMercenaries.Count == 1)
+                            {
+                                currentMercenary = SelectedMercenaries.ElementAt(0);
+                                data.Actions = activeGameObject.GetActions(currentMercenary);
+                            }
+                            else
+                            {
+                                data.Actions = activeGameObject.GetActions();
+                                currentMercenary = null;
+                            }
+                            
                             data.Position = commandOnObjectEvent.position;
 
                             SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                            
                             targetGameObject = commandOnObjectEvent.gameObject;
                         }
                     }                                        
@@ -177,11 +190,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 SelectedActionEvent SelectedActionEvent = e as SelectedActionEvent;
 
-                switch (SelectedActionEvent.Action)
+                if (currentMercenary != null)
                 {
-                    case "Grab":    SendEvent(new MoveToObjectCommandEvent(targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
-                    case "Examine": SendEvent(new MoveToObjectCommandEvent(targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
-                    case "Follow" : SendEvent(new MoveToObjectCommandEvent(targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
+                    switch (SelectedActionEvent.Action)
+                    {
+                        case "Grab":    SendEvent(new GrabObjectCommandEvent   (targetGameObject), Priority.Normal, currentMercenary); break;
+                        case "Examine": SendEvent(new ExamineObjectCommandEvent(targetGameObject), Priority.Normal, currentMercenary); break;
+                        case "Follow":  SendEvent(new FollowObjectCommandEvent (targetGameObject), Priority.Normal, currentMercenary); break;
+                    }
+                }
+                else
+                {
+                    switch (SelectedActionEvent.Action)
+                    {
+                        case "Grab":    SendEvent(new GrabObjectCommandEvent   (targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
+                        case "Examine": SendEvent(new ExamineObjectCommandEvent(targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
+                        case "Follow":  SendEvent(new FollowObjectCommandEvent (targetGameObject), Priority.Normal, SelectedMercenaries.ToArray()); break;
+                    }                
                 }
             }
 
