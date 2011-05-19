@@ -46,18 +46,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(List<Mercenary>           mercenaries,
-                         LinkedCamera              linkedCamera,
+        public void Init(LinkedCamera              linkedCamera,
                          KeyboardListenerComponent keyboard)
         {
-            SelectedMercenaries = mercenaries;
+            SelectedMercenaries = new List<Mercenary>();
             LinkedCamera        = linkedCamera;
             this.keyboard       = keyboard;
 
             sniffer.SetOnSniffedEvent(OnSniffedEvent);
             sniffer.SubscribeEvents(typeof(CreateEvent));
 
-            keyboard.SubscibeKeys(OnKey,  Keys.Tab,Keys.LeftControl, Keys.LeftAlt,Keys.C,
+            keyboard.SubscibeKeys(OnKey,  Keys.Tab,Keys.LeftControl, Keys.LeftAlt,Keys.OemTilde,
                                           Keys.D1, Keys.D2,Keys.D3,Keys.D4,Keys.D5,
                                           Keys.D6, Keys.D7,Keys.D8,Keys.D9,Keys.D0);
 
@@ -80,7 +79,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (selectedObjectEvent.gameObject == null)
                 {
-                    foreach (Mercenary merc in SelectedMercenaries) merc.Marker.Enabled = false;
+                    foreach (Mercenary merc in SelectedMercenaries) merc.Marker = false;
                     SelectedMercenaries.Clear();
                     SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
                     commandMode = false;
@@ -91,11 +90,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (m != null)
                 {
-                    foreach (Mercenary merc in SelectedMercenaries) merc.Marker.Enabled = false;
+                    foreach (Mercenary merc in SelectedMercenaries) merc.Marker = false;
                     SelectedMercenaries.Clear();
 
                     SelectedMercenaries.Add(m);
-                    m.Marker.Enabled = true;
+                    m.Marker = true;
 
                     SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
                     commandMode = true;
@@ -113,7 +112,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (m != null)
                 {
                     SelectedMercenaries.Add(m);
-                    m.Marker.Enabled = true;
+                    m.Marker = true;
 
                     SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
                     commandMode = true;
@@ -131,7 +130,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (m != null)
                 {
                     SelectedMercenaries.Remove(m);
-                    m.Marker.Enabled = false;
+                    m.Marker = false;
 
                     if (SelectedMercenaries.Count == 0)
                     {
@@ -205,7 +204,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (SelectedMercenaries.Count == 0)
                 {
-                    Mercenaries.ElementAt(0).Marker.Enabled = true;
+                    Mercenaries.ElementAt(0).Marker = true;
                     SelectedMercenaries.Add(Mercenaries.ElementAt(0));
                 }
                 else
@@ -214,7 +213,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     
                     int i = Mercenaries.IndexOf(SelectedMercenaries.ElementAt(0));
 
-                    foreach (Mercenary m in SelectedMercenaries) m.Marker.Enabled = false;
+                    foreach (Mercenary m in SelectedMercenaries) m.Marker = false;
                     SelectedMercenaries.Clear();
 
                     if (leftControl)
@@ -228,7 +227,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         else ++i;
                     }
 
-                    Mercenaries.ElementAt(i).Marker.Enabled = true;
+                    Mercenaries.ElementAt(i).Marker = true;
                     SelectedMercenaries.Add(Mercenaries.ElementAt(i));
                 }
             }
@@ -241,9 +240,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /************************************************************************/
             else if (key == Keys.LeftAlt) leftAlt = state.IsDown();
             /************************************************************************/
-            /// C
+            /// Tilde
             /************************************************************************/
-            else if (key == Keys.C && state.WasPressed())
+            else if (key == Keys.OemTilde && state.WasPressed())
             {
                 if(SelectedMercenaries.Count == 1)
                 {
@@ -283,7 +282,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (leftAlt)
                 {
                     Mercenary m = Mercenaries.ElementAt(i);
-                    m.Marker.Enabled = false;
+                    m.Marker = false;
                     if (SelectedMercenaries.Contains(m)) SelectedMercenaries.Remove(m);
                     
                     if (SelectedMercenaries.Count == 0)
@@ -294,11 +293,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 else if (!leftControl && !leftAlt)
                 {
-                    foreach (Mercenary m1 in SelectedMercenaries) m1.Marker.Enabled = false;
+                    foreach (Mercenary m1 in SelectedMercenaries) m1.Marker = false;
                     SelectedMercenaries.Clear();
 
                     Mercenary m = Mercenaries.ElementAt(i);
-                    m.Marker.Enabled = true;
+                    m.Marker = true;
                     if (!SelectedMercenaries.Contains(m)) SelectedMercenaries.Add(m);
                     SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
                     commandMode = true;
@@ -306,12 +305,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 else
                 {
                     Mercenary m = Mercenaries.ElementAt(i);
-                    m.Marker.Enabled = true;
+                    m.Marker = true;
                     if (!SelectedMercenaries.Contains(m)) SelectedMercenaries.Add(m);
                     SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
                     commandMode = true;
                 }                
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Data
+        /****************************************************************************/
+        public override GameObjectInstanceData GetData()
+        {
+            MercenariesManagerData data = new MercenariesManagerData();
+            GetData(data);
+
+            data.LinkedCamera = LinkedCamera.ID;       
+
+            return data;
         }
         /****************************************************************************/
 
@@ -324,9 +338,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     [Serializable]
     public class MercenariesManagerData : GameObjectInstanceData
-    {
-        public List<int> SelectedMercenaries { get; set; }
-
+    {    
         [CategoryAttribute("References")]
         public int LinkedCamera { get; set; }
     }

@@ -90,12 +90,11 @@ namespace PlagueEngine.Rendering
         internal BatchedMeshes        batchedMeshes        = null;
         internal BatchedSkinnedMeshes batchedSkinnedMeshes = null;
         internal DebugDrawer          debugDrawer          = null;
-        internal LightsManager        lightsManager        = null;
-        internal List<Marker>         Markers              = new List<Marker>();
-        private  SpriteBatch          spriteBatch          = null;
-        private  Texture2D            markerTexture        = null;
+        internal LightsManager        lightsManager        = null;        
+        private  SpriteBatch          spriteBatch          = null;        
+        internal List<FrontEndComponent> frontEndComponents = new List<FrontEndComponent>();
         /**********************/
-        public bool pause = false;
+
 
         /**********************/
         /// Deferred Shading
@@ -169,7 +168,7 @@ namespace PlagueEngine.Rendering
             Quad.renderer                 = this;
             PointLightComponent.renderer  = this;
             SpotLightComponent.renderer   = this;
-            Marker.renderer               = this;
+            FrontEndComponent.renderer    = this;
 
             spriteBatch = new SpriteBatch(Device);
 
@@ -328,8 +327,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         public void Draw(TimeSpan time, GameTime gameTime)
         {
-            
-            if(!pause) batchedSkinnedMeshes.DeltaTime = time;
+            batchedSkinnedMeshes.DeltaTime = time;
 
             if (currentCamera == null) return;
 
@@ -386,7 +384,7 @@ namespace PlagueEngine.Rendering
 
             //particleManager.DrawParticles(gameTime);
 
-            DrawMarkers(ViewProjection);
+            DrawFrontEnd(ViewProjection);
             DrawRect();
 
 
@@ -508,9 +506,9 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
-        /// Draw Markers
+        /// Draw Front End
         /****************************************************************************/
-        private void DrawMarkers(Matrix ViewProjection)
+        private void DrawFrontEnd(Matrix ViewProjection)
         {
             if (spriteBatch.GraphicsDevice.IsDisposed)
             {
@@ -519,23 +517,12 @@ namespace PlagueEngine.Rendering
 
             spriteBatch.Begin();
 
-            Vector4 position;
-            Vector2 pos2;
-            foreach (Marker marker in Markers)
+            int screenWidth  = Device.PresentationParameters.BackBufferWidth;
+            int screenHeight = Device.PresentationParameters.BackBufferHeight;
+
+            foreach (FrontEndComponent component in frontEndComponents)
             {
-                if (!marker.Enabled) continue;
-
-                position = Vector4.Transform(marker.GetPosition(), ViewProjection);
-
-                pos2.X = MathHelper.Clamp(0.5f * ((position.X / Math.Abs(position.W)) + 1.0f), 0.01f, 0.99f);
-                pos2.X *= Device.PresentationParameters.BackBufferWidth;
-                pos2.X -= markerTexture.Width / 2;
-
-                pos2.Y  = MathHelper.Clamp(1.0f - (0.5f * ((position.Y / Math.Abs(position.W)) + 1.0f)), 0.01f, 0.99f);
-                pos2.Y *= (Device.PresentationParameters.BackBufferHeight);
-                pos2.Y -= markerTexture.Height / 2;                               
-                
-                spriteBatch.Draw(markerTexture, pos2, Color.White);
+                component.Draw(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
             }
 
             spriteBatch.End();
@@ -692,8 +679,7 @@ namespace PlagueEngine.Rendering
                         
             debugEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
                        
-            ditherTexture = contentManager.LoadTexture2D("RandomNormals");
-            markerTexture = contentManager.LoadTexture2D("marker");
+            ditherTexture = contentManager.LoadTexture2D("RandomNormals");            
 
             ssaoEffect.Parameters["DitherTexture"].SetValue(ditherTexture);
             ssaoEffect.Parameters["GBufferNormal"].SetValue(normal);
