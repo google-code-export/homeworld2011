@@ -10,6 +10,8 @@ using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Resources;
 using Microsoft.Xna.Framework.Graphics;
+using PlagueEngine.Rendering.Components;
+
 
 /************************************************************************************/
 ///  PlagueEngine.Physics
@@ -38,6 +40,9 @@ namespace PlagueEngine.Physics
             this.content = content;
         }
         /****************************************************************************/
+
+
+     
 
 
 

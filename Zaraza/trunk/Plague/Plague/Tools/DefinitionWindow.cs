@@ -62,7 +62,14 @@ namespace PlagueEngine.Tools
 
             this.currentObject = currentObject;
 
-            this.Size = new Size(300, 90 + PropertyInfo.Count * 25);
+            int height = 0;
+            if (PropertyInfo.Count > 15) height = 465;
+            else height = 90 + PropertyInfo.Count * 25;
+            int width = 300 * (int)Math.Ceiling((double)(PropertyInfo.Count/15.0f));
+
+
+
+            this.Size = new Size(width, height);
 
             this.create.Text = "Create";
             this.cancel.Text = "Cancel";
@@ -74,8 +81,8 @@ namespace PlagueEngine.Tools
             
             this.definitionName.Location = new Point(20, 10);
             this.textbox.Location = new Point(90, 10);
-            this.create.Location = new Point(20, 35 + PropertyInfo.Count * 25);
-            this.cancel.Location = new Point(150, 35 + PropertyInfo.Count * 25);
+            this.create.Location = new Point(width/2 - 50-create.Size.Width/2, height-55);
+            this.cancel.Location = new Point(width/2 +50-cancel.Size.Width/2, height - 55);
 
             this.create.Click += new EventHandler(Create_Click);
             this.cancel.Click += new EventHandler(Cancel_Click);
@@ -92,7 +99,7 @@ namespace PlagueEngine.Tools
                     Field field = new Field();
 
                     field.label.Text = PropertyInfo[i].Name;
-                    field.label.Location = new Point(20, 35 + 25 * i);
+                    field.label.Location = new Point(20 + (int)Math.Floor(i / 15.0f) * 300, 35 + 25 * (i%15));
                     field.label.Size = new Size(130, 20);
 
                     try//nullReferenceExcepton? :O
@@ -105,12 +112,12 @@ namespace PlagueEngine.Tools
                     }
 
 
-                    field.value.Location = new Point(150, 35 + 25 * i);
-                    field.value.Size = new Size(110, 20);
-                    
-                    field.checkbox.Location = new Point(270, 35 + 25 * i);
-                    field.checkbox.Checked = false;
+                    field.value.Location = new Point(150 + (int)Math.Floor(i / 15.0f) * 300, 35 + 25 * (i%15));
+                    field.value.Size = new Size(120, 15);
 
+                    field.checkbox.Location = new Point(270 + (int)Math.Floor(i / 15.0f) * 300, 35 + 25 * (i%15));
+                    field.checkbox.Checked = false;
+                    field.checkbox.Size = new Size(20, 20);
                     Controls.Add(field.label);
                     Controls.Add(field.checkbox);
                     Controls.Add(field.value);

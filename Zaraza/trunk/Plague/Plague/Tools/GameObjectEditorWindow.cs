@@ -523,12 +523,23 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void LoadAllObjectsId()
         {
+            treeView1.Nodes.Clear();
+            treeView1.Nodes.Add("main1");
+            treeView1.Nodes.Add("main2");
+            treeView1.Nodes.Add("main3");
+            
+            treeView1.Nodes[0].Nodes.Add("sub1");
+
             comboboxGameObjectId.SelectedIndex = -1;
             comboboxGameObjectId.SelectedIndex = -1;
             comboboxGameObjectId.Items.Clear();
 
             foreach (GameObjectInstance gameObject in level.GameObjects.Values)
             {
+
+                
+
+
                 comboboxGameObjectId.Items.Add(gameObject.ID.ToString());
             }
 
@@ -1004,8 +1015,20 @@ namespace PlagueEngine.Tools
 
                 currentEditGameObject = level.GameObjects[id].GetData();
                 currentEditGameObject.Position = currentEditGameObject.World.Translation;
+                currentClassName = new gameObjectsClassName();
+                currentClassName.dataClassType = currentEditGameObject.GetType();
+                currentObject = currentEditGameObject;
 
-           
+                foreach (gameObjectsClassName name in gameObjectClassNames)
+                {
+                    if (name.dataClassType == currentClassName.dataClassType)
+                    {
+                        currentClassName.className = name.className;
+                        currentClassName.ClassType = name.ClassType;
+                    }
+                }
+
+
                 propertyGrid2.SelectedObject = currentEditGameObject;
             }
             else
@@ -1291,6 +1314,9 @@ namespace PlagueEngine.Tools
         {
             input.Enabled = inputEnable.Checked;
         }
+
+
+
 
 
 

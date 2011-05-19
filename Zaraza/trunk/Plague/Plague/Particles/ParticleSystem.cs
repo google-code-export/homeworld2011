@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using PlagueEngine.Rendering.Components;
-
+using PlagueEngine.Rendering;
 
 
 /********************************************************************************/
@@ -43,7 +43,7 @@ namespace PlagueEngine.Particles
         int drawCounter;
         static Random random = new Random();
         private GraphicsDevice graphics=null;
-        private CameraComponent camera=null;
+        private Renderer renderer = null;
         public Texture2D texture=null;
 
         /********************************************************************************/
@@ -55,10 +55,10 @@ namespace PlagueEngine.Particles
         /********************************************************************************/
             /// Constructor
         /********************************************************************************/
-        public ParticleSystem(GraphicsDevice graphics,CameraComponent camera,Texture2D texture,Effect effect,ParticleSettings settings)
+        public ParticleSystem(GraphicsDevice graphics,Renderer renderer,Texture2D texture,Effect effect,ParticleSettings settings)
         {
             this.graphics = graphics;
-            this.camera = camera;
+            this.renderer = renderer;
             this.texture = texture;
             this.particleEffect = effect;
             this.settings = settings;
@@ -248,8 +248,8 @@ namespace PlagueEngine.Particles
         {
 
 
-            effectViewParameter.SetValue(camera.View);
-            effectProjectionParameter.SetValue(camera.Projection);
+            effectViewParameter.SetValue(renderer.CurrentCamera.View);
+            effectProjectionParameter.SetValue(renderer.CurrentCamera.Projection);
        
             if (vertexBuffer.IsContentLost)
             {

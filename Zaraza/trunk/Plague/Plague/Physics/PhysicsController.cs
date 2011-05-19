@@ -113,6 +113,7 @@ namespace PlagueEngine.Physics
             body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
            
         }
+          
 
         public void StopMoving()
         {

@@ -44,7 +44,7 @@ namespace PlagueEngine.Physics
 
             physicsComponentFactory       = new PhysicsComponentFactory(content);
             physicsSystem                 = new PhysicsSystem();
-            
+
             //physicsSystem.CollisionSystem = new CollisionSystemBrute();
 
             physicsSystem.CollisionSystem = new CollisionSystemSAP();
