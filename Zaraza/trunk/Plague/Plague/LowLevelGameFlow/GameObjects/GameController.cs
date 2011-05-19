@@ -72,7 +72,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 game.Level.GameObjectsFactory.RemoveGameObject(DestroyObjectEvent.ID);
             }
             /*************************************/
+            /// ChangeSpeedEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(ChangeSpeedEvent)))
+            {
+                ChangeSpeedEvent ChangeSpeedEvent = e as ChangeSpeedEvent;
 
+                game.PhysicsClock.Ratio *= ChangeSpeedEvent.Amount;
+                game.RendererClock.Ratio *= ChangeSpeedEvent.Amount;
+            }
+            /*************************************/
         }
         /****************************************************************************/
 

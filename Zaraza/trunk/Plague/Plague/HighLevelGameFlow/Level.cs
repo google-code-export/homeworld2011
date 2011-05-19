@@ -66,8 +66,16 @@ namespace PlagueEngine.HighLevelGameFlow
             RegisterGlobalObject(new GameControllerData(),false,false);
             SaveGlobalGameObjectsData();
             LoadGlobalGameObjectsData();
+        }
+        /****************************************************************************/
 
-            SpawnGlobalGameObjects(String.Empty);
+
+        /****************************************************************************/
+        /// Init 
+        /****************************************************************************/
+        public void Init()
+        {
+            SpawnGlobalGameObjects(String.Empty);        
         }
         /****************************************************************************/
 

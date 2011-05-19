@@ -1064,6 +1064,34 @@ namespace PlagueEngine.LowLevelGameFlow
             return true;
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateActionSwitch
+        /****************************************************************************/
+        public bool CreateActionSwitch(ActionSwitch result, ActionSwitchData data)
+        {
+
+            GameObjectInstance feedback = GetObject(data.Feedback);
+            if(feedback == null)
+            {
+                PushToWaitingRoom(result,data);
+                return false;
+            }
+
+            result.Init(renderingComponentsFactory.CreateFrontEndComponent(result,
+                                                                           "switchset"),
+                        inputComponentsFactory.CreateMouseListenerComponent(result,
+                                                                            true),
+                        inputComponentsFactory.CreateKeyboardListenerComponent(result,
+                                                                               true),
+                        data.Position,
+                        data.Actions,
+                        feedback);
+
+            return true;
+        }
+        /****************************************************************************/
         
     }
     /********************************************************************************/    
