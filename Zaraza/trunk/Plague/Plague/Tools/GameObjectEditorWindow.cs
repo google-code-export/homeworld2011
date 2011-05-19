@@ -696,8 +696,10 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            level.SaveLevel();
-            levelSaved = true;
+
+                level.SaveLevel();
+                levelSaved = true;
+
         }
         /********************************************************************************/
 
@@ -1260,6 +1262,19 @@ namespace PlagueEngine.Tools
      
 
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (propertyGrid2.SelectedObject != null)
+            {
+                currentEditGameObject = level.GameObjects[currentEditGameObject.ID].GetData();
+                currentEditGameObject.Position = currentEditGameObject.World.Translation;
+                currentObject = currentEditGameObject;
+
+                propertyGrid2.SelectedObject = currentEditGameObject;
+            }
+
         }
 
   
