@@ -124,6 +124,19 @@ namespace PlagueEngine.EventsSystem
 
 
             /***************************/
+            // Global Sniffers
+            /***************************/
+            if(eventSniffers.ContainsKey(e.EventArgs.GetType()))
+            {
+                foreach (EventsSniffer sniffer in eventSniffers[e.EventArgs.GetType()])
+                {
+                    sniffer.OnSniffedEvent(e.Sender, e.Receiver, e.EventArgs);
+                }
+            }
+            /***************************/
+
+
+            /***************************/
             // Sender Isntance Sniffers
             /***************************/
             if(senderInstanceSniffers.Keys.Contains(e.Sender))

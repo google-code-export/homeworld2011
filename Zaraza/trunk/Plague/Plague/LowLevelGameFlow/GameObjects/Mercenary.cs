@@ -26,8 +26,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         /****************************************************************************/
         /// Fields
-        /****************************************************************************/
-        private SkinnedMeshComponent mesh       = null;
+        /****************************************************************************/        
         private CapsuleBodyComponent body       = null;
         private PhysicsController    controller = null;
         private Marker               marker     = null;
@@ -50,7 +49,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public Marker Marker { get { return marker; } }
+        public Marker               Marker { get { return marker; } }
+        public SkinnedMeshComponent mesh   { get; private set; }
         /****************************************************************************/
 
 
@@ -159,7 +159,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     objectTarget = null;
                     moving = 0;
                     controller.StopMoving();
-                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
                 }
             }
             /*************************************/            
@@ -182,7 +182,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     moving = 0;
                     controller.StopMoving();
-                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
                 }
                 else
                 {
@@ -201,7 +201,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                         
                     if (mesh.CurrentClip != "Run")
                     {
-                        mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
+                        mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                        
                     }                    
                 }
             }
@@ -231,7 +231,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (mesh.CurrentClip != "Run")
                 {
-                    mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
+                    mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                    
                 }                                    
             }
         }

@@ -119,8 +119,8 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (result.RequiresUpdate) UpdatableObjects.Add(result);
 
-            if (ProcessWaitingRoom) ++ProcessedObjects;
-            
+            if (ProcessWaitingRoom) ++ProcessedObjects;            
+
             return result;
         }
         /****************************************************************************/
@@ -1030,7 +1030,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 }
             }
 
-            result.Init(mercenaries,linkedCamera);
+            result.Init(mercenaries,
+                        linkedCamera,
+                        inputComponentsFactory.CreateKeyboardListenerComponent(result,true));
 
             return true;
         }
