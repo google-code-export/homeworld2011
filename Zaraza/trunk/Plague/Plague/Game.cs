@@ -212,7 +212,6 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Draw(GameTime gameTime)
         {
-            Renderer.pause = GameStopped;
             Renderer.Draw(RendererClock.DeltaTime,gameTime);
             GUI.Draw(gameTime);
             Input.Draw();

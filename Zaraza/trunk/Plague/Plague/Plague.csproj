@@ -185,6 +185,7 @@
     <Compile Include="LowLevelGameFlow\GameObjectDefinition.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\ActionSwitch.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Flashlight.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="Rendering\AnimationPlayer.cs" />
     <Compile Include="Rendering\BatchedSkinnedMeshes.cs" />
     <Compile Include="Rendering\Components\CameraComponent.cs" />
+    <Compile Include="Rendering\Components\FrontEndComponent.cs" />
     <Compile Include="Rendering\Components\MeshComponent.cs" />
     <Compile Include="Rendering\Components\PointLightComponent.cs" />
     <Compile Include="Rendering\Components\SkinnedMeshComponent.cs" />
@@ -253,7 +255,6 @@
     <Compile Include="Rendering\DebugDrawer.cs" />
     <Compile Include="Rendering\EventArgs.cs" />
     <Compile Include="Rendering\LightsManager.cs" />
-    <Compile Include="Rendering\Marker.cs" />
     <Compile Include="Rendering\PlagueEngineModel.cs" />
     <Compile Include="Rendering\PlagueEngineSkinnedModel.cs" />
     <Compile Include="Rendering\Quad.cs" />

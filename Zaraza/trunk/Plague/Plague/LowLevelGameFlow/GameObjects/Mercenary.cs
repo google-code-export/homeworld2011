@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering;
@@ -29,7 +30,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/        
         private CapsuleBodyComponent body       = null;
         private PhysicsController    controller = null;
-        private Marker               marker     = null;
+        private FrontEndComponent    marker     = null;
+        private Vector3 markerLocalPosition;
         
         private Vector3            target;
         private GameObjectInstance objectTarget;
@@ -49,7 +51,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public Marker               Marker { get { return marker; } }
+        public bool                 Marker { get; set; }
         public SkinnedMeshComponent mesh   { get; private set; }
         /****************************************************************************/
 
@@ -59,6 +61,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(SkinnedMeshComponent mesh, 
                          CapsuleBodyComponent body,
+                         FrontEndComponent    frontEndComponent,
                          Vector3 markerPosition,
                          float rotationSpeed,
                          float movingSpeed,
@@ -75,7 +78,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.anglePrecision = angle;
             this.gripBone       = gripBone;
 
-            this.marker = new Marker(this.GetWorld, markerPosition, false);
+            this.marker = frontEndComponent;
+            markerLocalPosition = markerPosition;
+            marker.Draw = MarkerDraw;
+            Marker = false;
 
             controller = new PhysicsController(body);
             controller.EnableControl();
@@ -239,6 +245,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// MarkerDraw
+        /****************************************************************************/
+        public void MarkerDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
+        {
+            if (!Marker) return;
+            Vector4 position;
+            Vector2 pos2;
+
+            position = Vector4.Transform(Vector3.Transform(markerLocalPosition,World), ViewProjection);
+
+            pos2.X = MathHelper.Clamp(0.5f * ((position.X / Math.Abs(position.W)) + 1.0f), 0.01f, 0.99f);
+            pos2.X *= screenWidth;
+            pos2.X -= marker.Texture.Width / 2;
+
+            pos2.Y = MathHelper.Clamp(1.0f - (0.5f * ((position.Y / Math.Abs(position.W)) + 1.0f)), 0.01f, 0.99f);
+            pos2.Y *= screenHeight;
+            pos2.Y -= marker.Texture.Height / 2;
+
+            spriteBatch.Draw(marker.Texture, pos2, Color.White);            
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Release Components
         /****************************************************************************/
         public override void ReleaseComponents()
@@ -305,7 +335,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Radius = body.Radius;
             data.Length = body.Length;
 
-            data.MarkerPosition = marker.LocalPosition;
+            data.MarkerPosition = markerLocalPosition;
             data.GripBone       = gripBone;
 
             return data;

@@ -751,7 +751,6 @@ namespace PlagueEngine.HighLevelGameFlow
 
             MercenariesManagerData mcmd = new MercenariesManagerData();
             mcmd.Type = typeof(MercenariesManager);
-            mcmd.SelectedMercenaries = new List<int>();
 
             GameObjectInstance mm = GameObjectsFactory.Create(mcmd);
 

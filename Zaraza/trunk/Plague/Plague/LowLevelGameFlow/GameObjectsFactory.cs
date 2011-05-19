@@ -987,6 +987,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                            data.SkinYaw,
                                                                            data.SkinPitch,
                                                                            data.SkinRoll),
+                        renderingComponentsFactory.CreateFrontEndComponent(result,
+                                                                           "marker"),
                         data.MarkerPosition,
                         data.RotationSpeed,
                         data.MovingSpeed,
@@ -1004,21 +1006,6 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateMercenariesManager(MercenariesManager result, MercenariesManagerData data)
         {
-            List<Mercenary> mercenaries = new List<Mercenary>();
-
-            Mercenary goi;
-            foreach (int id in data.SelectedMercenaries)
-            {
-                goi = GetObject(id) as Mercenary;
-                
-                if (goi == null)
-                {
-                    PushToWaitingRoom(result, data);
-                    return false;
-                }
-                mercenaries.Add(goi);
-            }
-
             LinkedCamera linkedCamera = null;
             if (data.LinkedCamera != 0)
             {
@@ -1030,8 +1017,7 @@ namespace PlagueEngine.LowLevelGameFlow
                 }
             }
 
-            result.Init(mercenaries,
-                        linkedCamera,
+            result.Init(linkedCamera,
                         inputComponentsFactory.CreateKeyboardListenerComponent(result,true));
 
             return true;

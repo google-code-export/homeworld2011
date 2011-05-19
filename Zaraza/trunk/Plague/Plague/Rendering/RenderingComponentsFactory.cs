@@ -295,6 +295,19 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
+        /// CreateFrontEndComponent
+        /****************************************************************************/
+        public FrontEndComponent CreateFrontEndComponent(GameObjectInstance gameObject,
+                                                         String texture)
+        {
+            FrontEndComponent result = new FrontEndComponent(gameObject,
+                                                             content.LoadTexture2D(texture));
+            return result;
+        }
+        /****************************************************************************/
+
+        
+        /****************************************************************************/
         /// Guess Technique
         /****************************************************************************/
         private Techniques GuessTechnique(String specularMap, String normalMap)

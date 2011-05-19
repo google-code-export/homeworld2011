@@ -2,52 +2,45 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna;
+
+using PlagueEngine.LowLevelGameFlow;
+
 
 /************************************************************************************/
-/// PlagueEngine.Rendering
+/// PlagueEngine.Rendering.Components
 /************************************************************************************/
-namespace PlagueEngine.Rendering
+namespace PlagueEngine.Rendering.Components
 {
+
     /********************************************************************************/
-    /// Marker
+    /// Front End Component
     /********************************************************************************/
-    class Marker
+    class FrontEndComponent : GameObjectComponent
     {
-        
+
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public static Renderer renderer = null;
+        public Texture2D Texture { get; private set; }
+        
+        internal static Renderer renderer = null;
 
-        public delegate Matrix GetWorldDelegate();
-        private GetWorldDelegate getWorld = null;
+        public delegate void OnDraw(SpriteBatch spriteBatch,ref Matrix ViewProjection,int screenWidth,int screenHeight);
+        public OnDraw Draw;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Marker(GetWorldDelegate getWorld,Vector3 position,bool enabled)
+        public FrontEndComponent(GameObjectInstance gameObject,Texture2D texture) 
+            : base(gameObject)
         {
-            this.getWorld = getWorld;
-
-            LocalPosition = position;
-            Enabled       = enabled;
-
-            renderer.Markers.Add(this);
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Get World
-        /****************************************************************************/
-        public Vector3 GetPosition()
-        {
-            return Vector3.Transform(LocalPosition, getWorld());
+            Texture = texture;
+            renderer.frontEndComponents.Add(this);
         }
         /****************************************************************************/
 
@@ -55,20 +48,13 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Release Me
         /****************************************************************************/
-        public void ReleaseMe()
+        public override void ReleaseMe()
         {
-            renderer.Markers.Remove(this);
+            renderer.frontEndComponents.Remove(this);            
+            base.ReleaseMe();
         }
         /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Properties
-        /****************************************************************************/
-        public Vector3 LocalPosition { get; set; }
-        public bool    Enabled       { get; set; }
-        /****************************************************************************/
-
+        
     }
     /********************************************************************************/
 

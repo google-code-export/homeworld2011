@@ -458,7 +458,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         CollisionSkin skin;
                         Vector3 direction1 = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
                         Vector3 pos, nor;
-                        String cursor;
+                        String cursor = "Default";
                         float dist;
                         Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction1 * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
                         if (skin != null)
@@ -483,8 +483,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                     default:                         cursor = "Default"; break;
                                 }
                             }
-                            mouselistenerComponent.SetCursor(cursor);
                         }
+                        mouselistenerComponent.SetCursor(cursor);
                     }
                     break;
             }
