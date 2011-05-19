@@ -65,6 +65,7 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.button2 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -223,27 +224,28 @@
             this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid2.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid2.Name = "propertyGrid2";
-            this.propertyGrid2.Size = new System.Drawing.Size(402, 432);
+            this.propertyGrid2.Size = new System.Drawing.Size(402, 398);
             this.propertyGrid2.TabIndex = 18;
             this.propertyGrid2.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid2_PropertyValueChanged);
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.button2);
             this.panel5.Controls.Add(this.buttonDeleteObject);
             this.panel5.Controls.Add(this.buttonCreateDefinitionEdit);
             this.panel5.Controls.Add(this.checkBoxDisableEditing);
             this.panel5.Controls.Add(this.buttonForceUpdate);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel5.Location = new System.Drawing.Point(0, 432);
+            this.panel5.Location = new System.Drawing.Point(0, 398);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(402, 35);
+            this.panel5.Size = new System.Drawing.Size(402, 69);
             this.panel5.TabIndex = 21;
             // 
             // buttonDeleteObject
             // 
-            this.buttonDeleteObject.Location = new System.Drawing.Point(319, 4);
+            this.buttonDeleteObject.Location = new System.Drawing.Point(237, 38);
             this.buttonDeleteObject.Name = "buttonDeleteObject";
-            this.buttonDeleteObject.Size = new System.Drawing.Size(80, 23);
+            this.buttonDeleteObject.Size = new System.Drawing.Size(99, 23);
             this.buttonDeleteObject.TabIndex = 14;
             this.buttonDeleteObject.Text = "Delete";
             this.buttonDeleteObject.UseVisualStyleBackColor = true;
@@ -251,7 +253,7 @@
             // 
             // buttonCreateDefinitionEdit
             // 
-            this.buttonCreateDefinitionEdit.Location = new System.Drawing.Point(209, 4);
+            this.buttonCreateDefinitionEdit.Location = new System.Drawing.Point(109, 38);
             this.buttonCreateDefinitionEdit.Name = "buttonCreateDefinitionEdit";
             this.buttonCreateDefinitionEdit.Size = new System.Drawing.Size(104, 23);
             this.buttonCreateDefinitionEdit.TabIndex = 20;
@@ -274,7 +276,7 @@
             // 
             this.buttonForceUpdate.Location = new System.Drawing.Point(109, 4);
             this.buttonForceUpdate.Name = "buttonForceUpdate";
-            this.buttonForceUpdate.Size = new System.Drawing.Size(94, 23);
+            this.buttonForceUpdate.Size = new System.Drawing.Size(104, 23);
             this.buttonForceUpdate.TabIndex = 18;
             this.buttonForceUpdate.Text = "Force update";
             this.buttonForceUpdate.UseVisualStyleBackColor = true;
@@ -480,6 +482,16 @@
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(237, 4);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(99, 23);
+            this.button2.TabIndex = 21;
+            this.button2.Text = "Refresh";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // GameObjectEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -551,6 +563,7 @@
         private System.Windows.Forms.Button buttonForceUpdate;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Button button2;
 
 
     }
