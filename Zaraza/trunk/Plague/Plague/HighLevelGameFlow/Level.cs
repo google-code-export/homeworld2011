@@ -45,7 +45,7 @@ namespace PlagueEngine.HighLevelGameFlow
 
         private Dictionary<String, List<GameObjectInstanceData>> GlobalGameObjectsData = new Dictionary<String, List<GameObjectInstanceData>>();
 
-        public String CurrentLevel { get; private set; }
+        public String CurrentLevel { get; set; }
         /****************************************************************************/
 
 
@@ -76,7 +76,7 @@ namespace PlagueEngine.HighLevelGameFlow
         /// New Level
         /****************************************************************************/
         public void NewLevel(String levelName)
-        {            
+        {
             Clear(true);
             eventsSystem.Reset();
             CurrentLevel = levelName;

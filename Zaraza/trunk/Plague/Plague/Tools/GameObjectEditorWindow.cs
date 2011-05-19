@@ -152,7 +152,6 @@ namespace PlagueEngine.Tools
 
             loadLevelNames();
             LoadAllObjectsId();
-            LoadFilters();
             checkBoxShowCollisionSkin.Checked = renderer.debugDrawer.IsEnabled;
         }
         /********************************************************************************/
@@ -170,8 +169,11 @@ namespace PlagueEngine.Tools
                 currentEditGameObject = level.GameObjects[gameObjectID].GetData();
                 currentEditGameObject.Position = currentEditGameObject.World.Translation;
                 propertyGrid2.SelectedObject = currentEditGameObject;
-                comboBoxFilterId.SelectedItem = "Show all";
-                comboboxGameObjectId.SelectedIndex=(int)(gameObjectID-1);
+                TreeNode[] tn = treeView1.Nodes.Find(gameObjectID.ToString(), true);
+                if (tn.GetLength(0) != 0)
+                {
+                    treeView1.SelectedNode = tn[0];
+                }
             }
 
             
@@ -210,26 +212,6 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
 
 
-
-
-        /********************************************************************************/
-        /// Load Filters
-        /********************************************************************************/
-        private void LoadFilters()
-        {
-            comboBoxFilterId.Items.Clear();
-
-            comboBoxFilterId.Items.Add("Show all");
-
-            foreach (gameObjectsClassName className in gameObjectClassNames)
-            {
-                comboBoxFilterId.Items.Add(className.className);
-            }
-
-            comboBoxFilterId.SelectedItem = "Show all";
-        }
-
-        /********************************************************************************/
 
 
 
@@ -427,15 +409,19 @@ namespace PlagueEngine.Tools
                 this.currentObject.Type = currentClassName.ClassType;
                 currentEditGameObject=this.level.GameObjectsFactory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
-             
+
+
+                TreeNode[] tn = treeView1.Nodes.Find(currentEditGameObject.Type.Name, false);
+                if (tn.GetLength(0) != 0)
+                {
+                    tn[0].Nodes.Add(currentEditGameObject.ID.ToString());
+                }
                 
+
 
                 levelSaved = false;
 
               
-                comboBoxFilterId.SelectedItem = "Show all";
-                LoadFilteredID(null, null);
-                comboboxGameObjectId.SelectedIndex = comboboxGameObjectId.Items.Count - 1;
                 
                
             }
@@ -524,23 +510,26 @@ namespace PlagueEngine.Tools
         private void LoadAllObjectsId()
         {
             treeView1.Nodes.Clear();
-            treeView1.Nodes.Add("main1");
-            treeView1.Nodes.Add("main2");
-            treeView1.Nodes.Add("main3");
-            
-            treeView1.Nodes[0].Nodes.Add("sub1");
 
-            comboboxGameObjectId.SelectedIndex = -1;
-            comboboxGameObjectId.SelectedIndex = -1;
-            comboboxGameObjectId.Items.Clear();
+            foreach (gameObjectsClassName name in gameObjectClassNames)
+            {
+                treeView1.Nodes.Add(name.className, name.className);
+            }
+
+
+
+
 
             foreach (GameObjectInstance gameObject in level.GameObjects.Values)
             {
-
+                TreeNode[] tn = treeView1.Nodes.Find(gameObject.GetType().Name, false);
+                if (tn.GetLength(0) != 0)
+                {
+                    tn[0].Nodes.Add(gameObject.ID.ToString());
+                }
                 
 
 
-                comboboxGameObjectId.Items.Add(gameObject.ID.ToString());
             }
 
 
@@ -549,17 +538,6 @@ namespace PlagueEngine.Tools
 
 
 
-
-
-        /********************************************************************************/
-        /// Set Level
-        /********************************************************************************
-        public void setLevel(Level level,string levelName)
-        {
-            this.currentLevel = level;
-            this.currentLevelName = levelName;
-        }
-        /********************************************************************************/
 
 
 
@@ -575,20 +553,20 @@ namespace PlagueEngine.Tools
                 {
                     String currentLevelName = listBoxLevelNames.SelectedItem.ToString();
 
-                    try
-                    {
+                    //try
+                    //{
                         
                         level.LoadLevel(currentLevelName);
-                        LoadFilteredID(null,null);
+                        LoadAllObjectsId();
                         renderer.debugDrawer.DisableHeightmapDrawing();
                        
-                    }
-                    catch (Exception ex)
-                    {
-                        releaseInput = false;
-                        MessageBox.Show("Incompatibility or other black magic! :<\n\n"+ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        releaseInput = true;
-                    }
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    releaseInput = false;
+                    //    MessageBox.Show("Incompatibility or other black magic! :<\n\n"+ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //    releaseInput = true;
+                    //}
                 }
                 
 
@@ -605,110 +583,108 @@ namespace PlagueEngine.Tools
         private void buttonNew_Click(object sender, EventArgs e)
         {
 
-            // TODO: Ponaprawiać edytor 1 :3 
              
-            //bool NewCanceled = false;
-           
+            bool NewCanceled = false;
+            string lvlName;
 
-            //if (!levelSaved)
-            //{
-            //    releaseInput = false;
-            //    DialogResult result = MessageBox.Show("Save level?", "Notification", MessageBoxButtons.YesNoCancel);
-            //    releaseInput = true;
-            //    if (result == DialogResult.Yes)
-            //    {
-            //        if (level.CurrentLevel == string.Empty)
-            //        {
-            //            releaseInput = false;
-            //            var box = new LevelNameMessageBox("Old level name:");
-            //            box.Activated += new EventHandler(GameObjectEditorWindow_Activated);
-            //            box.ShowDialog();
-            //            releaseInput = true;
-            //            if (!box.canceled)
-            //            {
+            if (!levelSaved)
+            {
+                releaseInput = false;
+                DialogResult result = MessageBox.Show("Save level?", "Notification", MessageBoxButtons.YesNoCancel);
+                releaseInput = true;
+                if (result == DialogResult.Yes)
+                {
+                    if (level.CurrentLevel == string.Empty)
+                    {
+                        releaseInput = false;
+                        var box = new LevelNameMessageBox("Old level name:");
+                        box.Activated += new EventHandler(GameObjectEditorWindow_Activated);
+                        box.ShowDialog();
+                        releaseInput = true;
+                        if (!box.canceled)
+                        {
 
-            //                Regex reg = new Regex(@""+levelExtension+"$");
-            //                if(!reg.IsMatch(box.levelName))
-            //                {
-            //                    level.CurrentLevel = box.levelName + levelExtension;
-            //                }
-            //                else
-            //                {
-            //                    level.CurrentLevel = box.levelName;
-            //                }
-                            
-            //                level.SaveLevel();
-            //                listBoxLevelNames.Items.Add(currentLevelName);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            contentManager.SaveLevel(currentLevelName, currentLevel.SaveLevel());
-            //        }
-            //    }
+                            Regex reg = new Regex(@""+levelExtension+"$");
+                            if(!reg.IsMatch(box.levelName))
+                            {
+                                lvlName = box.levelName + levelExtension;
+                            }
+                            else
+                            {
+                                lvlName = box.levelName;
+                            }
 
-            //    //if (result == DialogResult.No)
-            //    //{
-            //    //    currentLevelName = string.Empty;
-            //    //}
+                            level.SaveLevel(lvlName);
+                            listBoxLevelNames.Items.Add(lvlName);
+                        }
+                    }
+                    else
+                    {
+                        level.SaveLevel();
+                    }
+                }
 
-            //    if (result == DialogResult.Cancel)
-            //    {
-            //        NewCanceled = true;
-            //    }
-            //}
+                //if (result == DialogResult.No)
+                //{
+                //    currentLevelName = string.Empty;
+                //}
+
+                if (result == DialogResult.Cancel)
+                {
+                    NewCanceled = true;
+                }
+            }
 
 
 
-            //if (!NewCanceled)
-            //{
-            //    renderer.debugDrawer.DisableHeightmapDrawing();
+            if (!NewCanceled)
+            {
+                renderer.debugDrawer.DisableHeightmapDrawing();
                 
-            //    var box2 = new LevelNameMessageBox("New level name:");
-            //    box2.Activated += new EventHandler(GameObjectEditorWindow_Activated);
-            //    bool newName;
-            //    do
-            //    {
-            //        newName = true;
-            //        releaseInput = false;
-            //        box2.ShowDialog();
-            //        releaseInput = true;
-            //        foreach (string name in listBoxLevelNames.Items)
-            //        {
-            //            if ((name == box2.levelName) || (name == (box2.levelName + levelExtension)))
-            //            {
-            //                newName = false;
-            //                releaseInput = false;
-            //                MessageBox.Show("Name already exists!", "Error", MessageBoxButtons.OK);
-            //                releaseInput = true;
-            //            }
-            //        }
+                var box2 = new LevelNameMessageBox("New level name:");
+                box2.Activated += new EventHandler(GameObjectEditorWindow_Activated);
+                bool newName;
+                do
+                {
+                    newName = true;
+                    releaseInput = false;
+                    box2.ShowDialog();
+                    releaseInput = true;
+                    foreach (string name in listBoxLevelNames.Items)
+                    {
+                        if ((name == box2.levelName) || (name == (box2.levelName + levelExtension)))
+                        {
+                            newName = false;
+                            releaseInput = false;
+                            MessageBox.Show("Name already exists!", "Error", MessageBoxButtons.OK);
+                            releaseInput = true;
+                        }
+                    }
 
-            //    } while ((newName == false) && (box2.canceled == false));
+                } while ((newName == false) && (box2.canceled == false));
 
-            //    if (!box2.canceled)
-            //    {
+                if (!box2.canceled)
+                {
 
-            //        Regex reg2 = new Regex(@"" + levelExtension + "$");
-            //        if(reg2.IsMatch(box2.levelName))
-            //        {
-            //            currentLevelName=box2.levelName;
+                    Regex reg2 = new Regex(@"" + levelExtension + "$");
+                    if(reg2.IsMatch(box2.levelName))
+                    {
+                        lvlName=box2.levelName;
                     
-            //        }
-            //        else
-            //        {
-            //            currentLevelName = box2.levelName + levelExtension;
-            //        }
+                    }
+                    else
+                    {
+                        lvlName = box2.levelName + levelExtension;
+                    }
 
-            //        listBoxLevelNames.Items.Add(currentLevelName);
-            //        currentLevel.Clear();
-            //        contentManager.SaveLevel(currentLevelName, currentLevel.SaveLevel());
-            //        levelSaved = true;
+                    listBoxLevelNames.Items.Add(lvlName);
+                    level.Clear(true);
+                    level.SaveLevel(lvlName);
+                    levelSaved = true;
 
-            //    }
-            //}
+                }
+            }
 
-            //LoadFilteredID(null,null);
 
          }
 
@@ -731,37 +707,36 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void buttonDelete_Click(object sender, EventArgs e)
         {
-            // TODO: Ponaprawiać edytor 2 :3 
+            
 
-            //if (listBoxLevelNames.SelectedIndex == -1)
-            //{
-            //    if (currentLevelName == string.Empty || currentLevel == null) return;
-            //    releaseInput = false;
-            //    DialogResult result = MessageBox.Show("Delete currrent level: " + currentLevelName + " ?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            //    releaseInput = true;
-            //    if (result == DialogResult.Yes)
-            //    {
-            //        File.Delete(Directory.GetCurrentDirectory() + "\\" + levelDirectory + "\\" + currentLevelName);
-            //        currentLevel.Clear();
-            //        currentLevelName = string.Empty;
-            //    }
-            //}
-            //else
-            //{
-            //    string filename = listBoxLevelNames.SelectedItem.ToString();
-            //    releaseInput = false;
-            //    DialogResult result = MessageBox.Show("Delete level: " + filename + " ?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            //    releaseInput = true;
-            //    if (result == DialogResult.Yes)
-            //    {
-            //        File.Delete(Directory.GetCurrentDirectory()+ "\\" + levelDirectory +"\\"+ filename);
-            //        if (filename == currentLevelName)
-            //            currentLevel.Clear();
+            if (listBoxLevelNames.SelectedIndex == -1)
+            {
+                if (level.CurrentLevel == string.Empty || level.CurrentLevel == null) return;
+                releaseInput = false;
+                DialogResult result = MessageBox.Show("Delete currrent level: " + level.CurrentLevel + " ?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                releaseInput = true;
+                if (result == DialogResult.Yes)
+                {
+                    File.Delete(Directory.GetCurrentDirectory() + "\\" + levelDirectory + "\\" + level.CurrentLevel);
+                    level.Clear(true);
+                }
+            }
+            else
+            {
+                string filename = listBoxLevelNames.SelectedItem.ToString();
+                releaseInput = false;
+                DialogResult result = MessageBox.Show("Delete level: " + filename + " ?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                releaseInput = true;
+                if (result == DialogResult.Yes)
+                {
+                    File.Delete(Directory.GetCurrentDirectory()+ "\\" + levelDirectory +"\\"+ filename);
+                    if (filename == level.CurrentLevel)
+                        level.Clear(true);
 
-            //        listBoxLevelNames.Items.Remove(filename);
+                    listBoxLevelNames.Items.Remove(filename);
 
-            //    }
-            //}
+                }
+            }
         }
         /********************************************************************************/
 
@@ -1003,40 +978,6 @@ namespace PlagueEngine.Tools
 
 
 
-        /********************************************************************************/
-        /// combobox GameObjectId Selected Index Changed
-        /********************************************************************************/
-        private void comboboxGameObjectId_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboboxGameObjectId.SelectedIndex != -1)
-            {
-                int id;
-                int.TryParse(comboboxGameObjectId.SelectedItem.ToString(), out id);
-
-                currentEditGameObject = level.GameObjects[id].GetData();
-                currentEditGameObject.Position = currentEditGameObject.World.Translation;
-                currentClassName = new gameObjectsClassName();
-                currentClassName.dataClassType = currentEditGameObject.GetType();
-                currentObject = currentEditGameObject;
-
-                foreach (gameObjectsClassName name in gameObjectClassNames)
-                {
-                    if (name.dataClassType == currentClassName.dataClassType)
-                    {
-                        currentClassName.className = name.className;
-                        currentClassName.ClassType = name.ClassType;
-                    }
-                }
-
-
-                propertyGrid2.SelectedObject = currentEditGameObject;
-            }
-            else
-            {
-                propertyGrid2.SelectedObject = null;
-            }
-        }
-        /********************************************************************************/
 
 
 
@@ -1067,56 +1008,30 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void buttonDeleteObject_Click(object sender, EventArgs e)
         {
-            if (comboboxGameObjectId.SelectedIndex != -1)
+
+            if (treeView1.SelectedNode.Parent != null)
             {
-                level.GameObjects[currentEditGameObject.ID].Dispose();
-                comboboxGameObjectId.SelectedIndex = -1;
-                comboboxGameObjectId.SelectedIndex = -1;
-
-                level.GameObjectsFactory.RemoveGameObject(currentEditGameObject.ID);
-                currentEditGameObject = null;
-                propertyGrid2.SelectedObject = null;
-                
-                LoadFilteredID(null,null);
-            }
-
-        }
-
-        private void LoadFilteredID(object sender, EventArgs e)
-        {
-            if (comboBoxFilterId.SelectedItem.ToString() == "Show all")
-            {
-                LoadAllObjectsId();
-            }
-            else
-            {
-
-                foreach (gameObjectsClassName gameObjectclassName in gameObjectClassNames)
+                int res;
+                if (int.TryParse(treeView1.SelectedNode.Text, out res))
                 {
-                    if (comboBoxFilterId.SelectedItem.ToString() == gameObjectclassName.className)
-                    {
-                        comboboxGameObjectId.SelectedIndex = -1;
-                        comboboxGameObjectId.SelectedIndex = -1;
-                        comboboxGameObjectId.Items.Clear();
-
-                        foreach (GameObjectInstance gameObject in level.GameObjects.Values)
-                        {
-                            if (gameObject.GetType() == gameObjectclassName.ClassType)
-                            {
-                                comboboxGameObjectId.Items.Add(gameObject.ID);
-                            }
-                        }
-                    }
+                    treeView1.SelectedNode.Remove();
+                    level.GameObjectsFactory.RemoveGameObject(res);
+                    currentEditGameObject = null;
+                    propertyGrid2.SelectedObject = null;
                 }
+
             }
+            
+
+
         }
+
 
         private void checkBoxDisableEditing_CheckedChanged(object sender, EventArgs e)
         {
             if (!checkBoxDisableEditing.Checked)
             {
               
-                level.GameObjects[currentEditGameObject.ID].Dispose();
                 level.GameObjectsFactory.RemoveGameObject(currentEditGameObject.ID);
                 level.GameObjectsFactory.Create(currentEditGameObject);
             }
@@ -1185,28 +1100,28 @@ namespace PlagueEngine.Tools
 
         private void buttonSaveAs_Click(object sender, EventArgs e)
         {
-            // TODO: Ponaprawiać edytor 3 :3 
-                        //releaseInput = false;
-                        //LevelNameMessageBox box = new LevelNameMessageBox("Level name:");
-                        //box.ShowDialog();
-                        //releaseInput = true;
+                        releaseInput = false;
+                        LevelNameMessageBox box = new LevelNameMessageBox("Level name:");
+                        box.ShowDialog();
+                        releaseInput = true;
 
-                        //if (!box.canceled)
-                        //{
+                        string lvlName;
+                        if (!box.canceled)
+                        {
 
-                        //    Regex reg = new Regex(@""+levelExtension+"$");
-                        //    if(!reg.IsMatch(box.levelName))
-                        //    {
-                        //        currentLevelName = box.levelName + levelExtension;
-                        //    }
-                        //    else
-                        //    {
-                        //        currentLevelName = box.levelName;
-                        //    }
-                            
-                        //    contentManager.SaveLevel( currentLevelName, currentLevel.SaveLevel());
-                        //    listBoxLevelNames.Items.Add(currentLevelName);
-                        //}
+                            Regex reg = new Regex(@""+levelExtension+"$");
+                            if(!reg.IsMatch(box.levelName))
+                            {
+                                lvlName = box.levelName + levelExtension;
+                            }
+                            else
+                            {
+                                lvlName = box.levelName;
+                            }
+
+                            level.SaveLevel(lvlName);
+                            listBoxLevelNames.Items.Add(lvlName);
+                        }
                 
           
 
@@ -1314,6 +1229,40 @@ namespace PlagueEngine.Tools
         {
             input.Enabled = inputEnable.Checked;
         }
+
+
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.Parent != null)
+            {
+
+                    int id;
+                    int.TryParse(e.Node.Text, out id);
+
+                    currentEditGameObject = level.GameObjects[id].GetData();
+                    currentEditGameObject.Position = currentEditGameObject.World.Translation;
+                    currentClassName = new gameObjectsClassName();
+                    currentClassName.dataClassType = currentEditGameObject.GetType();
+                    currentObject = currentEditGameObject;
+
+                    foreach (gameObjectsClassName name in gameObjectClassNames)
+                    {
+                        if (name.dataClassType == currentClassName.dataClassType)
+                        {
+                            currentClassName.className = name.className;
+                            currentClassName.ClassType = name.ClassType;
+                        }
+                    }
+
+
+                    propertyGrid2.SelectedObject = currentEditGameObject;
+     
+
+            }
+        }
+
+  
 
 
 

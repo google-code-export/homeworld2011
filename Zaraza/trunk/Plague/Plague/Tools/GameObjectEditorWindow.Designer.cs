@@ -43,15 +43,10 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.propertyGrid2 = new System.Windows.Forms.PropertyGrid();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.buttonDeleteObject = new System.Windows.Forms.Button();
             this.buttonCreateDefinitionEdit = new System.Windows.Forms.Button();
             this.checkBoxDisableEditing = new System.Windows.Forms.CheckBox();
             this.buttonForceUpdate = new System.Windows.Forms.Button();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.buttonDeleteObject = new System.Windows.Forms.Button();
-            this.comboBoxFilterId = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.comboboxGameObjectId = new System.Windows.Forms.ComboBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.listBoxLevelNames = new System.Windows.Forms.ListBox();
             this.panel4 = new System.Windows.Forms.Panel();
@@ -68,15 +63,14 @@
             this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
             this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.treeView1 = new System.Windows.Forms.TreeView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.panel5.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.panel4.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -217,7 +211,6 @@
             // 
             this.tabPage3.Controls.Add(this.propertyGrid2);
             this.tabPage3.Controls.Add(this.panel5);
-            this.tabPage3.Controls.Add(this.panel3);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(402, 467);
@@ -228,14 +221,15 @@
             // propertyGrid2
             // 
             this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid2.Location = new System.Drawing.Point(0, 63);
+            this.propertyGrid2.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid2.Name = "propertyGrid2";
-            this.propertyGrid2.Size = new System.Drawing.Size(402, 369);
+            this.propertyGrid2.Size = new System.Drawing.Size(402, 432);
             this.propertyGrid2.TabIndex = 18;
             this.propertyGrid2.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid2_PropertyValueChanged);
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.buttonDeleteObject);
             this.panel5.Controls.Add(this.buttonCreateDefinitionEdit);
             this.panel5.Controls.Add(this.checkBoxDisableEditing);
             this.panel5.Controls.Add(this.buttonForceUpdate);
@@ -245,9 +239,19 @@
             this.panel5.Size = new System.Drawing.Size(402, 35);
             this.panel5.TabIndex = 21;
             // 
+            // buttonDeleteObject
+            // 
+            this.buttonDeleteObject.Location = new System.Drawing.Point(319, 4);
+            this.buttonDeleteObject.Name = "buttonDeleteObject";
+            this.buttonDeleteObject.Size = new System.Drawing.Size(80, 23);
+            this.buttonDeleteObject.TabIndex = 14;
+            this.buttonDeleteObject.Text = "Delete";
+            this.buttonDeleteObject.UseVisualStyleBackColor = true;
+            this.buttonDeleteObject.Click += new System.EventHandler(this.buttonDeleteObject_Click);
+            // 
             // buttonCreateDefinitionEdit
             // 
-            this.buttonCreateDefinitionEdit.Location = new System.Drawing.Point(234, 3);
+            this.buttonCreateDefinitionEdit.Location = new System.Drawing.Point(209, 4);
             this.buttonCreateDefinitionEdit.Name = "buttonCreateDefinitionEdit";
             this.buttonCreateDefinitionEdit.Size = new System.Drawing.Size(104, 23);
             this.buttonCreateDefinitionEdit.TabIndex = 20;
@@ -258,7 +262,7 @@
             // checkBoxDisableEditing
             // 
             this.checkBoxDisableEditing.AutoSize = true;
-            this.checkBoxDisableEditing.Location = new System.Drawing.Point(33, 7);
+            this.checkBoxDisableEditing.Location = new System.Drawing.Point(8, 7);
             this.checkBoxDisableEditing.Name = "checkBoxDisableEditing";
             this.checkBoxDisableEditing.Size = new System.Drawing.Size(95, 17);
             this.checkBoxDisableEditing.TabIndex = 19;
@@ -268,73 +272,13 @@
             // 
             // buttonForceUpdate
             // 
-            this.buttonForceUpdate.Location = new System.Drawing.Point(134, 3);
+            this.buttonForceUpdate.Location = new System.Drawing.Point(109, 4);
             this.buttonForceUpdate.Name = "buttonForceUpdate";
             this.buttonForceUpdate.Size = new System.Drawing.Size(94, 23);
             this.buttonForceUpdate.TabIndex = 18;
             this.buttonForceUpdate.Text = "Force update";
             this.buttonForceUpdate.UseVisualStyleBackColor = true;
             this.buttonForceUpdate.Click += new System.EventHandler(this.buttonForceUpdate_Click);
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.label3);
-            this.panel3.Controls.Add(this.buttonDeleteObject);
-            this.panel3.Controls.Add(this.comboBoxFilterId);
-            this.panel3.Controls.Add(this.label4);
-            this.panel3.Controls.Add(this.comboboxGameObjectId);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(402, 63);
-            this.panel3.TabIndex = 17;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 35);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "GameObject:";
-            // 
-            // buttonDeleteObject
-            // 
-            this.buttonDeleteObject.Location = new System.Drawing.Point(349, 30);
-            this.buttonDeleteObject.Name = "buttonDeleteObject";
-            this.buttonDeleteObject.Size = new System.Drawing.Size(24, 23);
-            this.buttonDeleteObject.TabIndex = 14;
-            this.buttonDeleteObject.Text = "X";
-            this.buttonDeleteObject.UseVisualStyleBackColor = true;
-            this.buttonDeleteObject.Click += new System.EventHandler(this.buttonDeleteObject_Click);
-            // 
-            // comboBoxFilterId
-            // 
-            this.comboBoxFilterId.FormattingEnabled = true;
-            this.comboBoxFilterId.Location = new System.Drawing.Point(91, 3);
-            this.comboBoxFilterId.Name = "comboBoxFilterId";
-            this.comboBoxFilterId.Size = new System.Drawing.Size(282, 21);
-            this.comboBoxFilterId.Sorted = true;
-            this.comboBoxFilterId.TabIndex = 15;
-            this.comboBoxFilterId.SelectedIndexChanged += new System.EventHandler(this.LoadFilteredID);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 11);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 13);
-            this.label4.TabIndex = 16;
-            this.label4.Text = "Filter:";
-            // 
-            // comboboxGameObjectId
-            // 
-            this.comboboxGameObjectId.FormattingEnabled = true;
-            this.comboboxGameObjectId.Location = new System.Drawing.Point(91, 32);
-            this.comboboxGameObjectId.Name = "comboboxGameObjectId";
-            this.comboboxGameObjectId.Size = new System.Drawing.Size(256, 21);
-            this.comboboxGameObjectId.TabIndex = 6;
-            this.comboboxGameObjectId.SelectedIndexChanged += new System.EventHandler(this.comboboxGameObjectId_SelectedIndexChanged);
             // 
             // tabPage2
             // 
@@ -510,14 +454,6 @@
             this.panel6.Size = new System.Drawing.Size(624, 493);
             this.panel6.TabIndex = 22;
             // 
-            // treeView1
-            // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 0);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(210, 493);
-            this.treeView1.TabIndex = 0;
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -534,6 +470,15 @@
             this.splitContainer1.Size = new System.Drawing.Size(624, 493);
             this.splitContainer1.SplitterDistance = 410;
             this.splitContainer1.TabIndex = 4;
+            // 
+            // treeView1
+            // 
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(210, 493);
+            this.treeView1.TabIndex = 0;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // GameObjectEditorWindow
             // 
@@ -554,8 +499,6 @@
             this.tabPage3.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
@@ -586,16 +529,11 @@
         private System.Windows.Forms.Button buttonCreateDefinition;
         private System.Windows.Forms.Button buttonDeleteDefinition;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboboxGameObjectId;
         private System.Windows.Forms.Button buttonDeleteObject;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox comboBoxFilterId;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.PropertyGrid propertyGrid2;
-        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.ListBox listBoxLevelNames;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button buttonSaveAs;
