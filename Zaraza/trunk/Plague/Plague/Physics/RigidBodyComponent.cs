@@ -427,7 +427,7 @@ namespace PlagueEngine.Physics
         {
             body.DisableBody();
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(skin);
-            physicsManager.rigidBodies.Remove(this.gameObject.ID);
+            if(gameObject!=null)physicsManager.rigidBodies.Remove(this.gameObject.ID);
             base.ReleaseMe();
         }
         /****************************************************************************/
@@ -536,13 +536,15 @@ namespace PlagueEngine.Physics
                 Vector3 deltaVel = DesiredVelocity - Velocity;
 
 
-                deltaVel.Y = 0.0f;
+                deltaVel.Y = -5.0f;
+                //deltaVel.Y = 0.0f;
                 deltaVel *= 10.0f;
 
 
                 float forceFactor = 90.0f;
                 AddWorldForce(deltaVel * Mass * dt * forceFactor);
                 //AddBodyForce(DesiredVelocity*3 * Mass * dt * forceFactor);
+                
 
             }
       

@@ -66,7 +66,7 @@ namespace PlagueEngine.Physics.Components
 
             Vector3 t = Vector3.Transform(skinTranslation, dummyWorld);
             dummyWorld.Translation = translation + t;
-            ;
+            
 
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
             dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);

@@ -613,8 +613,8 @@ namespace PlagueEngine.HighLevelGameFlow
 
             sssdata.DynamicRoughness = 0.8f;
             sssdata.Elasticity = 0.1f;
-            sssdata.Mass = 1000f;
-            sssdata.Height = 2f;
+            sssdata.Mass = 10000f;
+            sssdata.Height = 6f;
             sssdata.Lenght = 7.1f;
             sssdata.Width = 12f;
             sssdata.Immovable = false;
@@ -628,41 +628,41 @@ namespace PlagueEngine.HighLevelGameFlow
 
 
 
-            BurningBarrelData ddxdtata = new BurningBarrelData();
-            ddxdtata.Type = (typeof(BurningBarrel));
-            ddxdtata.particleTexture = "fire";
-            ddxdtata.maxParticles = 500;
-            ddxdtata.duration = 3;
-            ddxdtata.durationRandomnes = 1;
-            ddxdtata.minHorizontalVelocity = 0;
-            ddxdtata.maxHorizontalVelocity = 0;
-            ddxdtata.minVerticalVelocity = 0;
-            ddxdtata.maxVerticalVelocity = 10;
-            ddxdtata.gravity = new Vector3(0, 5, 0);
-            ddxdtata.minColor = new Color(255, 255, 255, 10);
-            ddxdtata.maxColor = new Color(255, 255, 255, 255);
-            ddxdtata.minStartSize = 5;
-            ddxdtata.maxStartSize = 10;
-            ddxdtata.minEndSize = 1;
-            ddxdtata.maxEndSize = 2;
-            ddxdtata.blendState = 1;
-            ddxdtata.particlesPerSecond = 10;
-            ddxdtata.Model = "Barrel";
-            ddxdtata.Diffuse = "Barrel_diffuse";
-            ddxdtata.Specular = "Barrel_specular";
-            ddxdtata.Normals = "Barrel_normals";
-            ddxdtata.DynamicRoughness = 0.7f;
-            ddxdtata.Elasticity = 0.1f;
-            ddxdtata.StaticRoughness = 0.6f;
-            ddxdtata.Radius = 1.1f;
-            ddxdtata.Lenght = 3.3f;
-            ddxdtata.Immovable = false;
-            ddxdtata.InstancingMode = 3;
-            ddxdtata.Mass = 1;
-            ddxdtata.World = Matrix.CreateTranslation(255, 77, 35);
+            //BurningBarrelData ddxdtata = new BurningBarrelData();
+            //ddxdtata.Type = (typeof(BurningBarrel));
+            //ddxdtata.particleTexture = "fire";
+            //ddxdtata.maxParticles = 500;
+            //ddxdtata.duration = 3;
+            //ddxdtata.durationRandomnes = 1;
+            //ddxdtata.minHorizontalVelocity = 0;
+            //ddxdtata.maxHorizontalVelocity = 0;
+            //ddxdtata.minVerticalVelocity = 0;
+            //ddxdtata.maxVerticalVelocity = 10;
+            //ddxdtata.gravity = new Vector3(0, 5, 0);
+            //ddxdtata.minColor = new Color(255, 255, 255, 10);
+            //ddxdtata.maxColor = new Color(255, 255, 255, 255);
+            //ddxdtata.minStartSize = 5;
+            //ddxdtata.maxStartSize = 10;
+            //ddxdtata.minEndSize = 1;
+            //ddxdtata.maxEndSize = 2;
+            //ddxdtata.blendState = 1;
+            //ddxdtata.particlesPerSecond = 10;
+            //ddxdtata.Model = "Barrel";
+            //ddxdtata.Diffuse = "Barrel_diffuse";
+            //ddxdtata.Specular = "Barrel_specular";
+            //ddxdtata.Normals = "Barrel_normals";
+            //ddxdtata.DynamicRoughness = 0.7f;
+            //ddxdtata.Elasticity = 0.1f;
+            //ddxdtata.StaticRoughness = 0.6f;
+            //ddxdtata.Radius = 1.1f;
+            //ddxdtata.Lenght = 3.3f;
+            //ddxdtata.Immovable = false;
+            //ddxdtata.InstancingMode = 3;
+            //ddxdtata.Mass = 1;
+            //ddxdtata.World = Matrix.CreateTranslation(255, 77, 35);
 
-            GameObjectsFactory.Create(ddxdtata);
-            
+            //GameObjectsFactory.Create(ddxdtata);
+
 
 
 
@@ -688,7 +688,7 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.Specular = true;
             fldata.StaticRoughness = 1;
             fldata.World = Matrix.CreateTranslation(250, 60, 30);
-            fldata.Status = 2;            
+            fldata.Status = 2;
             fldata.DepthBias = 0.05f;
 
             GameObjectsFactory.Create(fldata);
@@ -705,8 +705,8 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.World = Matrix.CreateTranslation(245, 56, 30);
 
             mddd.Mass = 90;
-            mddd.StaticRoughness = 1f;
-            mddd.DynamicRoughness = 1f;
+            mddd.StaticRoughness = 1.0f;
+            mddd.DynamicRoughness = 1.0f;
             mddd.Elasticity = 0.01f;
 
             mddd.Length = 5;
@@ -717,7 +717,7 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.Status = 3;
             mddd.MarkerPosition = new Vector3(0, 6.2f, 1);
             mddd.RotationSpeed = 7.5f;
-            mddd.MovingSpeed = 750.0f;
+            mddd.MovingSpeed = 550.0f;
             mddd.DistancePrecision = 1.0f;
             mddd.AnglePrecision = 0.1f;
             mddd.GripBone = "Bip001_R_Hand001";
@@ -727,13 +727,13 @@ namespace PlagueEngine.HighLevelGameFlow
 
             mddd.World = Matrix.CreateTranslation(260, 56, 30);
             GameObjectsFactory.Create(mddd);
-            
+
             mddd.World = Matrix.CreateTranslation(265, 56, 30);
             GameObjectsFactory.Create(mddd);
-            
+
             mddd.World = Matrix.CreateTranslation(270, 56, 30);
             GameObjectsFactory.Create(mddd);
-            
+
             mddd.World = Matrix.CreateTranslation(275, 56, 30);
             GameObjectsFactory.Create(mddd);
 
@@ -752,7 +752,7 @@ namespace PlagueEngine.HighLevelGameFlow
             MercenariesManagerData mcmd = new MercenariesManagerData();
             mcmd.Type = typeof(MercenariesManager);
             mcmd.SelectedMercenaries = new List<int>();
-            
+
             GameObjectInstance mm = GameObjectsFactory.Create(mcmd);
 
             LinkedCameraData lcdata = new LinkedCameraData();
@@ -797,6 +797,9 @@ namespace PlagueEngine.HighLevelGameFlow
             //ssdata.Translation = new Vector3(0, 2.2f, 0);
             //GameObjectsFactory.Create(ssdata);
 
+
+
+           
 
 
         }

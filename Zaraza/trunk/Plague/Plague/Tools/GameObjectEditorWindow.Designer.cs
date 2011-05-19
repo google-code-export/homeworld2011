@@ -41,11 +41,11 @@
             this.button1 = new System.Windows.Forms.Button();
             this.buttonCreateDefinition = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.propertyGrid2 = new System.Windows.Forms.PropertyGrid();
             this.panel5 = new System.Windows.Forms.Panel();
             this.buttonCreateDefinitionEdit = new System.Windows.Forms.Button();
             this.checkBoxDisableEditing = new System.Windows.Forms.CheckBox();
             this.buttonForceUpdate = new System.Windows.Forms.Button();
-            this.propertyGrid2 = new System.Windows.Forms.PropertyGrid();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.buttonDeleteObject = new System.Windows.Forms.Button();
@@ -61,13 +61,15 @@
             this.buttonNew = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.inputEnable = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBoxGamePaused = new System.Windows.Forms.CheckBox();
             this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
             this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.inputEnable = new System.Windows.Forms.CheckBox();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -78,6 +80,11 @@
             this.tabPage2.SuspendLayout();
             this.panel4.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -90,7 +97,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(389, 492);
+            this.tabControl1.Size = new System.Drawing.Size(410, 493);
             this.tabControl1.TabIndex = 3;
             // 
             // tabPage1
@@ -101,7 +108,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(381, 466);
+            this.tabPage1.Size = new System.Drawing.Size(402, 467);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Create GameObject";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -111,7 +118,7 @@
             this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid1.Location = new System.Drawing.Point(3, 62);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(375, 372);
+            this.propertyGrid1.Size = new System.Drawing.Size(396, 374);
             this.propertyGrid1.TabIndex = 16;
             this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged_1);
             // 
@@ -125,7 +132,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(375, 59);
+            this.panel2.Size = new System.Drawing.Size(396, 59);
             this.panel2.TabIndex = 15;
             // 
             // label1
@@ -181,9 +188,9 @@
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.buttonCreateDefinition);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 434);
+            this.panel1.Location = new System.Drawing.Point(3, 436);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(375, 29);
+            this.panel1.Size = new System.Drawing.Size(396, 28);
             this.panel1.TabIndex = 14;
             // 
             // button1
@@ -208,15 +215,24 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.panel5);
             this.tabPage3.Controls.Add(this.propertyGrid2);
+            this.tabPage3.Controls.Add(this.panel5);
             this.tabPage3.Controls.Add(this.panel3);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(381, 466);
+            this.tabPage3.Size = new System.Drawing.Size(402, 467);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Edit GameObject";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // propertyGrid2
+            // 
+            this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid2.Location = new System.Drawing.Point(0, 63);
+            this.propertyGrid2.Name = "propertyGrid2";
+            this.propertyGrid2.Size = new System.Drawing.Size(402, 369);
+            this.propertyGrid2.TabIndex = 18;
+            this.propertyGrid2.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid2_PropertyValueChanged);
             // 
             // panel5
             // 
@@ -224,9 +240,9 @@
             this.panel5.Controls.Add(this.checkBoxDisableEditing);
             this.panel5.Controls.Add(this.buttonForceUpdate);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel5.Location = new System.Drawing.Point(0, 437);
+            this.panel5.Location = new System.Drawing.Point(0, 432);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(381, 29);
+            this.panel5.Size = new System.Drawing.Size(402, 35);
             this.panel5.TabIndex = 21;
             // 
             // buttonCreateDefinitionEdit
@@ -260,15 +276,6 @@
             this.buttonForceUpdate.UseVisualStyleBackColor = true;
             this.buttonForceUpdate.Click += new System.EventHandler(this.buttonForceUpdate_Click);
             // 
-            // propertyGrid2
-            // 
-            this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid2.Location = new System.Drawing.Point(0, 63);
-            this.propertyGrid2.Name = "propertyGrid2";
-            this.propertyGrid2.Size = new System.Drawing.Size(381, 403);
-            this.propertyGrid2.TabIndex = 18;
-            this.propertyGrid2.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid2_PropertyValueChanged);
-            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.label3);
@@ -279,7 +286,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(381, 63);
+            this.panel3.Size = new System.Drawing.Size(402, 63);
             this.panel3.TabIndex = 17;
             // 
             // label3
@@ -336,7 +343,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(381, 466);
+            this.tabPage2.Size = new System.Drawing.Size(402, 467);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Level";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -348,7 +355,7 @@
             this.listBoxLevelNames.Location = new System.Drawing.Point(3, 3);
             this.listBoxLevelNames.Margin = new System.Windows.Forms.Padding(15);
             this.listBoxLevelNames.Name = "listBoxLevelNames";
-            this.listBoxLevelNames.Size = new System.Drawing.Size(375, 431);
+            this.listBoxLevelNames.Size = new System.Drawing.Size(396, 432);
             this.listBoxLevelNames.TabIndex = 6;
             // 
             // panel4
@@ -359,9 +366,9 @@
             this.panel4.Controls.Add(this.buttonNew);
             this.panel4.Controls.Add(this.buttonSave);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(3, 434);
+            this.panel4.Location = new System.Drawing.Point(3, 435);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(375, 29);
+            this.panel4.Size = new System.Drawing.Size(396, 29);
             this.panel4.TabIndex = 5;
             // 
             // buttonSaveAs
@@ -424,10 +431,21 @@
             this.tabPage4.Controls.Add(this.buttonCommitMeshTransforms);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(381, 466);
+            this.tabPage4.Size = new System.Drawing.Size(402, 467);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Game Properites";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // inputEnable
+            // 
+            this.inputEnable.AutoSize = true;
+            this.inputEnable.Location = new System.Drawing.Point(204, 113);
+            this.inputEnable.Name = "inputEnable";
+            this.inputEnable.Size = new System.Drawing.Size(80, 17);
+            this.inputEnable.TabIndex = 9;
+            this.inputEnable.Text = "Game input";
+            this.inputEnable.UseVisualStyleBackColor = true;
+            this.inputEnable.CheckedChanged += new System.EventHandler(this.inputEnable_CheckedChanged);
             // 
             // checkBox2
             // 
@@ -485,29 +503,43 @@
             // 
             // panel6
             // 
+            this.panel6.Controls.Add(this.splitContainer1);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel6.Location = new System.Drawing.Point(0, 0);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(389, 492);
+            this.panel6.Size = new System.Drawing.Size(624, 493);
             this.panel6.TabIndex = 22;
             // 
-            // inputEnable
+            // treeView1
             // 
-            this.inputEnable.AutoSize = true;
-            this.inputEnable.Location = new System.Drawing.Point(204, 113);
-            this.inputEnable.Name = "inputEnable";
-            this.inputEnable.Size = new System.Drawing.Size(80, 17);
-            this.inputEnable.TabIndex = 9;
-            this.inputEnable.Text = "Game input";
-            this.inputEnable.UseVisualStyleBackColor = true;
-            this.inputEnable.CheckedChanged += new System.EventHandler(this.inputEnable_CheckedChanged);
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(210, 493);
+            this.treeView1.TabIndex = 0;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.tabControl1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.treeView1);
+            this.splitContainer1.Size = new System.Drawing.Size(624, 493);
+            this.splitContainer1.SplitterDistance = 410;
+            this.splitContainer1.TabIndex = 4;
             // 
             // GameObjectEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(389, 492);
-            this.Controls.Add(this.tabControl1);
+            this.ClientSize = new System.Drawing.Size(624, 493);
             this.Controls.Add(this.panel6);
             this.Name = "GameObjectEditorWindow";
             this.Text = "Game-Object-Editor";
@@ -528,6 +560,11 @@
             this.panel4.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -561,19 +598,21 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.ListBox listBoxLevelNames;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.CheckBox checkBoxDisableEditing;
-        private System.Windows.Forms.Button buttonForceUpdate;
-        private System.Windows.Forms.Button buttonCreateDefinitionEdit;
         private System.Windows.Forms.Button buttonSaveAs;
         private System.Windows.Forms.Button buttonCommitMeshTransforms;
         private System.Windows.Forms.CheckBox checkBoxShowCollisionSkin;
-        private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.CheckBox checkBoxGamePaused;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox inputEnable;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Button buttonCreateDefinitionEdit;
+        private System.Windows.Forms.CheckBox checkBoxDisableEditing;
+        private System.Windows.Forms.Button buttonForceUpdate;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
 
 
     }

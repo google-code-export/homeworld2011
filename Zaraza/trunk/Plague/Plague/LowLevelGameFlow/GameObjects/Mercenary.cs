@@ -81,7 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             controller.EnableControl();
 
             mesh.StartClip("Idle");
-
+            
             RequiresUpdate = true;
         }
         /****************************************************************************/
@@ -139,6 +139,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (collisionEvent.gameObject == objectTarget)
                 {
+                    
                     body.CancelSubscribeCollisionEvent(objectTarget.ID);
 
                     if (objectTarget.Status == GameObjectStatus.Pickable)

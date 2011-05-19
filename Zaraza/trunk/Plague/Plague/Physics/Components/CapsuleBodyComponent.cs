@@ -22,7 +22,7 @@ namespace PlagueEngine.Physics.Components
 {
 
     /****************************************************************************/
-    /// SphericalBodyComponent
+    /// CapsuleBodyComponent
     /****************************************************************************/
     class CapsuleBodyComponent : RigidBodyComponent
     {

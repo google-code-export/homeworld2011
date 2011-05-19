@@ -344,6 +344,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (skin == null)
             {
+                
                 return true;
             }
             return false;
@@ -370,7 +371,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 case MouseMoveAction.Scroll:
 
-                    Vector3 testPosition = position + direction * zoomSpeed * mouseMoveState.ScrollDifference;
+
+                    Vector3 testPosition = position + direction * zoomSpeed  * mouseMoveState.ScrollDifference;
+
                     float distance = Vector3.Distance(target, testPosition);
                     if (distance > 3.0f && testPosition.Y > target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
                     {
