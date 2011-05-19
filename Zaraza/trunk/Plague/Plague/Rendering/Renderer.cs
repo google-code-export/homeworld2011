@@ -419,6 +419,16 @@ namespace PlagueEngine.Rendering
         {
 
             /************************************/
+            /// Batched Skinned Meshes
+            /************************************/
+            batchedSkinnedMeshes.Effect.Parameters["View"].SetValue(view);
+            batchedSkinnedMeshes.Effect.Parameters["Projection"].SetValue(projection);
+            batchedSkinnedMeshes.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
+            batchedSkinnedMeshes.Draw(frustrum);
+            /************************************/
+            
+            
+            /************************************/
             /// Renderable Components
             /************************************/
             foreach (RenderableComponent renderableComponent in renderableComponents)
@@ -441,16 +451,6 @@ namespace PlagueEngine.Rendering
             batchedMeshes.SetEffectParameter("Projection", projection);
             batchedMeshes.SetEffectParameter("ViewProjection", viewProjection);
             batchedMeshes.Draw(frustrum);
-            /************************************/
-
-
-            /************************************/
-            /// Batched Skinned Meshes
-            /************************************/
-            batchedSkinnedMeshes.Effect.Parameters["View"].SetValue(view);
-            batchedSkinnedMeshes.Effect.Parameters["Projection"].SetValue(projection);
-            batchedSkinnedMeshes.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
-            batchedSkinnedMeshes.Draw(frustrum);
             /************************************/
 
 

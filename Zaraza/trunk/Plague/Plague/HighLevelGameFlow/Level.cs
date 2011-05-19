@@ -717,7 +717,7 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.Status = 3;
             mddd.MarkerPosition = new Vector3(0, 6.2f, 1);
             mddd.RotationSpeed = 7.5f;
-            mddd.MovingSpeed = 550.0f;
+            mddd.MovingSpeed = 750.0f;
             mddd.DistancePrecision = 1.0f;
             mddd.AnglePrecision = 0.1f;
             mddd.GripBone = "Bip001_R_Hand001";

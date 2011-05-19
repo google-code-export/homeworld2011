@@ -125,13 +125,13 @@ namespace PlagueEngine.Rendering.Components
             {
                 AnimationPlayer tmp = currentAnimation;
                 currentAnimation = blendAnimation;
-                blendAnimation   = tmp;
+                blendAnimation = tmp;
             }
-            
+
             Blend = true;
 
             BlendDuration = duration;
-            BlendTime     = TimeSpan.Zero;
+            BlendTime = TimeSpan.Zero;
 
             blendAnimation.Start(animation);
         }   
