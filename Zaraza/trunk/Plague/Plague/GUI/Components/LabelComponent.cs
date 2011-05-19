@@ -18,57 +18,38 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public LabelControl label {  get; private set; }
+        public LabelControl Control { get; private set; }
         /****************************************************************************/
         
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public LabelComponent():base(null)
+        public LabelComponent(String text, UniRectangle bounds)
+            : base()
         {
-            label = new LabelControl();
+            Control = new LabelControl();
+            Control.Bounds = bounds;
+            Control.Text = text;                  
         }
         /****************************************************************************/
-
-        /****************************************************************************/
-        /// initialize
-        /****************************************************************************/
-        public bool Initialize(String text, UniRectangle bounds)
-        {
-            if (label != null && gui!=null)
-            {
-                label.Text = text;
-                label.Bounds = bounds;
-#if DEBUG
-                Diagnostics.PushLog("Label component initialized successfully");
-#endif
-                return true;
-            }
-#if DEBUG
-            Diagnostics.PushLog("Label component wasn't initialized");
-#endif
-            return false;
-        }
-        /****************************************************************************/
+                        
 
         /****************************************************************************/
         /// register
         /****************************************************************************/
-        public override void register()
+        public override void Register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.label);
+            gui.Manager.Screen.Desktop.Children.Add(this.Control);
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// Release Me 
         /****************************************************************************/
         public override void ReleaseMe()
-        {   
-            gui.Manager.Screen.Desktop.Children.Remove(this.label);
+        {
+            Control.Parent.Children.Remove(Control);
             base.ReleaseMe();
         }
         /****************************************************************************/

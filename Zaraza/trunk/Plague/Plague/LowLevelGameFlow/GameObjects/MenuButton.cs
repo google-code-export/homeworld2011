@@ -43,7 +43,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void handle(object oSender, EventArgs oEventArgs)
         {
-            Diagnostics.PushLog("BUTTON " + this.buttonComponent.tag + " PRESSED");
+            Diagnostics.PushLog("BUTTON " + this.buttonComponent.Tag + " PRESSED");
         }
         /****************************************************************************/
         
@@ -69,7 +69,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             MenuButtonData data = new MenuButtonData();
             GetData(data);
             //TODO: uzupełnić GO buttona
-            data.Text = this.buttonComponent.button.Text;
+            data.Text = this.buttonComponent.Control.Text;
             return data;
         }
         /********************************************************************************/

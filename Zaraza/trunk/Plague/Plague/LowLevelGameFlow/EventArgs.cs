@@ -17,6 +17,7 @@ namespace PlagueEngine.LowLevelGameFlow
     class DestroyEvent       : EventArgs { };
     class SwitchEvent        : EventArgs { };
     class GameObjectReleased : EventArgs { };
+    class ExamineEvent       : EventArgs { };
     /********************************************************************************/
 
     
@@ -310,4 +311,68 @@ namespace PlagueEngine.LowLevelGameFlow
     }
     /********************************************************************************/
 
+
+    /********************************************************************************/
+    /// GrabObjectCommandEvent
+    /********************************************************************************/
+    class GrabObjectCommandEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+
+        public GrabObjectCommandEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null) return "ID: " + gameObject.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// ExamineObjectCommandEvent
+    /********************************************************************************/
+    class ExamineObjectCommandEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+
+        public ExamineObjectCommandEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null) return "ID: " + gameObject.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// FollowObjectCommandEvent
+    /********************************************************************************/
+    class FollowObjectCommandEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+
+        public FollowObjectCommandEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null) return "ID: " + gameObject.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+   
 }

@@ -161,6 +161,7 @@
     <Compile Include="GUI\Components\InputComponent.cs" />
     <Compile Include="GUI\Components\LabelComponent.cs" />
     <Compile Include="GUI\Components\PanelComponent.cs" />
+    <Compile Include="GUI\Components\WindowComponent.cs" />
     <Compile Include="GUI\GUI.cs" />
     <Compile Include="GUI\GUIComponent.cs" />
     <Compile Include="GUI\GUIComponentsFactory.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\ActionSwitch.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\DescriptionWindow.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Flashlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\GlowStick.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Input.cs" />

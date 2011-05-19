@@ -47,7 +47,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             InputData data = new InputData();
             GetData(data);
             //TODO: uzupełnić GO labelki
-            data.Text = this.labelComponent.label.Text;
+            data.Text = this.labelComponent.Control.Text;
             return data;
         }
         /********************************************************************************/

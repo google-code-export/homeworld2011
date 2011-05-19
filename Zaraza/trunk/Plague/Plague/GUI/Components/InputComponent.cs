@@ -24,7 +24,7 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public InputComponent():base(null)
+        public InputComponent():base()
         {
             input = new InputControl();
         }
@@ -54,7 +54,7 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// register
         /****************************************************************************/
-        public override void register()
+        public override void Register()
         {
             gui.Manager.Screen.Desktop.Children.Add(this.input);
         }

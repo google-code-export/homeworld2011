@@ -15,8 +15,7 @@ namespace PlagueEngine.GUI
         /// Fields
         /****************************************************************************/
         public GuiManager Manager;
-        public GUIComponentsFactory ComponentsFactory;
-        public WindowControl Window;
+        public GUIComponentsFactory ComponentsFactory;        
         private readonly MouseListenerComponent _mouseListenerComponent;
 
         /****************************************************************************/
@@ -61,31 +60,7 @@ namespace PlagueEngine.GUI
               new UniScalar(0.1f, 0.0f), new UniScalar(0.1f, 0.0f), // x and y = 10%
               new UniScalar(0.8f, 0.0f), new UniScalar(0.8f, 0.0f) // width and height = 80%
             );
-            Manager.Initialize();
-
-
-            //TODO: Usunąć ten hard-kodowany guzik po zrobieniu GUI do końca.
-            
-             //Button through which the user can quit the application
-            ButtonControl quitButton = new ButtonControl();
-            quitButton.Text = "Exit";
-            quitButton.Bounds = new UniRectangle(
-              new UniScalar(1.0f, -80.0f), new UniScalar(1.0f, -32.0f), 80, 32
-            );
-
-#if DEBUG
-            quitButton.Pressed += (sender, arguments) => Diagnostics.PushLog("Quit button clicked!!");
-#endif
-
-            InputControl inputControl = new InputControl();
-            inputControl.Enabled = true;
-            inputControl.Bounds = new UniRectangle(
-              new UniScalar(1.0f, -180.0f), new UniScalar(1.0f, -132.0f), 150, 32
-            );
-
-            mainScreen.Desktop.Children.Add(inputControl);
-            mainScreen.Desktop.Children.Add(quitButton);
-           
+            Manager.Initialize();                        
         }
 
       

@@ -123,11 +123,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 moving = 1;
             }
             /*************************************/
-            /// MoveToObjectCommandEvent
+            /// GrabObjectCommandEvent
             /*************************************/
-            if (e.GetType().Equals(typeof(MoveToObjectCommandEvent)))
+            else if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
             {
-                MoveToObjectCommandEvent moveToObjectCommandEvent = e as MoveToObjectCommandEvent;
+                GrabObjectCommandEvent moveToObjectCommandEvent = e as GrabObjectCommandEvent;
 
                 if (moveToObjectCommandEvent.gameObject != this)
                 {
@@ -139,34 +139,72 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*************************************/
             /// CollisionEvent
             /*************************************/
-            if (e.GetType().Equals(typeof(CollisionEvent)))
+            else if (e.GetType().Equals(typeof(CollisionEvent)))
             {
                 CollisionEvent collisionEvent = e as CollisionEvent;
 
                 if (collisionEvent.gameObject == objectTarget)
                 {
-                    
-                    body.CancelSubscribeCollisionEvent(objectTarget.ID);
-
-                    if (objectTarget.Status == GameObjectStatus.Pickable)
+                    if (moving == 2)
                     {
-                        if (currentObject != null)
+                        body.CancelSubscribeCollisionEvent(objectTarget.ID);
+
+                        if (objectTarget.Status == GameObjectStatus.Pickable)
                         {
-                            currentObject.World.Translation += Vector3.Normalize(World.Forward) * 2; 
-                            currentObject.Owner = null;
-                            currentObject.OwnerBone = -1;
+                            if (currentObject != null)
+                            {
+                                currentObject.World.Translation += Vector3.Normalize(World.Forward) * 2;
+                                currentObject.Owner = null;
+                                currentObject.OwnerBone = -1;
+                            }
+
+                            currentObject = objectTarget;
+                            objectTarget.Owner = this;
+                            objectTarget.OwnerBone = mesh.BoneMap[gripBone];
                         }
 
-                        currentObject = objectTarget;
-                        objectTarget.Owner = this;
-                        objectTarget.OwnerBone = mesh.BoneMap[gripBone];
+                        objectTarget = null;
+                        moving = 0;
+                        controller.StopMoving();
+                        mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                     }
+                    else if (moving == 4)
+                    {
+                        body.CancelSubscribeCollisionEvent(objectTarget.ID);
 
-                    objectTarget = null;
-                    moving = 0;
-                    controller.StopMoving();
-                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
+                        SendEvent(new ExamineEvent(), EventsSystem.Priority.Normal, objectTarget);
+                                            
+                        objectTarget = null;
+                        moving = 0;
+                        controller.StopMoving();
+                        mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    
+                    }
                 }
+            }
+            /*************************************/
+            /// FollowObjectCommandEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(FollowObjectCommandEvent)))
+            {
+                FollowObjectCommandEvent FollowObjectCommandEvent = e as FollowObjectCommandEvent;
+
+                if (FollowObjectCommandEvent.gameObject != this)
+                {
+                    objectTarget = FollowObjectCommandEvent.gameObject;
+                    moving = 3;
+                }
+            }
+            /*************************************/
+            /// ExamineObjectCommandEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(ExamineObjectCommandEvent)))
+            {
+                ExamineObjectCommandEvent ExamineObjectCommandEvent = e as ExamineObjectCommandEvent;
+
+                objectTarget = ExamineObjectCommandEvent.gameObject;                    
+                moving = 4;
+                body.SubscribeCollisionEvent(objectTarget.ID);                
             }
         }
         /****************************************************************************/
@@ -209,7 +247,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }                    
                 }
             }
-            else if (moving == 2)
+            else if (moving == 2 || moving == 4)
             {
                 if (objectTarget.IsDisposed() || objectTarget.Owner != null)
                 {
@@ -237,6 +275,67 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                    
                 }                                    
+            }
+            else if (moving == 3)
+            {
+                if (objectTarget.IsDisposed())
+                {
+                    objectTarget = null;
+                    moving = 0;
+                    controller.StopMoving();
+                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    return;
+                }
+                else if (Vector2.Distance(new Vector2(World.Translation.X, World.Translation.Z),
+                                         new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) < 4)
+                {
+                    controller.StopMoving();
+                    if (mesh.CurrentClip != "Idle")
+                    {
+                        mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    }
+                    return;
+                }
+                else if (mesh.CurrentClip == "Idle" && Vector2.Distance(new Vector2(World.Translation.X, World.Translation.Z), new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) > 8)
+                {
+                    Vector3 direction = World.Translation - objectTarget.World.Translation;
+                    Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                    Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
+
+                    float det = v1.X * v2.Y - v1.Y * v2.X;
+                    float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+
+                    if (det < 0) angle = -angle;
+
+                    if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+
+                    controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+
+                    if (mesh.CurrentClip != "Run")
+                    {
+                        mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
+                    }
+                }
+                else if (mesh.CurrentClip != "Idle")
+                {
+                    Vector3 direction = World.Translation - objectTarget.World.Translation;
+                    Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                    Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
+
+                    float det = v1.X * v2.Y - v1.Y * v2.X;
+                    float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+
+                    if (det < 0) angle = -angle;
+
+                    if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+
+                    controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+
+                    if (mesh.CurrentClip != "Run")
+                    {
+                        mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
+                    }                
+                }
             }
         }
         /****************************************************************************/
@@ -349,6 +448,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             return new String[] { "Follow" };
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// GetActions
+        /****************************************************************************/
+        public string[] GetActions(Mercenary mercenary)
+        {
+            if (mercenary == this) return new String[] { };
+            else return new String[] { "Follow" };
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/
 
@@ -435,5 +546,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public String GripBone { get; set; }
     }
     /********************************************************************************/
+
 }
 /************************************************************************************/

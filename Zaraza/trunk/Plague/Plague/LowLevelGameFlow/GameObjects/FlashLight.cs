@@ -66,16 +66,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// GetActions
-        /****************************************************************************/
-        public String[] GetActions()
-        {
-            return new String[] { "Grab", "Examine" };
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
         /// Release Components
         /****************************************************************************/
         public override void ReleaseComponents()
@@ -125,6 +115,53 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.DepthBias = light.DepthBias;
 
             return data;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// GetActions
+        /****************************************************************************/
+        public String[] GetActions()
+        {
+            return new String[] {};
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// GetActions
+        /****************************************************************************/
+        public string[] GetActions(Mercenary mercenary)
+        {
+            return new String[] { "Grab", "Examine" };
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Event
+        /****************************************************************************/
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {
+            if (e.GetType().Equals(typeof(ExamineEvent)))
+            { 
+                DescriptionWindowData data = new DescriptionWindowData();
+                data.Title = "Flashlight";
+                data.Text = "A flashlight (usually called a torch outside North America) is\n" +
+                            "a hand-held electric-powered light source. Usually the light\n"   +
+                            "source is a small incandescent lightbulb or light-emitting \n"    +
+                            "diode (LED). Typical flashlight designs consist of the light \n"  +
+                            "source mounted in a parabolic or other shaped reflector, \n"      + 
+                            "a transparent lens to protect the light source from damage \n"    +
+                            "and debris, a power source (typically electric batteries), \n"    +
+                            "and an electric power switch.";
+
+                data.Width  = 410;
+                data.Height = 220;
+
+                SendEvent(new CreateObjectEvent(data), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
+            }
         }
         /****************************************************************************/
 
