@@ -569,7 +569,7 @@ namespace PlagueEngine.Tools
             }
 
 
-
+            
 
 
             foreach (GameObjectInstance gameObject in level.GameObjects.Values)
@@ -584,7 +584,7 @@ namespace PlagueEngine.Tools
 
             }
 
-
+            treeView1.Sort();
         }
         /********************************************************************************/
 
