@@ -412,47 +412,47 @@ namespace PlagueEngine.Resources
         /****************************************************************************/
         public void LoadGameObjectsDefinitions()
         {
-//            List<GameObjectDefinitionData> temp = new List<GameObjectDefinitionData>();
+            List<GameObjectDefinitionData> temp = new List<GameObjectDefinitionData>();
 
-//            //XmlSerializer serializer = new XmlSerializer(typeof(List<GameObjectDefinitionData>));
-//            //TextReader textReader = null;
+            //XmlSerializer serializer = new XmlSerializer(typeof(List<GameObjectDefinitionData>));
+            //TextReader textReader = null;
 
-//            Stream stream = new FileStream(dataDirectory + "\\" + objectsDefinitions + ".def", System.IO.FileMode.Open);
+            Stream stream = new FileStream(dataDirectory + "\\" + objectsDefinitions + ".def", System.IO.FileMode.Open);
 
-//            IFormatter formatter = new BinaryFormatter();
-//            temp = (List<GameObjectDefinitionData>)formatter.Deserialize(stream);
+            IFormatter formatter = new BinaryFormatter();
+            temp = (List<GameObjectDefinitionData>)formatter.Deserialize(stream);
 
-//            stream.Close();
+            stream.Close();
 
-////            try
-////            {
-////                textReader = new StreamReader(dataDirectory + "\\" + objectsDefinitions + ".xml");
-////            }
-////            catch (System.IO.IOException e)
-////            {
-////#if DEBUG
-////                Diagnostics.PushLog("Loading game objects definitions: " + e.Message);
-////#endif
-////                throw e;
-////            }
+            //            try
+            //            {
+            //                textReader = new StreamReader(dataDirectory + "\\" + objectsDefinitions + ".xml");
+            //            }
+            //            catch (System.IO.IOException e)
+            //            {
+            //#if DEBUG
+            //                Diagnostics.PushLog("Loading game objects definitions: " + e.Message);
+            //#endif
+            //                throw e;
+            //            }
 
-////            temp = (List<GameObjectDefinitionData>)serializer.Deserialize(textReader);
-////            textReader.Close();
+            //            temp = (List<GameObjectDefinitionData>)serializer.Deserialize(textReader);
+            //            textReader.Close();
 
-//            gameObjectsDefinitions.Clear();
+            gameObjectsDefinitions.Clear();
 
-//            GameObjectDefinition godd;
-//            foreach (GameObjectDefinitionData god in temp)
-//            {
-//                godd = new GameObjectDefinition();
-//                godd.Set(god);
-//                gameObjectsDefinitions.Add(godd.Name, godd);
-//#if DEBUG
-//                Diagnostics.PushLog("Loading object definition: " + god.Name + ".");
-//#endif
-//            }
+            GameObjectDefinition godd;
+            foreach (GameObjectDefinitionData god in temp)
+            {
+                godd = new GameObjectDefinition();
+                godd.Set(god);
+                gameObjectsDefinitions.Add(godd.Name, godd);
+#if DEBUG
+                Diagnostics.PushLog("Loading object definition: " + god.Name + ".");
+#endif
+            }
 
-//            temp.Clear();
+            temp.Clear();
 
 
 

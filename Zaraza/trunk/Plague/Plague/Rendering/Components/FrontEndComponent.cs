@@ -24,7 +24,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public Texture2D Texture { get; private set; }
+        public Texture2D  Texture { get; private set; }
         
         internal static Renderer renderer = null;
 
@@ -41,6 +41,16 @@ namespace PlagueEngine.Rendering.Components
         {
             Texture = texture;
             renderer.frontEndComponents.Add(this);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Font
+        /****************************************************************************/
+        public SpriteFont GetFont(String font)
+        {
+            return renderer.fonts[font];
         }
         /****************************************************************************/
 

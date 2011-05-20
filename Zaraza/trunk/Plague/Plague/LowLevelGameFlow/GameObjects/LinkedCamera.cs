@@ -325,7 +325,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     int i = 0;
                     foreach (Mercenary mercenary in mercenariesManager.Mercenaries)
                     {
-                        if (frustrum.Intersects(mercenary.mesh.BoundingBox))
+                        if (frustrum.Intersects(mercenary.Mesh.BoundingBox))
                         {
                             ++i;
 

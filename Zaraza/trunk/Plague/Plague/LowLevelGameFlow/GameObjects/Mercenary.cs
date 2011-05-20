@@ -27,12 +27,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         /****************************************************************************/
         /// Fields
-        /****************************************************************************/        
-        private CapsuleBodyComponent body       = null;
-        private PhysicsController    controller = null;
-        private FrontEndComponent    marker     = null;
-        private Vector3 markerLocalPosition;
-        
+        /****************************************************************************/                        
         private Vector3            target;
         private GameObjectInstance objectTarget;
         
@@ -42,17 +37,36 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float movingSpeed    = 0;
         private float distance       = 0;
         private float anglePrecision = 0;
+        /****************************************************************************/
 
+
+
+        /****************************************************************************/
+        /// Slots
+        /****************************************************************************/
         private GameObjectInstance currentObject = null;
+        //private GameObjectInstance currentObject = null;
+        //private GameObjectInstance currentObject = null;
+
         private String gripBone;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Properties
+        /// Marker
         /****************************************************************************/
         public bool                 Marker     { get; set; }
-        public SkinnedMeshComponent mesh       { get; private set; }
+        private FrontEndComponent marker = null;
+        private Vector3 markerLocalPosition;        
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Components
+        /****************************************************************************/
+        public SkinnedMeshComponent Mesh       { get; private set; }
+        public CapsuleBodyComponent Body       { get; private set; }
+        public PhysicsController    Controller { get; private set; }
         /****************************************************************************/
 
 
@@ -69,8 +83,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float angle,
                          String gripBone)
         {
-            this.mesh = mesh;
-            this.body = body;
+            Mesh = mesh;
+            Body = body;
             
             this.rotationSpeed  = rotationSpeed;
             this.movingSpeed    = movingSpeed;
@@ -83,10 +97,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             marker.Draw = MarkerDraw;
             Marker = false;
 
-            controller = new PhysicsController(body);
-            controller.EnableControl();
+            Controller = new PhysicsController(Body);
+            Controller.EnableControl();
 
-            mesh.StartClip("Idle");
+            Mesh.StartClip("Idle");
             
             RequiresUpdate = true;
         }
@@ -101,7 +115,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (bone == -1)
                 return World;
             else
-                return mesh.WorldTransforms[bone];
+                return Mesh.WorldTransforms[bone];
         }
         /****************************************************************************/
 
@@ -133,7 +147,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     objectTarget = moveToObjectCommandEvent.gameObject;
                     moving = 2;
-                    body.SubscribeCollisionEvent(objectTarget.ID);
+                    Body.SubscribeCollisionEvent(objectTarget.ID);
                 }
             }
             /*************************************/
@@ -147,7 +161,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     if (moving == 2)
                     {
-                        body.CancelSubscribeCollisionEvent(objectTarget.ID);
+                        Body.CancelSubscribeCollisionEvent(objectTarget.ID);
 
                         if (objectTarget.Status == GameObjectStatus.Pickable)
                         {
@@ -160,24 +174,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                             currentObject = objectTarget;
                             objectTarget.Owner = this;
-                            objectTarget.OwnerBone = mesh.BoneMap[gripBone];
+                            objectTarget.OwnerBone = Mesh.BoneMap[gripBone];
                         }
 
                         objectTarget = null;
                         moving = 0;
-                        controller.StopMoving();
-                        mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        Controller.StopMoving();
+                        Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                     }
                     else if (moving == 4)
                     {
-                        body.CancelSubscribeCollisionEvent(objectTarget.ID);
+                        Body.CancelSubscribeCollisionEvent(objectTarget.ID);
 
                         SendEvent(new ExamineEvent(), EventsSystem.Priority.Normal, objectTarget);
                                             
                         objectTarget = null;
                         moving = 0;
-                        controller.StopMoving();
-                        mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        Controller.StopMoving();
+                        Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                     
                     }
                 }
@@ -204,7 +218,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 objectTarget = ExamineObjectCommandEvent.gameObject;                    
                 moving = 4;
-                body.SubscribeCollisionEvent(objectTarget.ID);                
+                Body.SubscribeCollisionEvent(objectTarget.ID);                
             }
         }
         /****************************************************************************/
@@ -223,8 +237,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                  target.Z)) < distance)
                 {
                     moving = 0;
-                    controller.StopMoving();
-                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
+                    Controller.StopMoving();
+                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
                 }
                 else
                 {
@@ -237,13 +251,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                     if (det < 0) angle = -angle;
 
-                    if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                    if (Math.Abs(angle) > anglePrecision) Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
                     
-                    controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                    Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
                                         
-                    if (mesh.CurrentClip != "Run")
+                    if (Mesh.CurrentClip != "Run")
                     {
-                        mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                        
+                        Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                        
                     }                    
                 }
             }
@@ -253,8 +267,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     objectTarget = null;
                     moving = 0;
-                    controller.StopMoving();
-                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    Controller.StopMoving();
+                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                     return;
                 }
 
@@ -267,13 +281,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (det < 0) angle = -angle;
 
-                if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                if (Math.Abs(angle) > anglePrecision) Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
 
-                controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
 
-                if (mesh.CurrentClip != "Run")
+                if (Mesh.CurrentClip != "Run")
                 {
-                    mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                    
+                    Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                    
                 }                                    
             }
             else if (moving == 3)
@@ -282,21 +296,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     objectTarget = null;
                     moving = 0;
-                    controller.StopMoving();
-                    mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    Controller.StopMoving();
+                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                     return;
                 }
                 else if (Vector2.Distance(new Vector2(World.Translation.X, World.Translation.Z),
                                          new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) < 4)
                 {
-                    controller.StopMoving();
-                    if (mesh.CurrentClip != "Idle")
+                    Controller.StopMoving();
+                    if (Mesh.CurrentClip != "Idle")
                     {
-                        mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                     }
                     return;
                 }
-                else if (mesh.CurrentClip == "Idle" && Vector2.Distance(new Vector2(World.Translation.X, World.Translation.Z), new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) > 8)
+                else if (Mesh.CurrentClip == "Idle" && Vector2.Distance(new Vector2(World.Translation.X, World.Translation.Z), new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) > 8)
                 {
                     Vector3 direction = World.Translation - objectTarget.World.Translation;
                     Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
@@ -307,16 +321,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                     if (det < 0) angle = -angle;
 
-                    if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                    if (Math.Abs(angle) > anglePrecision) Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
 
-                    controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                    Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
 
-                    if (mesh.CurrentClip != "Run")
+                    if (Mesh.CurrentClip != "Run")
                     {
-                        mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
+                        Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
                     }
                 }
-                else if (mesh.CurrentClip != "Idle")
+                else if (Mesh.CurrentClip != "Idle")
                 {
                     Vector3 direction = World.Translation - objectTarget.World.Translation;
                     Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
@@ -327,13 +341,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                     if (det < 0) angle = -angle;
 
-                    if (Math.Abs(angle) > anglePrecision) controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                    if (Math.Abs(angle) > anglePrecision) Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
 
-                    controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                    Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
 
-                    if (mesh.CurrentClip != "Run")
+                    if (Mesh.CurrentClip != "Run")
                     {
-                        mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
+                        Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
                     }                
                 }
             }
@@ -370,16 +384,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            if (mesh != null)
+            if (Mesh != null)
             {
-                mesh.ReleaseMe();
-                mesh = null;
+                Mesh.ReleaseMe();
+                Mesh = null;
             }
 
-            if (body != null)
+            if (Body != null)
             {
-                body.ReleaseMe();
-                body = null;
+                Body.ReleaseMe();
+                Body = null;
             }
 
             if (marker != null)
@@ -399,38 +413,38 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             MercenaryData data = new MercenaryData();
             GetData(data);
 
-            data.Model = mesh.Model.Name;
+            data.Model = Mesh.Model.Name;
 
-            data.Diffuse  = (mesh.Textures.Diffuse == null ? String.Empty : mesh.Textures.Diffuse.Name);
-            data.Specular = (mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name);
-            data.Normals  = (mesh.Textures.Normals == null ? String.Empty : mesh.Textures.Normals.Name);
+            data.Diffuse  = (Mesh.Textures.Diffuse == null ? String.Empty : Mesh.Textures.Diffuse.Name);
+            data.Specular = (Mesh.Textures.Specular == null ? String.Empty : Mesh.Textures.Specular.Name);
+            data.Normals  = (Mesh.Textures.Normals == null ? String.Empty : Mesh.Textures.Normals.Name);
 
-            data.TimeRatio       = mesh.TimeRatio;
-            data.CurrentClip     = (mesh.currentAnimation.Clip == null ? String.Empty : mesh.currentAnimation.Clip.Name);
-            data.CurrentTime     = mesh.currentAnimation.ClipTime.TotalSeconds;
-            data.CurrentKeyframe = mesh.currentAnimation.Keyframe;
-            data.Pause           = mesh.Pause;
+            data.TimeRatio       = Mesh.TimeRatio;
+            data.CurrentClip     = (Mesh.currentAnimation.Clip == null ? String.Empty : Mesh.currentAnimation.Clip.Name);
+            data.CurrentTime     = Mesh.currentAnimation.ClipTime.TotalSeconds;
+            data.CurrentKeyframe = Mesh.currentAnimation.Keyframe;
+            data.Pause           = Mesh.Pause;
 
-            data.Blend          = mesh.Blend;
-            data.BlendDuration  = mesh.BlendDuration.TotalSeconds;
-            data.BlendTime      = mesh.BlendTime.TotalSeconds;
-            data.BlendClip      = (mesh.blendAnimation.Clip == null ? String.Empty : mesh.blendAnimation.Clip.Name);
-            data.BlendClipTime  = mesh.blendAnimation.ClipTime.TotalSeconds;
-            data.BlendKeyframe  = mesh.blendAnimation.Keyframe;
+            data.Blend          = Mesh.Blend;
+            data.BlendDuration  = Mesh.BlendDuration.TotalSeconds;
+            data.BlendTime      = Mesh.BlendTime.TotalSeconds;
+            data.BlendClip      = (Mesh.blendAnimation.Clip == null ? String.Empty : Mesh.blendAnimation.Clip.Name);
+            data.BlendClipTime  = Mesh.blendAnimation.ClipTime.TotalSeconds;
+            data.BlendKeyframe  = Mesh.blendAnimation.Keyframe;
 
-            data.Immovable        = body.Immovable;
-            data.IsEnabled        = body.IsEnabled;
-            data.Elasticity       = body.Elasticity;
-            data.StaticRoughness  = body.StaticRoughness;
-            data.DynamicRoughness = body.DynamicRoughness;
-            data.Mass             = body.Mass;
-            data.Translation      = body.SkinTranslation;
-            data.SkinPitch        = body.Pitch;
-            data.SkinRoll         = body.Roll;
-            data.SkinYaw          = body.Yaw;
+            data.Immovable        = Body.Immovable;
+            data.IsEnabled        = Body.IsEnabled;
+            data.Elasticity       = Body.Elasticity;
+            data.StaticRoughness  = Body.StaticRoughness;
+            data.DynamicRoughness = Body.DynamicRoughness;
+            data.Mass             = Body.Mass;
+            data.Translation      = Body.SkinTranslation;
+            data.SkinPitch        = Body.Pitch;
+            data.SkinRoll         = Body.Roll;
+            data.SkinYaw          = Body.Yaw;
 
-            data.Radius = body.Radius;
-            data.Length = body.Length;
+            data.Radius = Body.Radius;
+            data.Length = Body.Length;
 
             data.MarkerPosition = markerLocalPosition;
             data.GripBone       = gripBone;

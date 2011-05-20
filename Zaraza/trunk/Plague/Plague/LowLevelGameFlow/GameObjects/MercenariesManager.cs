@@ -162,6 +162,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             ActionSwitchData data = new ActionSwitchData();
                             data.Feedback = this.ID;
+                            data.ObjectName = commandOnObjectEvent.gameObject.Name;
 
                             if (SelectedMercenaries.Count == 1)
                             {

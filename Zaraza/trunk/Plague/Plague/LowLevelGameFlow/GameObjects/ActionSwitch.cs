@@ -41,6 +41,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float rotation = 0;
         private Vector2 mousePosition;
         private Color fade = Color.FromNonPremultiplied(new Vector4(0.5f, 0.5f, 0.5f, 0.5f));
+
+        private SpriteFont front = null;        
+
+        private String objectName;
+        private Vector2 nameOffset;
         /****************************************************************************/
 
 
@@ -51,13 +56,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             public String    Name;
             public Vector2   Position;
+            public Vector2   DescriptionPosition;
             public Rectangle Rect;
 
-            public Action(String name, Vector2 position, Rectangle rect)
+            public Action(String name, Vector2 position,Vector2 descriptionPosition,Rectangle rect)
             {
-                Name     = name;
-                Position = position;
-                Rect     = rect;
+                Name                = name;
+                Position            = position;
+                DescriptionPosition = descriptionPosition;
+                Rect                = rect;
             }
         }
         /****************************************************************************/
@@ -71,15 +78,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          KeyboardListenerComponent keyboard,
                          Vector3                   position,
                          String[]                  actions,
-                         GameObjectInstance        feedback)
+                         GameObjectInstance        feedback,
+                         String                    objectName)
         {
             this.frontEndComponent = frontEndComponent;
             this.mouse             = mouse;
             this.keyboard          = keyboard;
-            this.Position          = position;            
-
-            this.feedback = feedback;
-
+            this.Position          = position;
+            this.objectName        = objectName;
+            this.feedback          = feedback;            
+            
             mouse.SubscribeKeys(OnMouseKey, MouseKeyAction.RightClick);
             mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
 
@@ -91,9 +99,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             frontEndComponent.Draw = Draw;
 
+            front = frontEndComponent.GetFont("Courier New");
+
+            if (!String.IsNullOrEmpty(objectName))
+            {
+                nameOffset = front.MeasureString(objectName);
+                nameOffset.X *= -0.5f;
+                nameOffset.Y += 64;
+            }
+
             for(int i = 0 ; i < actions.Length && i < 8; i++)
             {
-                this.actions[i] = new Action(actions[i], GetPosition(i), GetRect(actions[i]));
+                this.actions[i] = new Action(actions[i], 
+                                             GetPosition(i),
+                                             GetDescriptionPosition(i,actions[i]),
+                                             GetRect(actions[i]));
             }
 
             SendEvent(new ChangeSpeedEvent(0.5f), EventsSystem.Priority.High, GlobalGameObjects.GameController);
@@ -200,6 +220,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                      0);
                 }
             }
+
+
+            if (!String.IsNullOrEmpty(objectName))
+            {
+                spriteBatch.DrawString(front, objectName, pos2 + nameOffset, Color.DarkRed);
+            }
+
+            if (!String.IsNullOrEmpty(actions[selectedAction].Name))
+            {                
+                spriteBatch.DrawString(front, actions[selectedAction].Name, pos2 + actions[selectedAction].DescriptionPosition, Color.Gray);
+            }
             
         }
         /****************************************************************************/
@@ -246,6 +277,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Get Description Position
+        /****************************************************************************/
+        private Vector2 GetDescriptionPosition(int i, String description)
+        {
+            Vector2 stringSize = front.MeasureString(description);
+            
+            switch(i)
+            {
+                case 0: return new Vector2(     -stringSize.X/2, -64 - stringSize.Y);
+                case 1: return new Vector2(         45.2548332f, -45.2548332f - stringSize.Y);
+                case 2: return new Vector2(                  68, -stringSize.Y/2);
+                case 3: return new Vector2(         45.2548332f, 45.2548332f);
+                case 4: return new Vector2(   -stringSize.X / 2, 64);
+                case 5: return new Vector2(     -45.2548332f - stringSize.X, 45.2548332f);
+                case 6: return new Vector2(-68 - stringSize.X, -stringSize.Y / 2);
+                case 7: return new Vector2(-45.2548332f - stringSize.X, -45.2548332f - stringSize.Y);
+                default: return new Vector2(0, 0);
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Release Components
         /****************************************************************************/
         public override void ReleaseComponents()
@@ -274,9 +328,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Type = typeof(ActionSwitch);
         }
 
-        public Vector3  Position { get; set; }
-        public String[] Actions  { get; set; }
-        public int      Feedback { get; set; }
+        public Vector3  Position   { get; set; }
+        public String[] Actions    { get; set; }
+        public String   ObjectName { get; set; }
+        public int      Feedback   { get; set; }
     }
     /********************************************************************************/
 
