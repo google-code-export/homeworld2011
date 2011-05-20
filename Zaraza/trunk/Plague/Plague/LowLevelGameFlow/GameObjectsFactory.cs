@@ -145,6 +145,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                 data.Definition,
                                 data.World,
                                 GameObjectInstance.UintToStatus(data.Status),
+                                data.Name,
                                 owner, 
                                 data.OwnerBone);
                 return true;
@@ -153,7 +154,8 @@ namespace PlagueEngine.LowLevelGameFlow
             gameObject.Init(data.ID, 
                             data.Definition, 
                             data.World, 
-                            GameObjectInstance.UintToStatus(data.Status));
+                            GameObjectInstance.UintToStatus(data.Status),
+                            data.Name);
             return true;
         }
         /****************************************************************************/
@@ -1087,7 +1089,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                                true),
                         data.Position,
                         data.Actions,
-                        feedback);
+                        feedback,
+                        data.ObjectName);
 
             return true;
         }

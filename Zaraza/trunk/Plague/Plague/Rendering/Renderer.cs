@@ -93,6 +93,7 @@ namespace PlagueEngine.Rendering
         internal LightsManager        lightsManager        = null;        
         private  SpriteBatch          spriteBatch          = null;        
         internal List<FrontEndComponent> frontEndComponents = new List<FrontEndComponent>();
+        internal Dictionary<String, SpriteFont> fonts       = new Dictionary<String, SpriteFont>();
         /**********************/
 
 
@@ -523,7 +524,7 @@ namespace PlagueEngine.Rendering
             foreach (FrontEndComponent component in frontEndComponents)
             {
                 component.Draw(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
-            }
+            }            
 
             spriteBatch.End();
         }
@@ -687,6 +688,21 @@ namespace PlagueEngine.Rendering
             ssaoEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
 
             ssaoBlurEffect.Parameters["Texture"].SetValue(ssao);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Load Fonts
+        /****************************************************************************/
+        public void LoadFonts(params String[] fonts)
+        {
+            SpriteFont spriteFont;
+            foreach (String font in fonts)
+            {
+                spriteFont = contentManager.Load<SpriteFont>("Fonts\\" + font);
+                this.fonts.Add(font, spriteFont);
+            }
         }
         /****************************************************************************/
 

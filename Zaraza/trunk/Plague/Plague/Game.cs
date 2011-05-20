@@ -136,6 +136,9 @@ namespace PlagueEngine
         protected override void LoadContent()
         {
             Renderer.LoadEffects();
+
+            Renderer.LoadFonts("Courier New", "Courier New Bold");
+
             Input.SetCursorTexture(ContentManager.LoadTexture2D("cursor"), 4, 4, 
                                    new[] { "Default","QuestionMark","Footsteps","Target",
                                                   "Hand",   "Person",      "Targeting","0",

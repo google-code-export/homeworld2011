@@ -81,7 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public bool Init(int id, String definition, Matrix world, GameObjectStatus status, GameObjectInstance owner = null,int ownerBone = -1)
+        public bool Init(int id, String definition, Matrix world, GameObjectStatus status,String name,GameObjectInstance owner = null,int ownerBone = -1)
         {
             if (id == 0)
             {
@@ -103,6 +103,7 @@ namespace PlagueEngine.LowLevelGameFlow
             Owner     = owner;
             OwnerBone = ownerBone;
             Status    = status;
+            Name      = name;
 
             Broadcast(new CreateEvent());
 
@@ -191,7 +192,8 @@ namespace PlagueEngine.LowLevelGameFlow
             data.Definition    = this.definition;
             data.Owner         = (this.Owner == null ? 0 : this.Owner.ID);
             data.OwnerBone     = this.OwnerBone;
-
+            data.Name          = this.Name;
+                
             return data;
         }
         /****************************************************************************/
@@ -209,6 +211,7 @@ namespace PlagueEngine.LowLevelGameFlow
             data.Owner         = (this.Owner == null ? 0 : this.Owner.ID);
             data.Status        = GameObjectInstance.StatusToUint(this.Status);
             data.OwnerBone     = this.OwnerBone;
+            data.Name          = this.Name;
         }
         /****************************************************************************/
 
@@ -218,6 +221,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public String Definition { get { return definition; } }        
         public int    ID         { get { return id; } }
+        public String Name       { get; private set; }
         public int    OwnerBone  { get; set; }
         
         public bool             RequiresUpdate { get; protected set; }
@@ -385,6 +389,9 @@ namespace PlagueEngine.LowLevelGameFlow
         public int      ID              = 0;
         public Type     Type            = null;
         public Matrix   World           = Matrix.Identity;
+
+        [CategoryAttribute("Name")]
+        public String Name { get; set; }
 
         [CategoryAttribute("Definition")]
         public String Definition { get; set; }

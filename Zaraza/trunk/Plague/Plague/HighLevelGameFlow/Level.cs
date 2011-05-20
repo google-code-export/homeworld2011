@@ -698,6 +698,7 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.World = Matrix.CreateTranslation(250, 60, 30);
             fldata.Status = 2;
             fldata.DepthBias = 0.05f;
+            fldata.Name = "Flashlight";
 
             GameObjectsFactory.Create(fldata);
             fldata.World = Matrix.CreateTranslation(252, 60, 30);
@@ -729,31 +730,38 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.DistancePrecision = 1.0f;
             mddd.AnglePrecision = 0.1f;
             mddd.GripBone = "Bip001_R_Hand001";
-
+            mddd.Name = "Marian";
             GameObjectsFactory.Create(mddd);
 
-
+            mddd.Name = "Marian 2";
             mddd.World = Matrix.CreateTranslation(260, 56, 30);
             GameObjectsFactory.Create(mddd);
 
+            mddd.Name = "Marian 3";
             mddd.World = Matrix.CreateTranslation(265, 56, 30);
             GameObjectsFactory.Create(mddd);
-
+            
+            mddd.Name = "Marian 4";
             mddd.World = Matrix.CreateTranslation(270, 56, 30);
             GameObjectsFactory.Create(mddd);
 
+            mddd.Name = "Marian 5";
             mddd.World = Matrix.CreateTranslation(275, 56, 30);
             GameObjectsFactory.Create(mddd);
 
+            mddd.Name = "Marian 6";
             mddd.World = Matrix.CreateTranslation(260, 56, 35);
             GameObjectsFactory.Create(mddd);
 
+            mddd.Name = "Marian 7";
             mddd.World = Matrix.CreateTranslation(265, 56, 35);
             GameObjectsFactory.Create(mddd);
 
+            mddd.Name = "Marian 8";
             mddd.World = Matrix.CreateTranslation(270, 56, 35);
             GameObjectsFactory.Create(mddd);
 
+            mddd.Name = "Marian 9";
             mddd.World = Matrix.CreateTranslation(275, 56, 35);
             GameObjectsFactory.Create(mddd);
 
