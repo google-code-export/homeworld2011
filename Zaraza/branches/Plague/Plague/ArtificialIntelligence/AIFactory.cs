@@ -17,8 +17,9 @@ namespace PlagueEngine.ArtificialIntelligence
 
         public void Initialize()
         {
+
         }
 
-
+        
     }
 }
