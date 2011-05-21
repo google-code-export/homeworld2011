@@ -318,6 +318,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             else if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
+                if (!selectionRect) return;
+
                 if (!(rect.Width == 0) && !(rect.Height == 0))
                 {
                     BoundingFrustum frustrum = cameraComponent.GetFrustumFromRect(rect);

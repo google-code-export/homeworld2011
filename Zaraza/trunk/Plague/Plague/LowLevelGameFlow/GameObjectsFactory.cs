@@ -1024,6 +1024,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
             result.Init(linkedCamera,
                         inputComponentsFactory.CreateKeyboardListenerComponent(result,true),
+                        inputComponentsFactory.CreateMouseListenerComponent(result,true),
                         renderingComponentsFactory.CreateFrontEndComponent(result,"MercenariesSet"));
 
             return true;
