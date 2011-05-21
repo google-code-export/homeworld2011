@@ -55,14 +55,13 @@ namespace PlagueEngine.GUI
         /// Create Label Component
         /****************************************************************************/
         public LabelComponent CreateLabelComponent(String text,
-                                                   int x, int y,
-                                                   int width, int height)
+                                                   int x, int y)
         {
             LabelComponent result = new LabelComponent(text, 
                                                        new UniRectangle(new UniScalar(x),
                                                                         new UniScalar(y),
-                                                                        new UniScalar(width),
-                                                                        new UniScalar(height)));
+                                                                        new UniScalar(1),
+                                                                        new UniScalar(1)));
 
             return result;
         }
