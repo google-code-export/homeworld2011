@@ -149,6 +149,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArtificialIntelligence\AI.cs" />
+    <Compile Include="ArtificialIntelligence\AIController.cs" />
+    <Compile Include="ArtificialIntelligence\AIFactory.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />
