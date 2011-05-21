@@ -23,7 +23,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Mercenary
     /********************************************************************************/
-    class Mercenary : AbstractPerson, IActiveGameObject
+    class Mercenary : LivingBeing, IActiveGameObject
     {
 
         /****************************************************************************/

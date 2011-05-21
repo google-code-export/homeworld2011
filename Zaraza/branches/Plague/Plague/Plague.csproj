@@ -152,6 +152,7 @@
     <Compile Include="ArtificialIntelligence\AI.cs" />
     <Compile Include="ArtificialIntelligence\AIController.cs" />
     <Compile Include="ArtificialIntelligence\AIFactory.cs" />
+    <Compile Include="ArtificialIntelligence\Controllers\Controller.cs" />
     <Compile Include="ArtificialIntelligence\Controllers\MercenaryController.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="EventsHistorian.cs" />
@@ -190,7 +191,7 @@
     <Compile Include="LowLevelGameFlow\GameObjectDefinition.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
-    <Compile Include="LowLevelGameFlow\GameObjects\AbstractPerson.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\LivingBeing.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActionSwitch.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />
