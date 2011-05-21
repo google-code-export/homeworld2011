@@ -393,19 +393,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
             int i = 0;
+            float offset = (float)screenHeight / 2.0f;
+            offset -= (66 * Mercenaries.Count)/2.0f;
             foreach (Mercenary mercenary in Mercenaries)
             {
                 if (SelectedMercenaries.Contains(mercenary))
                 {
-                    spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, 100 + (66 * i)), new Rectangle(196, 0, 64, 64), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, offset + (66 * i)), new Rectangle(196, 0, 64, 64), Color.White);
                 }
                 else
                 {
-                    spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, 100 + (66 * i)), new Rectangle(0, 0, 64, 64), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, offset + (66 * i)), new Rectangle(0, 0, 64, 64), Color.White);
                 }
 
-                spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, 100 + (66 * i)), mercenary.Icon, Color.White);
-                spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, 100 + (66 * i)), new Rectangle(64, 0, 64, 64), GetColor(mercenary.HP, mercenary.MaxHP));
+                spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, offset + (66 * i)), mercenary.Icon, Color.White);
+                spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, offset + (66 * i)), new Rectangle(64, 0, 64, 64), GetColor(mercenary.HP, mercenary.MaxHP));
 
                 ++i;
             }

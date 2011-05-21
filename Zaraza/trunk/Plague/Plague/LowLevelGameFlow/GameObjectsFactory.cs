@@ -1120,9 +1120,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                    30),
                         guiComponentsFactory.CreateLabelComponent(data.Text,
                                                                   10,
-                                                                  - (data.Height/2) + 60,
-                                                                  data.Width  - 20, 
-                                                                  data.Height - 40));
+                                                                  35));
 
             return true;
         }
