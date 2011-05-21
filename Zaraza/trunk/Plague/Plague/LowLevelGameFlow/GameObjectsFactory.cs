@@ -996,7 +996,10 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.MovingSpeed,
                         data.DistancePrecision,
                         data.AnglePrecision,
-                        data.GripBone);
+                        data.GripBone,
+                        data.MaxHP,
+                        data.HP,
+                        data.Icon);
 
             return true;
         }
@@ -1020,7 +1023,8 @@ namespace PlagueEngine.LowLevelGameFlow
             }
 
             result.Init(linkedCamera,
-                        inputComponentsFactory.CreateKeyboardListenerComponent(result,true));
+                        inputComponentsFactory.CreateKeyboardListenerComponent(result,true),
+                        renderingComponentsFactory.CreateFrontEndComponent(result,"MercenariesSet"));
 
             return true;
         }

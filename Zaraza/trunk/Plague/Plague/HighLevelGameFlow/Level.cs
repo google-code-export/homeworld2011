@@ -731,36 +731,47 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.AnglePrecision = 0.1f;
             mddd.GripBone = "Bip001_R_Hand001";
             mddd.Name = "Marian";
+            mddd.MaxHP = 120;
+            mddd.HP = 120;
+            mddd.Icon = new Rectangle(0, 64, 64, 64);
             GameObjectsFactory.Create(mddd);
 
+            mddd.HP = 100;
             mddd.Name = "Marian 2";
             mddd.World = Matrix.CreateTranslation(260, 56, 30);
             GameObjectsFactory.Create(mddd);
 
+            mddd.HP = 80;
             mddd.Name = "Marian 3";
             mddd.World = Matrix.CreateTranslation(265, 56, 30);
             GameObjectsFactory.Create(mddd);
-            
+
+            mddd.HP = 70;
             mddd.Name = "Marian 4";
             mddd.World = Matrix.CreateTranslation(270, 56, 30);
             GameObjectsFactory.Create(mddd);
 
+            mddd.HP = 60;
             mddd.Name = "Marian 5";
             mddd.World = Matrix.CreateTranslation(275, 56, 30);
             GameObjectsFactory.Create(mddd);
 
+            mddd.HP = 40;
             mddd.Name = "Marian 6";
             mddd.World = Matrix.CreateTranslation(260, 56, 35);
             GameObjectsFactory.Create(mddd);
 
+            mddd.HP = 20;
             mddd.Name = "Marian 7";
             mddd.World = Matrix.CreateTranslation(265, 56, 35);
             GameObjectsFactory.Create(mddd);
 
+            mddd.HP = 10;
             mddd.Name = "Marian 8";
             mddd.World = Matrix.CreateTranslation(270, 56, 35);
             GameObjectsFactory.Create(mddd);
 
+            mddd.HP = 0;
             mddd.Name = "Marian 9";
             mddd.World = Matrix.CreateTranslation(275, 56, 35);
             GameObjectsFactory.Create(mddd);

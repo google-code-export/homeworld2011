@@ -62,8 +62,7 @@ namespace PlagueEngine.Rendering.Components
 
             currentAnimation = new AnimationPlayer(model.SkinningData, currentClip, currentTime, currentKeyframe, OnAnimationEnd);
             blendAnimation   = new AnimationPlayer(model.SkinningData, blendClip, blendClipTime, blendKeyframe, OnAnimationEnd);
-
-            renderer.skinnedMeshes.Add(this);
+            
             renderer.batchedSkinnedMeshes.AddSkinnedMeshComponent(technique, this);
 
             AnimationControl = true;
@@ -75,8 +74,7 @@ namespace PlagueEngine.Rendering.Components
         /// Release Me
         /****************************************************************************/
         public override void ReleaseMe()
-        {
-            renderer.skinnedMeshes.Remove(this);
+        {            
             renderer.batchedSkinnedMeshes.RemoveSkinnedMeshComponent(technique, this);
             base.ReleaseMe();
         }

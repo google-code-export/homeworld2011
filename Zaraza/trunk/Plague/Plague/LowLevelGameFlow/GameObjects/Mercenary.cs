@@ -62,6 +62,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public uint      MaxHP { get; private set; }
+        public uint      HP    { get; private set; }
+        public Rectangle Icon  { get; private set; }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Components
         /****************************************************************************/
         public SkinnedMeshComponent Mesh       { get; private set; }
@@ -81,7 +90,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float movingSpeed,
                          float distance,
                          float angle,
-                         String gripBone)
+                         String gripBone,
+                         uint maxHP,
+                         uint HP,
+                         Rectangle icon)
         {
             Mesh = mesh;
             Body = body;
@@ -91,6 +103,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.distance       = distance;
             this.anglePrecision = angle;
             this.gripBone       = gripBone;
+
+            this.HP = HP;
+            MaxHP = maxHP;
+            Icon = icon;
 
             this.marker = frontEndComponent;
             markerLocalPosition = markerPosition;
@@ -558,6 +574,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Grip Bone")]
         public String GripBone { get; set; }
+
+        [CategoryAttribute("HP")]
+        public uint MaxHP { get;  set; }
+        [CategoryAttribute("HP")]
+        public uint HP { get;  set; }
+
+        [CategoryAttribute("Icon")]
+        public Rectangle Icon { get;  set; }
     }
     /********************************************************************************/
 

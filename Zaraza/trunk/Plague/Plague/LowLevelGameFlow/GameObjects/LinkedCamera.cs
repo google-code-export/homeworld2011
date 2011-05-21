@@ -108,16 +108,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             // TODO: jest na pałę, a powinno być z edytora
             maxTop = 0;
-            minTop = (int)(screenHeight * 0.05);
+            minTop = (int)(screenHeight * 0.025);
 
             maxBottom = screenHeight;
-            minBottom = (int)(screenHeight * 0.95);
+            minBottom = (int)(screenHeight * 0.975);
 
             maxLeft = 0;
-            minLeft = (int)(screenWidth * 0.05);
+            minLeft = (int)(screenWidth * 0.025);
 
             maxRight = screenWidth;
-            minRight = (int)(screenWidth * 0.95);
+            minRight = (int)(screenWidth * 0.975);
 
             RequiresUpdate = true;
         }

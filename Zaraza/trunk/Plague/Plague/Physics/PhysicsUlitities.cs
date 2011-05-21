@@ -140,7 +140,7 @@ namespace PlagueEngine.Physics
             Vector3 nearSource = new Vector3(x, y, 0);
             Vector3 farSource = new Vector3(x, y, 1);
 
-            Matrix world = Matrix.CreateTranslation(0, 0, 0);
+            Matrix world = Matrix.Identity;
 
             Vector3 nearPoint = graphics.GraphicsDevice.Viewport.Unproject(nearSource, cameraProjection, cameraView, world);
             Vector3 farPoint = graphics.GraphicsDevice.Viewport.Unproject(farSource, cameraProjection, cameraView, world);
