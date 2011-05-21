@@ -90,26 +90,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void CheckRayIntersection()
         {
 
-            Microsoft.Xna.Framework.Ray ray = cameraComponent.GetMouseRay(new Vector2(mouseX, mouseY));
-            foreach (MeshComponent mesh in cameraComponent.Renderer.meshes)
-            {
-                if (ray.Intersects(mesh.BoundingBox) != null)
-                {
-                    this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
-
-                }
-            }
-
-            foreach (SkinnedMeshComponent skinnedMesh in cameraComponent.Renderer.skinnedMeshes)
-            {
-                if (ray.Intersects(skinnedMesh.BoundingBox) != null)
-                {
-                    this.Broadcast(new LowLevelGameFlow.GameObjectClicked(skinnedMesh.GameObject.ID));
-
-                }
-            }
-
-
         }
         /****************************************************************************/
 
@@ -121,37 +101,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void CheckFrustumIntersection(BoundingFrustum frustum)
         {
-#if DEBUG
-            Diagnostics.PushLog("SELECTED OBJECTS: ");
-#endif
-            int a = 0;
-            foreach (MeshComponent mesh in cameraComponent.Renderer.meshes)
-            {
-                ContainmentType con = frustum.Contains(mesh.BoundingBox);
-                if (con == ContainmentType.Contains || con == ContainmentType.Intersects)
-                {
-#if DEBUG
-                    Diagnostics.PushLog("ID: "+mesh.GameObject.ID.ToString());
-#endif
-                    a++;
-                }
-            }
 
-            foreach (SkinnedMeshComponent skinnedMesh in cameraComponent.Renderer.skinnedMeshes)
-            {
-
-                ContainmentType con = frustum.Contains(skinnedMesh.BoundingBox);
-                if (con == ContainmentType.Contains || con == ContainmentType.Intersects)
-                {
-#if DEBUG
-                    Diagnostics.PushLog("ID: "+skinnedMesh.GameObject.ID.ToString());
-#endif
-                    a++;
-                }
-            }
-#if DEBUG
-            Diagnostics.PushLog(a.ToString());
-#endif
         }
         /****************************************************************************/
 

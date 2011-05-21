@@ -5,9 +5,12 @@ using System.Text;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
+
 using PlagueEngine.EventsSystem;
 using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input.Components;
+using PlagueEngine.Rendering.Components;
 
 
 /************************************************************************************/
@@ -35,6 +38,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private GameObjectInstance targetGameObject = null;
         private Mercenary          currentMercenary = null;
+
+        private FrontEndComponent frontEnd = null;
         /****************************************************************************/
 
 
@@ -50,11 +55,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Init
         /****************************************************************************/
         public void Init(LinkedCamera              linkedCamera,
-                         KeyboardListenerComponent keyboard)
+                         KeyboardListenerComponent keyboard,
+                         FrontEndComponent         frontEnd)
         {
             SelectedMercenaries = new List<Mercenary>();
             LinkedCamera        = linkedCamera;
             this.keyboard       = keyboard;
+
+            this.frontEnd = frontEnd;
+            frontEnd.Draw = OnDraw;
 
             sniffer.SetOnSniffedEvent(OnSniffedEvent);
             sniffer.SubscribeEvents(typeof(CreateEvent));
@@ -374,6 +383,56 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.LinkedCamera = LinkedCamera.ID;       
 
             return data;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Draw
+        /****************************************************************************/
+        private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
+        {
+            int i = 0;
+            foreach (Mercenary mercenary in Mercenaries)
+            {
+                if (SelectedMercenaries.Contains(mercenary))
+                {
+                    spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, 100 + (66 * i)), new Rectangle(196, 0, 64, 64), Color.White);
+                }
+                else
+                {
+                    spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, 100 + (66 * i)), new Rectangle(0, 0, 64, 64), Color.White);
+                }
+
+                spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, 100 + (66 * i)), mercenary.Icon, Color.White);
+                spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, 100 + (66 * i)), new Rectangle(64, 0, 64, 64), GetColor(mercenary.HP, mercenary.MaxHP));
+
+                ++i;
+            }
+        }   
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Color
+        /****************************************************************************/
+        private Color GetColor(uint HP, uint MaxHP)
+        {
+            float green = 0;
+            float red   = 0;
+
+            if (HP > MaxHP / 2)
+            {
+                green = 1;
+                red   = 1.0f - ((float)HP - MaxHP/2) / ((float)MaxHP/2);
+            }
+            else
+            {
+                green = ((float)HP) / ((float)MaxHP/2);
+                red   = 1;
+            }
+
+            return Color.FromNonPremultiplied(new Vector4(red, green, 0, 0.5f));
         }
         /****************************************************************************/
 

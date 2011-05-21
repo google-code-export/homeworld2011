@@ -72,11 +72,8 @@ namespace PlagueEngine.Rendering
 
 
         /**********************/
-        /// For picking
+        /// Rect
         /**********************/
-        public List<SkinnedMeshComponent> skinnedMeshes = new List<SkinnedMeshComponent>();
-        public List<MeshComponent> meshes = new List<MeshComponent>();
-
         private bool            drawRect   = false;
         private Color           rectColor  = Color.Green;
         private Effect          rectEffect = null;

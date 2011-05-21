@@ -50,8 +50,7 @@ namespace PlagueEngine.Rendering.Components
             this.instancingMode = instancingMode;
             this.technique      = technique;
 
-            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);
-            renderer.meshes.Add(this);
+            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);            
         }        
         /****************************************************************************/
 
@@ -61,8 +60,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            renderer.batchedMeshes.RemoveMeshComponent(instancingMode, technique, this);
-            renderer.meshes.Remove(this);
+            renderer.batchedMeshes.RemoveMeshComponent(instancingMode, technique, this);            
             base.ReleaseMe();
         }
         /****************************************************************************/
