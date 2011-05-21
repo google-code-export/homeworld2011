@@ -32,14 +32,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private bool            commandMode         = false;
         private bool            leftControl         = false;
         private bool            leftAlt             = false;
+        private bool            useGUI              = false;
 
         private EventsSnifferComponent    sniffer  = new EventsSnifferComponent();
         private KeyboardListenerComponent keyboard = null;
+        private MouseListenerComponent    mouse    = null;
 
         private GameObjectInstance targetGameObject = null;
         private Mercenary          currentMercenary = null;
 
         private FrontEndComponent frontEnd = null;
+
+        private int screenWithOver2 = 0;
+        private int mouseX = 0;
         /****************************************************************************/
 
 
@@ -56,11 +61,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(LinkedCamera              linkedCamera,
                          KeyboardListenerComponent keyboard,
+                         MouseListenerComponent    mouse,
                          FrontEndComponent         frontEnd)
         {
             SelectedMercenaries = new List<Mercenary>();
             LinkedCamera        = linkedCamera;
             this.keyboard       = keyboard;
+            this.mouse          = mouse;
 
             this.frontEnd = frontEnd;
             frontEnd.Draw = OnDraw;
@@ -71,6 +78,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             keyboard.SubscibeKeys(OnKey,  Keys.Tab,Keys.LeftControl, Keys.LeftAlt,Keys.OemTilde,
                                           Keys.D1, Keys.D2,Keys.D3,Keys.D4,Keys.D5,
                                           Keys.D6, Keys.D7,Keys.D8,Keys.D9,Keys.D0);
+
+            mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
+            mouse.SubscribeKeys(OnMouseKey, MouseKeyAction.LeftClick,MouseKeyAction.MiddleClick);
 
             Mercenaries = new List<Mercenary>();
         }
@@ -330,6 +340,96 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// On Mouse Move
+        /****************************************************************************/
+        private void OnMouseMove(MouseMoveAction mouseMoveAction, ref ExtendedMouseMovementState mouseMovementState)
+        {
+            if (mouseMoveAction == MouseMoveAction.Move)
+            {
+                if (mouseMovementState.Position.Y > 5 && mouseMovementState.Position.Y < 69)
+                { 
+                    int offset = (66 * Mercenaries.Count)/2;
+                    if (mouseMovementState.Position.X > (screenWithOver2 - offset) &&
+                        mouseMovementState.Position.X < (screenWithOver2 + offset))
+                    {
+                        useGUI = true;
+                        mouseX = (int)mouseMovementState.Position.X - (screenWithOver2 - offset);
+                        return;
+                    }                    
+                }
+            }
+            useGUI = false;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Mouse Key
+        /****************************************************************************/
+        private void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState)
+        {
+            if (useGUI)
+            {
+                if(mouseKeyState.WasPressed())
+                {
+                    int merc = (mouseX / 66);  
+
+                    /*********************************/
+                    /// Left Click
+                    /*********************************/
+                    if (mouseKeyAction == MouseKeyAction.LeftClick)
+                    {                 
+                        if(leftControl)
+                        {
+                            if(!SelectedMercenaries.Contains(Mercenaries.ElementAt(merc)))
+                            {
+                                SelectedMercenaries.Add(Mercenaries.ElementAt(merc));
+                                Mercenaries.ElementAt(merc).Marker = true;
+                                SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
+                                commandMode = true;
+                            }
+                        }
+                        else if (leftAlt)
+                        {
+                            if(SelectedMercenaries.Contains(Mercenaries.ElementAt(merc)))
+                            {
+                                SelectedMercenaries.Remove(Mercenaries.ElementAt(merc));
+                                Mercenaries.ElementAt(merc).Marker = false;
+
+                                if (SelectedMercenaries.Count == 0)
+                                {
+                                    SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                                    commandMode = false;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (Mercenary m in SelectedMercenaries) m.Marker = false;
+                            SelectedMercenaries.Clear();
+
+                            SelectedMercenaries.Add(Mercenaries.ElementAt(merc));
+                            Mercenaries.ElementAt(merc).Marker = true;
+                            SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
+                            commandMode = true;
+                        }                                        
+                    }
+                    /*********************************/                        
+                    /// Middle Click
+                    /*********************************/                        
+                    else if (mouseKeyAction == MouseKeyAction.MiddleClick)
+                    {
+                        SendEvent(new MoveToObjectCommandEvent(Mercenaries.ElementAt(merc)), Priority.High, LinkedCamera);                        
+                    }
+                }
+
+                mouseKeyState.Propagate = false;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Process Mercenary
         /****************************************************************************/
         private void ProcessMercenary(int i)
@@ -393,21 +493,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
             int i = 0;
-            float offset = (float)screenHeight / 2.0f;
+            screenWithOver2 = screenWidth/2;
+            float offset = screenWithOver2;
             offset -= (66 * Mercenaries.Count)/2.0f;
             foreach (Mercenary mercenary in Mercenaries)
             {
                 if (SelectedMercenaries.Contains(mercenary))
                 {
-                    spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, offset + (66 * i)), new Rectangle(196, 0, 64, 64), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(196, 0, 64, 64), Color.White);
                 }
                 else
                 {
-                    spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, offset + (66 * i)), new Rectangle(0, 0, 64, 64), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(0, 0, 64, 64), Color.White);
                 }
 
-                spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, offset + (66 * i)), mercenary.Icon, Color.White);
-                spriteBatch.Draw(frontEnd.Texture, new Vector2(screenWidth - 70, offset + (66 * i)), new Rectangle(64, 0, 64, 64), GetColor(mercenary.HP, mercenary.MaxHP));
+                spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), mercenary.Icon, Color.White);
+                spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(64, 0, 64, 64), GetColor(mercenary.HP, mercenary.MaxHP));
 
                 ++i;
             }
