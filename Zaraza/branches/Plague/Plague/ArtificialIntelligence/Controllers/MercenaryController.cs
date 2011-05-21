@@ -11,11 +11,11 @@ enum MoveState{STOP, MOVE, FOLLOW, TO_GRAB};
 
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
-    class MercenaryController 
+    class MercenaryController : Controller
 
     {
 
-        public AbstractPerson Mercenary { get; private set; }
+        public LivingBeing being { get; private set; }
         
         private GameObjectInstance objectTarget;
         private TacticalAction moving;
@@ -29,12 +29,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         private GameObjectInstance currentObject;
 
         //TODO: change temporary constructor.
-        public MercenaryController(AbstractPerson person, float rotationSpeed,
+        public MercenaryController(LivingBeing person, float rotationSpeed,
                          float movingSpeed,
                          float distance,
                          float angle)
         {
-            this.Mercenary = person;
+            this.being = person;
             this.rotationSpeed = rotationSpeed;
             this.movingSpeed = movingSpeed;
             this.distance = distance;
@@ -66,11 +66,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 GrabObjectCommandEvent moveToObjectCommandEvent = e as GrabObjectCommandEvent;
 
-                if (moveToObjectCommandEvent.gameObject != this.Mercenary)
+                if (moveToObjectCommandEvent.gameObject != this.being)
                 {
                     objectTarget = moveToObjectCommandEvent.gameObject;
                     moving = TacticalAction.GRAB;
-                    Mercenary.Body.SubscribeCollisionEvent(objectTarget.ID);
+                    being.Body.SubscribeCollisionEvent(objectTarget.ID);
                 }
             }
             #endregion
@@ -85,7 +85,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                 if (collisionEvent.gameObject == objectTarget)
                 {
-                    Mercenary.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
+                    being.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
                     if (moving == TacticalAction.GRAB)
                     {
                         #region Pick object if pickable
@@ -94,15 +94,15 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             #region Drop current object if present
                             if (currentObject != null)
                             {
-                                currentObject.World.Translation += Vector3.Normalize(Mercenary.World.Forward) * 2;
+                                currentObject.World.Translation += Vector3.Normalize(being.World.Forward) * 2;
                                 currentObject.Owner = null;
                                 currentObject.OwnerBone = -1;
                             }
                             #endregion
 
                             currentObject = objectTarget;
-                            objectTarget.Owner = this.Mercenary;
-                            objectTarget.OwnerBone = Mercenary.Mesh.BoneMap[Mercenary.gripBone];
+                            objectTarget.Owner = this.being;
+                            objectTarget.OwnerBone = being.Mesh.BoneMap[being.gripBone];
                         }
                         #endregion
                     }
@@ -110,14 +110,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     {
                         #region Examine object
                         //TODO: zmienić na wysyłkę przez kontroler, nie przez GO
-                        Mercenary.SendEvent(new ExamineEvent(), EventsSystem.Priority.Normal, objectTarget);
+                        being.SendEvent(new ExamineEvent(), EventsSystem.Priority.Normal, objectTarget);
                         #endregion
                     }
                     #region Turn to idle
                     objectTarget = null;
                     moving = 0;
-                    Mercenary.Controller.StopMoving();
-                    Mercenary.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    being.Controller.StopMoving();
+                    being.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                     #endregion
                 }
             }
@@ -131,7 +131,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 FollowObjectCommandEvent FollowObjectCommandEvent = e as FollowObjectCommandEvent;
 
-                if (FollowObjectCommandEvent.gameObject != this.Mercenary)
+                if (FollowObjectCommandEvent.gameObject != this.being)
                 {
                     objectTarget = FollowObjectCommandEvent.gameObject;
                     moving = TacticalAction.FOLLLOW;
@@ -149,52 +149,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                 objectTarget = ExamineObjectCommandEvent.gameObject;
                 moving = TacticalAction.EXAMINE;
-                Mercenary.Body.SubscribeCollisionEvent(objectTarget.ID);
+                being.Body.SubscribeCollisionEvent(objectTarget.ID);
             }
             #endregion
         }
 
 
-        private void move(TimeSpan deltaTime)
-        {
-            if (Vector2.Distance(new Vector2(Mercenary.World.Translation.X,
-                                                 Mercenary.World.Translation.Z),
-                                     new Vector2(target.X,
-                                                 target.Z)) < distance)
-            {
-                moving = 0;
-                Mercenary.Controller.StopMoving();
-                Mercenary.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
-            }
-            else
-            {
-                Vector3 direction = Mercenary.World.Translation - target;
-                Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                Vector2 v2 = Vector2.Normalize(new Vector2(Mercenary.World.Forward.X, Mercenary.World.Forward.Z));
-
-                float det = v1.X * v2.Y - v1.Y * v2.X;
-                float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                if (det < 0)
-                {
-                    angle = -angle;
-                }
-
-                if (Math.Abs(angle) > anglePrecision)
-                {
-                    Mercenary.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
-                }
-
-                Mercenary.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
-
-                #region Blend to Run
-                if (Mercenary.Mesh.CurrentClip != "Run")
-                {
-                    Mercenary.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
-                }
-                #endregion
-            }
-        }
+        
 
         private void grabOrExamine(TimeSpan deltaTime)
         {
@@ -203,15 +164,15 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 #region Cancel Grab or Examine
                 objectTarget = null;
                 moving = 0;
-                Mercenary.Controller.StopMoving();
-                Mercenary.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                being.Controller.StopMoving();
+                being.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                 #endregion
                 return;
             }
 
-            Vector3 direction = Mercenary.World.Translation - objectTarget.World.Translation;
+            Vector3 direction = being.World.Translation - objectTarget.World.Translation;
             Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-            Vector2 v2 = Vector2.Normalize(new Vector2(Mercenary.World.Forward.X, Mercenary.World.Forward.Z));
+            Vector2 v2 = Vector2.Normalize(new Vector2(being.World.Forward.X, being.World.Forward.Z));
 
             float det = v1.X * v2.Y - v1.Y * v2.X;
             float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
@@ -223,15 +184,15 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
             if (Math.Abs(angle) > anglePrecision)
             {
-                Mercenary.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                being.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
             }
 
-            Mercenary.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+            being.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
 
             #region Blend to Run
-            if (Mercenary.Mesh.CurrentClip != "Run")
+            if (being.Mesh.CurrentClip != "Run")
             {
-                Mercenary.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
+                being.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
             }
             #endregion
         }
@@ -243,21 +204,21 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 #region Turn to Idle
                 objectTarget = null;
                 moving = 0;
-                Mercenary.Controller.StopMoving();
-                Mercenary.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                being.Controller.StopMoving();
+                being.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                 #endregion
                 return;
             }
             else
             {
-                double currentDistance = Vector2.Distance(new Vector2(Mercenary.World.Translation.X, Mercenary.World.Translation.Z),
+                double currentDistance = Vector2.Distance(new Vector2(being.World.Translation.X, being.World.Translation.Z),
                                      new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z));
-                if (Mercenary.Mesh.CurrentClip == "Idle" && currentDistance > 8)
+                if (being.Mesh.CurrentClip == "Idle" && currentDistance > 8)
                 {
                     #region Resume Chase
-                    Vector3 direction = Mercenary.World.Translation - objectTarget.World.Translation;
+                    Vector3 direction = being.World.Translation - objectTarget.World.Translation;
                     Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                    Vector2 v2 = Vector2.Normalize(new Vector2(Mercenary.World.Forward.X, Mercenary.World.Forward.Z));
+                    Vector2 v2 = Vector2.Normalize(new Vector2(being.World.Forward.X, being.World.Forward.Z));
 
                     float det = v1.X * v2.Y - v1.Y * v2.X;
                     float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
@@ -269,31 +230,31 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                     if (Math.Abs(angle) > anglePrecision)
                     {
-                        Mercenary.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                        being.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
                     }
 
-                    Mercenary.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                    being.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
 
-                    Mercenary.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
+                    being.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
 
                     #endregion
                 }
-                else if (Mercenary.Mesh.CurrentClip != "Idle")
+                else if (being.Mesh.CurrentClip != "Idle")
                 {
                     if (currentDistance < 4)
                     {
                         #region Pause Chase
-                        Mercenary.Controller.StopMoving();
-                        Mercenary.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        being.Controller.StopMoving();
+                        being.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         #endregion
                         return;
                     }
                     else
                     {
                         #region Continue Running
-                        Vector3 direction = Mercenary.World.Translation - objectTarget.World.Translation;
+                        Vector3 direction = being.World.Translation - objectTarget.World.Translation;
                         Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                        Vector2 v2 = Vector2.Normalize(new Vector2(Mercenary.World.Forward.X, Mercenary.World.Forward.Z));
+                        Vector2 v2 = Vector2.Normalize(new Vector2(being.World.Forward.X, being.World.Forward.Z));
 
                         float det = v1.X * v2.Y - v1.Y * v2.X;
                         float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
@@ -305,14 +266,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         if (Math.Abs(angle) > anglePrecision)
                         {
-                            Mercenary.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                            being.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
                         }
 
-                        Mercenary.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                        being.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
 
-                        if (Mercenary.Mesh.CurrentClip != "Run")
+                        if (being.Mesh.CurrentClip != "Run")
                         {
-                            Mercenary.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
+                            being.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
                         }
                         #endregion
                     }

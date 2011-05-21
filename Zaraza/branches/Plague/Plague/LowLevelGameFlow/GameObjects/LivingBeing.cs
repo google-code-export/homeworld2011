@@ -10,7 +10,7 @@ using PlagueEngine.Physics.Components;
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
     enum TacticalAction { IDLE, MOVE, GRAB, FOLLLOW, EXAMINE, DROP, ATTACK }; 
-    class AbstractPerson : GameObjectInstance
+    class LivingBeing : GameObjectInstance
     {
         /****************************************************************************/
         /// Fields
