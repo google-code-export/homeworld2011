@@ -11,6 +11,10 @@ using PlagueEngine.Resources;
 using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Rendering;
 using PlagueEngine.EventsSystem;
+using PlagueEngine.Physics;
+using PlagueEngine.Physics.Components;
+
+using Microsoft.Xna.Framework;
 
 /********************************************************************************/
 /// PlagueEngine.Tools
@@ -48,7 +52,6 @@ namespace PlagueEngine.Tools
                         editor.ShowGameObjectProperties(((LowLevelGameFlow.GameObjectClicked)e).gameObjectID);
 
                         editor.renderer.debugDrawer.StartSelectiveDrawing(((LowLevelGameFlow.GameObjectClicked)e).gameObjectID);
-
 
                     }
                 }
@@ -109,7 +112,7 @@ namespace PlagueEngine.Tools
 
         private string levelDirectory = @"Data\levels";
         private string levelExtension = ".lvl";
-        private Level  level = null;
+        public Level  level = null;
         private bool levelSaved = true;
 
         private GameObjectDefinition currentDefinition = null;
@@ -121,6 +124,11 @@ namespace PlagueEngine.Tools
 
         private DummySniffer sniffer = null;
         private bool releaseInput = true;
+
+        LinkedCamera linkedCamera = null;
+        FreeCamera freeCamera = null;
+        Type cameraType;
+        bool linkedFirst = true;
         /********************************************************************************/
 
 
@@ -153,6 +161,7 @@ namespace PlagueEngine.Tools
             loadLevelNames();
             LoadAllObjectsId();
             checkBoxShowCollisionSkin.Checked = renderer.debugDrawer.IsEnabled;
+            setUpCameraButton();
         }
         /********************************************************************************/
 
@@ -599,6 +608,8 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void buttonLoad_Click(object sender, EventArgs e)
         {
+            RestoreCamera();
+            
             if (listBoxLevelNames.SelectedIndex != -1)
             {
                 if (level.CurrentLevel != listBoxLevelNames.SelectedItem.ToString())
@@ -623,6 +634,8 @@ namespace PlagueEngine.Tools
                 
 
             }
+
+            setUpCameraButton();
         }
         /********************************************************************************/
 
@@ -634,7 +647,7 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void buttonNew_Click(object sender, EventArgs e)
         {
-
+            RestoreCamera();
              
             bool NewCanceled = false;
             string lvlName;
@@ -737,7 +750,6 @@ namespace PlagueEngine.Tools
                 }
             }
 
-
          }
 
         /********************************************************************************/
@@ -748,9 +760,12 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void buttonSave_Click(object sender, EventArgs e)
         {
+                RestoreCamera();
 
                 level.SaveLevel();
                 levelSaved = true;
+
+                setUpCameraButton();
 
         }
         /********************************************************************************/
@@ -761,7 +776,7 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void buttonDelete_Click(object sender, EventArgs e)
         {
-            
+            RestoreCamera();
 
             if (listBoxLevelNames.SelectedIndex == -1)
             {
@@ -1154,6 +1169,9 @@ namespace PlagueEngine.Tools
 
         private void buttonSaveAs_Click(object sender, EventArgs e)
         {
+
+                        RestoreCamera();
+
                         releaseInput = false;
                         LevelNameMessageBox box = new LevelNameMessageBox("Level name:");
                         box.ShowDialog();
@@ -1325,6 +1343,174 @@ namespace PlagueEngine.Tools
                 currentObject = currentEditGameObject;
 
                 propertyGrid2.SelectedObject = currentEditGameObject;
+            }
+
+        }
+
+
+        private void RestoreCamera()
+        {
+            if(linkedFirst)
+            {
+                renderer.CurrentCamera = linkedCamera.cameraComponent;
+                cameraType = typeof(LinkedCamera);
+
+                if (freeCamera != null)
+                {
+                    level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
+                    freeCamera = null;
+                }
+
+            }
+            else
+            {
+                renderer.CurrentCamera = freeCamera.cameraComponent;
+                cameraType = typeof(FreeCamera);
+
+                if (linkedCamera != null)
+                {
+                    level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
+                    linkedCamera = null;
+                }
+
+            }
+
+        }
+        private void setUpCameraButton()
+        {
+            TreeNode [] nodes= treeView1.Nodes.Find("LinkedCamera",false);
+            if (nodes.GetLength(0) != 0)
+            {
+                if (nodes[0].Nodes.Count != 0)
+                {
+                    int id = int.Parse(nodes[0].Nodes[0].Text);
+                    linkedCamera = (LinkedCamera)level.GameObjects[id];
+                }
+            }
+
+            TreeNode[] nodes2 = treeView1.Nodes.Find("FreeCamera", false);
+            if (nodes2.GetLength(0) != 0)
+            {
+                if (nodes2[0].Nodes.Count != 0)
+                {
+                    int id = int.Parse(nodes2[0].Nodes[0].Text);
+                    freeCamera = (FreeCamera)level.GameObjects[id];
+                }
+            }
+            if (freeCamera != null && linkedCamera != null)
+            {
+                cameraType = null;
+                button3.Text = "Cant switch camera types";
+            }
+            else
+            {
+                if (linkedCamera != null)
+                {
+                    button3.Text = "Switch to freeCamera";
+                    cameraType = typeof(LinkedCamera);
+                }
+                if (freeCamera != null)
+                {
+                    button3.Text = "Switch to linkedCamera";
+                    cameraType = typeof(FreeCamera);
+                    linkedFirst = false;
+                }
+            }
+        }
+
+
+        private void switchToFreeCamera()
+        {
+            if (freeCamera == null)
+            {
+                Vector3 pos = renderer.CurrentCamera.Position;
+                FreeCameraData fcdata = new FreeCameraData();
+                fcdata.Type = typeof(FreeCamera);
+                fcdata.World = Matrix.Invert(Matrix.CreateLookAt(pos,
+                                                                 new Vector3(pos.X, pos.Y-70, pos.Z+60),
+                                                                 new Vector3(0, 1, 0)));
+                fcdata.MovementSpeed = 0.05f;
+                fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
+                fcdata.FoV = 60;
+                fcdata.ZNear = 1; 
+                fcdata.ZFar = 200;
+                fcdata.ActiveKeyListener = true;
+                fcdata.ActiveMouseListener = true;
+                freeCamera = (FreeCamera)level.GameObjectsFactory.Create(fcdata);
+
+
+
+                
+            }
+
+                renderer.CurrentCamera = freeCamera.cameraComponent;
+                cameraType = typeof(FreeCamera);
+
+
+            //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
+
+        }
+
+        private void switchToLinkedCamera()
+        {
+            if (linkedCamera == null)
+            {
+                Vector3 pos=renderer.CurrentCamera.Position;
+
+                MercenariesManager mercManager;
+                int id = 0;
+                TreeNode[] nodes = treeView1.Nodes.Find("MercenariesManager", false);
+                if (nodes.GetLength(0) != 0)
+                {
+                    id = int.Parse(nodes[0].Nodes[0].Text);
+
+                }
+                mercManager = (MercenariesManager)level.GameObjects[id];
+                
+                LinkedCameraData lcdata = new LinkedCameraData();
+                lcdata.Type = typeof(LinkedCamera);
+                lcdata.position = pos;
+                lcdata.Target = new Vector3(pos.X, pos.Y-35, pos.Z+25);
+                lcdata.MovementSpeed = 0.07f;
+                lcdata.RotationSpeed = 0.005f;
+                lcdata.ZoomSpeed = 0.01f;
+                lcdata.FoV = 60;
+                lcdata.ZNear = 1f;
+                lcdata.ZFar = 201;
+                lcdata.ActiveKeyListener = true;
+                lcdata.ActiveMouseListener = true;
+                lcdata.MercenariesManager = id;
+
+                linkedCamera = (LinkedCamera)(level.GameObjectsFactory.Create(lcdata));
+                if (mercManager != null)
+                {
+                    (mercManager as MercenariesManager).LinkedCamera = linkedCamera;
+                }
+
+
+
+               
+
+            }
+
+                renderer.CurrentCamera = linkedCamera.cameraComponent;
+                cameraType = typeof(LinkedCamera);
+
+            //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if(cameraType!=null)
+            {
+                if (cameraType == typeof(LinkedCamera))
+                {
+                    switchToFreeCamera();
+                }
+                else if (cameraType == typeof(FreeCamera))
+                {
+                    switchToLinkedCamera();
+                }
             }
 
         }

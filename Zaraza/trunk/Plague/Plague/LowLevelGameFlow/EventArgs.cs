@@ -27,8 +27,7 @@ namespace PlagueEngine.LowLevelGameFlow
     class GameObjectClicked : EventArgs
     {
             public int gameObjectID;
-
-            public GameObjectClicked(int gameObjectID)
+            public GameObjectClicked(int gameObjectID
             {
                 this.gameObjectID = gameObjectID;
             }

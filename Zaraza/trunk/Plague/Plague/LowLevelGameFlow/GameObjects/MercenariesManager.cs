@@ -480,8 +480,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             MercenariesManagerData data = new MercenariesManagerData();
             GetData(data);
 
+            if(data.LinkedCamera!=0)
+            {
             data.LinkedCamera = LinkedCamera.ID;       
-
+            }
             return data;
         }
         /****************************************************************************/

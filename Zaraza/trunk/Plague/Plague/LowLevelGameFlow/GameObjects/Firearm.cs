@@ -25,8 +25,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        MeshComponent       mesh = null;
-        SquareBodyComponent body = null;
+        public MeshComponent mesh = null;
+        public SquareBodyComponent body = null;
         /****************************************************************************/
 
 

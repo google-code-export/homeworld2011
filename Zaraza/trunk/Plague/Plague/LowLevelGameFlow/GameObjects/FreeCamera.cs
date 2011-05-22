@@ -11,6 +11,7 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.EventsSystem;
+using PlagueEngine.Tools;
 
 using JigLibX.Geometry;
 using JigLibX.Collision;
@@ -31,7 +32,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private CameraComponent           cameraComponent           = null;
+        public CameraComponent cameraComponent = null;
         private KeyboardListenerComponent keyboardListenerComponent = null;
         private MouseListenerComponent    mouseListenerComponent    = null;
 
@@ -45,7 +46,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float                     mouseX, mouseY;
         private float                     mouseXclicked, mouseYclicked;
         private bool                      clicked = false;
-        private Microsoft.Xna.Framework.Rectangle selectRectange;
         private bool                      isOnWindow = false;
         ConstraintWorldPoint              objectController = new ConstraintWorldPoint();
         ConstraintVelocity                damperController = new ConstraintVelocity();
@@ -82,28 +82,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
-
-
-        /****************************************************************************/
-        /// CheckRayIntersection
-        /****************************************************************************/
-        private void CheckRayIntersection()
-        {
-
-        }
-        /****************************************************************************/
-
-
-
-
-        /****************************************************************************/
-        /// CheckFrustumIntersection
-        /****************************************************************************/
-        private void CheckFrustumIntersection(BoundingFrustum frustum)
-        {
-
-        }
-        /****************************************************************************/
 
 
 
@@ -162,37 +140,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
 
 
-            if (!selectRectange.IsEmpty && mouseKeyAction == MouseKeyAction.LeftClick && !objectController.IsConstraintEnabled)
-            {
-                cameraComponent.Renderer.DrawSelectionRect(selectRectange);
-            }
-
-            //klikniecie
-            if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick && isOnWindow)
-            {
-                clicked = true;
-            }
-            else
-            {
-                clicked = false;
-            }
-
-
-            //przeciaganie
-            if (mouseKeyState.IsDown() && !mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick && !objectController.IsConstraintEnabled)
-            {
-                selectRectange.Width = (int)mouseX - selectRectange.X;
-                selectRectange.Height =(int)mouseY - selectRectange.Y;
-            }
-
-            //zwolnienie klawisza
-            if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick && selectRectange.Width != 0 && selectRectange.Height != 0 && !objectController.IsConstraintEnabled)
-            {
-                BoundingFrustum frustum = cameraComponent.GetFrustumFromRect(selectRectange);
-               
-                selectRectange = Microsoft.Xna.Framework.Rectangle.Empty;
-                CheckFrustumIntersection(frustum);
-            }
 
             if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
@@ -209,13 +156,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
                     if (skin != null)
                     {
+                        GameObjectInstance go = (GameObjectInstance)skin.ExternalData;
 
-                        this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
+                        object field = go.GetType().GetField("mesh");
+                        if (field != null)
+                        {
+                            field = go.GetType().GetField("mesh").GetValue(go);
+
+                            if (field.GetType() == typeof(SkinnedMeshComponent))
+                            {
+                                SkinnedMeshComponent mesh = (SkinnedMeshComponent)field;
+
+                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID,mesh.Model.BoundingBox));
+                            }
+                            if (field.GetType() == typeof(MeshComponent))
+                            {
+                                MeshComponent mesh = (MeshComponent)field;
+
+                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
+                            }
+                        }
                     }
-                    else
-                    {
-                        CheckRayIntersection();
-                    }
+
                     if (hit)
                     {
 
@@ -284,9 +246,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 mouseXclicked = mouseMovementState.Position.X;
                 mouseYclicked = mouseMovementState.Position.Y;
-                selectRectange = new Microsoft.Xna.Framework.Rectangle((int)mouseXclicked, (int)mouseYclicked, 0, 0);
 
             }
+
+
+
         }
         /****************************************************************************/
 
