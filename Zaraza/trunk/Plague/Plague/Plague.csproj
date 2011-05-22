@@ -236,6 +236,8 @@
     <Compile Include="Physics\Components\SquareSkinComponent.cs" />
     <Compile Include="Physics\Components\TerrainSkinComponent.cs" />
     <Compile Include="Physics\EventsArgs.cs" />
+    <Compile Include="Physics\Explosion.cs" />
+    <Compile Include="Physics\ExplosionManager.cs" />
     <Compile Include="Physics\PhysicsComponentFactory.cs" />
     <Compile Include="Physics\PhysicsController.cs" />
     <Compile Include="Physics\PhysicsManager.cs" />

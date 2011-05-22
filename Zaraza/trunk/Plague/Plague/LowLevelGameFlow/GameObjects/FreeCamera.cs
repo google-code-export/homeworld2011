@@ -16,6 +16,7 @@ using PlagueEngine.Tools;
 using JigLibX.Geometry;
 using JigLibX.Collision;
 using JigLibX.Physics;
+using PlagueEngine.Physics;
 
 /************************************************************************************/
 /// Plague.LowLevelGameFlow.GameObjects
@@ -71,6 +72,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.keyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A, 
                                                                Keys.D, Keys.Q, Keys.E, 
+                                                               Keys.R,
                                                                Keys.PageUp, Keys.PageDown, 
                                                                Keys.Up,     Keys.Down, 
                                                                Keys.Right,  Keys.Left);
@@ -114,10 +116,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case Keys.Q:
                     cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)) * -1);
                     break;
-
                 case Keys.E:
                     cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)));
+                    
                     break;
+                case Keys.R:
+                    if (state.WasPressed())
+                    {
+                        //ExplosionManager.CreateExplosion(new Vector3(275, 35, 120), 50000, 30);
+                    }
+                    break;
+
             }
         }
         /****************************************************************************/
@@ -156,26 +165,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
                     if (skin != null)
                     {
-                        GameObjectInstance go = (GameObjectInstance)skin.ExternalData;
-
-                        object field = go.GetType().GetField("mesh");
-                        if (field != null)
-                        {
-                            field = go.GetType().GetField("mesh").GetValue(go);
-
-                            if (field.GetType() == typeof(SkinnedMeshComponent))
-                            {
-                                SkinnedMeshComponent mesh = (SkinnedMeshComponent)field;
-
-                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
-                            }
-                            if (field.GetType() == typeof(MeshComponent))
-                            {
-                                MeshComponent mesh = (MeshComponent)field;
-
-                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
-                            }
-                        }
+                      
+                    this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
+                            
+                        
                     }
 
                     if (hit)

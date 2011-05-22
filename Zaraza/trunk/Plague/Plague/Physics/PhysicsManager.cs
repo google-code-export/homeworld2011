@@ -50,7 +50,7 @@ namespace PlagueEngine.Physics
             physicsSystem.CollisionSystem = new CollisionSystemSAP();
 
             physicsSystem.SolverType = PhysicsSystem.Solver.Accumulated;
-            physicsSystem.EnableFreezing                = true;
+            physicsSystem.EnableFreezing                = false;
             physicsSystem.IsShockStepEnabled = true;
             physicsSystem.CollisionSystem.UseSweepTests = true;
             
@@ -87,8 +87,8 @@ namespace PlagueEngine.Physics
             {
                 controller.UpdateController(timeStep);
             }
-            
 
+            ExplosionManager.Update();
         }
         /****************************************************************************/
                

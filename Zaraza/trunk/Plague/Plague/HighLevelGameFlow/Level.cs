@@ -459,7 +459,7 @@ namespace PlagueEngine.HighLevelGameFlow
             pdata.Status = 2;
 
             Random random = new Random();
-            for (int i = 1; i < 4; i++)
+            for (int i = 1; i < 1; i++)
             {
                 pdata.World = Matrix.CreateTranslation(250 + random.Next() % 30,
                                                         60 + random.Next() % 10,

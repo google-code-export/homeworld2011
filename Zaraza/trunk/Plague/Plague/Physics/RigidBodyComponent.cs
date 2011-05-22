@@ -88,56 +88,59 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         private bool HandleCollisionDetection(CollisionSkin owner, CollisionSkin collidee)
         {
-
-            if (subsribedGameObjectEvents.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+            if (!((GameObjectInstance)(collidee.ExternalData) == null))
             {
-                if (++frame == 1)
+
+                if (subsribedGameObjectEvents.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
                 {
-                    this.GameObject.SendEvent(
-                        new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
-                        EventsSystem.Priority.Normal,
-                        this.GameObject);
+                    if (++frame == 1)
+                    {
+                        this.GameObject.SendEvent(
+                            new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                            EventsSystem.Priority.Normal,
+                            this.GameObject);
+                    }
                 }
-            }
 
 
 
-            if (subscribedGameObjectTypesEvents.Contains(collidee.ExternalData.GetType()))
-            {
-                if (++frame == 1)
+                if (subscribedGameObjectTypesEvents.Contains(collidee.ExternalData.GetType()))
                 {
-                    this.GameObject.SendEvent(
-                        new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
-                        EventsSystem.Priority.Normal,
-                        this.GameObject);
-                }       
+                    if (++frame == 1)
+                    {
+                        this.GameObject.SendEvent(
+                            new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                            EventsSystem.Priority.Normal,
+                            this.GameObject);
+                    }
+                }
+
+
+
+                if (gameObjectsToNotColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+                {
+                    return false;
+                }
+
+                if (gameObjectsToColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+                {
+                    return true;
+                }
+
+
+                if (gameObjectsTypeToNotColide.Contains(collidee.ExternalData.GetType()))
+                {
+                    return false;
+                }
+
+                if (gameObjectsTypeToColide.Count == 0) return true;
+
+                if (gameObjectsTypeToColide.Contains(collidee.ExternalData.GetType()))
+                {
+                    return true;
+                }
+
             }
-
-
-
-            if (gameObjectsToNotColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
-            {
-                return false;
-            }
-
-            if (gameObjectsToColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
-            {
-                return true;
-            }
-
-
-            if (gameObjectsTypeToNotColide.Contains(collidee.ExternalData.GetType()))
-            {
-                return false;
-            }
-
-            if (gameObjectsTypeToColide.Count == 0) return true;
-
-            if (gameObjectsTypeToColide.Contains(collidee.ExternalData.GetType()))
-            {
-                return true;
-            }
-
             return false;
         }
         /****************************************************************************/
