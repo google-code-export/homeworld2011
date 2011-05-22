@@ -33,8 +33,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         public CameraComponent cameraComponent = null;
-        private KeyboardListenerComponent keyboardListenerComponent = null;
-        private MouseListenerComponent    mouseListenerComponent    = null;
+        public KeyboardListenerComponent keyboardListenerComponent = null;
+        public MouseListenerComponent mouseListenerComponent = null;
 
         private float                     movementSpeed             = 0;
         private float                     rotationSpeed             = 0;

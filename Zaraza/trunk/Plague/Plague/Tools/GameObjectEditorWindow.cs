@@ -1445,7 +1445,10 @@ namespace PlagueEngine.Tools
 
                 renderer.CurrentCamera = freeCamera.cameraComponent;
                 cameraType = typeof(FreeCamera);
-
+                freeCamera.keyboardListenerComponent.Active = true;
+                freeCamera.mouseListenerComponent.Active = true;
+                linkedCamera.keyboardListenerComponent.Active = false;
+                linkedCamera.mouseListenerComponent.Active = false;
 
             //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
 
@@ -1495,7 +1498,10 @@ namespace PlagueEngine.Tools
 
                 renderer.CurrentCamera = linkedCamera.cameraComponent;
                 cameraType = typeof(LinkedCamera);
-
+                linkedCamera.keyboardListenerComponent.Active = true;
+                linkedCamera.mouseListenerComponent.Active = true;
+                freeCamera.keyboardListenerComponent.Active = false;
+                freeCamera.mouseListenerComponent.Active = false;
             //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
         }
 
