@@ -32,8 +32,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         public CameraComponent cameraComponent = null;
-        private KeyboardListenerComponent keyboardListenerComponent = null;
-        private MouseListenerComponent mouselistenerComponent = null;
+        public KeyboardListenerComponent keyboardListenerComponent = null;
+        public MouseListenerComponent mouseListenerComponent = null;
 
         private float movementSpeed = 0;
         private float rotationSpeed = 0;
@@ -84,7 +84,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             this.cameraComponent = cameraComponent;
             this.keyboardListenerComponent = keyboardListenerComponent;
-            this.mouselistenerComponent = mouseListenerComponent;
+            this.mouseListenerComponent = mouseListenerComponent;
 
             this.movementSpeed = movementSpeed;
             this.rotationSpeed = rotationSpeed;
@@ -98,8 +98,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                                Keys.D, Keys.Q, Keys.E,
                                                                Keys.LeftControl, Keys.LeftAlt);
 
-            this.mouselistenerComponent.SubscribeMouseMove(onMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
-            this.mouselistenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick, MouseKeyAction.RightClick, MouseKeyAction.LeftClick);
+            this.mouseListenerComponent.SubscribeMouseMove(onMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
+            this.mouseListenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick, MouseKeyAction.RightClick, MouseKeyAction.LeftClick);
 
             int screenWidth = cameraComponent.ScreenWidth;
             int screenHeight = cameraComponent.ScreenHeight;
@@ -248,7 +248,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (++rotateCamera == 1)
                 {
-                    mouselistenerComponent.LockCursor();
+                    mouseListenerComponent.LockCursor();
                 }
                 else
                 {
@@ -280,7 +280,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.MiddleClick)
             {                
                 //this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
-                if (--rotateCamera == 0) mouselistenerComponent.UnlockCursor();
+                if (--rotateCamera == 0) mouseListenerComponent.UnlockCursor();
             }
             /****************************/
 
@@ -486,7 +486,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                             }
                         }
-                        mouselistenerComponent.SetCursor(cursor);
+                        mouseListenerComponent.SetCursor(cursor);
                     }
                     break;
             }
@@ -510,11 +510,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (key == Keys.LeftAlt && state.WasPressed())
                 {
-                    if (++rotateCamera == 1) mouselistenerComponent.LockCursor();
+                    if (++rotateCamera == 1) mouseListenerComponent.LockCursor();
                 }
                 else if (key == Keys.LeftAlt && state.WasReleased())
                 {
-                    if (--rotateCamera == 0) mouselistenerComponent.UnlockCursor();
+                    if (--rotateCamera == 0) mouseListenerComponent.UnlockCursor();
                 }
             }
 
@@ -592,7 +592,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             cameraComponent.ReleaseMe();
             keyboardListenerComponent.ReleaseMe();
-            mouselistenerComponent.ReleaseMe();
+            mouseListenerComponent.ReleaseMe();
         }
         /****************************************************************************/
 
@@ -612,7 +612,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ZNear = this.cameraComponent.ZNear;
             data.ZFar = this.cameraComponent.ZFar;
             data.ActiveKeyListener = this.keyboardListenerComponent.Active;
-            data.ActiveMouseListener = this.mouselistenerComponent.Active;
+            data.ActiveMouseListener = this.mouseListenerComponent.Active;
             data.Position = this.position;
             data.Target = this.target;
             data.MercenariesManager = this.mercenariesManager.ID;
@@ -656,7 +656,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (CanIMove(position, position + offset))
                         {
-                            mouselistenerComponent.SetCursor("Left");
+                            mouseListenerComponent.SetCursor("Left");
                             position += offset;
                             target += offset;
 
@@ -674,7 +674,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (CanIMove(position, position - offset))
                         {
-                            mouselistenerComponent.SetCursor("Right");
+                            mouseListenerComponent.SetCursor("Right");
                             position -= offset;
                             target -= offset;
 
@@ -693,7 +693,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (CanIMove(position, position + offset))
                         {
-                            mouselistenerComponent.SetCursor("Up");
+                            mouseListenerComponent.SetCursor("Up");
                             position += offset;
                             target += offset;
 
@@ -711,7 +711,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (CanIMove(position, position - offset))
                         {
-                            mouselistenerComponent.SetCursor("Down");
+                            mouseListenerComponent.SetCursor("Down");
                             position -= offset;
                             target -= offset;
 
