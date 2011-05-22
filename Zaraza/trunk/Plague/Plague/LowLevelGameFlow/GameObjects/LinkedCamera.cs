@@ -65,7 +65,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float mouseX, mouseY;
 
 
-        private MercenariesManager mercenariesManager = null;
+        public MercenariesManager mercenariesManager = null;
         /****************************************************************************/
 
 
