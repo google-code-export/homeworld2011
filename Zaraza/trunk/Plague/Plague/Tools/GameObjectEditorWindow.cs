@@ -1506,10 +1506,13 @@ namespace PlagueEngine.Tools
                 if (cameraType == typeof(LinkedCamera))
                 {
                     switchToFreeCamera();
+
+                    button3.Text = "Switch to linkedCamera";
                 }
                 else if (cameraType == typeof(FreeCamera))
                 {
                     switchToLinkedCamera();
+                    button3.Text = "Switch to freeCamera";
                 }
             }
 
