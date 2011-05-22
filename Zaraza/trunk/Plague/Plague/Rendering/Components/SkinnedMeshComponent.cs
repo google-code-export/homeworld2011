@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 using PlagueEngine.LowLevelGameFlow;
-using PlagueEngineSkinning;
 
-/************************************************************************************/
-/// PlagueEngine.Rendering.Components
-/************************************************************************************/
 namespace PlagueEngine.Rendering.Components
 {
 
@@ -27,6 +21,7 @@ namespace PlagueEngine.Rendering.Components
        
         private List<String> subscribedAnimations = new List<String>();
         private Vector3[] corners = new Vector3[8];
+        private Vector3[] _bbCorners = new Vector3[8];
         /****************************************************************************/
         
 
@@ -59,7 +54,7 @@ namespace PlagueEngine.Rendering.Components
             BlendDuration   = blendDuration;
             Pause           = pause;
             Blend           = blend;
-
+            _bbCorners      = Model.BoundingBox.GetCorners();
             currentAnimation = new AnimationPlayer(model.SkinningData, currentClip, currentTime, currentKeyframe, OnAnimationEnd);
             blendAnimation   = new AnimationPlayer(model.SkinningData, blendClip, blendClipTime, blendKeyframe, OnAnimationEnd);
             
@@ -333,7 +328,7 @@ namespace PlagueEngine.Rendering.Components
         {
             get
             {
-                Vector3.Transform(Model.BoundingBox.GetCorners().ToArray(), ref gameObject.World, corners);
+                Vector3.Transform(_bbCorners, ref gameObject.World, corners);
                 return BoundingBox.CreateFromPoints(corners);
             }
         }

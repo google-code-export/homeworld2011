@@ -32,6 +32,7 @@ namespace PlagueEngine.Rendering.Components
         private Techniques technique;
         private readonly InstancingModes instancingMode;
         private Vector3[] corners = new Vector3[8];
+        private Vector3[] _bbCorners = new Vector3[8];
         /****************************************************************************/
 
 
@@ -49,7 +50,7 @@ namespace PlagueEngine.Rendering.Components
             this.textures       = textures;
             this.instancingMode = instancingMode;
             this.technique      = technique;
-
+            _bbCorners = Model.BoundingBox.GetCorners();
             renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);            
         }        
         /****************************************************************************/
@@ -69,12 +70,11 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Bounding Box
         /****************************************************************************/
-        public BoundingBox BoundingBox 
+        public BoundingBox BoundingBox
         {
             get
-            {                
-                Matrix world = gameObject.GetWorld();
-                Vector3.Transform(model.BoundingBox.GetCorners().ToArray(), ref world, corners);
+            {
+                Vector3.Transform(_bbCorners, ref gameObject.World, corners);
                 return BoundingBox.CreateFromPoints(corners);
             }
         }
