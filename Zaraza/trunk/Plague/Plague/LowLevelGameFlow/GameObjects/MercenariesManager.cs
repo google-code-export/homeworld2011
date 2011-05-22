@@ -38,11 +38,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private EventsSnifferComponent    sniffer  = new EventsSnifferComponent();
         private KeyboardListenerComponent keyboard = null;
         private MouseListenerComponent    mouse    = null;
+        private FrontEndComponent         frontEnd = null;
 
         private GameObjectInstance targetGameObject = null;
-        private Mercenary          currentMercenary = null;
-
-        private FrontEndComponent frontEnd = null;
+        private Mercenary          currentMercenary = null;        
 
         private int screenWithOver2 = 0;
         private int mouseX          = 0;
@@ -667,6 +666,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 return new Rectangle(64, 384, 16, 16);
             }
             else return new Rectangle();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Release Components
+        /****************************************************************************/
+        public override void ReleaseComponents()
+        {
+            sniffer.ReleaseMe();
+            keyboard.ReleaseMe();
+            mouse.ReleaseMe();
+            frontEnd.ReleaseMe();
         }
         /****************************************************************************/
 
