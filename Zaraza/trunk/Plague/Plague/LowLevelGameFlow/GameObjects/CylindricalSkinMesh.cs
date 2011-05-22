@@ -28,8 +28,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
-        MeshComponent meshComponent = null;
-        CylindricalSkinComponent physicsComponent = null;
+        public MeshComponent mesh = null;
+        public CylindricalSkinComponent body = null;
         /********************************************************************************/
 
 
@@ -37,10 +37,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(MeshComponent meshComponent, CylindricalSkinComponent physcisComponent)
+        public void Init(MeshComponent mesh, CylindricalSkinComponent physcisComponent)
         {
-            this.meshComponent = meshComponent;
-            this.physicsComponent = physcisComponent;
+            this.mesh = mesh;
+            this.body = physcisComponent;
         }
         /********************************************************************************/
 
@@ -52,8 +52,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override void ReleaseComponents()
         {
-            meshComponent.ReleaseMe();
-            physicsComponent.ReleaseMe();
+            mesh.ReleaseMe();
+            body.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -68,22 +68,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             CylindricalSkinMeshData data = new CylindricalSkinMeshData();
             GetData(data);
-            data.Model = meshComponent.Model.Name;
-            data.Diffuse = (meshComponent.Textures.Diffuse == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
-            data.Specular = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
-            data.Normals = (meshComponent.Textures.Normals == null ? String.Empty : meshComponent.Textures.Normals.Name);
+            data.Model = mesh.Model.Name;
+            data.Diffuse = (mesh.Textures.Diffuse == null ? String.Empty : mesh.Textures.Diffuse.Name);
+            data.Specular = (mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name);
+            data.Normals = (mesh.Textures.Normals == null ? String.Empty : mesh.Textures.Normals.Name);
 
-            data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);
+            data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
-            data.Elasticity = physicsComponent.Elasticity;
-            data.StaticRoughness = physicsComponent.StaticRoughness;
-            data.DynamicRoughness = physicsComponent.DynamicRoughness;
-            data.Lenght = physicsComponent.Length;
-            data.Radius = physicsComponent.Radius;
-            data.Translation = physicsComponent.SkinTranslation;
-            data.SkinPitch = physicsComponent.Pitch;
-            data.SkinRoll = physicsComponent.Roll;
-            data.SkinYaw = physicsComponent.Yaw;
+            data.Elasticity = body.Elasticity;
+            data.StaticRoughness = body.StaticRoughness;
+            data.DynamicRoughness = body.DynamicRoughness;
+            data.Lenght = body.Length;
+            data.Radius = body.Radius;
+            data.Translation = body.SkinTranslation;
+            data.SkinPitch = body.Pitch;
+            data.SkinRoll = body.Roll;
+            data.SkinYaw = body.Yaw;
 
             return data;
         }

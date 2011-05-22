@@ -411,19 +411,7 @@ namespace PlagueEngine.HighLevelGameFlow
             dddtata.Pitch = 90;
             GameObjectsFactory.Create(dddtata);
 
-            //FreeCameraData fcdata = new FreeCameraData();
-            //fcdata.Type = typeof(FreeCamera);
-            //fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
-            //                                                 new Vector3(240, 10, 70),
-            //                                                 new Vector3(0, 1, 0)));
-            //fcdata.MovementSpeed = 0.05f;
-            //fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-            //fcdata.FoV = 60;
-            //fcdata.ZNear = 1;
-            //fcdata.ZFar = 200;
-            //fcdata.ActiveKeyListener = true;
-            //fcdata.ActiveMouseListener = true;
-            //gameObjectsFactory.Create(fcdata);
+
 
 
             TerrainData tdata = new TerrainData();
@@ -452,10 +440,10 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.World = Matrix.Identity;
             sdata.Enabled = true;
             sdata.Diffuse = new Vector3(1f, 1f, 1f);
-            sdata.Intensity = 0.2f;
-
+            sdata.Intensity = 0.8f;
+            
             Sunlight s = (Sunlight)GameObjectsFactory.Create(sdata);
-            s.Direction = new Vector3(-1, -1, -1);
+            s.Direction = new Vector3(0, -1, 0);
 
             GlowStickData pdata = new GlowStickData();
             pdata.Type = typeof(GlowStick);
@@ -781,24 +769,39 @@ namespace PlagueEngine.HighLevelGameFlow
 
             GameObjectInstance mm = GameObjectsFactory.Create(mcmd);
 
-            LinkedCameraData lcdata = new LinkedCameraData();
-            lcdata.Type = typeof(LinkedCamera);
-            lcdata.position = new Vector3(245, 80, 10);
-            lcdata.Target = new Vector3(245, 45, 35);
-            lcdata.MovementSpeed = 0.07f;
-            lcdata.RotationSpeed = 0.005f;
-            lcdata.ZoomSpeed = 0.01f;
-            lcdata.FoV = 60;
-            lcdata.ZNear = 1f;
-            lcdata.ZFar = 200;
-            lcdata.ActiveKeyListener = true;
-            lcdata.ActiveMouseListener = true;
-            lcdata.MercenariesManager = mm.ID;
+            //LinkedCameraData lcdata = new LinkedCameraData();
+            //lcdata.Type = typeof(LinkedCamera);
+            //lcdata.position = new Vector3(245, 80, 10);
+            //lcdata.Target = new Vector3(245, 45, 35);
+            //lcdata.MovementSpeed = 0.07f;
+            //lcdata.RotationSpeed = 0.005f;
+            //lcdata.ZoomSpeed = 0.01f;
+            //lcdata.FoV = 60;
+            //lcdata.ZNear = 1f;
+            //lcdata.ZFar = 200;
+            //lcdata.ActiveKeyListener = true;
+            //lcdata.ActiveMouseListener = true;
+            //lcdata.MercenariesManager = mm.ID;
 
-            LinkedCamera camera = (LinkedCamera)(GameObjectsFactory.Create(lcdata));
+            //LinkedCamera camera = (LinkedCamera)(GameObjectsFactory.Create(lcdata));
 
-            (mm as MercenariesManager).LinkedCamera = camera;
+            //(mm as MercenariesManager).LinkedCamera = camera;
 
+
+
+            FreeCameraData fcdata = new FreeCameraData();
+            fcdata.Type = typeof(FreeCamera);
+            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
+                                                             new Vector3(240, 10, 70),
+                                                             new Vector3(0, 1, 0)));
+            fcdata.MovementSpeed = 0.05f;
+            fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
+            fcdata.FoV = 60;
+            fcdata.ZNear = 1;
+            fcdata.ZFar = 200;
+            fcdata.ActiveKeyListener = true;
+            fcdata.ActiveMouseListener = true;
+            GameObjectsFactory.Create(fcdata);
 
 
             //CreatureData ssdata = new CreatureData();
@@ -825,7 +828,11 @@ namespace PlagueEngine.HighLevelGameFlow
 
 
 
-           
+            StaticMeshData data2 = new StaticMeshData();
+            data2.Model = "Barrel";
+            data2.Type = typeof(StaticMesh);
+            data2.World.Translation = new Vector3(250, 70, 30);
+            GameObjectsFactory.Create(data2);
 
 
         }

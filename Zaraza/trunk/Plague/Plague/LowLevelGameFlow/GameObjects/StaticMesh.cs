@@ -27,16 +27,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        MeshComponent meshComponent = null;
+        public MeshComponent mesh = null;
         /****************************************************************************/
        
 
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(MeshComponent meshComponent)
+        public void Init(MeshComponent mesh)
         {
-            this.meshComponent      = meshComponent;
+            this.mesh      = mesh;
         }
         /****************************************************************************/
 
@@ -46,7 +46,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            meshComponent.ReleaseMe();
+            mesh.ReleaseMe();
         }
         /****************************************************************************/
         
@@ -58,12 +58,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             StaticMeshData data = new StaticMeshData();
             GetData(data);
-            data.Model          = meshComponent.Model.Name;
-            data.Diffuse        = (meshComponent.Textures.Diffuse  == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
-            data.Specular       = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
-            data.Normals        = (meshComponent.Textures.Normals  == null ? String.Empty : meshComponent.Textures.Normals.Name);
+            data.Model          = mesh.Model.Name;
+            data.Diffuse        = (mesh.Textures.Diffuse  == null ? String.Empty : mesh.Textures.Diffuse.Name);
+            data.Specular       = (mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name);
+            data.Normals        = (mesh.Textures.Normals  == null ? String.Empty : mesh.Textures.Normals.Name);
 
-            data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);
+            data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
            
             return data;
         }

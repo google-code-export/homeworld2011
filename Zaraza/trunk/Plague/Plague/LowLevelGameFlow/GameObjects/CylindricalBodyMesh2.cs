@@ -30,8 +30,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
-        MeshComponent meshComponent = null;
-        CylindricalBodyComponent2 physicsComponent = null;
+        public MeshComponent mesh = null;
+        public CylindricalBodyComponent2 body = null;
         /********************************************************************************/
 
 
@@ -40,10 +40,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(MeshComponent meshComponent, CylindricalBodyComponent2 physcisComponent)
+        public void Init(MeshComponent mesh, CylindricalBodyComponent2 physcisComponent)
         {
-            this.meshComponent = meshComponent;
-            this.physicsComponent = physcisComponent;
+            this.mesh = mesh;
+            this.body = physcisComponent;
         }
         /********************************************************************************/
 
@@ -58,8 +58,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override void ReleaseComponents()
         {
-            meshComponent.ReleaseMe();
-            physicsComponent.ReleaseMe();
+            mesh.ReleaseMe();
+            body.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -73,24 +73,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             CylindricalBodyMeshData2 data = new CylindricalBodyMeshData2();
             GetData(data);
-            data.Model = meshComponent.Model.Name;
-            data.Diffuse = (meshComponent.Textures.Diffuse == null ? String.Empty : meshComponent.Textures.Diffuse.Name);
-            data.Specular = (meshComponent.Textures.Specular == null ? String.Empty : meshComponent.Textures.Specular.Name);
-            data.Normals = (meshComponent.Textures.Normals == null ? String.Empty : meshComponent.Textures.Normals.Name);
+            data.Model = mesh.Model.Name;
+            data.Diffuse = (mesh.Textures.Diffuse == null ? String.Empty : mesh.Textures.Diffuse.Name);
+            data.Specular = (mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name);
+            data.Normals = (mesh.Textures.Normals == null ? String.Empty : mesh.Textures.Normals.Name);
 
-            data.InstancingMode = Renderer.InstancingModeToUInt(meshComponent.InstancingMode);
+            data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
-            data.Mass = physicsComponent.Mass;
-            data.Elasticity = physicsComponent.Elasticity;
-            data.StaticRoughness = physicsComponent.StaticRoughness;
-            data.DynamicRoughness = physicsComponent.DynamicRoughness;
-            data.Lenght = physicsComponent.Length;
-            data.Radius = physicsComponent.Radius;
-            data.Immovable = physicsComponent.Immovable;
-            data.Translation = physicsComponent.SkinTranslation;
-            data.SkinPitch = physicsComponent.Pitch;
-            data.SkinRoll = physicsComponent.Roll;
-            data.SkinYaw = physicsComponent.Yaw;
+            data.Mass = body.Mass;
+            data.Elasticity = body.Elasticity;
+            data.StaticRoughness = body.StaticRoughness;
+            data.DynamicRoughness = body.DynamicRoughness;
+            data.Lenght = body.Length;
+            data.Radius = body.Radius;
+            data.Immovable = body.Immovable;
+            data.Translation = body.SkinTranslation;
+            data.SkinPitch = body.Pitch;
+            data.SkinRoll = body.Roll;
+            data.SkinYaw = body.Yaw;
 
             return data;
         }

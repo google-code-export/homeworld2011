@@ -434,7 +434,7 @@ namespace PlagueEngine.Rendering
                 renderableComponent.Effect.Parameters["View"].SetValue(view);
                 renderableComponent.Effect.Parameters["Projection"].SetValue(projection);
                 renderableComponent.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
-
+                
                 renderableComponent.Draw();
             }
             /************************************/

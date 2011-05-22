@@ -73,8 +73,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Components
         /****************************************************************************/
-        public SkinnedMeshComponent Mesh       { get; private set; }
-        public CapsuleBodyComponent Body       { get; private set; }
+        public SkinnedMeshComponent mesh;
+        public CapsuleBodyComponent body;  
+        public SkinnedMeshComponent Mesh { get { return this.mesh; } private set { this.mesh = value; } }
+        public CapsuleBodyComponent Body { get { return this.body; } private set { this.body = value; } }
         public PhysicsController    Controller { get; private set; }
         /****************************************************************************/
 
