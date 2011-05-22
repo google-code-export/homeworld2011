@@ -167,7 +167,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             {
                                 SkinnedMeshComponent mesh = (SkinnedMeshComponent)field;
 
-                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID,mesh.Model.BoundingBox));
+                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
                             }
                             if (field.GetType() == typeof(MeshComponent))
                             {
