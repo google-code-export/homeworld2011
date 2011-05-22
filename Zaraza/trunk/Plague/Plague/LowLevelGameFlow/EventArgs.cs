@@ -17,7 +17,9 @@ namespace PlagueEngine.LowLevelGameFlow
     class DestroyEvent       : EventArgs { };
     class SwitchEvent        : EventArgs { };
     class GameObjectReleased : EventArgs { };
-    class ExamineEvent       : EventArgs { };
+    class ExamineEvent       : EventArgs { };    
+    class ActionDoneEvent    : EventArgs { };
+    class StopActionEvent    : EventArgs { };
     /********************************************************************************/
 
     

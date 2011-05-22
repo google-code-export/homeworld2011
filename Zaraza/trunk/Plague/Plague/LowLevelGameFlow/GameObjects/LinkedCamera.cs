@@ -325,17 +325,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     BoundingFrustum frustrum = cameraComponent.GetFrustumFromRect(rect);
 
                     int i = 0;
-                    foreach (Mercenary mercenary in mercenariesManager.Mercenaries)
+                    foreach (Mercenary mercenary in mercenariesManager.Mercenaries.Keys)
                     {
                         if (frustrum.Intersects(mercenary.Mesh.BoundingBox))
                         {
                             ++i;
 
-                            if      (removeFromSelection)       SendEvent(new RemoveFromSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
-                            else if (i == 1 && addToSelection)  SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
-                            else if (addToSelection)            SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
-                            else if (i == 1)                    SendEvent(new SelectedObjectEvent(mercenary, mercenary.World.Translation), Priority.Normal, mercenariesManager);
-                            else                                SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
+                            if      (removeFromSelection)      SendEvent(new RemoveFromSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
+                            else if (i == 1 && addToSelection) SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
+                            else if (addToSelection)           SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
+                            else if (i == 1)                   SendEvent(new SelectedObjectEvent(mercenary, mercenary.World.Translation), Priority.Normal, mercenariesManager);
+                            else                               SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
                         }
                     }
                 }

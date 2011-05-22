@@ -84,11 +84,11 @@ namespace PlagueEngine.Rendering
         /**********************/
         /// Helpers
         /**********************/
-        internal BatchedMeshes        batchedMeshes        = null;
-        internal BatchedSkinnedMeshes batchedSkinnedMeshes = null;
-        internal DebugDrawer          debugDrawer          = null;
-        internal LightsManager        lightsManager        = null;        
-        private  SpriteBatch          spriteBatch          = null;        
+        internal BatchedMeshes        batchedMeshes         = null;
+        internal BatchedSkinnedMeshes batchedSkinnedMeshes  = null;
+        internal DebugDrawer          debugDrawer           = null;
+        internal LightsManager        lightsManager         = null;        
+        private  SpriteBatch          spriteBatch           = null;        
         internal List<FrontEndComponent> frontEndComponents = new List<FrontEndComponent>();
         internal Dictionary<String, SpriteFont> fonts       = new Dictionary<String, SpriteFont>();
         /**********************/
@@ -380,7 +380,7 @@ namespace PlagueEngine.Rendering
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
-            //particleManager.DrawParticles(gameTime);
+            particleManager.DrawParticles(gameTime);
 
             DrawFrontEnd(ViewProjection);
             DrawRect();

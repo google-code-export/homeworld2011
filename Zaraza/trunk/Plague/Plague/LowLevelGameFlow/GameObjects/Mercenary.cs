@@ -12,6 +12,7 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Physics;
+using PlagueEngine.EventsSystem;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -37,6 +38,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float movingSpeed    = 0;
         private float distance       = 0;
         private float anglePrecision = 0;
+
+        private IEventsReceiver receiver = null;
         /****************************************************************************/
 
 
@@ -151,6 +154,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
 
+                receiver = sender as IEventsReceiver;
+
                 target = moveToPointCommandEvent.point;
                 moving = 1;
             }
@@ -160,6 +165,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
             {
                 GrabObjectCommandEvent moveToObjectCommandEvent = e as GrabObjectCommandEvent;
+
+                receiver = sender as IEventsReceiver;
 
                 if (moveToObjectCommandEvent.gameObject != this)
                 {
@@ -199,6 +206,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         moving = 0;
                         Controller.StopMoving();
                         Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                     }
                     else if (moving == 4)
                     {
@@ -210,7 +218,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         moving = 0;
                         Controller.StopMoving();
                         Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
-                    
+                        SendEvent(new ActionDoneEvent(), Priority.High, receiver);                    
                     }
                 }
             }
@@ -220,6 +228,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else if (e.GetType().Equals(typeof(FollowObjectCommandEvent)))
             {
                 FollowObjectCommandEvent FollowObjectCommandEvent = e as FollowObjectCommandEvent;
+
+                receiver = sender as IEventsReceiver;
 
                 if (FollowObjectCommandEvent.gameObject != this)
                 {
@@ -234,10 +244,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 ExamineObjectCommandEvent ExamineObjectCommandEvent = e as ExamineObjectCommandEvent;
 
+                receiver = sender as IEventsReceiver;
+
                 objectTarget = ExamineObjectCommandEvent.gameObject;                    
                 moving = 4;
                 Body.SubscribeCollisionEvent(objectTarget.ID);                
             }
+            /*************************************/
+            /// StopActionEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(StopActionEvent)))
+            {
+                moving       = 0;
+                objectTarget = null;
+                Controller.StopMoving();
+                Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));     
+            }
+            /*************************************/
         }
         /****************************************************************************/
 
@@ -256,7 +279,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     moving = 0;
                     Controller.StopMoving();
-                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
+                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                 }
                 else
                 {
@@ -286,7 +310,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     objectTarget = null;
                     moving = 0;
                     Controller.StopMoving();
-                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
                     return;
                 }
 
