@@ -491,6 +491,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.MarkerPosition = markerLocalPosition;
             data.GripBone       = gripBone;
 
+            data.HP    = HP;
+            data.MaxHP = MaxHP;
+            data.Icon  = Icon;
+
             return data;
         }
         /****************************************************************************/
