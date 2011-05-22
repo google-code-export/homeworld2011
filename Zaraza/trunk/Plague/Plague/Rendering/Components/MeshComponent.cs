@@ -74,10 +74,12 @@ namespace PlagueEngine.Rendering.Components
         {
             get
             {
-                Vector3.Transform(_bbCorners, ref gameObject.World, corners);
+                var world = gameObject.GetWorld(); 
+                Vector3.Transform(_bbCorners, ref world, corners);
                 return BoundingBox.CreateFromPoints(corners);
             }
         }
+
         /****************************************************************************/
 
 
