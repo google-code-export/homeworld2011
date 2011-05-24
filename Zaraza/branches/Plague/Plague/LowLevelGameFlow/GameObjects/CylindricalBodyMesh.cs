@@ -30,7 +30,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
-        MeshComponent meshComponent = null;
+        DeformableMeshComponentAdapter meshComponent = null;
         CylindricalBodyComponent physicsComponent = null;
         /********************************************************************************/
 
@@ -42,8 +42,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public void Init(MeshComponent meshComponent, CylindricalBodyComponent physcisComponent)
         {
-            this.meshComponent = meshComponent;
+            this.meshComponent = new DeformableMeshComponentAdapter(this, meshComponent);
             this.physicsComponent = physcisComponent;
+            this.meshComponent.deform();
         }
         /********************************************************************************/
 
