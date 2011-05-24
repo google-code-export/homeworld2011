@@ -55,7 +55,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private String gripBone;
 
-        public Dictionary<IStorable, List<int>> Items { get; private set; }
+        public Dictionary<IStorable, ItemPosition> Items { get; private set; }
         /****************************************************************************/
 
 
@@ -138,7 +138,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             
             RequiresUpdate = true;
 
-            Items = new Dictionary<IStorable, List<int>>();
+            Items = new Dictionary<IStorable, ItemPosition>();
         }
         /****************************************************************************/
 
