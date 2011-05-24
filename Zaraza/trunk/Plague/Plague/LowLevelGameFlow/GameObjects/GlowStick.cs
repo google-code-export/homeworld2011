@@ -19,7 +19,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// GlowStick
     /********************************************************************************/
-    class GlowStick : GameObjectInstance, IActiveGameObject
+    class GlowStick : GameObjectInstance, IActiveGameObject, IStorable
     {
 
         /****************************************************************************/
@@ -29,6 +29,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public CylindricalBodyComponent body = null;
         PointLightComponent      light1 = null;
         PointLightComponent      light2 = null;
+
+        private Rectangle Icon;
+        private Rectangle SlotsIcon;
         /****************************************************************************/
 
 
@@ -38,12 +41,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(MeshComponent mesh,
                          CylindricalBodyComponent body,
                          PointLightComponent light1,
-                         PointLightComponent light2)
+                         PointLightComponent light2,
+                         Rectangle icon,
+                         Rectangle slotsIcon)
         {
             this.mesh   = mesh;
             this.body   = body;
             this.light1 = light1;
             this.light2 = light2;
+
+            Icon = icon;
+            SlotsIcon = slotsIcon;
         }
         /****************************************************************************/
 
@@ -56,6 +64,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (owner != null)
             {
                 World = Matrix.Identity;
+                mesh.Enabled = true;
+                light1.Enabled = true;
+                light2.Enabled = true;
                 body.DisableBody();
             }
             else
@@ -113,6 +124,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Enabled              = light1.Enabled;
             data.Color                = light1.Color;
 
+            data.Icon = Icon;
+            data.SlotsIcon = SlotsIcon;
+
             return data;
         }
         /****************************************************************************/
@@ -136,6 +150,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             return new String[] { "Grab" };
         }
         /****************************************************************************/
+
+        public Rectangle GetIcon()
+        {
+            return Icon;
+        }
+
+        public Rectangle GetSlotsIcon()
+        {
+            return SlotsIcon;
+        }
+
+
+        public void OnStoring()
+        {
+            body.DisableBody();
+            mesh.Enabled   = false;
+            light1.Enabled = false;
+            light2.Enabled = false;
+        }
     }
     /********************************************************************************/
 
@@ -173,6 +206,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Light")]
         public Vector3 Color { get; set; }
+
+
+        [CategoryAttribute("Icon")]
+        public Rectangle Icon { get; set; }
+        [CategoryAttribute("Icon")]
+        public Rectangle SlotsIcon { get; set; }
+
+        [CategoryAttribute("EnabledMesh")]
+        public bool EnabledMesh { get; set; }
     }
     /********************************************************************************/
 

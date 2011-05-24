@@ -123,7 +123,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case Keys.R:
                     if (state.WasPressed())
                     {
-                        //ExplosionManager.CreateExplosion(new Vector3(275, 35, 120), 50000, 30);
+                        ExplosionManager.CreateExplosion(new Vector3(275, 35, 120), 50000, 30);
                     }
                     break;
 

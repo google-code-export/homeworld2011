@@ -9,7 +9,7 @@ using System.Text;
 /************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
-    class Suit : GameObjectInstance
+    class Armor : GameObjectInstance
     {
     }
 }

@@ -25,7 +25,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public MeshComponent mesh = null;
+        public MeshComponent       mesh = null;
         public SquareBodyComponent body = null;
         /****************************************************************************/
 
@@ -168,6 +168,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float SkinPitch { get; set; }
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
+
+        [CategoryAttribute("EnabledMesh")]
+        public bool EnabledMesh { get; set; }
     }
     /********************************************************************************/
 

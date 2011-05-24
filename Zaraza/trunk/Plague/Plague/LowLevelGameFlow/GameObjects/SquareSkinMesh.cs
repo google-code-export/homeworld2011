@@ -149,6 +149,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
+
+        [CategoryAttribute("EnabledMesh")]
+        public bool EnabledMesh { get; set; }
     }
     /********************************************************************************/
 

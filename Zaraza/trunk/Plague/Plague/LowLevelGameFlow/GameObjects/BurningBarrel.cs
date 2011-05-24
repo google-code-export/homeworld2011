@@ -126,7 +126,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.particleTranslation = particleEmitter.particleTranslation;
 
 
-
+            data.EnabledMesh = mesh.Enabled;
 
             return data;
         }
@@ -271,9 +271,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
            public float minRotateSpeed { get; set; }
 
 
-           
 
 
+        [CategoryAttribute("EnabledMesh")]
+        public bool EnabledMesh { get; set; }
     }
     /********************************************************************************/
 

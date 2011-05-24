@@ -142,6 +142,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Light")]
         public float QuadraticAttenuation { get; set; }
+
     }
     /********************************************************************************/
 

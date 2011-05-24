@@ -440,7 +440,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sdata.World = Matrix.Identity;
             sdata.Enabled = true;
             sdata.Diffuse = new Vector3(1f, 1f, 1f);
-            sdata.Intensity = 0.8f;
+            sdata.Intensity = 0.2f;
             
             Sunlight s = (Sunlight)GameObjectsFactory.Create(sdata);
             s.Direction = new Vector3(0, -1, 0);
@@ -451,6 +451,8 @@ namespace PlagueEngine.HighLevelGameFlow
             pdata.DynamicRoughness = 0.8f;
             pdata.StaticRoughness = 0.8f;
             pdata.Immovable = false;
+            pdata.Icon = new Rectangle(0, 670, 50, 50);
+            pdata.SlotsIcon = new Rectangle(50, 670, 64, 32);
             pdata.Mass = 0.3f;
             pdata.Elasticity = 0.2f;
             pdata.Color = new Vector3(0, 1, 0);
@@ -459,7 +461,7 @@ namespace PlagueEngine.HighLevelGameFlow
             pdata.Status = 2;
 
             Random random = new Random();
-            for (int i = 1; i < 1; i++)
+            for (int i = 0; i < 30; i++)
             {
                 pdata.World = Matrix.CreateTranslation(250 + random.Next() % 30,
                                                         60 + random.Next() % 10,
@@ -687,6 +689,8 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.Status = 2;
             fldata.DepthBias = 0.05f;
             fldata.Name = "Flashlight";
+            fldata.Icon = new Rectangle(0, 620, 50, 50);
+            fldata.SlotsIcon = new Rectangle(50, 620, 32, 32);
 
             GameObjectsFactory.Create(fldata);
             fldata.World = Matrix.CreateTranslation(252, 60, 30);
@@ -697,7 +701,7 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.Type = typeof(Mercenary);
             mddd.Model = "mie";
             mddd.TimeRatio = 1.0f;
-            mddd.Diffuse = "Miesniak_diff";
+            mddd.Diffuse = "miesniak_diff";
             mddd.Normals = "miesniak_norm";
             mddd.World = Matrix.CreateTranslation(245, 56, 30);
 
@@ -721,6 +725,9 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.Name = "Marian";
             mddd.MaxHP = 120;
             mddd.HP = 120;
+            mddd.InventoryIcon = new Rectangle(1260, 113, 51, 64);
+            mddd.TinySlots = 10;
+            mddd.Slots = 20;
             mddd.Icon = new Rectangle(0, 64, 64, 64);
             GameObjectsFactory.Create(mddd);
 
@@ -728,6 +735,8 @@ namespace PlagueEngine.HighLevelGameFlow
             mddd.Name = "Marian 2";
             mddd.World = Matrix.CreateTranslation(260, 56, 30);
             GameObjectsFactory.Create(mddd);
+            mddd.TinySlots = 50;
+            mddd.Slots = 150;
 
             mddd.HP = 80;
             mddd.Name = "Marian 3";
@@ -769,39 +778,39 @@ namespace PlagueEngine.HighLevelGameFlow
 
             GameObjectInstance mm = GameObjectsFactory.Create(mcmd);
 
-            //LinkedCameraData lcdata = new LinkedCameraData();
-            //lcdata.Type = typeof(LinkedCamera);
-            //lcdata.position = new Vector3(245, 80, 10);
-            //lcdata.Target = new Vector3(245, 45, 35);
-            //lcdata.MovementSpeed = 0.07f;
-            //lcdata.RotationSpeed = 0.005f;
-            //lcdata.ZoomSpeed = 0.01f;
-            //lcdata.FoV = 60;
-            //lcdata.ZNear = 1f;
-            //lcdata.ZFar = 200;
-            //lcdata.ActiveKeyListener = true;
-            //lcdata.ActiveMouseListener = true;
-            //lcdata.MercenariesManager = mm.ID;
+            LinkedCameraData lcdata = new LinkedCameraData();
+            lcdata.Type = typeof(LinkedCamera);
+            lcdata.position = new Vector3(245, 80, 10);
+            lcdata.Target = new Vector3(245, 45, 35);
+            lcdata.MovementSpeed = 0.07f;
+            lcdata.RotationSpeed = 0.005f;
+            lcdata.ZoomSpeed = 0.01f;
+            lcdata.FoV = 60;
+            lcdata.ZNear = 1f;
+            lcdata.ZFar = 200;
+            lcdata.ActiveKeyListener = true;
+            lcdata.ActiveMouseListener = true;
+            lcdata.MercenariesManager = mm.ID;
 
-            //LinkedCamera camera = (LinkedCamera)(GameObjectsFactory.Create(lcdata));
+            LinkedCamera camera = (LinkedCamera)(GameObjectsFactory.Create(lcdata));
 
-            //(mm as MercenariesManager).LinkedCamera = camera;
+            (mm as MercenariesManager).LinkedCamera = camera;
 
 
 
-            FreeCameraData fcdata = new FreeCameraData();
-            fcdata.Type = typeof(FreeCamera);
-            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
-                                                             new Vector3(240, 10, 70),
-                                                             new Vector3(0, 1, 0)));
-            fcdata.MovementSpeed = 0.05f;
-            fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-            fcdata.FoV = 60;
-            fcdata.ZNear = 1;
-            fcdata.ZFar = 200;
-            fcdata.ActiveKeyListener = true;
-            fcdata.ActiveMouseListener = true;
-            GameObjectsFactory.Create(fcdata);
+            //FreeCameraData fcdata = new FreeCameraData();
+            //fcdata.Type = typeof(FreeCamera);
+            //fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
+            //                                                 new Vector3(240, 10, 70),
+            //                                                 new Vector3(0, 1, 0)));
+            //fcdata.MovementSpeed = 0.05f;
+            //fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
+            //fcdata.FoV = 60;
+            //fcdata.ZNear = 1;
+            //fcdata.ZFar = 200;
+            //fcdata.ActiveKeyListener = true;
+            //fcdata.ActiveMouseListener = true;
+            //GameObjectsFactory.Create(fcdata);
 
 
             //CreatureData ssdata = new CreatureData();

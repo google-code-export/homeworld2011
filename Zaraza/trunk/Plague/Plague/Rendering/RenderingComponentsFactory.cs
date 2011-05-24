@@ -160,7 +160,8 @@ namespace PlagueEngine.Rendering
                                                  String diffuseMap,
                                                  String specularMap,
                                                  String normalMap,
-                                                 InstancingModes instancingMode)
+                                                 InstancingModes instancingMode,
+                                                 bool disabled)
         {
             MeshComponent result = null;
             
@@ -173,7 +174,8 @@ namespace PlagueEngine.Rendering
                                        model,
                                        textures,
                                        instancingMode,
-                                       technique);                    
+                                       technique,
+                                       disabled);                    
             return result;
         }                                            
         /****************************************************************************/

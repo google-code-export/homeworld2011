@@ -47,29 +47,36 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Slots
         /****************************************************************************/
-        private GameObjectInstance currentObject = null;
-        //private GameObjectInstance currentObject = null;
-        //private GameObjectInstance currentObject = null;
+        public GameObjectInstance currentObject   = null;
+
+        public Firearm Weapon   = null;
+        public Firearm sideArm  = null;
+        public Armor   armor    = null;
 
         private String gripBone;
+
+        public Dictionary<IStorable, List<int>> Items { get; private set; }
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Marker
         /****************************************************************************/
-        public bool                 Marker     { get; set; }
-        private FrontEndComponent marker = null;
-        private Vector3 markerLocalPosition;        
+        public bool                 Marker { get; set; }
+        private FrontEndComponent   marker = null;
+        private Vector3             markerLocalPosition;        
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public uint      MaxHP { get; private set; }
-        public uint      HP    { get; private set; }
-        public Rectangle Icon  { get; private set; }
+        public uint      MaxHP         { get; private set; }
+        public uint      HP            { get; private set; }
+        public Rectangle Icon          { get; private set; }
+        public Rectangle InventoryIcon { get; private set; }
+        public uint      TinySlots     { get; private set; }
+        public uint      Slots         { get; private set; }
         /****************************************************************************/
 
 
@@ -98,7 +105,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          String gripBone,
                          uint maxHP,
                          uint HP,
-                         Rectangle icon)
+                         Rectangle icon,
+                         Rectangle inventoryIcon,
+                         uint tinySlots,
+                         uint slots)
         {
             Mesh = mesh;
             Body = body;
@@ -108,6 +118,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.distance       = distance;
             this.anglePrecision = angle;
             this.gripBone       = gripBone;
+            this.InventoryIcon  = inventoryIcon;
+            this.TinySlots      = tinySlots;
+            this.Slots          = slots;
 
             this.HP = HP;
             MaxHP = maxHP;
@@ -124,6 +137,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mesh.StartClip("Idle");
             
             RequiresUpdate = true;
+
+            Items = new Dictionary<IStorable, List<int>>();
         }
         /****************************************************************************/
 
@@ -261,6 +276,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));     
             }
             /*************************************/
+
         }
         /****************************************************************************/
 
@@ -392,6 +408,54 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
                     }                
                 }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Pick Item
+        /****************************************************************************/
+        public void PickItem(GameObjectInstance item)
+        {
+            currentObject  = item;
+            item.Owner     = this;
+            item.OwnerBone = Mesh.BoneMap[gripBone];
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Drop Item
+        /****************************************************************************/
+        public void DropItem(GameObjectInstance item = null)
+        {
+            if (item != null)
+            {
+                currentObject.World.Translation += Vector3.Normalize(World.Forward) * 2;
+                currentObject.Owner = null;
+                currentObject.OwnerBone = -1;            
+            }
+            else if (currentObject != null)
+            {
+                currentObject.World.Translation += Vector3.Normalize(World.Forward) * 2;
+                currentObject.Owner = null;
+                currentObject.OwnerBone = -1;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Store Item
+        /****************************************************************************/
+        public void StoreCurrentItem()
+        {
+            IStorable item = currentObject as IStorable;
+            if (item != null)
+            {
+                item.OnStoring();
+                currentObject = null;
             }
         }
         /****************************************************************************/
@@ -612,6 +676,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Icon")]
         public Rectangle Icon { get;  set; }
+        [CategoryAttribute("Icon")]
+        public Rectangle InventoryIcon { get; set; }
+
+        [CategoryAttribute("Slots")]
+        public uint TinySlots { get; set; }
+        [CategoryAttribute("Slots")]
+        public uint Slots { get; set; }
+
     }
     /********************************************************************************/
 

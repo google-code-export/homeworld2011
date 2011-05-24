@@ -396,6 +396,7 @@ namespace PlagueEngine.Rendering
 
                     foreach (MeshComponent mesh in texturesPack.Value)
                     {
+                        if (!mesh.Enabled) continue;
                         if (!frustrum.Intersects(mesh.BoundingBox)) continue;
 
                         noInstancingEffect.Parameters["World"].SetValue(mesh.GameObject.World);
@@ -475,6 +476,7 @@ namespace PlagueEngine.Rendering
                         int i = 0;
                         foreach (MeshComponent mesh in instancesData.DynamicMeshes)
                         {
+                            if (!mesh.Enabled) continue;
                             if (!frustrum.Intersects(mesh.BoundingBox)) continue;
 
                             transforms[i++] = mesh.GameObject.GetWorld();

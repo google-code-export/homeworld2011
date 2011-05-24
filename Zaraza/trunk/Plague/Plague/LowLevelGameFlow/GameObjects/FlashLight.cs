@@ -19,7 +19,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Flashlight
     /********************************************************************************/
-    class Flashlight : GameObjectInstance, IActiveGameObject
+    class Flashlight : GameObjectInstance, IActiveGameObject, IStorable
     {
 
         /****************************************************************************/
@@ -27,7 +27,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public MeshComponent mesh = null;
         public CylindricalBodyComponent body = null;
-        SpotLightComponent       light = null;        
+        SpotLightComponent       light = null;
+
+        private Rectangle Icon;
+        private Rectangle SlotsIcon;
         /****************************************************************************/
 
 
@@ -36,11 +39,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(MeshComponent mesh,
                          CylindricalBodyComponent body,
-                         SpotLightComponent light)
+                         SpotLightComponent light,
+                         Rectangle icon,
+                         Rectangle slotsIcon)
         {
             this.mesh  = mesh;
             this.body  = body;
             this.light = light;
+            Icon = icon;
+            SlotsIcon = slotsIcon;
         }
         /****************************************************************************/
 
@@ -54,6 +61,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 World = Matrix.Identity;
                 World *= Matrix.CreateRotationY(MathHelper.ToRadians(180));
+                mesh.Enabled = true;
+                light.Enabled = true;
                 if(body != null) body.DisableBody();
             }
             else
@@ -113,6 +122,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ShadowsEnabled = light.ShadowsEnabled;
             data.Specular = light.Specular;
             data.DepthBias = light.DepthBias;
+            data.Icon = Icon;
+            data.SlotsIcon = SlotsIcon;
 
             return data;
         }
@@ -165,6 +176,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        public Rectangle GetIcon()
+        {
+            return Icon;
+        }
+
+        public Rectangle GetSlotsIcon()
+        {
+            return SlotsIcon;
+        }
+
+
+        public void OnStoring()
+        {
+            body.DisableBody();
+            mesh.Enabled  = false;
+            light.Enabled = false;
+        }
     }
     /********************************************************************************/
 
@@ -225,6 +254,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool ShadowsEnabled { get; set; }
         [CategoryAttribute("Shadows")]
         public float DepthBias { get; set; }
+
+        [CategoryAttribute("Icon")]
+        public Rectangle Icon      { get; set; }
+        [CategoryAttribute("Icon")]
+        public Rectangle SlotsIcon { get; set; }
+
+        [CategoryAttribute("EnabledMesh")]
+        public bool EnabledMesh { get; set; }
+
     }
     /********************************************************************************/
 }

@@ -43,15 +43,19 @@ namespace PlagueEngine.Rendering.Components
                              PlagueEngineModel  model,
                              TexturesPack       textures,
                              InstancingModes    instancingMode,
-                             Techniques         technique)
+                             Techniques         technique,
+                             bool               enabled)
             : base(gameObject)
         {
             this.model          = model;
             this.textures       = textures;
             this.instancingMode = instancingMode;
             this.technique      = technique;
+            Enabled = enabled;
+
             _bbCorners = Model.BoundingBox.GetCorners();
-            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);            
+
+            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);                        
         }        
         /****************************************************************************/
 
@@ -61,7 +65,6 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            renderer.batchedMeshes.RemoveMeshComponent(instancingMode, technique, this);            
             base.ReleaseMe();
         }
         /****************************************************************************/
@@ -79,7 +82,6 @@ namespace PlagueEngine.Rendering.Components
                 return BoundingBox.CreateFromPoints(corners);
             }
         }
-
         /****************************************************************************/
 
 
@@ -88,7 +90,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public PlagueEngineModel Model          { get { return model; } }
         public TexturesPack      Textures       { get { return textures;       } }
-        public InstancingModes   InstancingMode { get { return instancingMode; } }        
+        public InstancingModes   InstancingMode { get { return instancingMode; } }
+        public bool              Enabled        { get; set; }
         /****************************************************************************/
 
     }
