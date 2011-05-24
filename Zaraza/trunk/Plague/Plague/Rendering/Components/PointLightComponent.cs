@@ -77,7 +77,7 @@ namespace PlagueEngine.Rendering.Components
 
         public bool           Specular       { get; private set; }
         public Vector3        LocalPosition  { get; private set; }
-        public Vector3 Position { get { return Vector3.Transform(LocalPosition, gameObject.GetWorld()); } }
+        public Vector3        Position       { get { return Vector3.Transform(LocalPosition, gameObject.GetWorld()); } }
         public Matrix         World          { get { return Matrix.CreateScale(Radius) * Matrix.CreateTranslation(Position); } }
         public BoundingSphere BoundingSphere { get { return new BoundingSphere(Position, Radius); } }
         /****************************************************************************/

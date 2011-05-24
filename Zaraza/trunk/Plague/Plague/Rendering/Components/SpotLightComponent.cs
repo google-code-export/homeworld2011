@@ -30,7 +30,7 @@ namespace PlagueEngine.Rendering.Components
         private float nearPlane = 0;
         private float farPlane  = 0;
         private float angleCos  = 0;
-        private Texture2D Attenuation = null;
+        private Texture2D Attenuation = null;        
         /****************************************************************************/
 
 
@@ -74,7 +74,7 @@ namespace PlagueEngine.Rendering.Components
 
             if (ShadowMap >= 0)
             {
-                Vector2 offset = new Vector2(ShadowMap % 4,ShadowMap / 4);
+                Vector2 offset = new Vector2(ShadowMap % 4, ShadowMap / 4);
                 ShadowMapOffset = offset;
             }
         }
@@ -115,7 +115,7 @@ namespace PlagueEngine.Rendering.Components
             scale *= Matrix.CreateScale(farPlane, farPlane, farPlane);
         }
         /****************************************************************************/
-
+       
 
         /****************************************************************************/
         /// Properties

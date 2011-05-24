@@ -96,6 +96,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
         public uint   InstancingMode  { get; set; }
+
+        [CategoryAttribute("EnabledMesh")]
+        public bool EnabledMesh { get; set; }
     }
     /********************************************************************************/
 

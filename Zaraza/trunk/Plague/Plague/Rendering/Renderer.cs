@@ -63,11 +63,11 @@ namespace PlagueEngine.Rendering
         /**********************/
         // Specials
         /**********************/
-        private  Color   clearColor = Color.FromNonPremultiplied(new Vector4(0.0f,0.0f,0.0f,1));
+        private  Color   clearColor = Color.FromNonPremultiplied(new Vector4(1.0f,0.0f,0.0f,1));
         private  Vector3 ambient    = new Vector3(0.1f, 0.1f, 0.1f);
         private  Vector3 fogColor   = new Vector3(0.0f, 0.0f, 0.5f);
         private  Vector2 fogRange   = new Vector2(0.99f, 1.0f);
-        private  bool    fogEnabled = true;
+        private  bool    fogEnabled = false;
         /**********************/
 
 

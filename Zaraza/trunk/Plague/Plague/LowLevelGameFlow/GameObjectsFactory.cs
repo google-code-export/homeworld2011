@@ -273,7 +273,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.Diffuse,
                                                                        data.Specular,
                                                                        data.Normals,
-                                                                       InstancingMode),
+                                                                       InstancingMode,
+                                                                       data.EnabledMesh),
 
 
                         physicsComponentFactory.CreateCylindricalBodyComponent(result,
@@ -309,7 +310,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.Diffuse,
                                                                        data.Specular,
                                                                        data.Normals,
-                                                                       InstancingMode),
+                                                                       InstancingMode,
+                                                                       data.EnabledMesh),
 
                         physicsComponentFactory.CreateCylindricalBodyComponent( result,
                                                                                 data.Mass,
@@ -350,7 +352,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.Diffuse,
                                                                        data.Specular,
                                                                        data.Normals,
-                                                                       InstancingMode),
+                                                                       InstancingMode,
+                                                                       data.EnabledMesh),
 
                         physicsComponentFactory.CreateCylindricalBodyComponent2(result,
                                                                                 data.Mass,
@@ -384,7 +387,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.Diffuse,
                                                                        data.Specular,
                                                                        data.Normals,
-                                                                       InstancingMode),
+                                                                       InstancingMode,
+                                                                       data.EnabledMesh),
 
                         physicsComponentFactory.CreateSphericalBodyComponent(result,
                                                                             data.Mass,
@@ -417,7 +421,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.Diffuse,
                                                                        data.Specular,
                                                                        data.Normals,
-                                                                       InstancingMode),
+                                                                       InstancingMode,
+                                                                       data.EnabledMesh),
 
                         physicsComponentFactory.CreateSquareBodyComponent(result,
                                                                             data.Mass,
@@ -449,7 +454,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.Diffuse,
                                                                         data.Specular,
                                                                         data.Normals,
-                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)));
+                                                                        Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                        data.EnabledMesh));
             return true;
         }
         /****************************************************************************/
@@ -524,7 +530,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.Diffuse,
                                                                         data.Specular,
                                                                         data.Normals,
-                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)),
+                                                                        Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                        data.EnabledMesh),
 
                         physicsComponentFactory.CreateCylindricalSkinComponent( result,
                                                                                 data.Elasticity,
@@ -553,7 +560,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.Diffuse,
                                                                         data.Specular,
                                                                         data.Normals,
-                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)),
+                                                                        Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                        data.EnabledMesh),
 
                         physicsComponentFactory.CreateSquareSkinComponent(result,
                                                                             data.Elasticity,
@@ -583,7 +591,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.Diffuse,
                                                                         data.Specular,
                                                                         data.Normals,
-                                                                        Renderer.UIntToInstancingMode(data.InstancingMode)),
+                                                                        Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                        data.EnabledMesh),
                         
                         physicsComponentFactory.CreateSphericalSkinComponent(result,
                                                                             data.Elasticity,
@@ -841,7 +850,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.Texture,
                                                                        "GlowStick_Specular",
                                                                        "GlowStick_Normals",
-                                                                       Renderer.UIntToInstancingMode(data.InstancingMode)),
+                                                                       Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                       data.EnabledMesh),
                         
                         physicsComponentFactory.CreateCylindricalBodyComponent(result,
                                                                                data.Mass,
@@ -875,7 +885,9 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              5,
                                                                              0,
                                                                              5,
-                                                                             new Vector3(0, -0.5f, 0)));
+                                                                             new Vector3(0, -0.5f, 0)),
+                        data.Icon,
+                        data.SlotsIcon);
 
             return true;
         }
@@ -919,7 +931,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        "flashlightdiff",
                                                                        "flashlightspec",
                                                                        String.Empty,
-                                                                       Renderer.UIntToInstancingMode(data.InstancingMode)),
+                                                                       Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                       data.EnabledMesh),
 
                         physicsComponentFactory.CreateCylindricalBodyComponent(result,
                                                                                data.Mass,
@@ -948,7 +961,9 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             spotlighttrans,
                                                                             data.AttenuationTexture,
                                                                             data.ShadowsEnabled,
-                                                                            data.DepthBias));
+                                                                            data.DepthBias),
+                        data.Icon,
+                        data.SlotsIcon);
             return true;
         }
         /****************************************************************************/
@@ -999,7 +1014,10 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.GripBone,
                         data.MaxHP,
                         data.HP,
-                        data.Icon);
+                        data.Icon,
+                        data.InventoryIcon,
+                        data.TinySlots,
+                        data.Slots);
 
             return true;
         }
@@ -1053,7 +1071,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.Diffuse,
                                                                        data.Specular,
                                                                        data.Normals,
-                                                                       Renderer.UIntToInstancingMode(data.InstancingMode)),
+                                                                       Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                       data.EnabledMesh),
                         physicsComponentFactory.CreateSquareBodyComponent(result,
                                                                           data.Mass,
                                                                           data.Lenght,
@@ -1122,6 +1141,31 @@ namespace PlagueEngine.LowLevelGameFlow
                         guiComponentsFactory.CreateLabelComponent(data.Text,
                                                                   10,
                                                                   35));
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateInventory
+        /****************************************************************************/
+        public bool CreateInventory(Inventory result, InventoryData data)
+        {
+            Mercenary          merc        = (Mercenary)GetObject(data.Mercenary);
+            MercenariesManager mercManager = (MercenariesManager)GetObject(data.MercenariesManager);
+
+            if (merc == null || mercManager == null)
+            {
+                PushToWaitingRoom(result, data);
+                return false;
+            }
+
+            result.Init(renderingComponentsFactory.CreateFrontEndComponent(result, "InventorySet"),
+                        inputComponentsFactory.CreateKeyboardListenerComponent(result, true),
+                        inputComponentsFactory.CreateMouseListenerComponent(result, true),
+                        merc,
+                        mercManager);
 
             return true;
         }

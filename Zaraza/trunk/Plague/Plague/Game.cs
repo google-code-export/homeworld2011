@@ -137,7 +137,7 @@ namespace PlagueEngine
         {
             Renderer.LoadEffects();
 
-            Renderer.LoadFonts("Courier New", "Courier New Bold");
+            Renderer.LoadFonts("Courier New", "Courier New Bold","Arial");
 
             Input.SetCursorTexture(ContentManager.LoadTexture2D("cursor"), 4, 4, 
                                    new[] { "Default","QuestionMark","Footsteps","Target",

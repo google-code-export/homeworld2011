@@ -81,7 +81,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                           Keys.D6, Keys.D7,Keys.D8,Keys.D9,Keys.D0);
             
             mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
-            mouse.SubscribeKeys(OnMouseKey, MouseKeyAction.LeftClick,MouseKeyAction.MiddleClick);
+            mouse.SubscribeKeys(OnMouseKey, MouseKeyAction.LeftClick,
+                                            MouseKeyAction.MiddleClick,
+                                            MouseKeyAction.RightClick);
 
             Mercenaries = new Dictionary<Mercenary,List<EventArgs>>();
         }
@@ -463,8 +465,26 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*********************************/                        
                     else if (mouseKeyAction == MouseKeyAction.MiddleClick)
                     {
-                        SendEvent(new MoveToObjectCommandEvent(Mercenaries.ElementAt(mouseOnMerc).Key), Priority.High, LinkedCamera);                        
+                        if (!mouseOnActions)
+                        {
+                            SendEvent(new MoveToObjectCommandEvent(Mercenaries.ElementAt(mouseOnMerc).Key), Priority.High, LinkedCamera);
+                        }
                     }
+                    /*********************************/                        
+                    /// Right Click
+                    /*********************************/
+                    else if (mouseKeyAction == MouseKeyAction.RightClick)
+                    {
+                        if (!mouseOnActions)
+                        {
+                            InventoryData data = new InventoryData();
+                            data.MercenariesManager = this.ID;
+                            data.Mercenary = Mercenaries.ElementAt(mouseOnMerc).Key.ID;
+
+                            SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                        }                    
+                    }
+                    /*********************************/                        
                 }
 
                 mouseKeyState.Propagate = false;
@@ -603,12 +623,42 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             int i = -1;
             foreach(Mercenary merc in Mercenaries.Keys)
             {
-                if (merc == mercenary) return i;
                 ++i;
+                if (merc == mercenary) return i;
             }
-            return i;
+            return -1;
         }
-        /****************************************************************************/      
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Next Mercenary
+        /****************************************************************************/
+        public Mercenary GetNextMercenary(Mercenary mercenary)
+        {
+            int i = GetMercenaryIndex(mercenary);
+            
+            if (i == Mercenaries.Count -1) i = 0;
+            else                           ++i;
+            
+            return Mercenaries.ElementAt(i).Key;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Prev Mercenary
+        /****************************************************************************/
+        public Mercenary GetPrevMercenary(Mercenary mercenary)
+        {
+            int i = GetMercenaryIndex(mercenary);
+
+            if (i == 0) i = Mercenaries.Count - 1;
+            else --i;
+
+            return Mercenaries.ElementAt(i).Key;
+        }
+        /****************************************************************************/
 
 
         /****************************************************************************/
