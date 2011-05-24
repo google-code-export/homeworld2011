@@ -178,17 +178,52 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             // Items in inventory
             foreach (KeyValuePair<IStorable, ItemPosition> pair in mercenary.Items)
             {
+                Rectangle rect = pair.Key.GetSlotsIcon();
                 int itemSlot = pair.Value.Slot;
-                
-                if (itemSlot >= 11 * scrollCurrentOffset && itemSlot < 11 * (scrollCurrentOffset + 15))
+                int height = (pair.Value.Orientation < 0 ? rect.Width / 32 : rect.Height / 32);
+                int y = itemSlot / 11;
+                int diff = scrollCurrentOffset - y;
+                int diff2 = y + height - (scrollCurrentOffset + 15);
+
+                if (diff > 0)
                 {
-                    if (pair.Value.Orientation > 0)
+                    if (pair.Value.Orientation < 0)
                     {
-                        spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * ((itemSlot / 11) - scrollCurrentOffset)), pair.Key.GetSlotsIcon(), Color.White);
+                        rect.X += 32 * diff;
+                        rect.Width -= 32 * diff;
                     }
                     else
                     {
-                        spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * ((itemSlot / 11) - scrollCurrentOffset)) + new Vector2(pair.Key.GetSlotsIcon().Height, 0), pair.Key.GetSlotsIcon(), Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);                
+                        rect.Y += 32 * diff;
+                        rect.Height -= 32 * diff;
+                    }
+                }
+                else
+                {
+                    diff = 0;
+                }
+
+                if (diff2 > 0)
+                {
+                    if (pair.Value.Orientation < 0)
+                    {
+                        rect.Width -= 32 * diff2;
+                    }
+                    else
+                    {
+                        rect.Height -= 32 * diff2;
+                    }
+                }
+
+                if (y > scrollCurrentOffset - height && y < scrollCurrentOffset + 15)
+                {
+                    if (pair.Value.Orientation > 0)
+                    {
+                        spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)), rect, Color.White);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)) + new Vector2(pair.Key.GetSlotsIcon().Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
                     }
                 }
             }
