@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+using System.ComponentModel;
 
 
 /************************************************************************************/
@@ -28,7 +29,14 @@ namespace PlagueEngineModelPipeline
         private PlagueEngineModelContent outputModel;
         private bool                     geometryGrabbed = false;
         /****************************************************************************/
-
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        [DisplayName("VertexList")]
+        [DefaultValue(true)]
+        [Description("Enables runtime Vertex List inside Model")]
+        public bool hasList{get; set;}
+        
 
         /****************************************************************************/
         /// Process
@@ -74,6 +82,47 @@ namespace PlagueEngineModelPipeline
                     outputModel.IndexCollection     = geometry.Indices;
                     outputModel.VertexBufferContent = geometry.Vertices.CreateVertexBuffer();
                     outputModel.BoundingBox         = BoundingBox.CreateFromPoints(geometry.Vertices.Positions);
+
+                    if (true)
+                    {
+                        outputModel.VertexList = geometry.Vertices.Positions.ToList();
+                        //Teoretycznie, powinna siê tu zbudowaæ poprawnie lista...
+                        Dictionary<uint, List<uint>> temp = new Dictionary<uint, List<uint>>();
+                        int[] array = geometry.Vertices.PositionIndices.ToArray();
+                        for (int i = 2; i < array.Length; i += 3)
+                        {
+                            if (!temp.ContainsKey((uint)array[i]))
+                            {
+                                temp.Add((uint)array[i], new List<uint>());
+                            }
+                            temp[(uint)array[i]].Add((uint)array[i - 1]);
+                            temp[(uint)array[i]].Add((uint)array[i - 2]);
+
+                            if (!temp.ContainsKey((uint)array[i - 1]))
+                            {
+                                temp.Add((uint)array[i - 1], new List<uint>());
+                            }
+                            temp[(uint)array[i - 1]].Add((uint)array[i]);
+                            temp[(uint)array[i - 1]].Add((uint)array[i - 2]);
+
+                            if (!temp.ContainsKey((uint)array[i - 2]))
+                            {
+                                temp.Add((uint)array[i - 2], new List<uint>());
+                            }
+                            temp[(uint)array[i - 2]].Add((uint)array[i]);
+                            temp[(uint)array[i - 2]].Add((uint)array[i - 1]);
+
+                        }
+                        outputModel.Adjacency  = temp;
+                        //TODO: zgrywaæ normalne.
+                        outputModel.NormalList = null;
+                    }
+                    else
+                    {
+                        outputModel.Adjacency  = null;
+                        outputModel.VertexList = null;
+                        outputModel.NormalList = null;
+                    }
 
                     geometryGrabbed = true;
                     return;

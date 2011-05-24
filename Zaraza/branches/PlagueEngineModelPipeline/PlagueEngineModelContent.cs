@@ -7,13 +7,11 @@ using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
-
 /************************************************************************************/
 /// Plague Engine Model Pipeline
 /************************************************************************************/
 namespace PlagueEngineModelPipeline
 {
-
     /********************************************************************************/
     /// Plague Engine Model Content
     /********************************************************************************/
@@ -30,6 +28,9 @@ namespace PlagueEngineModelPipeline
         public IndexCollection      IndexCollection;
         public String               Name;
         public BoundingBox          BoundingBox;
+        public List<Vector3>        VertexList;
+        public List<Vector3>        NormalList;
+        public Dictionary<uint, List<uint>>  Adjacency;
         /****************************************************************************/
 
     }
