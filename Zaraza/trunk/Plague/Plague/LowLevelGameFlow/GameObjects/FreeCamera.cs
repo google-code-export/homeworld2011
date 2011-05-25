@@ -59,7 +59,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         //poruszanie obiektami
         bool moveObjectEnabled = true;
         bool local = false;
-        float distance=0.1f;
+        float distance=0.0f;
+        float a = 0.11f;
         bool pressed = false;
         GameObjectInstance selectedGameObject = null;
 
@@ -88,7 +89,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                                Keys.Up,     Keys.Down, 
                                                                Keys.Right,  Keys.Left,
                                                                Keys.F11,Keys.F12,
-                                                               Keys.PageDown,Keys.PageDown);
+                                                               Keys.PageDown,Keys.PageDown,
+                                                               Keys.OemPlus,Keys.OemMinus);
 
             this.mouseListenerComponent.SubscribeKeys     (OnMouseKey,  MouseKeyAction.RightClick,MouseKeyAction.LeftClick);
             this.mouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
@@ -145,7 +147,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 if (key == Keys.F11)
                 {
-                    
+                    editor.moveObject = !editor.moveObject;
                     moveObjectEnabled = !moveObjectEnabled;
                    
                 }
@@ -167,17 +169,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (pressed && state.IsDown() && (key == Keys.Left || key == Keys.Right || key == Keys.Up || key == Keys.Down || key == Keys.PageDown || key == Keys.PageUp))
             {
-                distance*=1.05f;
+                distance = a;
             }
-            else if(!pressed)
-            {
-                distance=0.1f;
-            }
+
 
             if (state.IsUp()) return;
 
             switch (key)
             { 
+
+
+
                 case Keys.W:
                     cameraComponent.MoveForward((float)(movementSpeed * clock.DeltaTime.TotalMilliseconds));
                     break;
@@ -327,6 +329,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             Rotate(Vector3.Up, -distance / 20);
                         }
                     }
+                    break;
+
+
+                case Keys.OemPlus:
+                    a = a * 1.05f;
+                    Diagnostics.PushLog(a.ToString());
+                    break;
+
+                case Keys.OemMinus:
+                    a = a * 0.95f;
                     break;
             }
         }

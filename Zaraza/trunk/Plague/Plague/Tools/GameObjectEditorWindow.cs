@@ -140,6 +140,9 @@ namespace PlagueEngine.Tools
         Texture2D sunLightIcon;
         Texture2D spotLightIcon;
         Texture2D pointLightIcon;
+        Texture2D moveIcon;
+        Texture2D rotateIcon;
+        public bool moveObject = true;
         /********************************************************************************/
 
 
@@ -1578,6 +1581,8 @@ namespace PlagueEngine.Tools
 
         public void DrawIcons(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
+            if(cameraType==typeof(FreeCamera))
+            {
             if (icons.Count != 0)
             {
                 iconInfo.Clear();
@@ -1627,8 +1632,22 @@ namespace PlagueEngine.Tools
 
 
                     iconInfo.Add(new iconInfo(pos2, textureWidth, textureHeight, gameobject.ID));
+
+
+
                 }
 
+            }
+                if(moveObject)
+                {
+                Vector2 pos=new Vector2(screenWidth-moveIcon.Width,screenHeight-moveIcon.Height);
+                spriteBatch.Draw(moveIcon,pos,Color.White);
+                }
+                else
+                {
+                Vector2 pos=new Vector2(screenWidth-rotateIcon.Width,screenHeight-rotateIcon.Height);
+                spriteBatch.Draw(rotateIcon,pos,Color.White);
+                }
             }
         }
 
@@ -1666,6 +1685,8 @@ namespace PlagueEngine.Tools
                 sunLightIcon = contentManager.LoadTexture2D("sunLightIcon");
                 spotLightIcon = contentManager.LoadTexture2D("spotLightIcon");
                 pointLightIcon = contentManager.LoadTexture2D("pointLightIcon");
+                moveIcon = contentManager.LoadTexture2D("moveIcon");
+                rotateIcon = contentManager.LoadTexture2D("rotateIcon");
             }
         }
 
