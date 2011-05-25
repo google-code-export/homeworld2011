@@ -1103,19 +1103,19 @@ namespace PlagueEngine.Tools
         private void buttonDeleteObject_Click(object sender, EventArgs e)
         {
 
-            if (treeView1.SelectedNode.Parent != null)
+            if (propertyGrid2.SelectedObject != null)
             {
-                int res;
-                if (int.TryParse(treeView1.SelectedNode.Text, out res))
+
+
+                TreeNode[] nodes = treeView1.Nodes.Find(((GameObjectInstanceData)(propertyGrid2.SelectedObject)).ID.ToString(), true);
+                if (nodes.GetLength(0) != 0)
                 {
-                    treeView1.SelectedNode.Remove();
-                    level.GameObjectsFactory.RemoveGameObject(res);
-                    currentEditGameObject = null;
-                    propertyGrid2.SelectedObject = null;
+                    nodes[0].Remove();
                 }
-
+                level.GameObjectsFactory.RemoveGameObject(((GameObjectInstanceData)(propertyGrid2.SelectedObject)).ID);
+                currentEditGameObject = null;
+                propertyGrid2.SelectedObject = null;
             }
-
 
             LoadIconsInfo();
         }
