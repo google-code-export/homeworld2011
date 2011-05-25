@@ -23,6 +23,23 @@ using Microsoft.Xna.Framework;
 namespace PlagueEngine.Tools
 {
 
+    public class iconInfo
+    {
+        public Vector2 pos;
+        public int width, height;
+        public int goID;
+
+        public iconInfo(Vector2 pos, int w, int h, int id)
+        {
+            this.pos = pos;
+            width = w;
+            height = h;
+            goID = id;
+        }
+    }
+
+
+
     /********************************************************************************/
     /// Game Object Editor Window
     /********************************************************************************/
@@ -133,8 +150,8 @@ namespace PlagueEngine.Tools
 
 
         //rysowanie ikonek
-        uint timerID;
         List<GameObjectInstance> icons = new List<GameObjectInstance>();
+        public List<iconInfo> iconInfo = new List<iconInfo>();
         Texture2D sunLightIcon;
         Texture2D spotLightIcon;
         Texture2D pointLightIcon;
@@ -172,6 +189,7 @@ namespace PlagueEngine.Tools
             checkBoxShowCollisionSkin.Checked = renderer.debugDrawer.IsEnabled;
             setUpCameraButton();
             Renderer.editor = this;
+            FreeCamera.editor = this;
         }
         /********************************************************************************/
 
@@ -1588,7 +1606,7 @@ namespace PlagueEngine.Tools
         {
             if (icons.Count != 0)
             {
-
+                iconInfo.Clear();
 
 
 
@@ -1632,6 +1650,9 @@ namespace PlagueEngine.Tools
                     pos2.Y -= textureHeight / 2;
                     pos2.X -= textureWidth / 2;
                     spriteBatch.Draw(texture, pos2, Color.White);
+
+
+                    iconInfo.Add(new iconInfo(pos2, textureWidth, textureHeight, gameobject.ID));
                 }
 
             }

@@ -61,6 +61,7 @@ namespace PlagueEngine.Rendering.Components
             renderer.batchedSkinnedMeshes.AddSkinnedMeshComponent(technique, this);
 
             AnimationControl = true;
+            renderer.skinnedMeshes.Add(this);
         }
         /****************************************************************************/
 
@@ -69,7 +70,8 @@ namespace PlagueEngine.Rendering.Components
         /// Release Me
         /****************************************************************************/
         public override void ReleaseMe()
-        {            
+        {
+            renderer.skinnedMeshes.Remove(this);
             renderer.batchedSkinnedMeshes.RemoveSkinnedMeshComponent(technique, this);
             base.ReleaseMe();
         }

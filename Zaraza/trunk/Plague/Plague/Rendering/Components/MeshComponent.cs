@@ -54,8 +54,9 @@ namespace PlagueEngine.Rendering.Components
             Enabled = enabled;
 
             _bbCorners = Model.BoundingBox.GetCorners();
-
-            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);                        
+            
+            renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);
+            renderer.meshes.Add(this);        
         }        
         /****************************************************************************/
 
@@ -65,6 +66,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
+            renderer.meshes.Remove(this); 
             base.ReleaseMe();
         }
         /****************************************************************************/
