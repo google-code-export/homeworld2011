@@ -39,7 +39,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Properties
         /****************************************************************************/
         public uint      MaxHP { get; protected set; }
-        public uint      HP    { get; protected set; }
+        public uint      HP    { get; set; }
         public Rectangle Icon  { get; protected set; }
         /****************************************************************************/
 
