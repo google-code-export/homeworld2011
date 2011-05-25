@@ -508,7 +508,7 @@ namespace PlagueEngine.Tools
                 releaseInput = true;
             }
 
-
+            LoadIconsInfo();
         }
         /********************************************************************************/
 
@@ -1086,6 +1086,7 @@ namespace PlagueEngine.Tools
 
                 level.GameObjectsFactory.RemoveGameObject(currentEditGameObject.ID);
                 level.GameObjectsFactory.Create(currentEditGameObject);
+                LoadIconsInfo();
             }
         }
         /********************************************************************************/
@@ -1111,9 +1112,9 @@ namespace PlagueEngine.Tools
                 }
 
             }
-            
 
 
+            LoadIconsInfo();
         }
 
 
