@@ -338,6 +338,12 @@ namespace PlagueEngine.Physics
 
         private void UpdateRotation()
         {
+
+            Vector3 t = Vector3.Transform(translation, gameObject.World);
+
+
+            gameObject.World.Translation = t;
+
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(roll));
             gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
             gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
@@ -352,6 +358,8 @@ namespace PlagueEngine.Physics
             gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
             gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
             gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+
+
         }
 
 

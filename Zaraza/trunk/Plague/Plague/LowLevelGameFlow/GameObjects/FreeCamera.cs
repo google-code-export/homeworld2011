@@ -378,6 +378,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             this.Broadcast(new LowLevelGameFlow.GameObjectClicked(info.goID));
                             selectedGameObject = editor.level.GameObjects[info.goID];
                             found = true;
+                            break;
                         }
                     }
 
@@ -393,6 +394,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
                                 selectedGameObject = mesh.GameObject;
                                 found = true;
+                                break;
                             }
                         }
 
@@ -405,6 +407,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             {
                                 this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
                                 selectedGameObject = mesh.GameObject;
+                                break;
                             }
                         }
                     }
