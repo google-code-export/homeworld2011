@@ -172,6 +172,7 @@ namespace PlagueEngine.Physics
         {
             if (!enabled)
             {
+                UpdateRotation();
                 PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(this.skin);
                 this.body.EnableBody();
                 this.MoveTo(gameObject.World);
@@ -334,6 +335,24 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
+
+        private void UpdateRotation()
+        {
+            Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(roll));
+            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+
+            quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Right, MathHelper.ToRadians(pitch));
+            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+
+            quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Forward, MathHelper.ToRadians(yaw));
+            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+        }
 
 
 
