@@ -13,6 +13,7 @@ using PlagueEngine.Rendering;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
+using Microsoft.Xna.Framework.Graphics;
 
 using Microsoft.Xna.Framework;
 
@@ -129,6 +130,14 @@ namespace PlagueEngine.Tools
         FreeCamera freeCamera = null;
         Type cameraType;
         bool linkedFirst = true;
+
+
+        //rysowanie ikonek
+        uint timerID;
+        List<GameObjectInstance> icons = new List<GameObjectInstance>();
+        Texture2D sunLightIcon;
+        Texture2D spotLightIcon;
+        Texture2D pointLightIcon;
         /********************************************************************************/
 
 
@@ -157,13 +166,15 @@ namespace PlagueEngine.Tools
             this.Visible = true;
             this.MaximizeBox = false;
 
-
+            
             loadLevelNames();
             LoadAllObjectsId();
             checkBoxShowCollisionSkin.Checked = renderer.debugDrawer.IsEnabled;
             setUpCameraButton();
+            Renderer.editor = this;
         }
         /********************************************************************************/
+
 
 
 
@@ -1535,9 +1546,114 @@ namespace PlagueEngine.Tools
 
         }
 
-  
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox3.Checked)
+            {
+                LoadIconTextures();
 
 
+
+                foreach (GameObjectInstance gameobject in level.GameObjects.Values)
+                {
+                    if (gameobject.GetType().Name.Equals("Sunlight"))
+                    {
+                        icons.Add(gameobject);
+                    }
+                    else if (gameobject.GetType().Name.Equals("SpotLight"))
+                    {
+                        icons.Add(gameobject);
+                    }
+                    else if (gameobject.GetType().Name.Equals("PointLight"))
+                    {
+                        icons.Add(gameobject);
+                    }
+
+                }
+
+                
+            }
+            else
+            {
+                icons.Clear();
+                UnloadIconTextures();
+            }
+        }
+
+
+
+        public void DrawIcons(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
+        {
+            if (icons.Count != 0)
+            {
+
+
+
+
+                foreach (GameObjectInstance gameobject in icons)
+                {
+                    Vector4 position;
+                    Vector2 pos2;
+                    int textureWidth=0;
+                    int textureHeight=0;
+                    Texture2D texture=null;
+
+
+                    if (gameobject.GetType().Name.Equals("Sunlight"))
+                    {
+                        textureWidth=sunLightIcon.Width;
+                        textureHeight=sunLightIcon.Height;
+                        texture = sunLightIcon;
+
+                    }
+                    else if (gameobject.GetType().Name.Equals("SpotLight"))
+                    {
+                        textureWidth=spotLightIcon.Width;
+                        textureHeight=spotLightIcon.Height;
+                        texture = spotLightIcon;
+                    }
+                    else if (gameobject.GetType().Name.Equals("PointLight"))
+                    {
+                        textureWidth=pointLightIcon.Width;
+                        textureHeight=pointLightIcon.Height;
+                        texture = pointLightIcon;
+                    }
+
+                    position = Vector4.Transform(Vector3.Transform(Vector3.Zero, gameobject.World), ViewProjection);
+
+                    pos2.X = MathHelper.Clamp(0.5f * ((position.X / Math.Abs(position.W)) + 1.0f), 0.01f, 0.99f);
+                    pos2.X *= screenWidth;
+                    
+
+                    pos2.Y = MathHelper.Clamp(1.0f - (0.5f * ((position.Y / Math.Abs(position.W)) + 1.0f)), 0.01f, 0.99f);
+                    pos2.Y *= screenHeight;
+                    pos2.Y -= textureHeight / 2;
+                    pos2.X -= textureWidth / 2;
+                    spriteBatch.Draw(texture, pos2, Color.White);
+                }
+
+            }
+        }
+
+
+
+        private void LoadIconTextures()
+        {
+            if (sunLightIcon == null || pointLightIcon == null || spotLightIcon == null)
+            {
+                sunLightIcon = contentManager.LoadTexture2D("sunLightIcon");
+                spotLightIcon = contentManager.LoadTexture2D("spotLightIcon");
+                pointLightIcon = contentManager.LoadTexture2D("pointLightIcon");
+            }
+        }
+
+
+        private void UnloadIconTextures()
+        {
+            sunLightIcon.Dispose();
+            spotLightIcon.Dispose();
+            pointLightIcon.Dispose();
+        }
 
 
 

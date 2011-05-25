@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using PlagueEngine.Resources;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
+using PlagueEngine.Tools;
 
 using Microsoft.Xna.Framework.Input;
 using PlagueEngine.Particles;
@@ -135,8 +136,17 @@ namespace PlagueEngine.Rendering
         /**********************/
 
 
+
+        /**********************/
+        /// GO EDITOR
+        /**********************/
+        internal static GameObjectEditorWindow editor = null;
+        /**********************/
+
+
         /****************************************************************************/
             
+
 
         /****************************************************************************/
         /// Constants
@@ -383,6 +393,7 @@ namespace PlagueEngine.Rendering
             particleManager.DrawParticles(gameTime);
 
             DrawFrontEnd(ViewProjection);
+            DrawIcons(ViewProjection);
             DrawRect();
 
 
@@ -513,19 +524,45 @@ namespace PlagueEngine.Rendering
                 spriteBatch = new SpriteBatch(Device);
             }
 
-            spriteBatch.Begin();
 
-            int screenWidth  = Device.PresentationParameters.BackBufferWidth;
+            int screenWidth = Device.PresentationParameters.BackBufferWidth;
             int screenHeight = Device.PresentationParameters.BackBufferHeight;
+
+            spriteBatch.Begin();
 
             foreach (FrontEndComponent component in frontEndComponents)
             {
                 component.Draw(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
-            }            
+            }
 
             spriteBatch.End();
         }
         /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// DrawIcons
+        /****************************************************************************/
+        private void DrawIcons(Matrix ViewProjection)
+        {
+            if (spriteBatch.GraphicsDevice.IsDisposed)
+            {
+                spriteBatch = new SpriteBatch(Device);
+            }
+
+            int screenWidth = Device.PresentationParameters.BackBufferWidth;
+            int screenHeight = Device.PresentationParameters.BackBufferHeight;
+
+
+            spriteBatch.Begin();
+            editor.DrawIcons(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
+            spriteBatch.End();
+        }
+        /****************************************************************************/
+
+
 
 
         /****************************************************************************/
@@ -565,6 +602,23 @@ namespace PlagueEngine.Rendering
             }
         }
         /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// SpriteBatch
+        /****************************************************************************/
+        public SpriteBatch SpriteBatch
+        {
+            get
+            {
+                return spriteBatch;
+            }
+        }
+        /****************************************************************************/
+
+
+
 
 
         /****************************************************************************/
