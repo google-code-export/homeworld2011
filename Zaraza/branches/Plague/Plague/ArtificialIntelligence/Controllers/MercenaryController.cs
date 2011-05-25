@@ -7,7 +7,6 @@ using PlagueEngine.Physics;
 using Microsoft.Xna.Framework;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 
-enum MoveState{STOP, MOVE, FOLLOW, TO_GRAB};
 
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {

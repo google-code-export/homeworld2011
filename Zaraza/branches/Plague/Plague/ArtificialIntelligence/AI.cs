@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PlagueEngine.EventsSystem;
 
 namespace PlagueEngine.ArtificialIntelligence
 {
-    class AI
+    class AI : IEventsReceiver
     {
         private AIFactory controllersFactory;
 
@@ -15,6 +16,16 @@ namespace PlagueEngine.ArtificialIntelligence
         }
 
         public void Initialize()
+        {
+        }
+        public  bool IsDisposed()
+        {
+            return true;
+        }
+        public  void OnEvent(EventsSender sender, EventArgs e)
+        {
+        }
+        public  void Dispose()
         {
         }
     }

@@ -7,7 +7,7 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Physics;
 
-enum TacticalAction { IDLE, STOP_TO_IDLE, MOVE, GRAB, FOLLLOW, EXAMINE, DROP, ATTACK }; 
+
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     abstract class Controller

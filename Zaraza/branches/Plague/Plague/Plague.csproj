@@ -154,6 +154,10 @@
     <Compile Include="ArtificialIntelligence\AIFactory.cs" />
     <Compile Include="ArtificialIntelligence\Controllers\Controller.cs" />
     <Compile Include="ArtificialIntelligence\Controllers\MercenaryController.cs" />
+    <Compile Include="ArtificialIntelligence\Controllers\MobController.cs" />
+    <Compile Include="ArtificialIntelligence\EventArgs.cs" />
+    <Compile Include="ArtificialIntelligence\FSM\MercenaryFSM.cs" />
+    <Compile Include="ArtificialIntelligence\State.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />
