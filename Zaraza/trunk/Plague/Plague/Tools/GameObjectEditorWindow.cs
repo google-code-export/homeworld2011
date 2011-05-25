@@ -23,21 +23,6 @@ using Microsoft.Xna.Framework;
 namespace PlagueEngine.Tools
 {
 
-    public class iconInfo
-    {
-        public Vector2 pos;
-        public int width, height;
-        public int goID;
-
-        public iconInfo(Vector2 pos, int w, int h, int id)
-        {
-            this.pos = pos;
-            width = w;
-            height = h;
-            goID = id;
-        }
-    }
-
 
 
     /********************************************************************************/
@@ -462,6 +447,7 @@ namespace PlagueEngine.Tools
 
 
 
+
         }
         /********************************************************************************/
 
@@ -665,6 +651,7 @@ namespace PlagueEngine.Tools
             }
 
             setUpCameraButton();
+            LoadIconsInfo();
         }
         /********************************************************************************/
 
@@ -779,6 +766,8 @@ namespace PlagueEngine.Tools
                 }
             }
 
+
+            LoadIconsInfo();
          }
 
         /********************************************************************************/
@@ -835,6 +824,9 @@ namespace PlagueEngine.Tools
 
                 }
             }
+
+
+            LoadIconsInfo();
         }
         /********************************************************************************/
 
@@ -1573,26 +1565,8 @@ namespace PlagueEngine.Tools
             {
                 LoadIconTextures();
 
+                LoadIconsInfo();
 
-
-                foreach (GameObjectInstance gameobject in level.GameObjects.Values)
-                {
-                    if (gameobject.GetType().Name.Equals("Sunlight"))
-                    {
-                        icons.Add(gameobject);
-                    }
-                    else if (gameobject.GetType().Name.Equals("SpotLight"))
-                    {
-                        icons.Add(gameobject);
-                    }
-                    else if (gameobject.GetType().Name.Equals("PointLight"))
-                    {
-                        icons.Add(gameobject);
-                    }
-
-                }
-
-                
             }
             else
             {
@@ -1660,6 +1634,31 @@ namespace PlagueEngine.Tools
 
 
 
+        private void LoadIconsInfo()
+        {
+
+            icons.Clear();
+            foreach (GameObjectInstance gameobject in level.GameObjects.Values)
+            {
+                if (gameobject.GetType().Name.Equals("Sunlight"))
+                {
+                    icons.Add(gameobject);
+                }
+                else if (gameobject.GetType().Name.Equals("SpotLight"))
+                {
+                    icons.Add(gameobject);
+                }
+                else if (gameobject.GetType().Name.Equals("PointLight"))
+                {
+                    icons.Add(gameobject);
+                }
+
+            }
+        }
+
+
+
+
         private void LoadIconTextures()
         {
             if (sunLightIcon == null || pointLightIcon == null || spotLightIcon == null)
@@ -1685,6 +1684,26 @@ namespace PlagueEngine.Tools
 
     }
     /********************************************************************************/
+
+
+
+
+
+    public class iconInfo
+    {
+        public Vector2 pos;
+        public int width, height;
+        public int goID;
+
+        public iconInfo(Vector2 pos, int w, int h, int id)
+        {
+            this.pos = pos;
+            width = w;
+            height = h;
+            goID = id;
+        }
+    }
+
 
 
 }

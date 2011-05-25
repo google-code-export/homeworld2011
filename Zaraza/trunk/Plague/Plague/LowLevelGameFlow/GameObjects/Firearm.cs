@@ -19,14 +19,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Firearm
     /********************************************************************************/
-    class Firearm : GameObjectInstance
-    {
+    class Firearm : GameObjectInstance, IActiveGameObject, IStorable
+    {   
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
         public MeshComponent       mesh = null;
         public SquareBodyComponent body = null;
+        private Rectangle Icon;
+        private Rectangle SlotsIcon;
         /****************************************************************************/
 
 
@@ -34,10 +36,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Init
         /****************************************************************************/
         public void Init(MeshComponent       mesh,
-                         SquareBodyComponent body)
+                         SquareBodyComponent body,
+                         Rectangle icon,
+                         Rectangle slotsIcon)
         {
             this.mesh = mesh;
-            this.body = body;            
+            this.body = body;
+            Icon = icon;
+            SlotsIcon = slotsIcon;
+            
         }
         /****************************************************************************/
 
@@ -88,6 +95,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinPitch        = body.Pitch;
             data.SkinRoll         = body.Roll;
             data.SkinYaw          = body.Yaw;
+            data.Icon = Icon;
+            data.SlotsIcon = SlotsIcon;
 
             return data;
         }
@@ -112,6 +121,44 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
         }
         /****************************************************************************/
+
+
+        public Rectangle GetIcon()
+        {
+            return Icon;
+        }
+
+        public Rectangle GetSlotsIcon()
+        {
+            return SlotsIcon;
+        }
+
+
+        public void OnStoring()
+        {
+            body.DisableBody();
+            mesh.Enabled = false;
+        }
+
+        /****************************************************************************/
+        /// GetActions
+        /****************************************************************************/
+        public String[] GetActions()
+        {
+            return new String[] { };
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// GetActions
+        /****************************************************************************/
+        public string[] GetActions(Mercenary mercenary)
+        {
+            return new String[] { "Grab"};
+        }
+        /****************************************************************************/
+
 
     }
     /********************************************************************************/
@@ -171,6 +218,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("EnabledMesh")]
         public bool EnabledMesh { get; set; }
+
+
+        [CategoryAttribute("Icon")]
+        public Rectangle Icon { get; set; }
+        [CategoryAttribute("Icon")]
+        public Rectangle SlotsIcon { get; set; }
+
+
     }
     /********************************************************************************/
 

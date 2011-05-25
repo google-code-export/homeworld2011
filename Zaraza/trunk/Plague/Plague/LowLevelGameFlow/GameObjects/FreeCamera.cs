@@ -55,6 +55,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         internal static Renderer renderer = null;
         internal static GameObjectEditorWindow editor = null;
+
+        //poruszanie obiektami
+        bool moveObjectEnabled = true;
+        bool local = false;
+        float distance=0.1f;
+        bool pressed = false;
+        GameObjectInstance selectedGameObject = null;
+
         /****************************************************************************/
 
 
@@ -78,7 +86,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                                Keys.R,
                                                                Keys.PageUp, Keys.PageDown, 
                                                                Keys.Up,     Keys.Down, 
-                                                               Keys.Right,  Keys.Left);
+                                                               Keys.Right,  Keys.Left,
+                                                               Keys.F11,Keys.F12,
+                                                               Keys.PageDown,Keys.PageDown);
 
             this.mouseListenerComponent.SubscribeKeys     (OnMouseKey,  MouseKeyAction.RightClick,MouseKeyAction.LeftClick);
             this.mouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
@@ -89,15 +99,83 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
 
+        private void disablePhysics()
+        {
+            object field = selectedGameObject.GetType().GetField("body");
+            if (field != null)
+            {
+                field = selectedGameObject.GetType().GetField("body").GetValue(selectedGameObject);
+                if (typeof(RigidBodyComponent).IsAssignableFrom(field.GetType()))
+                {
+                    RigidBodyComponent body = (RigidBodyComponent)field;
+                    body.DisableBody();
 
+                }
+            }
+        }
+
+        private void enablePhysics()
+        {
+            object field = selectedGameObject.GetType().GetField("body");
+            if (field != null)
+            {
+                field = selectedGameObject.GetType().GetField("body").GetValue(selectedGameObject);
+                if (typeof(RigidBodyComponent).IsAssignableFrom(field.GetType()))
+                {
+                    RigidBodyComponent body = (RigidBodyComponent)field;
+                    body.EnableBody();
+
+                }
+            }
+        }
 
         /****************************************************************************/
         /// On Key
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
-            if (!state.IsDown()) return;
-            
+
+
+            if (state.WasPressed())
+            {
+                if (key == Keys.Left || key == Keys.Right || key == Keys.Up || key == Keys.Down || key == Keys.PageDown || key == Keys.PageUp)
+                {
+                    pressed = true;
+                    disablePhysics();
+                }
+                if (key == Keys.F11)
+                {
+                    
+                    moveObjectEnabled = !moveObjectEnabled;
+                   
+                }
+                if (key == Keys.F12)
+                {
+
+                    local = !local;
+                }
+            }
+
+            if (state.WasReleased())
+            {
+                if (key == Keys.Left || key == Keys.Right || key == Keys.Up || key == Keys.Down || key == Keys.PageDown || key == Keys.PageUp)
+                {
+                    pressed = false;
+                    enablePhysics();
+                }
+            }
+
+            if (pressed && state.IsDown() && (key == Keys.Left || key == Keys.Right || key == Keys.Up || key == Keys.Down || key == Keys.PageDown || key == Keys.PageUp))
+            {
+                distance*=1.05f;
+            }
+            else if(!pressed)
+            {
+                distance=0.1f;
+            }
+
+            if (state.IsUp()) return;
+
             switch (key)
             { 
                 case Keys.W:
@@ -123,16 +201,146 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     cameraComponent.MoveUp((float)((movementSpeed * clock.DeltaTime.TotalMilliseconds)));
                     
                     break;
-                case Keys.R:
-                    if (state.WasPressed())
+
+
+                case Keys.Left:
+                    if (selectedGameObject != null)
                     {
-                        ExplosionManager.CreateExplosion(new Vector3(275, 35, 120), 50000, 30);
+                        if (moveObjectEnabled)//czy poruszanie
+                        {
+                            if (!local)
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(new Vector3(distance, 0, 0));
+                            }
+                            else
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(selectedGameObject.World.Left * distance); 
+                            }
+                        }
+                        else//obrot
+                        {
+                            Rotate(Vector3.Right, distance/20);
+                        }
                     }
                     break;
+                case Keys.Right:
+                    if (selectedGameObject != null)
+                    {
+                        if (moveObjectEnabled)//czy poruszanie
+                        {
+                            if (!local)
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(new Vector3(-distance, 0, 0));
+                            }
+                            else
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(selectedGameObject.World.Right * distance); 
 
+                            }
+                        }
+                        else//obrot
+                        {
+                            Rotate(Vector3.Right, -distance / 20);
+                        }
+                    }
+                    break;
+                case Keys.Up:
+                    if (selectedGameObject != null)
+                    {
+                        if (moveObjectEnabled)//czy poruszanie
+                        {
+                            if (!local)
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(new Vector3(0, 0, distance));
+                            }
+                            else
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(selectedGameObject.World.Forward * distance); 
+
+                            }
+                        }
+                        else//obrot
+                        {
+                            Rotate(Vector3.Forward, distance / 20);
+                        }
+                    }
+                    break;
+                case Keys.Down:
+                    if (selectedGameObject != null)
+                    {
+                        if (moveObjectEnabled)//czy poruszanie
+                        {
+                            if (!local)
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(new Vector3(0, 0, -distance));
+                            }
+                            else
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(selectedGameObject.World.Backward * distance); 
+
+                            }
+                        }
+                        else//obrot
+                        {
+                            Rotate(Vector3.Forward, -distance / 20);
+                        }
+                    }
+                    break;
+                case Keys.PageUp:
+                    if (selectedGameObject != null)
+                    {
+                        if (moveObjectEnabled)//czy poruszanie
+                        {
+                            if (!local)
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(new Vector3(0,distance,0));
+                            }
+                            else
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(selectedGameObject.World.Up * distance); 
+
+                            }
+                        }
+                        else//obrot
+                        {
+                            Rotate(Vector3.Up, distance / 20);
+                        }
+                    }
+                    break;
+                case Keys.PageDown:
+                    if (selectedGameObject != null)
+                    {
+                        if (moveObjectEnabled)//czy poruszanie
+                        {
+                            if (!local)
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(new Vector3(0, -distance,0));
+                            }
+                            else
+                            {
+                                selectedGameObject.World *= Matrix.CreateTranslation(selectedGameObject.World.Down * distance); 
+
+                            }
+                        }
+                        else//obrot
+                        {
+                            Rotate(Vector3.Up, -distance / 20);
+                        }
+                    }
+                    break;
             }
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        private void Rotate(Vector3 vector, float angle)
+        {
+            Quaternion quaternion = Quaternion.CreateFromAxisAngle(vector, angle);
+            selectedGameObject.World.Forward = Vector3.Transform(selectedGameObject.World.Forward, quaternion);
+            selectedGameObject.World.Right = Vector3.Transform(selectedGameObject.World.Right, quaternion);
+            selectedGameObject.World.Up = Vector3.Transform(selectedGameObject.World.Up, quaternion);
+        }
 
 
         /****************************************************************************/
@@ -140,6 +348,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction,ref ExtendedMouseKeyState mouseKeyState)
         {
+
+            bool found = false;
+
             if (mouseKeyState.WasPressed() && mouseKeyAction==MouseKeyAction.RightClick)
             {
                 rotation = true;
@@ -165,31 +376,39 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
 
                             this.Broadcast(new LowLevelGameFlow.GameObjectClicked(info.goID));
+                            selectedGameObject = editor.level.GameObjects[info.goID];
+                            found = true;
                         }
                     }
-                    
-
 
                     Microsoft.Xna.Framework.Ray ray = cameraComponent.GetMouseRay(new Vector2(mouseX, mouseY));
 
-                    foreach (MeshComponent mesh in renderer.meshes)
+                    if (!found)
                     {
-                        if (ray.Intersects(mesh.BoundingBox) != null)
+                        
+                        foreach (MeshComponent mesh in renderer.meshes)
                         {
-                            this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
-                            
+                            if (ray.Intersects(mesh.BoundingBox) != null)
+                            {
+                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
+                                selectedGameObject = mesh.GameObject;
+                                found = true;
+                            }
+                        }
+
+                    }
+                    if (!found)
+                    {
+                        foreach (SkinnedMeshComponent mesh in renderer.skinnedMeshes)
+                        {
+                            if (ray.Intersects(mesh.BoundingBox) != null)
+                            {
+                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
+                                selectedGameObject = mesh.GameObject;
+                            }
                         }
                     }
 
-                    foreach (SkinnedMeshComponent mesh in renderer.skinnedMeshes)
-                    {
-                        if (ray.Intersects(mesh.BoundingBox) != null)
-                        {
-                            this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
-
-                        }
-                    }
-                    
                     //draging
                     CollisionSkin skin;
                     Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);

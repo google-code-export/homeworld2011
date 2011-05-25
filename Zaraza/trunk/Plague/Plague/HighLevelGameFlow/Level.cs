@@ -409,6 +409,7 @@ namespace PlagueEngine.HighLevelGameFlow
 
             dddtata.World = Matrix.CreateTranslation(245, 54, 35);
             dddtata.Pitch = 90;
+            dddtata.EnabledMesh = true;
             GameObjectsFactory.Create(dddtata);
 
 
@@ -459,7 +460,7 @@ namespace PlagueEngine.HighLevelGameFlow
             pdata.Texture = "GlowStick_Diffuse";
             pdata.InstancingMode = 3;
             pdata.Status = 2;
-
+            pdata.EnabledMesh = true;
             Random random = new Random();
             for (int i = 0; i < 30; i++)
             {
@@ -483,7 +484,7 @@ namespace PlagueEngine.HighLevelGameFlow
             ddwdtata.Immovable = false;
             ddwdtata.InstancingMode = 3;
             ddwdtata.Mass = 1;
-
+            ddwdtata.EnabledMesh = true;
             for (int j = 0; j < 4; j++)
             {
                 ddwdtata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
@@ -529,6 +530,25 @@ namespace PlagueEngine.HighLevelGameFlow
             spdata.Specular = true;
             GameObjectsFactory.Create(spdata);
 
+            CylindricalSkinMeshData d2 = new CylindricalSkinMeshData();
+
+            d2.Type = typeof(CylindricalSkinMesh);
+            d2.Model = "woodbox01";
+            d2.Diffuse = "woodbox01.diff";
+            d2.Specular = "woodbox01.spec";
+            d2.Normals = "woodbox01.norm";
+            d2.InstancingMode = 3;
+            d2.EnabledMesh = true;
+            d2.DynamicRoughness = 0.8f;
+            d2.Elasticity = 0.1f;
+            d2.Radius = 0.5f;
+            d2.Lenght = 1.3f;
+            
+            d2.StaticRoughness = 0.8f;
+            d2.Translation = new Vector3(245, 66, 66);
+
+            GameObjectsFactory.Create(d2);
+
             SquareBodyMeshData sssdata = new SquareBodyMeshData();
             sssdata.Type = typeof(SquareBodyMesh);
             sssdata.Model = "woodbox01";
@@ -536,7 +556,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sssdata.Specular = "woodbox01.spec";
             sssdata.Normals = "woodbox01.norm";
             sssdata.InstancingMode = 3;
-
+            sssdata.EnabledMesh = true;
             sssdata.DynamicRoughness = 0.8f;
             sssdata.Elasticity = 0.1f;
             sssdata.Mass = 3f;
@@ -571,7 +591,7 @@ namespace PlagueEngine.HighLevelGameFlow
             ddwdtata.InstancingMode = 3;
             ddwdtata.SkinPitch = 90;
             ddwdtata.Mass = 1;
-
+            ddwdtata.EnabledMesh = true;
             for (int j = 0; j < 4; j++)
             {
                 ddwdtata.World = Matrix.CreateTranslation(250 + random.Next() % 70,
@@ -587,7 +607,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sssdata.Specular = "pavelow.spec";
             sssdata.Normals = "pawelow.norm";
             sssdata.InstancingMode = 1;
-
+            sssdata.EnabledMesh = true;
             sssdata.DynamicRoughness = 0.8f;
             sssdata.Elasticity = 0.1f;
             sssdata.Mass = 1000f;
@@ -608,7 +628,7 @@ namespace PlagueEngine.HighLevelGameFlow
             sssdata.Specular = String.Empty;
             sssdata.Normals = String.Empty;
             sssdata.InstancingMode = 1;
-
+            sssdata.EnabledMesh = true;
             sssdata.DynamicRoughness = 0.8f;
             sssdata.Elasticity = 0.1f;
             sssdata.Mass = 10000f;
@@ -691,7 +711,7 @@ namespace PlagueEngine.HighLevelGameFlow
             fldata.Name = "Flashlight";
             fldata.Icon = new Rectangle(0, 620, 50, 50);
             fldata.SlotsIcon = new Rectangle(50, 620, 32, 32);
-
+            fldata.EnabledMesh = true;
             GameObjectsFactory.Create(fldata);
             fldata.World = Matrix.CreateTranslation(252, 60, 30);
 
@@ -841,8 +861,34 @@ namespace PlagueEngine.HighLevelGameFlow
             data2.Model = "Barrel";
             data2.Type = typeof(StaticMesh);
             data2.World.Translation = new Vector3(250, 70, 30);
+            data2.EnabledMesh = true;
+            //data2.InstancingMode = 3;
             GameObjectsFactory.Create(data2);
 
+
+
+            FirearmData frmdata = new FirearmData();
+            frmdata.Type = (typeof(Firearm));
+            frmdata.DynamicRoughness = 1;
+            frmdata.Elasticity = 1;
+            frmdata.Immovable = false;
+            
+            frmdata.InstancingMode = 3;
+            frmdata.Mass = 1;
+            frmdata.StaticRoughness = 1;
+            frmdata.Status = 2;
+            frmdata.Name = "DesertEagle";
+            frmdata.Model = @"Firearms\DesertEagle";
+            frmdata.Diffuse = @"Firearms\desertEagle";
+            frmdata.Icon = new Rectangle(0, 620, 50, 50);
+            frmdata.SlotsIcon = new Rectangle(50, 620, 32, 32);
+            frmdata.EnabledMesh = true;
+            frmdata.Lenght = 1;
+            frmdata.Height = 1;
+            frmdata.Width = 1;
+
+            fldata.World = Matrix.CreateTranslation(252, 165, 31);
+            GameObjectsFactory.Create(frmdata);
 
         }
         /****************************************************************************/

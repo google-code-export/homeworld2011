@@ -1086,7 +1086,9 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.Translation,
                                                                           data.SkinYaw,
                                                                           data.SkinPitch,
-                                                                          data.SkinRoll));
+                                                                          data.SkinRoll),
+                      data.Icon,
+                      data.SlotsIcon);
             return true;
         }
         /****************************************************************************/
