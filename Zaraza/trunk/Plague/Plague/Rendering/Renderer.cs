@@ -9,6 +9,7 @@ using PlagueEngine.Resources;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Tools;
+using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 using Microsoft.Xna.Framework.Input;
 using PlagueEngine.Particles;
@@ -138,9 +139,11 @@ namespace PlagueEngine.Rendering
 
 
         /**********************/
-        /// GO EDITOR
+        /// G-O EDITOR
         /**********************/
         internal static GameObjectEditorWindow editor = null;
+        public List<MeshComponent> meshes = new List<MeshComponent>();
+        public List<SkinnedMeshComponent> skinnedMeshes = new List<SkinnedMeshComponent>();
         /**********************/
 
 
@@ -170,6 +173,7 @@ namespace PlagueEngine.Rendering
             particleManager        = game.ParticleManager;
             Physics.PhysicsUlitities.graphics = this.graphics;
 
+            FreeCamera.renderer           = this;
             MeshComponent.renderer        = this;
             RenderableComponent.renderer  = this;
             SkinnedMeshComponent.renderer = this;
@@ -177,7 +181,7 @@ namespace PlagueEngine.Rendering
             PointLightComponent.renderer  = this;
             SpotLightComponent.renderer   = this;
             FrontEndComponent.renderer    = this;
-
+            
             spriteBatch = new SpriteBatch(Device);
 
             ExtendedMouseMovementState.Display = graphics.GraphicsDevice.DisplayMode;            

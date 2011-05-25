@@ -12,6 +12,7 @@ using PlagueEngine.Input.Components;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.Tools;
+using PlagueEngine.Rendering;
 
 using JigLibX.Geometry;
 using JigLibX.Collision;
@@ -41,7 +42,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float                     rotationSpeed             = 0;
         private bool                      rotation                  = false;
 
-        // TODO: Zastanowić się, czy da się rozwiązać to lepiej z tym zegarem
         private Clock                     clock                     = TimeControl.CreateClock();
 
         private float                     mouseX, mouseY;
@@ -52,6 +52,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         ConstraintVelocity                damperController = new ConstraintVelocity();
         bool                              middleButton = false;
         float                             camPickDistance = 0;
+
+        internal static Renderer renderer = null;
+        internal static GameObjectEditorWindow editor = null;
         /****************************************************************************/
 
 
@@ -155,21 +158,52 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 
                 if (middleButton == false && isOnWindow)
                 {
+                    //selecting
+                    foreach (iconInfo info in editor.iconInfo)
+                    {
+                        if (mouseX > info.pos.X && mouseY > info.pos.Y && mouseX < (info.pos.X + info.width) && mouseY < (info.pos.Y + info.height))
+                        {
+
+                            this.Broadcast(new LowLevelGameFlow.GameObjectClicked(info.goID));
+                        }
+                    }
                     
 
+
+                    Microsoft.Xna.Framework.Ray ray = cameraComponent.GetMouseRay(new Vector2(mouseX, mouseY));
+
+                    foreach (MeshComponent mesh in renderer.meshes)
+                    {
+                        if (ray.Intersects(mesh.BoundingBox) != null)
+                        {
+                            this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
+                            
+                        }
+                    }
+
+                    foreach (SkinnedMeshComponent mesh in renderer.skinnedMeshes)
+                    {
+                        if (ray.Intersects(mesh.BoundingBox) != null)
+                        {
+                            this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
+
+                        }
+                    }
+                    
+                    //draging
                     CollisionSkin skin;
                     Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
                     Vector3 pos, nor;
                     float dist;
                     bool hit = false;
                     hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
-                    if (skin != null)
-                    {
+                    //if (skin != null)
+                    //{
                       
-                    this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
+                    //this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
                             
                         
-                    }
+                    //}
 
                     if (hit)
                     {
