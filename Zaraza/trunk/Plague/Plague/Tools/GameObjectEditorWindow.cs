@@ -1564,7 +1564,6 @@ namespace PlagueEngine.Tools
         {
             if (checkBox3.Checked)
             {
-                LoadIconTextures();
 
                 LoadIconsInfo();
 
@@ -1660,7 +1659,7 @@ namespace PlagueEngine.Tools
 
 
 
-        private void LoadIconTextures()
+        public void LoadIconTextures()
         {
             if (sunLightIcon == null || pointLightIcon == null || spotLightIcon == null)
             {

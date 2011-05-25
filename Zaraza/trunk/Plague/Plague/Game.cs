@@ -37,6 +37,10 @@ namespace PlagueEngine
 
         internal Clock RendererClock = null;
         internal Clock PhysicsClock  = null;
+
+#if DEBUG
+        GameObjectEditorWindow gameObjectEditor=null;
+#endif
         /****************************************************************************/
 
         /****************************************************************************/
@@ -111,7 +115,7 @@ namespace PlagueEngine
             Renderer.batchedMeshes.CommitMeshTransforms();
             
 #if DEBUG
-            var gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
+            gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
 #endif
 
             InitGUI();  
@@ -145,8 +149,11 @@ namespace PlagueEngine
                                                   "1",      "2",            "3",       "4",
                                                   "Up",     "Down",         "Left",    "Right" });
 #if DEBUG
+            gameObjectEditor.LoadIconTextures();
             Diagnostics.PushLog("Loading content complete");
+            
 #endif
+            
         }
         /****************************************************************************/
 
