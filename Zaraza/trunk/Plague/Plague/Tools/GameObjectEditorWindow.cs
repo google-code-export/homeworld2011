@@ -1527,6 +1527,9 @@ namespace PlagueEngine.Tools
             //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
         }
 
+
+
+
         private void button3_Click(object sender, EventArgs e)
         {
             if(cameraType!=null)
@@ -1576,7 +1579,6 @@ namespace PlagueEngine.Tools
             else
             {
                 icons.Clear();
-                UnloadIconTextures();
             }
         }
 
@@ -1648,12 +1650,6 @@ namespace PlagueEngine.Tools
         }
 
 
-        private void UnloadIconTextures()
-        {
-            sunLightIcon.Dispose();
-            spotLightIcon.Dispose();
-            pointLightIcon.Dispose();
-        }
 
 
 
