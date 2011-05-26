@@ -19,7 +19,7 @@ using PlagueEngine.HighLevelGameFlow;
 /// PlagueEngine.LowLevelGameFlow
 /************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow
-{
+{   
 
     /********************************************************************************/
     /// Game Objects Factory
@@ -443,7 +443,53 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
-        
+
+
+
+
+        /****************************************************************************/
+        /// Create BuildingWithRoof
+        /****************************************************************************/
+        public bool CreateBuildingWithRoof(BuildingWithRoof result, BuildingWithRoofData data)
+        {
+            InstancingModes InstancingMode1;
+            InstancingMode1 = Renderer.UIntToInstancingMode(data.InstancingMode1);
+
+            InstancingModes InstancingMode2;
+            InstancingMode2 = Renderer.UIntToInstancingMode(data.InstancingMode2);
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model1,
+                                                                       data.Diffuse1,
+                                                                       data.Specular1,
+                                                                       data.Normals1,
+                                                                       InstancingMode1,
+                                                                       data.EnabledMesh1),
+                        renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model2,
+                                                                       data.Diffuse2,
+                                                                       data.Specular2,
+                                                                       data.Normals2,
+                                                                       InstancingMode2,
+                                                                       data.EnabledMesh2),
+                        physicsComponentFactory.CreateSquareSkinComponent(result,
+                        data.Elasticity,
+                        data.StaticRoughness,
+                        data.DynamicRoughness,
+                        data.World,
+                        data.Lenght,
+                        data.Height,
+                        data.Width,
+                        data.Translation,
+                        data.Yaw,
+                        data.Pitch,
+                        data.Roll));
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
         /****************************************************************************/
         /// Create Static Mesh
         /****************************************************************************/

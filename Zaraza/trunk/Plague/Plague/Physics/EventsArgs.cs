@@ -34,5 +34,28 @@ namespace PlagueEngine.Physics
     /****************************************************************************/
 
 
+
+    /****************************************************************************/
+    /// Lost Collision Event
+    /****************************************************************************/
+    class LostCollisionEvent : EventArgs
+    {
+        public GameObjectInstance gameObject = null;
+
+        public LostCollisionEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            return "Lost Collision with gameObject ID :" + gameObject.ID;
+        }
+    };
+    /****************************************************************************/
+
+
+
+
     /********************************************************************************/
 }

@@ -451,7 +451,11 @@ namespace PlagueEngine.Tools
             gameObjectClassNames.Add(SquareSkinMesh);
 
 
-
+            gameObjectsClassName BuildingWithRoof = new gameObjectsClassName();
+            BuildingWithRoof.className = "BuildingWithRoof";
+            BuildingWithRoof.ClassType = typeof(BuildingWithRoof);
+            BuildingWithRoof.dataClassType = typeof(BuildingWithRoofData);
+            gameObjectClassNames.Add(BuildingWithRoof);
 
         }
         /********************************************************************************/
