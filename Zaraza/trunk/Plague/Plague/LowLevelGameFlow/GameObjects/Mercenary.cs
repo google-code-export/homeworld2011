@@ -5,7 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using PlagueEngine.Audio.Components;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
@@ -84,7 +84,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Components
         /****************************************************************************/
         public SkinnedMeshComponent mesh;
-        public CapsuleBodyComponent body;  
+        public CapsuleBodyComponent body;
+        public SoundEffectComponent SoundEffectComponent;
         public SkinnedMeshComponent Mesh { get { return this.mesh; } private set { this.mesh = value; } }
         public CapsuleBodyComponent Body { get { return this.body; } private set { this.body = value; } }
         public PhysicsController    Controller { get; private set; }
@@ -112,7 +113,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             Mesh = mesh;
             Body = body;
-            
+            SoundEffectComponent = new SoundEffectComponent();
+            SoundEffectComponent.CreateNewSound("yesSir", "yesSir",1,0,0);
             this.rotationSpeed  = rotationSpeed;
             this.movingSpeed    = movingSpeed;
             this.distance       = distance;
@@ -167,6 +169,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*************************************/
             if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
             {
+                SoundEffectComponent.PlaySound("yesSir");
                 MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
 
                 receiver = sender as IEventsReceiver;
@@ -285,7 +288,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Update
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
-        {           
+        {
+            SoundEffectComponent.SetPosiotion(World.Translation);
             if (moving == 1)
             {
                 if (Vector2.Distance(new Vector2(World.Translation.X,

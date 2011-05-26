@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using PlagueEngine.Audio;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.Resources;
 using PlagueEngine.Rendering;
@@ -28,18 +29,18 @@ namespace PlagueEngine
         internal Input.Input               Input              { get; private set; }
         internal GameObjectsFactory        GameObjectsFactory { get; private set; }
         internal PhysicsManager            PhysicsManager     { get; private set; }
-        
+        internal AudioManager AudioManager { get; private set; }
         internal Level Level { get; private set; }
         
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
         
         public bool GameStopped { get;  set; }
 
-        internal Clock RendererClock = null;
-        internal Clock PhysicsClock  = null;
+        internal Clock RendererClock;
+        internal Clock PhysicsClock;
 
 #if DEBUG
-        GameObjectEditorWindow gameObjectEditor=null;
+        GameObjectEditorWindow _gameObjectEditor;
 #endif
         /****************************************************************************/
 
@@ -48,10 +49,11 @@ namespace PlagueEngine
         /****************************************************************************/
         public Game(String title)
         {
+            
             Title = title;
             Window.Title = title;
             IsMouseVisible = true;
-
+            
 #if DEBUG
             Diagnostics.Game                = this;
             Diagnostics.ShowDiagnostics     = true;
@@ -60,9 +62,11 @@ namespace PlagueEngine
             Diagnostics.ShowLogWindow       = true;
             Diagnostics.OpenLogFile("log");
 #endif
-
+            
             ContentManager = new ContentManager(this, "Content");
-
+            AudioManager.SetInstance(this, "Audio");
+            AudioManager = AudioManager.GetInstance;
+            AudioManager.SoundVolume = 1f;
             ParticleManager = new ParticleManager();
 
             InitRenderer();
@@ -115,10 +119,10 @@ namespace PlagueEngine
             Renderer.batchedMeshes.CommitMeshTransforms();
             
 #if DEBUG
-            gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
+            _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
 #endif
 
-            InitGUI();  
+            InitGUI();
             
             base.Initialize();              
             
@@ -149,7 +153,7 @@ namespace PlagueEngine
                                                   "1",      "2",            "3",       "4",
                                                   "Up",     "Down",         "Left",    "Right" });
 #if DEBUG
-            gameObjectEditor.LoadIconTextures();
+            _gameObjectEditor.LoadIconTextures();
             Diagnostics.PushLog("Loading content complete");
             
 #endif
@@ -204,7 +208,10 @@ namespace PlagueEngine
             {
                 PhysicsManager.Update((float)PhysicsClock.DeltaTime.TotalSeconds);                
             }
-
+            AudioManager.Listener.Position = Renderer.CurrentCamera.Position;
+            AudioManager.Listener.Forward = Renderer.CurrentCamera.Forward;
+            AudioManager.Listener.Up = Renderer.CurrentCamera.Up;
+            AudioManager.Update(gameTime);
             ParticleManager.Update(gameTime);
             
             Level.Update(gameTime.ElapsedGameTime);
@@ -244,7 +251,6 @@ namespace PlagueEngine
 #endif
         }
         /****************************************************************************/
-        
 
         /****************************************************************************/
         /// Init Renderer
