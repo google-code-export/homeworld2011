@@ -690,7 +690,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 else if(key == Keys.Space)
                 {
-                    if(pickedItem != null); newPickedItemOrientation = -newPickedItemOrientation;
+                    if(pickedItem != null) newPickedItemOrientation = -newPickedItemOrientation;
                 }
             }
         }

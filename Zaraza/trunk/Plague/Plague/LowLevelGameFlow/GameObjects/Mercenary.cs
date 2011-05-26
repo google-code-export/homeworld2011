@@ -525,9 +525,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.Model = Mesh.Model.Name;
 
-            data.Diffuse  = (Mesh.Textures.Diffuse == null ? String.Empty : Mesh.Textures.Diffuse.Name);
+            data.Diffuse  = (Mesh.Textures.Diffuse  == null ? String.Empty : Mesh.Textures.Diffuse.Name );
             data.Specular = (Mesh.Textures.Specular == null ? String.Empty : Mesh.Textures.Specular.Name);
-            data.Normals  = (Mesh.Textures.Normals == null ? String.Empty : Mesh.Textures.Normals.Name);
+            data.Normals  = (Mesh.Textures.Normals  == null ? String.Empty : Mesh.Textures.Normals.Name );
 
             data.TimeRatio       = Mesh.TimeRatio;
             data.CurrentClip     = (Mesh.currentAnimation.Clip == null ? String.Empty : Mesh.currentAnimation.Clip.Name);
@@ -559,9 +559,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.MarkerPosition = markerLocalPosition;
             data.GripBone       = gripBone;
 
-            data.HP    = HP;
-            data.MaxHP = MaxHP;
-            data.Icon  = Icon;
+            data.HP            = HP;
+            data.MaxHP         = MaxHP;
+            data.Icon          = Icon;
+            data.InventoryIcon = InventoryIcon;
+
+            data.TinySlots          = TinySlots;
+            data.Slots              = Slots;
+            data.MovingSpeed        = movingSpeed;
+            data.RotationSpeed      = rotationSpeed;
+            data.DistancePrecision  = distance;
+            data.AnglePrecision     = anglePrecision;
+
 
             return data;
         }

@@ -74,7 +74,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             frontEnd.Draw = OnDraw;
 
             sniffer.SetOnSniffedEvent(OnSniffedEvent);
-            sniffer.SubscribeEvents(typeof(CreateEvent));
+            sniffer.SubscribeEvents(typeof(CreateEvent),
+                                    typeof(DestroyEvent));
 
             keyboard.SubscibeKeys(OnKey,  Keys.Tab,Keys.LeftControl, Keys.LeftAlt,Keys.OemTilde,
                                           Keys.D1, Keys.D2,Keys.D3,Keys.D4,Keys.D5,
@@ -259,6 +260,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (e.GetType().Equals(typeof(CreateEvent)) && sender.GetType().Equals(typeof(Mercenary)))
             {
                 Mercenaries.Add(sender as Mercenary, new List<EventArgs>());  
+            }
+            /*************************************/
+            /// DestroyEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(DestroyEvent)) && sender.GetType().Equals(typeof(Mercenary)))
+            {
+                SelectedMercenaries.Remove(sender as Mercenary);
+                if (SelectedMercenaries.Count == 0)
+                {
+                    SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                    commandMode = false;
+                }
+                Mercenaries.Remove(sender as Mercenary);
             }
             /*************************************/
 
