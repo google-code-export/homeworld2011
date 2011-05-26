@@ -1107,14 +1107,27 @@ namespace PlagueEngine.Tools
             {
 
 
-                TreeNode[] nodes = treeView1.Nodes.Find(((GameObjectInstanceData)(propertyGrid2.SelectedObject)).ID.ToString(), true);
-                if (nodes.GetLength(0) != 0)
-                {
-                    nodes[0].Remove();
-                }
+                //foreach (TreeNode node1 in treeView1.Nodes)
+                //{
+
+                //    foreach (TreeNode node2 in node1.Nodes)
+                //    {
+                //        if (node2 != null)
+                //        {
+                //            if (node2.Text.Equals(((GameObjectInstanceData)(propertyGrid2.SelectedObject)).ID.ToString()))
+                //            {
+                //                node2.Remove();
+
+                //            }
+                //        }
+                //    }
+                //}
+
+                
                 level.GameObjectsFactory.RemoveGameObject(((GameObjectInstanceData)(propertyGrid2.SelectedObject)).ID);
                 currentEditGameObject = null;
                 propertyGrid2.SelectedObject = null;
+                LoadAllObjectsId();
             }
 
             LoadIconsInfo();
