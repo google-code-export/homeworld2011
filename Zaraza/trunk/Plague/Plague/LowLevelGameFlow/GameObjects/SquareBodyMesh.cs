@@ -87,6 +87,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinPitch = body.Pitch;
             data.SkinRoll = body.Roll;
             data.SkinYaw = body.Yaw;
+            data.EnabledMesh = mesh.Enabled;
 
             return data;
         }   

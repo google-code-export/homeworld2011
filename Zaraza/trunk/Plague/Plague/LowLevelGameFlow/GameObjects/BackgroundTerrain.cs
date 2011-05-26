@@ -54,10 +54,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             BackgroundTerrainData data = new BackgroundTerrainData();
             GetData(data);
 
-            data.Width          = terrainComponent.Width;
-            data.Length         = terrainComponent.Length;
+            data.Width          = terrainComponent.Width;            
             data.Height         = terrainComponent.Height;
-            data.CellSize       = terrainComponent.CellSize;
+            data.Segments       = terrainComponent.Segments;
            
             data.HeightMap      = terrainComponent.HeightMap;
             data.BaseTexture    = terrainComponent.BaseTexture;
@@ -66,7 +65,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.BTexture       = terrainComponent.BTexture;
             data.WeightMap      = terrainComponent.WeightMap;
             data.TextureTiling  = terrainComponent.TextureTiling;
-
+            
             return data;
         }
         /****************************************************************************/
@@ -86,13 +85,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Properties
         /****************************************************************************/
         [CategoryAttribute("Sizes")]
-        public int   Width          { get; set; }
-        [CategoryAttribute("Sizes")]
-        public int   Length         { get; set; }
+        public float   Width          { get; set; }
         [CategoryAttribute("Sizes")]
         public float Height         { get; set; }
         [CategoryAttribute("Sizes")]
-        public float CellSize       { get; set; }        
+        public int Segments       { get; set; }        
 
         [CategoryAttribute("Textures")]
         public String HeightMap     { get; set; }
@@ -108,6 +105,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public String WeightMap     { get; set; }
         [CategoryAttribute("Textures")]
         public float TextureTiling  { get; set; }
+
+        [CategoryAttribute("Blur")]
+        public int Blur { get; set; }        
         /****************************************************************************/
 
     }

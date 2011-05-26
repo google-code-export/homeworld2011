@@ -623,17 +623,16 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.BTexture,
                                                                             data.WeightMap,
                                                                             data.Width,
-                                                                            data.Length,
+                                                                            data.Segments,
                                                                             data.Height,
-                                                                            data.CellSize,
                                                                             data.TextureTiling),
 
                          physicsComponentFactory.CreateTerrainSkinComponent(result,
                                                                             data.HeightMap,
-                                                                            data.Width,
-                                                                            data.Length,
+                                                                            data.Segments,
+                                                                            data.Segments,
                                                                             data.Height,
-                                                                            data.CellSize,
+                                                                            data.Width / (float)data.Segments,
                                                                             data.Elasticity,
                                                                             data.StaticRoughness,
                                                                             data.DynamicRoughness));
@@ -656,9 +655,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.BTexture,
                                                                             data.WeightMap,
                                                                             data.Width,
-                                                                            data.Length,
+                                                                            data.Segments,
                                                                             data.Height,
-                                                                            data.CellSize,
                                                                             data.TextureTiling));
 
             return true;

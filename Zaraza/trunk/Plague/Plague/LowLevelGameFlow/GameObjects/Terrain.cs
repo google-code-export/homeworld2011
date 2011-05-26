@@ -59,10 +59,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             TerrainData data = new TerrainData();
             GetData(data);
 
-            data.Width          = terrainComponent.Width;
-            data.Length         = terrainComponent.Length;
+            data.Segments       = terrainComponent.Segments;
             data.Height         = terrainComponent.Height;
-            data.CellSize       = terrainComponent.CellSize;
+            data.Width          = terrainComponent.Width;
            
             data.HeightMap      = terrainComponent.HeightMap;
             data.BaseTexture    = terrainComponent.BaseTexture;
@@ -95,13 +94,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Properties
         /****************************************************************************/
         [CategoryAttribute("Sizes")]
-        public int   Width          { get; set; }
-        [CategoryAttribute("Sizes")]
-        public int   Length         { get; set; }
+        public float  Width          { get; set; }
         [CategoryAttribute("Sizes")]
         public float Height         { get; set; }
         [CategoryAttribute("Sizes")]
-        public float CellSize       { get; set; }        
+        public int Segments { get; set; }
 
         [CategoryAttribute("Textures")]
         public String HeightMap     { get; set; }
@@ -125,6 +122,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Physics")]
         public float DynamicRoughness { get; set; }
 
+        [CategoryAttribute("Blur")]
+        public int Blur { get; set; }        
         /****************************************************************************/
 
     }

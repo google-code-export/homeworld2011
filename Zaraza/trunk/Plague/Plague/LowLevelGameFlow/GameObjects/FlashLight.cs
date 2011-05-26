@@ -124,6 +124,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.DepthBias = light.DepthBias;
             data.Icon = Icon;
             data.SlotsIcon = SlotsIcon;
+            data.EnabledMesh = mesh.Enabled;
 
             return data;
         }

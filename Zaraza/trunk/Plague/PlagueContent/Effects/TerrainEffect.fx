@@ -119,7 +119,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
     	
 	output.UV			 = input.UV;
 	
-	output.Normal		 = mul(input.Normal, World);
+	output.Normal		 = input.Normal;
 		
 	float4 worldPosition = mul(input.Position, World);
 	output.WorldPosition = worldPosition;

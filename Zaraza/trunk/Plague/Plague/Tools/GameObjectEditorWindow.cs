@@ -1081,12 +1081,7 @@ namespace PlagueEngine.Tools
         private void propertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             if (!checkBoxDisableEditing.Checked)
-            {
-
-
-
-                level.GameObjects[currentEditGameObject.ID].Dispose();
-
+            {                
                 level.GameObjectsFactory.RemoveGameObject(currentEditGameObject.ID);
                 level.GameObjectsFactory.Create(currentEditGameObject);
                 LoadIconsInfo();
@@ -1147,7 +1142,6 @@ namespace PlagueEngine.Tools
         private void buttonForceUpdate_Click(object sender, EventArgs e)
         {
 
-            level.GameObjects[currentEditGameObject.ID].Dispose();
             level.GameObjectsFactory.RemoveGameObject(currentEditGameObject.ID);
             level.GameObjectsFactory.Create(currentEditGameObject);
         }
@@ -1265,7 +1259,7 @@ namespace PlagueEngine.Tools
                 }
                 if (changed)
                 {
-                    currentObject.GetType().GetProperty("definition").SetValue(currentObject, null, null);
+                    //currentObject.GetType().GetProperty("definition").SetValue(currentObject, null, null);
                     propertyGrid1.Refresh();
                 }
             }

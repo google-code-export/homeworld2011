@@ -265,7 +265,9 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Dispose
         /****************************************************************************/
         public void Dispose()
-        {         
+        {
+            if (isDisposed) return;
+
             ReleaseID(this.id);
             ReleaseComponents();
             isDisposed = true;

@@ -126,6 +126,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.Icon = Icon;
             data.SlotsIcon = SlotsIcon;
+            data.EnabledMesh = mesh.Enabled;
 
             return data;
         }
