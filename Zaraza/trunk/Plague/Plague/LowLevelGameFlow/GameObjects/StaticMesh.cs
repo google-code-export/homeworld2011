@@ -64,7 +64,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Normals        = (mesh.Textures.Normals  == null ? String.Empty : mesh.Textures.Normals.Name);
 
             data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
-           
+            data.EnabledMesh = mesh.Enabled;
+
             return data;
         }
         /****************************************************************************/

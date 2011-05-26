@@ -68,6 +68,7 @@ namespace PlagueEngine.Rendering.Components
         {
             renderer.batchedMeshes.RemoveMeshComponent(instancingMode, technique, this);
             renderer.meshes.Remove(this);
+
             base.ReleaseMe();
         }
         /****************************************************************************/

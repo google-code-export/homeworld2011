@@ -373,7 +373,11 @@ namespace PlagueEngine.Rendering
             Matrix InverseViewProjection = currentCamera.InverseViewProjection;
             BoundingFrustum Frustrum = currentCamera.Frustrum;
 
+            //RasterizerState r = new RasterizerState();
+            //r.FillMode = FillMode.WireFrame;
+            //Device.RasterizerState = r;
             Render(ref CameraPosition, ref View, ref Projection, ref ViewProjection, Frustrum);
+//            Device.RasterizerState = new RasterizerState();
 
             lightsManager.RenderShadows(Frustrum);
 

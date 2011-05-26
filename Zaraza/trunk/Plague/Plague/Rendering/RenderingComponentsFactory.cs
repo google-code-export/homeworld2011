@@ -68,10 +68,9 @@ namespace PlagueEngine.Rendering
                                                         String gtexture,
                                                         String btexture,
                                                         String weightMap,                                    
-                                                        int width,
-                                                        int length,
-                                                        float height,
-                                                        float cellSize,
+                                                        float width,
+                                                        int segments,
+                                                        float height,                                                        
                                                         float textureTiling)
         {
             TerrainComponent result = new TerrainComponent( gameObject,
@@ -82,9 +81,8 @@ namespace PlagueEngine.Rendering
                                                             content.LoadTexture2D(btexture),
                                                             content.LoadTexture2D(weightMap),
                                                             width,
-                                                            length,
                                                             height,
-                                                            cellSize,
+                                                            segments,
                                                             textureTiling,
                                                             content.LoadEffect("TerrainEffect"));
             result.ComputeMesh();

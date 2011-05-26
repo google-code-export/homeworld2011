@@ -24,10 +24,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private int          width          = 0;
-        private int          length         = 0;
         private float        height         = 0;
-        private float        cellSize       = 0;
         
         private VertexBuffer vertexBuffer   = null;
         private IndexBuffer  indexBuffer    = null;
@@ -58,17 +55,17 @@ namespace PlagueEngine.Rendering.Components
                                 Texture2D          gTexture,
                                 Texture2D          bTexture,
                                 Texture2D          weightMap,
-                                int                width,
-                                int                length,
+                                float              width,
                                 float              height,
-                                float              cellSize,
+                                int                segments,
                                 float              textureTiling,
-                                Effect             effect) : base(gameObject,effect)
+                                Effect             effect) 
+
+            : base(gameObject,effect)
         {
-            this.width          = width;
-            this.length         = length;
-            this.height         = height;
-            this.cellSize       = cellSize;
+            Width          = width;
+            this.height    = height;
+            Segments       = segments;
 
             this.heightMap      = heightMap;
             this.baseTexture    = baseTexture;
@@ -80,9 +77,9 @@ namespace PlagueEngine.Rendering.Components
 
             this.effect         = effect;
 
-            vertexCount    = width * length;
-            indexCount     = (width - 1) * (length - 1) * 6;
-            trianglesCount = indexCount / 3;
+            vertexCount    = segments * segments;
+            indexCount     = (segments - 1) * (segments - 1) * 6;
+            trianglesCount = segments * segments * 2;
 
             SetEffect();
         }
@@ -103,41 +100,74 @@ namespace PlagueEngine.Rendering.Components
             VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[vertexCount];
 
             float vertexHeight;
-            
-            for (int z = 0; z < length; z++)            
+            float cellSize = Width / (float)Segments;
+
+            for (int z = 0; z < Segments; z++)            
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < Segments ; x++)
                 {
 
-
-                    int t1 = (heightMap.Height > length ? z * (heightMap.Height / length) : z / (length / heightMap.Height));
-                    int t2 = (heightMap.Width  > width  ? x * (heightMap.Width  / width)  : x / (width  / heightMap.Width ));
+                    int t1 = (heightMap.Height > Segments  ? z * (heightMap.Height/Segments) : z / (Segments/heightMap.Height));
+                    int t2 = (heightMap.Width  > Segments  ? x * (heightMap.Width /Segments) : x / (Segments/heightMap.Width));
                     vertexHeight = heightMapData[(t1 * heightMap.Width) + t2].R;
-                    vertexHeight /= 255;
+                    vertexHeight /= 255.0f;
                     vertexHeight *= height;
 
-                    vertices[(z * width) + x].Position          = new Vector3(x * cellSize, vertexHeight, z * cellSize);
-                    vertices[(z * width) + x].TextureCoordinate = new Vector2((float)x/width ,(float)z/length);
+                    vertices[(z * Segments) + x].Position = new Vector3(x * cellSize, vertexHeight, z * cellSize);
+                    vertices[(z * Segments) + x].TextureCoordinate = new Vector2(vertices[(z * Segments) + x].Position.X + gameObject.World.Translation.X, 
+                                                                                       vertices[(z * Segments) + x].Position.Z + gameObject.World.Translation.Z);
                 }
             }
 
-            objectSpaceBBCorners = BoundingBox.CreateFromPoints(new Vector3[] { new Vector3(width * cellSize,height,length * cellSize),
+
+            objectSpaceBBCorners = BoundingBox.CreateFromPoints(new Vector3[] { new Vector3(Width,height,Width),
                                                                                 new Vector3(0,0,0) }
                                                                ).GetCorners();
-            
+
+
+            float[] tempHeights = new float[vertexCount];
+
+            for (int i = 0; i < vertexCount; i++)
+            {
+                tempHeights[i] = vertices[i].Position.Y;
+            }
+
+            for (int x = 5; x < Segments - 5; x++)
+            {
+                for (int y = 5; y < Segments - 5; y++)
+                {
+                    float h = 0;
+
+                    for (int i = -5; i <= 5; i++)
+                    {
+                        for (int j = -5; j <= 5; j++)
+                        {
+                            h += vertices[((x + i) * Segments) + y + j].Position.Y;
+                        }
+                    }
+
+                    h /= 121.0f;
+                    tempHeights[(x * Segments) + y] = h;
+                }
+            }
+
+            for (int i = 0; i < vertexCount; i++)
+            {
+                vertices[i].Position.Y = tempHeights[i];
+            }
 
             int[] indices = new int[indexCount];
 
             {
                 int i = 0;
 
-                for (int x = 0; x < width - 1; x++)
+                for (int x = 0; x < Segments - 1; x++)
                 {
-                    for (int z = 0; z < length - 1; z++)
+                    for (int z = 0; z < Segments - 1; z++)
                     {
-                        int upperLeft = z * (int)width + x;
+                        int upperLeft  = z * Segments + x;
                         int upperRight = upperLeft + 1;
-                        int lowerLeft = upperLeft + (int)width;
+                        int lowerLeft  = upperLeft + Segments;
                         int lowerRight = lowerLeft + 1;
 
                         indices[i++] = upperLeft;
@@ -215,18 +245,18 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public int   Width         { get { return width;            } }
-        public int   Length        { get { return length;           } }
+        public float Width    { get; private set; }
+        public int   Segments { get; private set; }
+
         public float Height        { get { return height;           } }
-        public float CellSize      { get { return cellSize;         } }
         public float TextureTiling { get { return textureTiling;    } }
 
         public String HeightMap    { get { return heightMap.Name;   } }
         public String BaseTexture  { get { return baseTexture.Name; } }
-        public String RTexture     { get { return rTexture.Name;    } }
-        public String GTexture     { get { return gTexture.Name;    } }
-        public String BTexture     { get { return bTexture.Name;    } }
-        public String WeightMap    { get { return weightMap.Name;   } }       
+        public String RTexture     { get { return (rTexture == null ? String.Empty : rTexture.Name);    } }
+        public String GTexture     { get { return (gTexture == null ? String.Empty : rTexture.Name);    } }
+        public String BTexture     { get { return (bTexture == null ? String.Empty : rTexture.Name);    } }
+        public String WeightMap    { get { return weightMap.Name;   } }
         /****************************************************************************/
 
 
