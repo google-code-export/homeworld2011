@@ -361,7 +361,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnMouseKey(MouseKeyAction mouseKeyAction,ref ExtendedMouseKeyState mouseKeyState)
         {
 
-            bool found = false;
+
+            Dictionary<int, float> PickedObjects = new Dictionary<int, float>();
 
             if (mouseKeyState.WasPressed() && mouseKeyAction==MouseKeyAction.RightClick)
             {
@@ -387,43 +388,45 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         if (mouseX > info.pos.X && mouseY > info.pos.Y && mouseX < (info.pos.X + info.width) && mouseY < (info.pos.Y + info.height))
                         {
 
-                            this.Broadcast(new LowLevelGameFlow.GameObjectClicked(info.goID));
-                            selectedGameObject = editor.level.GameObjects[info.goID];
-                            found = true;
-                            break;
+                           
+
+                            PickedObjects.Add(info.goID, Vector3.Distance(this.World.Translation, editor.level.GameObjects[info.goID].World.Translation));
+                           
                         }
                     }
 
                     Microsoft.Xna.Framework.Ray ray = cameraComponent.GetMouseRay(new Vector2(mouseX, mouseY));
 
-                    if (!found)
+
+
+                    foreach (MeshComponent mesh in renderer.meshes)
                     {
+                        if (ray.Intersects(mesh.BoundingBox) != null)
+                        {
+
+                            PickedObjects.Add(mesh.GameObject.ID, Vector3.Distance(this.World.Translation, mesh.GameObject.World.Translation));
+
+
+                        }
+                    }
+                        foreach (SkinnedMeshComponent mesh2 in renderer.skinnedMeshes)
+                        {
+                            if (ray.Intersects(mesh2.BoundingBox) != null)
+                            {
+                                //this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh2.GameObject.ID));
+                                //selectedGameObject = mesh2.GameObject;
+                               PickedObjects.Add(mesh2.GameObject.ID,Vector3.Distance(this.World.Translation,mesh2.GameObject.World.Translation));
+                       
+                            }
+                        }
+                   
+                            if(PickedObjects.Count!=0)
+                            {
+                                 var sortedDict = (from entry in PickedObjects orderby entry.Value ascending select entry);
+                                 this.Broadcast(new LowLevelGameFlow.GameObjectClicked(sortedDict.ElementAt(0).Key ));
+                                 selectedGameObject = editor.level.GameObjects[sortedDict.ElementAt(0).Key];
+                            }
                         
-                        foreach (MeshComponent mesh in renderer.meshes)
-                        {
-                            if (ray.Intersects(mesh.BoundingBox) != null)
-                            {
-                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
-                                selectedGameObject = mesh.GameObject;
-                                found = true;
-                                break;
-                            }
-                        }
-
-                    }
-                    if (!found)
-                    {
-                        foreach (SkinnedMeshComponent mesh in renderer.skinnedMeshes)
-                        {
-                            if (ray.Intersects(mesh.BoundingBox) != null)
-                            {
-                                this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh.GameObject.ID));
-                                selectedGameObject = mesh.GameObject;
-                                break;
-                            }
-                        }
-                    }
-
                     //draging
                     CollisionSkin skin;
                     Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
