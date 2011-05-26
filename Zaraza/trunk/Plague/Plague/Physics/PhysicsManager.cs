@@ -83,6 +83,12 @@ namespace PlagueEngine.Physics
                 rigidBody.Update();
             }
 
+
+            foreach (CollisionSkinComponent skin in collisionSkins.Values)
+            {
+                skin.Update();
+            }
+
             foreach (PhysicsController controller in controllers)
             {
                 controller.UpdateController(timeStep);
