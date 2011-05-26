@@ -108,7 +108,7 @@ namespace PlagueEngine.Tools
         private Input.Input input=null;
         private Game game = null;
 
-        private gameObjectsClassName currentClassName = null;
+        private gameObjectsClassName currentClassNameNew = null;
         private GameObjectInstanceData currentObject = null;
 
     
@@ -122,6 +122,8 @@ namespace PlagueEngine.Tools
         
 
         //pola do zakladki edytuj
+
+        private gameObjectsClassName currentClassNameEdit = null;
         private GameObjectInstanceData currentEditGameObject = null;
 
 
@@ -251,8 +253,8 @@ namespace PlagueEngine.Tools
             {
                 string objectname = gameObjectsName.Items[gameObjectsName.SelectedIndex].ToString();
 
-                currentClassName = getClass(objectname);
-                currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassName.dataClassType));
+                currentClassNameNew = getClass(objectname);
+                currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassNameNew.dataClassType));
                
              
                 propertyGrid1.SelectedObject = currentObject;
@@ -485,7 +487,7 @@ namespace PlagueEngine.Tools
         {            
             try
             {
-                this.currentObject.Type = currentClassName.ClassType;
+                this.currentObject.Type = currentClassNameNew.ClassType;
                 currentEditGameObject=this.level.GameObjectsFactory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
 
@@ -526,7 +528,7 @@ namespace PlagueEngine.Tools
             {
                 if (currentDefinition != null)
                 {
-                    PropertyInfo[] propINFO = currentClassName.dataClassType.GetProperties();
+                    PropertyInfo[] propINFO = currentClassNameNew.dataClassType.GetProperties();
 
                     foreach (PropertyInfo pI in propINFO)
                     {
@@ -546,7 +548,7 @@ namespace PlagueEngine.Tools
                 currentDefinition = contentManager.GameObjectsDefinitions[ComboboxDefinitions.SelectedItem.ToString()];
                 currentObject.Definition = ComboboxDefinitions.SelectedItem.ToString();
 
-                PropertyInfo[] propInfo = currentClassName.dataClassType.GetProperties();
+                PropertyInfo[] propInfo = currentClassNameNew.dataClassType.GetProperties();
 
                 foreach (PropertyInfo pf in propInfo)
                 {
@@ -869,7 +871,7 @@ namespace PlagueEngine.Tools
             {
 
 
-                PropertyInfo[] PropertyInfo = currentClassName.dataClassType.GetProperties();
+                PropertyInfo[] PropertyInfo = currentClassNameNew.dataClassType.GetProperties();
                 List<PropertyInfo> list = PropertyInfo.ToList<PropertyInfo>();
                
                 for (int i = 0; i < list.Count; i++)//zagniezdzanie definicji nam chyba nie jest potrzebne
@@ -889,13 +891,13 @@ namespace PlagueEngine.Tools
                 {
                     GameObjectDefinition god = new GameObjectDefinition();
                     god.Name = definitionWindow.textbox.Text;
-                    god.GameObjectClass = this.currentClassName.className;
+                    god.GameObjectClass = this.currentClassNameNew.className;
 
                     foreach(DefinitionWindow.Field field in definitionWindow.fields )
                     {
                         if (field.checkbox.Checked)
                         {
-                            god.Properties.Add(field.label.Text, currentClassName.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
+                            god.Properties.Add(field.label.Text, currentClassNameNew.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
                         }
                     }
 
@@ -1050,7 +1052,7 @@ namespace PlagueEngine.Tools
 
                 if (cancelDefinition)
                 {
-                    PropertyInfo propINFO = currentClassName.dataClassType.GetProperty("definition");
+                    PropertyInfo propINFO = currentClassNameNew.dataClassType.GetProperty("definition");
                     propINFO.SetValue(this.currentObject, null, null);
 
                     // TODO: wtf ?
@@ -1148,7 +1150,7 @@ namespace PlagueEngine.Tools
 
         private void buttonCreateDefinitionEdit_Click(object sender, EventArgs e)
         {
-            if (currentEditGameObject != null)
+            if (currentEditGameObject != null && currentClassNameEdit!=null)
             {
                 PropertyInfo[] PropertyInfo = currentEditGameObject.GetType().GetProperties();
                 List<PropertyInfo> list = PropertyInfo.ToList<PropertyInfo>();
@@ -1170,13 +1172,13 @@ namespace PlagueEngine.Tools
                 {
                     GameObjectDefinition god = new GameObjectDefinition();
                     god.Name = definitionWindow.textbox.Text;
-                    god.GameObjectClass = this.currentClassName.className;
+                    god.GameObjectClass = this.currentClassNameEdit.className;
 
                     foreach (DefinitionWindow.Field field in definitionWindow.fields)
                     {
                         if (field.checkbox.Checked)
                         {
-                            god.Properties.Add(field.label.Text, currentClassName.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
+                            god.Properties.Add(field.label.Text, currentClassNameEdit.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
                         }
                     }
                     
@@ -1346,16 +1348,17 @@ namespace PlagueEngine.Tools
 
                     currentEditGameObject = level.GameObjects[id].GetData();
                     currentEditGameObject.Position = currentEditGameObject.World.Translation;
-                    currentClassName = new gameObjectsClassName();
-                    currentClassName.dataClassType = currentEditGameObject.GetType();
+                    currentClassNameEdit = new gameObjectsClassName();
+                    currentClassNameEdit.dataClassType = currentEditGameObject.GetType();
+                    
                     currentObject = currentEditGameObject;
 
                     foreach (gameObjectsClassName name in gameObjectClassNames)
                     {
-                        if (name.dataClassType == currentClassName.dataClassType)
+                        if (name.dataClassType == currentClassNameEdit.dataClassType)
                         {
-                            currentClassName.className = name.className;
-                            currentClassName.ClassType = name.ClassType;
+                            currentClassNameEdit.className = name.className;
+                            currentClassNameEdit.ClassType = name.ClassType;
                         }
                     }
 
