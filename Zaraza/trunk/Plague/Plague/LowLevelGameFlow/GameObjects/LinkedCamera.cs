@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna;
+using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -80,7 +81,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float zoomSpeed,
                          Vector3 position,
                          Vector3 target,
-                         GameObjectInstance mercenariesManager)
+                         GameObjectInstance mercenariesManager,
+                         bool current)
         {
             this.cameraComponent = cameraComponent;
             this.keyboardListenerComponent = keyboardListenerComponent;
@@ -104,8 +106,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             int screenWidth = cameraComponent.ScreenWidth;
             int screenHeight = cameraComponent.ScreenHeight;
 
-            this.mercenariesManager = mercenariesManager as MercenariesManager;
-
+         
+                this.mercenariesManager = mercenariesManager as MercenariesManager;
+          
             // TODO: jest na pałę, a powinno być z edytora
             maxTop = 0;
             minTop = (int)(screenHeight * 0.025);
@@ -120,6 +123,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             minRight = (int)(screenWidth * 0.975);
 
             RequiresUpdate = true;
+
+            if (current) cameraComponent.SetAsCurrent();
         }
         /****************************************************************************/
 
@@ -608,15 +613,32 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.MovementSpeed = this.movementSpeed;
             data.RotationSpeed = this.rotationSpeed;
             data.ZoomSpeed = this.zoomSpeed;
-            data.FoV = this.cameraComponent.FoV;
+            data.FoV =MathHelper.ToDegrees( this.cameraComponent.FoV);
             data.ZNear = this.cameraComponent.ZNear;
             data.ZFar = this.cameraComponent.ZFar;
             data.ActiveKeyListener = this.keyboardListenerComponent.Active;
             data.ActiveMouseListener = this.mouseListenerComponent.Active;
-            data.Position = this.position;
+            data.position = this.position;
             data.Target = this.target;
+            
             data.MercenariesManager = this.mercenariesManager.ID;
 
+            if (cameraComponent.Renderer.CurrentCamera != null)
+            {
+                if (this.cameraComponent.Renderer.CurrentCamera.Equals(this.cameraComponent))
+                {
+
+                    data.CurrentCamera = true;
+                }
+                else
+                {
+                    data.CurrentCamera = false;
+                }
+            }
+            else
+            {
+                data.CurrentCamera = false;
+            }
             return data;
         }
         /****************************************************************************/
@@ -772,6 +794,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public float movementSpeed
         {
+            
             set { this.MovementSpeed = value; }
             get { return MovementSpeed; }
         }
@@ -813,6 +836,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
 
         public int MercenariesManager { get; set; }
+        [CategoryAttribute("Misc")]
+        public bool CurrentCamera { set; get; }
     }
     /********************************************************************************/
 

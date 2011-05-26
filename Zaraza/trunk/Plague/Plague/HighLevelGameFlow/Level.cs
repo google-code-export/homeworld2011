@@ -805,39 +805,39 @@ namespace PlagueEngine.HighLevelGameFlow
 
 //            GameObjectInstance mm = GameObjectsFactory.Create(mcmd);
 
-//            LinkedCameraData lcdata = new LinkedCameraData();
-//            lcdata.Type = typeof(LinkedCamera);
-//            lcdata.position = new Vector3(245, 80, 10);
-//            lcdata.Target = new Vector3(245, 45, 35);
-//            lcdata.MovementSpeed = 0.07f;
-//            lcdata.RotationSpeed = 0.005f;
-//            lcdata.ZoomSpeed = 0.01f;
-//            lcdata.FoV = 60;
-//            lcdata.ZNear = 1f;
-//            lcdata.ZFar = 200;
-//            lcdata.ActiveKeyListener = true;
-//            lcdata.ActiveMouseListener = true;
-//            lcdata.MercenariesManager = mm.ID;
+            //LinkedCameraData lcdata = new LinkedCameraData();
+            //lcdata.Type = typeof(LinkedCamera);
+            //lcdata.position = new Vector3(245, 80, 10);
+            //lcdata.Target = new Vector3(245, 45, 35);
+            //lcdata.MovementSpeed = 0.07f;
+            //lcdata.RotationSpeed = 0.005f;
+            //lcdata.ZoomSpeed = 0.01f;
+            //lcdata.FoV = 60;
+            //lcdata.ZNear = 1f;
+            //lcdata.ZFar = 200;
+            //lcdata.ActiveKeyListener = true;
+            //lcdata.ActiveMouseListener = true;
+            ////lcdata.MercenariesManager = mm.ID;
+            //GameObjectsFactory.Create(lcdata);
+            //LinkedCamera camera = (LinkedCamera)(GameObjectsFactory.Create(lcdata));
 
-//            LinkedCamera camera = (LinkedCamera)(GameObjectsFactory.Create(lcdata));
-
-//            (mm as MercenariesManager).LinkedCamera = camera;
+           // (mm as MercenariesManager).LinkedCamera = camera;
 
 
 
-            FreeCameraData fcdata = new FreeCameraData();
-            fcdata.Type = typeof(FreeCamera);
-            fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
-                                                             new Vector3(240, 10, 70),
-                                                             new Vector3(0, 1, 0)));
-            fcdata.MovementSpeed = 0.05f;
-            fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-            fcdata.FoV = 60;
-            fcdata.ZNear = 1;
-            fcdata.ZFar = 200;
-            fcdata.ActiveKeyListener = true;
-            fcdata.ActiveMouseListener = true;
-            GameObjectsFactory.Create(fcdata);
+            //FreeCameraData fcdata = new FreeCameraData();
+            //fcdata.Type = typeof(FreeCamera);
+            //fcdata.World = Matrix.Invert(Matrix.CreateLookAt(new Vector3(240, 80, 10),
+            //                                                 new Vector3(240, 10, 70),
+            //                                                 new Vector3(0, 1, 0)));
+            //fcdata.MovementSpeed = 0.05f;
+            //fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
+            //fcdata.FoV = 60;
+            //fcdata.ZNear = 1;
+            //fcdata.ZFar = 200;
+            //fcdata.ActiveKeyListener = true;
+            //fcdata.ActiveMouseListener = true;
+            //GameObjectsFactory.Create(fcdata);
 
 
 //            //CreatureData ssdata = new CreatureData();
