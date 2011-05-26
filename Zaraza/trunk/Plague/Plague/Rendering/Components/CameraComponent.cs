@@ -148,6 +148,10 @@ namespace PlagueEngine.Rendering.Components
             {
                 return Matrix.Invert(gameObject.World);
             }
+            set
+            {
+                gameObject.World = value;
+            }
         }
         /****************************************************************************/
 
@@ -173,6 +177,11 @@ namespace PlagueEngine.Rendering.Components
             get
             {
                 return projection;
+            }
+
+            set
+            {
+                projection = value;
             }
         }
         /****************************************************************************/

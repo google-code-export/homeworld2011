@@ -208,10 +208,16 @@ namespace PlagueEngine
             {
                 PhysicsManager.Update((float)PhysicsClock.DeltaTime.TotalSeconds);                
             }
-            AudioManager.Listener.Position = Renderer.CurrentCamera.Position;
-            AudioManager.Listener.Forward = Renderer.CurrentCamera.Forward;
-            AudioManager.Listener.Up = Renderer.CurrentCamera.Up;
-            AudioManager.Update(gameTime);
+            try
+            {
+                AudioManager.Listener.Position = Renderer.CurrentCamera.Position;
+                AudioManager.Listener.Forward = Renderer.CurrentCamera.Forward;
+                AudioManager.Listener.Up = Renderer.CurrentCamera.Up;
+                AudioManager.Update(gameTime);
+            }
+            catch
+            {
+            }
             ParticleManager.Update(gameTime);
             
             Level.Update(gameTime.ElapsedGameTime);

@@ -524,7 +524,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              data.ActiveMouseListener),
 
                          data.MovementSpeed,
-                         data.RotationSpeed);
+                         data.RotationSpeed,
+                         data.CurrentCamera);
 
             return true;
         }
@@ -536,13 +537,16 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateLinkedCamera(LinkedCamera result, LinkedCameraData data)
         {
-            GameObjectInstance mercMan = GetObject(data.MercenariesManager);
+            GameObjectInstance mercMan=null;
+           
+                mercMan = GetObject(data.MercenariesManager);
+           
+
             if (mercMan == null)
             {
                 PushToWaitingRoom(result, data);
                 return false;
             }
-
             result.Init(renderingComponentsFactory.CreateCameraComponent(result,
                                                                          data.FoV,
                                                                          data.ZNear,
@@ -559,7 +563,8 @@ namespace PlagueEngine.LowLevelGameFlow
                          data.ZoomSpeed,
                          data.position,
                          data.Target,
-                         mercMan);
+                         mercMan,
+                         data.CurrentCamera);
 
             return true;
         }

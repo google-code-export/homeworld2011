@@ -177,7 +177,7 @@ namespace PlagueEngine.Tools
             loadLevelNames();
             LoadAllObjectsId();
             checkBoxShowCollisionSkin.Checked = renderer.debugDrawer.IsEnabled;
-            setUpCameraButton();
+           
             Renderer.editor = this;
             FreeCamera.editor = this;
         }
@@ -489,8 +489,8 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {            
-            try
-            {
+            //try
+            //{
                 this.currentObject.Type = currentClassNameNew.ClassType;
                 currentEditGameObject=this.level.GameObjectsFactory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
@@ -509,13 +509,13 @@ namespace PlagueEngine.Tools
               
                 
                
-            }
-            catch(Exception execption)
-            {
-                releaseInput = false;
-                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n"+execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                releaseInput = true;
-            }
+            //}
+            //catch(Exception execption)
+            //{
+            //    releaseInput = false;
+            //    MessageBox.Show("That makes 100 errors \nPlease try again.\n\n"+execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    releaseInput = true;
+            //}
 
             LoadIconsInfo();
         }
@@ -659,8 +659,10 @@ namespace PlagueEngine.Tools
 
             }
 
-            setUpCameraButton();
             LoadIconsInfo();
+            LoadAllObjectsId();
+
+            setUpCameraButton();
         }
         /********************************************************************************/
 
@@ -1389,30 +1391,30 @@ namespace PlagueEngine.Tools
 
         private void RestoreCamera()
         {
-            if(linkedFirst)
-            {
-                renderer.CurrentCamera = linkedCamera.cameraComponent;
-                cameraType = typeof(LinkedCamera);
+            //if (linkedFirst)
+            //{
+            //    renderer.CurrentCamera = linkedCamera.cameraComponent;
+            //    cameraType = typeof(LinkedCamera);
 
-                if (freeCamera != null)
-                {
-                    level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
-                    freeCamera = null;
-                }
+            //    if (freeCamera != null)
+            //    {
+            //        level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
+            //        freeCamera = null;
+            //    }
 
-            }
-            else
-            {
-                renderer.CurrentCamera = freeCamera.cameraComponent;
-                cameraType = typeof(FreeCamera);
+            //}
+            //else
+            //{
+            //    renderer.CurrentCamera = freeCamera.cameraComponent;
+            //    cameraType = typeof(FreeCamera);
 
-                if (linkedCamera != null)
-                {
-                    level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
-                    linkedCamera = null;
-                }
+            //    if (linkedCamera != null)
+            //    {
+            //        level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
+            //        linkedCamera = null;
+            //    }
 
-            }
+            //}
 
         }
         private void setUpCameraButton()
@@ -1423,7 +1425,14 @@ namespace PlagueEngine.Tools
                 if (nodes[0].Nodes.Count != 0)
                 {
                     int id = int.Parse(nodes[0].Nodes[0].Text);
-                    linkedCamera = (LinkedCamera)level.GameObjects[id];
+
+                    foreach (GameObjectInstance go in level.GameObjects.Values)
+                    {
+                        if (go.ID == id)
+                        {
+                            linkedCamera = (LinkedCamera)go;
+                        }
+                    }
                 }
             }
 
@@ -1433,22 +1442,28 @@ namespace PlagueEngine.Tools
                 if (nodes2[0].Nodes.Count != 0)
                 {
                     int id = int.Parse(nodes2[0].Nodes[0].Text);
-                    freeCamera = (FreeCamera)level.GameObjects[id];
+                    foreach (GameObjectInstance go in level.GameObjects.Values)
+                    {
+                        if (go.ID == id)
+                        {
+                            freeCamera = (FreeCamera)go;
+                        }
+                    }
                 }
             }
-            if (freeCamera != null && linkedCamera != null)
+            if (freeCamera == null && linkedCamera == null)
             {
                 cameraType = null;
                 button3.Text = "Cant switch camera types";
             }
             else
             {
-                if (linkedCamera != null)
+                if (linkedCamera != null && renderer.CurrentCamera!=null && !renderer.CurrentCamera.Equals(linkedCamera))
                 {
                     button3.Text = "Switch to freeCamera";
                     cameraType = typeof(LinkedCamera);
                 }
-                if (freeCamera != null)
+                else if (freeCamera != null && renderer.CurrentCamera != null && !renderer.CurrentCamera.Equals(freeCamera))
                 {
                     button3.Text = "Switch to linkedCamera";
                     cameraType = typeof(FreeCamera);
@@ -1488,8 +1503,7 @@ namespace PlagueEngine.Tools
                 freeCamera.mouseListenerComponent.Active = true;
                 linkedCamera.keyboardListenerComponent.Active = false;
                 linkedCamera.mouseListenerComponent.Active = false;
-                linkedCamera.mercenariesManager = null;
-            //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
+                //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
 
         }
 
@@ -1539,6 +1553,7 @@ namespace PlagueEngine.Tools
 
                 renderer.CurrentCamera = linkedCamera.cameraComponent;
                 cameraType = typeof(LinkedCamera);
+                
                 linkedCamera.keyboardListenerComponent.Active = true;
                 linkedCamera.mouseListenerComponent.Active = true;
                 freeCamera.keyboardListenerComponent.Active = false;
@@ -1552,7 +1567,7 @@ namespace PlagueEngine.Tools
 
                 }
                 linkedCamera.mercenariesManager = (MercenariesManager)level.GameObjects[id];
-            //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
+                //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
         }
 
 
@@ -1574,6 +1589,8 @@ namespace PlagueEngine.Tools
                     button3.Text = "Switch to freeCamera";
                 }
             }
+
+            LoadAllObjectsId();
 
         }
 

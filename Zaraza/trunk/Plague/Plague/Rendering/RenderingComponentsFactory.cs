@@ -51,7 +51,7 @@ namespace PlagueEngine.Rendering
         {
             CameraComponent result = new CameraComponent(gameObject, renderer, fov, zNear, zFar);
             
-            renderer.CurrentCamera = result;
+            //renderer.CurrentCamera = result;
             
             return result;
         }                            

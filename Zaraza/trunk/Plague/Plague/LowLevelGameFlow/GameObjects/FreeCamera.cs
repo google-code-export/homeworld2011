@@ -74,7 +74,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          KeyboardListenerComponent  keyboardListenerComponent,
                          MouseListenerComponent     mouseListenerComponent,
                          float                      movementSpeed,
-                         float                      rotationSpeed)
+                         float                      rotationSpeed,
+                         bool                       current)
         {
             this.cameraComponent            = cameraComponent;
             this.keyboardListenerComponent  = keyboardListenerComponent;
@@ -94,6 +95,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.mouseListenerComponent.SubscribeKeys     (OnMouseKey,  MouseKeyAction.RightClick,MouseKeyAction.LeftClick);
             this.mouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
+
+            if (current) cameraComponent.SetAsCurrent();
 
             cameraComponent.ForceUpdate();
         }
@@ -403,9 +406,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (ray.Intersects(mesh.BoundingBox) != null)
                         {
-
+                            if(!PickedObjects.Keys.Contains(mesh.GameObject.ID))
+                            {
                             PickedObjects.Add(mesh.GameObject.ID, Vector3.Distance(this.World.Translation, mesh.GameObject.World.Translation));
-
+                            }
 
                         }
                     }
@@ -413,10 +417,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             if (ray.Intersects(mesh2.BoundingBox) != null)
                             {
-                                //this.Broadcast(new LowLevelGameFlow.GameObjectClicked(mesh2.GameObject.ID));
-                                //selectedGameObject = mesh2.GameObject;
-                               PickedObjects.Add(mesh2.GameObject.ID,Vector3.Distance(this.World.Translation,mesh2.GameObject.World.Translation));
-                       
+                                if (!PickedObjects.Keys.Contains(mesh2.GameObject.ID))
+                                {
+                                    PickedObjects.Add(mesh2.GameObject.ID, Vector3.Distance(this.World.Translation, mesh2.GameObject.World.Translation));
+                                }
                             }
                         }
                    
@@ -535,6 +539,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ActiveKeyListener   = this.keyboardListenerComponent.Active;
             data.ActiveMouseListener = this.mouseListenerComponent.Active;
 
+            if (cameraComponent.Renderer.CurrentCamera != null)
+            {
+                if (this.cameraComponent.Renderer.CurrentCamera.Equals(this.cameraComponent))
+                {
+
+                    data.CurrentCamera = true;
+                }
+                else
+                {
+                    data.CurrentCamera = false;
+                }
+            }
+            else
+            {
+                data.CurrentCamera = false;
+            }
             return data;
         }
         /****************************************************************************/
@@ -584,7 +604,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool ActiveKeyListener { set; get; }
         [CategoryAttribute("Input")]
         public bool ActiveMouseListener { set; get; }
-
+        [CategoryAttribute("Misc")]
+        public bool CurrentCamera { set; get; }
     }
 
     /********************************************************************************/
