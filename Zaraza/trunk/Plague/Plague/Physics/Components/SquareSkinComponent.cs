@@ -90,11 +90,8 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
 
-            Vector3 tr = Vector3.Zero;
-            tr.X = translation.X - (length / 2);
-            tr.Y = translation.X - (length / 2);
-            tr.Z = translation.Z - (width / 2);
-            dummyWorld.Translation += tr;
+
+            dummyWorld.Translation += translation;
 
             Box box = new Box(dummyWorld.Translation, dummyWorld, new Vector3(length, height, width));
 

@@ -360,7 +360,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 float dist;
                 Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
 
-                if (skin != null)
+                if (skin != null && skin.ExternalData!=null)
                 {
                     if ((skin.ExternalData as GameObjectInstance).Status != GameObjectStatus.Nothing)
                     {
@@ -470,24 +470,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction1 * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
                         if (skin != null)
                         {
-                            if (useCommands)
+                            if (skin.ExternalData != null)
                             {
-                                switch (((GameObjectInstance)skin.ExternalData).Status)
+                                if (useCommands)
                                 {
-                                    case GameObjectStatus.Interesting:  cursor = "QuestionMark"; break;
-                                    case GameObjectStatus.Pickable:     cursor = "Hand";         break;
-                                    case GameObjectStatus.Targetable:   cursor = "Target";       break;
-                                    case GameObjectStatus.Walk:         cursor = "Footsteps";    break;
-                                    case GameObjectStatus.Mercenary:    cursor = "Person";       break;
-                                    default:                            cursor = "Default";      break;
+
+                                    switch (((GameObjectInstance)skin.ExternalData).Status)
+                                    {
+                                        case GameObjectStatus.Interesting: cursor = "QuestionMark"; break;
+                                        case GameObjectStatus.Pickable: cursor = "Hand"; break;
+                                        case GameObjectStatus.Targetable: cursor = "Target"; break;
+                                        case GameObjectStatus.Walk: cursor = "Footsteps"; break;
+                                        case GameObjectStatus.Mercenary: cursor = "Person"; break;
+                                        default: cursor = "Default"; break;
+                                    }
+
                                 }
-                            }
-                            else
-                            {
-                                switch (((GameObjectInstance)skin.ExternalData).Status)
+                                else
                                 {
-                                    case GameObjectStatus.Mercenary: cursor = "Person";  break;
-                                    default:                         cursor = "Default"; break;
+                                    switch (((GameObjectInstance)skin.ExternalData).Status)
+                                    {
+                                        case GameObjectStatus.Mercenary: cursor = "Person"; break;
+                                        default: cursor = "Default"; break;
+                                    }
                                 }
                             }
                         }
