@@ -116,6 +116,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     body.DisableBody();
 
                 }
+                else if (typeof(CollisionSkinComponent).IsAssignableFrom(field.GetType()))
+                {
+                    CollisionSkinComponent body = (CollisionSkinComponent)field;
+                    body.Disable();
+
+                }
             }
         }
 
@@ -129,6 +135,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     RigidBodyComponent body = (RigidBodyComponent)field;
                     body.EnableBody();
+
+                }
+                else if (typeof(CollisionSkinComponent).IsAssignableFrom(field.GetType()))
+                {
+                    CollisionSkinComponent body = (CollisionSkinComponent)field;
+                    body.Enable();
 
                 }
             }

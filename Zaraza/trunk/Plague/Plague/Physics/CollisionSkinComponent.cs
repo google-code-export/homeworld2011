@@ -26,13 +26,13 @@ namespace PlagueEngine.Physics
         /// Fields
         /****************************************************************************/
         protected CollisionSkin skin = null;
-        private MaterialProperties material;
+        protected MaterialProperties material;
         private bool isEnabled = false;
         internal static PhysicsManager physicsManager = null;
-        private Vector3 translation = Vector3.Zero;
-        private float yaw;
-        private float pitch;
-        private float roll;
+        protected Vector3 translation = Vector3.Zero;
+        protected float yaw;
+        protected float pitch;
+        protected float roll;
 
         private Dictionary<GameObjectInstance, int> gameObjectsCollisionInFrame = new Dictionary<GameObjectInstance, int>();
         private Dictionary<GameObjectInstance, int> gameObjectsCollisionInPrevFrame = new Dictionary<GameObjectInstance, int>();
@@ -69,12 +69,17 @@ namespace PlagueEngine.Physics
             this.roll = roll;
             physicsManager.collisionSkins.Add(gameObject.ID,this);
 
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
+
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
         }
         /****************************************************************************/
 
 
+        protected virtual void SetSkin(Matrix world)
+        {
 
+        }
 
         /****************************************************************************/
         /// Handle Collision Detection
@@ -456,7 +461,17 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void Enable()
         {
+
+            SetSkin(gameObject.World);
+            if (physicsManager.collisionSkins.ContainsValue(this))
+            {
+                physicsManager.collisionSkins.Remove(this.gameObject.ID); ;
+            }
+            physicsManager.collisionSkins.Add(gameObject.ID, this);
+
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
+            skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
+
             isEnabled = true;
         }
         /****************************************************************************/
@@ -467,6 +482,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void Disable()
         {
+            physicsManager.collisionSkins.Remove(gameObject.ID);
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(skin);
             isEnabled = false;
         }

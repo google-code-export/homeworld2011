@@ -141,6 +141,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             RequiresUpdate = true;
 
             Items = new Dictionary<IStorable, ItemPosition>();
+
         }
         /****************************************************************************/
 
@@ -173,7 +174,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
 
                 receiver = sender as IEventsReceiver;
-
                 target = moveToPointCommandEvent.point;
                 moving = 1;
             }

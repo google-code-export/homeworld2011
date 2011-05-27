@@ -62,6 +62,17 @@ namespace PlagueEngine.Physics.Components
             this.height = height;
 
 
+            SetSkin(world);
+
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
+        }
+        /****************************************************************************/
+
+
+        protected override void SetSkin(Matrix world)
+        {
+            skin = new CollisionSkin();
+
             Matrix dummyWorld = world;
 
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
@@ -79,17 +90,19 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
 
-            skinTranslation.X -= length / 2;
-            skinTranslation.Y -= height / 2;
-            skinTranslation.Z -= width / 2;
-            dummyWorld.Translation += skinTranslation;
-            
+            Vector3 tr = Vector3.Zero;
+            tr.X = translation.X - (length / 2);
+            tr.Y = translation.X - (length / 2);
+            tr.Z = translation.Z - (width / 2);
+            dummyWorld.Translation += tr;
+
             Box box = new Box(dummyWorld.Translation, dummyWorld, new Vector3(length, height, width));
 
             Skin.AddPrimitive(box, material);
-            Enable();
+
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
+            
         }
-        /****************************************************************************/
 
 
         /****************************************************************************/
