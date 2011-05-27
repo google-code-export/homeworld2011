@@ -55,6 +55,24 @@ namespace PlagueEngine.Physics
     /****************************************************************************/
 
 
+    /****************************************************************************/
+    /// Start Collision Event
+    /****************************************************************************/
+    class StartCollisionEvent : EventArgs
+    {
+        public GameObjectInstance gameObject = null;
+
+        public StartCollisionEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+
+        public override string ToString()
+        {
+            return "Start Collision with gameObject ID :" + gameObject.ID;
+        }
+    };
+    /****************************************************************************/
 
 
     /********************************************************************************/
