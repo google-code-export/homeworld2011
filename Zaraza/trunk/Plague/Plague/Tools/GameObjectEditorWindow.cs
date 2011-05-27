@@ -1512,11 +1512,12 @@ namespace PlagueEngine.Tools
         {
                 int id = 0;
                 TreeNode[] nodes;
+                MercenariesManager mercManager;
             if (linkedCamera == null)
             {
                 Vector3 pos=renderer.CurrentCamera.Position;
 
-                MercenariesManager mercManager;
+               
                 id = 0;
                 nodes = treeView1.Nodes.Find("MercenariesManager", false);
                 if (nodes.GetLength(0) != 0)
@@ -1543,12 +1544,8 @@ namespace PlagueEngine.Tools
                 linkedCamera = (LinkedCamera)(level.GameObjectsFactory.Create(lcdata));
                 if (mercManager != null)
                 {
-                    (mercManager as MercenariesManager).LinkedCamera = linkedCamera;
+                    mercManager.LinkedCamera = linkedCamera;
                 }
-
-
-
-               
 
             }
 
@@ -1567,8 +1564,14 @@ namespace PlagueEngine.Tools
                     id = int.Parse(nodes[0].Nodes[0].Text);
 
                 }
-                linkedCamera.mercenariesManager = (MercenariesManager)level.GameObjects[id];
-                //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
+                mercManager = (MercenariesManager)level.GameObjects[id];
+            
+                linkedCamera.mercenariesManager = mercManager;
+                if (mercManager != null)
+                {
+                    mercManager.LinkedCamera = linkedCamera;
+                }
+            //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
         }
 
 
