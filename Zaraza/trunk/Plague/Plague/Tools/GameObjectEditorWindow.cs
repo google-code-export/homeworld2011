@@ -1459,12 +1459,12 @@ namespace PlagueEngine.Tools
             }
             else
             {
-                if (linkedCamera != null && renderer.CurrentCamera!=null && !renderer.CurrentCamera.Equals(linkedCamera))
+                if (linkedCamera != null && renderer.CurrentCamera != null && renderer.CurrentCamera.Equals(linkedCamera.cameraComponent))
                 {
                     button3.Text = "Switch to freeCamera";
                     cameraType = typeof(LinkedCamera);
                 }
-                else if (freeCamera != null && renderer.CurrentCamera != null && !renderer.CurrentCamera.Equals(freeCamera))
+                else if (freeCamera != null && renderer.CurrentCamera != null && renderer.CurrentCamera.Equals(freeCamera.cameraComponent))
                 {
                     button3.Text = "Switch to linkedCamera";
                     cameraType = typeof(FreeCamera);

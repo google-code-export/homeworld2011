@@ -463,6 +463,7 @@ namespace PlagueEngine.Physics
         {
 
             SetSkin(gameObject.World);
+            skin.ExternalData = this.gameObject;
             if (physicsManager.collisionSkins.ContainsValue(this))
             {
                 physicsManager.collisionSkins.Remove(this.gameObject.ID); ;

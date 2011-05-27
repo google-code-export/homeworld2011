@@ -84,9 +84,7 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
 
-            Vector3 tr = Vector3.Zero;
-            tr.Z = translation.Z - (radius / 2);
-            dummyWorld.Translation += tr;
+            dummyWorld.Translation += translation;
 
 
 

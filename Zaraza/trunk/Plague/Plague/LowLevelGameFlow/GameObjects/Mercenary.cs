@@ -289,6 +289,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
         {
+            
+
             SoundEffectComponent.SetPosiotion(World.Translation);
             if (moving == 1)
             {
