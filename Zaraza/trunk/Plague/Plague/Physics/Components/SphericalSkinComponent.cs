@@ -55,6 +55,14 @@ namespace PlagueEngine.Physics.Components
         {
 
             this.radius = radius;
+            SetSkin(world);
+            Enable();
+        }
+        /****************************************************************************/
+
+
+        protected override void SetSkin(Matrix world)
+        {
             body = new Body();
             skin = new CollisionSkin(body);
             skin.ExternalData = gameObject;
@@ -63,16 +71,18 @@ namespace PlagueEngine.Physics.Components
             Matrix dummyWorld = world;
 
 
-            dummyWorld.Translation += skinTranslation;
+            dummyWorld.Translation += translation;
 
             Sphere sphere = new Sphere(Vector3.Zero, radius);
 
             Skin.AddPrimitive(sphere, material);
             body.MoveTo(dummyWorld.Translation, dummyWorld);
             body.EnableBody();
-            Enable();
+
+
+            
+
         }
-        /****************************************************************************/
 
 
         /****************************************************************************/

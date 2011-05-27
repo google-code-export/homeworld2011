@@ -55,6 +55,18 @@ namespace PlagueEngine.Physics.Components
             this.radius = radius;
             this.length = length;
 
+            SetSkin(world);
+
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
+        }
+        /****************************************************************************/
+
+
+
+        protected override void SetSkin(Matrix world)
+        {
+            skin = new CollisionSkin();
+
             Matrix dummyWorld = world;
 
             Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
@@ -72,9 +84,10 @@ namespace PlagueEngine.Physics.Components
             dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
             dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
 
-     
-            skinTranslation.Z -= radius / 2;
-            dummyWorld.Translation += skinTranslation;
+            Vector3 tr = Vector3.Zero;
+            tr.Z = translation.Z - (radius / 2);
+            dummyWorld.Translation += tr;
+
 
 
             float sideLength = 2.0f * radius / (float)Math.Sqrt(2.0d);
@@ -84,14 +97,14 @@ namespace PlagueEngine.Physics.Components
             Box supply0 = new Box(dummyWorld.Translation + sides, dummyWorld, new Vector3(sideLength, sideLength, length));
 
             Box supply1 = new Box(dummyWorld.Translation + Vector3.Transform(sides, Matrix.CreateRotationZ(MathHelper.PiOver4)),
-                Matrix.CreateRotationZ(MathHelper.PiOver4)*dummyWorld, new Vector3(sideLength, sideLength, length));
+                Matrix.CreateRotationZ(MathHelper.PiOver4) * dummyWorld, new Vector3(sideLength, sideLength, length));
 
-            Box supply2 = new Box(dummyWorld.Translation +Vector3.Transform(sides, Matrix.CreateRotationZ(MathHelper.PiOver4/2)),
-              Matrix.CreateRotationZ(MathHelper.PiOver4/2)* dummyWorld , new Vector3(sideLength, sideLength, length));
+            Box supply2 = new Box(dummyWorld.Translation + Vector3.Transform(sides, Matrix.CreateRotationZ(MathHelper.PiOver4 / 2)),
+              Matrix.CreateRotationZ(MathHelper.PiOver4 / 2) * dummyWorld, new Vector3(sideLength, sideLength, length));
 
 
             Box supply3 = new Box(dummyWorld.Translation + Vector3.Transform(sides, Matrix.CreateRotationZ(-MathHelper.PiOver4 / 2)),
-            Matrix.CreateRotationZ(-MathHelper.PiOver4 / 2)* dummyWorld, new Vector3(sideLength, sideLength, length));
+            Matrix.CreateRotationZ(-MathHelper.PiOver4 / 2) * dummyWorld, new Vector3(sideLength, sideLength, length));
 
 
             Skin.AddPrimitive(supply3, material);
@@ -99,16 +112,9 @@ namespace PlagueEngine.Physics.Components
             Skin.AddPrimitive(supply0, material);
             Skin.AddPrimitive(supply1, material);
 
-         
-            Enable();
 
 
         }
-        /****************************************************************************/
-
-
-
-
 
 
         /****************************************************************************/

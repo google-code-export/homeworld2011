@@ -89,7 +89,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
+ 
         /****************************************************************************/
         /// Handle Collision Detection
         /****************************************************************************/
@@ -97,10 +97,10 @@ namespace PlagueEngine.Physics
         {
             if (!((GameObjectInstance)(collidee.ExternalData) == null))
             {
-
+               
                 if (subscribedGameObjectTypesCollisionsEvents.Count != 0)
                 {
-                    Diagnostics.PushLog("A");
+                    
                 }
                 if (!gameObjectsCollisionInFrame.ContainsKey((GameObjectInstance)(collidee.ExternalData)))
                 {
