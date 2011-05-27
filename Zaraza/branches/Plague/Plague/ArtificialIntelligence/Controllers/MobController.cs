@@ -17,9 +17,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public MobController(LivingBeing person, float rotationSpeed,
                          float movingSpeed,
                          float distance,
-                         float angle)
+                         float angle) : base(person)
         {
-            this.GameObject = person;
             this.rotationSpeed = rotationSpeed;
             this.movingSpeed = movingSpeed;
             this.distance = distance;
@@ -50,20 +49,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             return false;
         }
 
-        private void takeDamageEvent(EventArgs e)
-        {
-            TakeDamage evtArg = e as TakeDamage;
-            if(this.GameObject.HP < evtArg.amount)
-            {
-                this.GameObject.HP = 0;
-                this.GameObject.SendEvent(new EnemyKilled(this.GameObject), Priority.Normal, ai);
-            }
-            else
-            {
-                this.GameObject.HP -= (uint) evtArg.amount;
-            }
- 	        
-        }
+        
 
         private void engageEvent(EventArgs e)
         {

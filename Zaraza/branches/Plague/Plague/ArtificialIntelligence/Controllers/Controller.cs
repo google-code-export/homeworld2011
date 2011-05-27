@@ -12,7 +12,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     abstract class Controller
     {
-
+        static public AI ai { get; set; }
         public LivingBeing GameObject { get; protected set; }
         protected GameObjectInstance objectTarget;
         protected TacticalAction action;
@@ -22,6 +22,17 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         protected float movingSpeed = 0;
         protected float distance = 0;
         protected float anglePrecision = 0;
+
+        protected List<Attack> availableAttacks;
+        protected Attack currentAttack;
+
+        protected LivingBeing attackTarget;
+
+        public Controller(LivingBeing lb)
+        {
+            this.GameObject = lb;
+            Controller.ai.addController(this);
+        }
 
         /****************************************************************************/
         /// VIRTUAL
@@ -82,6 +93,20 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
         }
 
+        protected void takeDamageEvent(EventArgs e)
+        {
+            TakeDamage evtArg = e as TakeDamage;
+            if (this.GameObject.HP < evtArg.amount)
+            {
+                this.GameObject.HP = 0;
+                this.GameObject.SendEvent(new EnemyKilled(this.GameObject), Priority.Normal, ai);
+            }
+            else
+            {
+                this.GameObject.HP -= (uint)evtArg.amount;
+            }
+
+        }
         /****************************************************************************/
         /// ACTIONS HANDLING
         /****************************************************************************/
@@ -218,5 +243,31 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             GameObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
         }
 
+        protected void Engage()
+        {
+            if (attackTarget != null)
+            {
+                double currentDistance = Vector2.Distance(new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Z),
+                                     new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Z));
+
+                if (currentDistance > currentAttack.minAttackDistance)
+                {
+                    target = attackTarget.World.Translation;
+                }
+                else
+                {
+                    Attack();
+                }
+            }
+        }
+
+        protected void Attack()
+        {
+            GameObject.SendEvent();
+        }
+
+        protected void AttackIdle()
+        {
+        }
     }
 }

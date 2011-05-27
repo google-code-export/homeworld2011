@@ -152,6 +152,7 @@
     <Compile Include="ArtificialIntelligence\AI.cs" />
     <Compile Include="ArtificialIntelligence\AIController.cs" />
     <Compile Include="ArtificialIntelligence\AIFactory.cs" />
+    <Compile Include="ArtificialIntelligence\Controllers\Attack.cs" />
     <Compile Include="ArtificialIntelligence\Controllers\Controller.cs" />
     <Compile Include="ArtificialIntelligence\Controllers\MercenaryController.cs" />
     <Compile Include="ArtificialIntelligence\Controllers\MobController.cs" />
