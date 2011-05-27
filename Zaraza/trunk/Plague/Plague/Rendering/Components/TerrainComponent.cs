@@ -79,7 +79,7 @@ namespace PlagueEngine.Rendering.Components
 
             vertexCount    = segments * segments;
             indexCount     = (segments - 1) * (segments - 1) * 6;
-            trianglesCount = segments * segments * 2;
+            trianglesCount = indexCount/3;
 
             SetEffect();
         }
