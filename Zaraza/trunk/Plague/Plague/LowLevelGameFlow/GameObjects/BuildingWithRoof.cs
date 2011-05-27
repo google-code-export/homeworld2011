@@ -24,20 +24,43 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public MeshComponent mesh2;
 
         public SquareSkinComponent body;
+        bool mercInside = false;
         /********************************************************************************/
 
 
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(MeshComponent mesh,MeshComponent mesh2, SquareSkinComponent physcisComponent)
+        public void Init(MeshComponent mesh, MeshComponent mesh2, SquareSkinComponent physcisComponent)
         {
             this.mesh = mesh;
             this.mesh2 = mesh2;
             this.body = physcisComponent;
+
+
+            this.body.SubscribeCollisionEvent(typeof(Mercenary));
+            this.body.SubscribeLostCollisionEvent(typeof(Mercenary));
+            this.body.DontCollideWithGameObjectsType(typeof(Mercenary));
         }
         /********************************************************************************/
 
+
+
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {
+            if (e.GetType().Equals(typeof(CollisionEvent)))
+            {
+                mesh2.Enabled = false;
+                this.body.CancelCollisionWithGameObjectsType(typeof(Mercenary));
+            }
+
+
+            if (e.GetType().Equals(typeof(LostCollisionEvent)))
+            {
+                mesh2.Enabled = true;
+                this.body.SubscribeCollisionEvent(typeof(Mercenary));
+            }
+        }
 
 
         /********************************************************************************/
@@ -139,6 +162,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("EnabledMesh")]
         public bool EnabledMesh2 { get; set; }
+
+
+
 
 
         [CategoryAttribute("Physics")]

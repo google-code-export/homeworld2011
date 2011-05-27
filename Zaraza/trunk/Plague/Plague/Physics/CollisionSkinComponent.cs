@@ -33,10 +33,12 @@ namespace PlagueEngine.Physics
         private float yaw;
         private float pitch;
         private float roll;
+
+        private Dictionary<GameObjectInstance, int> gameObjectsCollisionInFrame = new Dictionary<GameObjectInstance, int>();
+        private Dictionary<GameObjectInstance, int> gameObjectsCollisionInPrevFrame = new Dictionary<GameObjectInstance, int>();
+
         private List<Type> subscribedGameObjectTypesCollisionsEvents = new List<Type>();
         private List<Type> subscribedGameObjectTypesLostCollisionsEvents = new List<Type>();
-        private Dictionary<GameObjectInstance, Type> typesCollisionInFrame = new Dictionary<GameObjectInstance, Type>();
-        private Dictionary<GameObjectInstance, Type> typesCollisionInPrevFrame = new Dictionary<GameObjectInstance, Type>();
 
         private List<Type> gameObjectsTypeToColide = new List<Type>();
         private List<Type> gameObjectsTypeToNotColide = new List<Type>();
@@ -44,12 +46,10 @@ namespace PlagueEngine.Physics
 
         private List<int> subsribedGameObjectCollisionsEvents = new List<int>();
         private List<int> subscribedGameObjectLostCollisionsEvents = new List<int>();
-        private Dictionary<GameObjectInstance, int> gameObjectsCollisionInFrame = new Dictionary<GameObjectInstance, int>();
-        private Dictionary<GameObjectInstance, int> gameObjectsCollisionInPrevFrame = new Dictionary<GameObjectInstance, int>();
+
         private List<int> gameObjectsToColide = new List<int>();
         private List<int> gameObjectsToNotColide = new List<int>();
 
-        private int frame = 0;
         /****************************************************************************/
 
 
@@ -68,6 +68,8 @@ namespace PlagueEngine.Physics
             this.pitch = pitch;
             this.roll = roll;
             physicsManager.collisionSkins.Add(gameObject.ID,this);
+
+            skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
         }
         /****************************************************************************/
 
@@ -82,39 +84,39 @@ namespace PlagueEngine.Physics
             if (!((GameObjectInstance)(collidee.ExternalData) == null))
             {
 
-                if (subsribedGameObjectCollisionsEvents.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
+                if (!gameObjectsCollisionInFrame.ContainsKey((GameObjectInstance)(collidee.ExternalData)))
                 {
-                    if (++frame == 1)
+                    if (subsribedGameObjectCollisionsEvents.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
                     {
+                        if (!gameObjectsCollisionInFrame.ContainsKey((GameObjectInstance)(collidee.ExternalData)))
+                        {
+                            this.GameObject.SendEvent(
+                                new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
+                                EventsSystem.Priority.Normal,
+                                this.GameObject);
+
+
+                        }
+                    }
+
+
+
+
+                    if (subscribedGameObjectTypesCollisionsEvents.Contains(collidee.ExternalData.GetType()))
+                    {
+
                         this.GameObject.SendEvent(
                             new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
                             EventsSystem.Priority.Normal,
                             this.GameObject);
-                       if(!gameObjectsCollisionInFrame.ContainsKey((GameObjectInstance)(collidee.ExternalData)))
-                       {
-                           gameObjectsCollisionInFrame.Add((GameObjectInstance)(collidee.ExternalData),((GameObjectInstance)(collidee.ExternalData)).ID);
-                       }
-                    }
-                }
 
-
-
-                if (subscribedGameObjectTypesCollisionsEvents.Contains(collidee.ExternalData.GetType()))
-                {
-                    if (++frame == 1)
-                    {
-                        this.GameObject.SendEvent(
-                            new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
-                            EventsSystem.Priority.Normal,
-                            this.GameObject);
-
-                       if(!typesCollisionInFrame.ContainsKey((GameObjectInstance)(collidee.ExternalData)))
-                       {
-                           typesCollisionInFrame.Add((GameObjectInstance)(collidee.ExternalData),collidee.ExternalData.GetType());
-                       }
 
                     }
+
+                    gameObjectsCollisionInFrame.Add((GameObjectInstance)(collidee.ExternalData), ((GameObjectInstance)(collidee.ExternalData)).ID);
+
                 }
+
 
 
 
@@ -148,16 +150,16 @@ namespace PlagueEngine.Physics
 
         private void SendLostCollisionEvents()
         {
-            if (typesCollisionInPrevFrame.Count != 0)
+            if (gameObjectsCollisionInPrevFrame.Count != 0 && (subscribedGameObjectLostCollisionsEvents.Count!=0 || subscribedGameObjectTypesLostCollisionsEvents.Count!=0))
             {
-               foreach(GameObjectInstance GO in typesCollisionInPrevFrame.Keys)
+                foreach (GameObjectInstance go in gameObjectsCollisionInPrevFrame.Keys)
                 {
-                    if (!typesCollisionInFrame.ContainsKey(GO))
+                    if (!gameObjectsCollisionInFrame.ContainsKey(go))
                     {
-                        if(subscribedGameObjectTypesLostCollisionsEvents.Contains(typesCollisionInPrevFrame[GO]))
+                        if (subscribedGameObjectLostCollisionsEvents.Contains(go.ID) || subscribedGameObjectTypesLostCollisionsEvents.Contains(go.GetType()))
                         {
                             this.GameObject.SendEvent(
-                            new LostCollisionEvent(GO),
+                            new LostCollisionEvent(go),
                             EventsSystem.Priority.Normal,
                             this.GameObject);
                         }
@@ -165,28 +167,9 @@ namespace PlagueEngine.Physics
                 }
             }
 
-            typesCollisionInPrevFrame=typesCollisionInFrame;
-            typesCollisionInFrame.Clear();
 
-            if (gameObjectsCollisionInPrevFrame.Count != 0)
-            {
-               foreach(GameObjectInstance GO in gameObjectsCollisionInPrevFrame.Keys)
-                {
-                    if (!gameObjectsCollisionInFrame.ContainsKey(GO))
-                    {
-                        if(subscribedGameObjectLostCollisionsEvents.Contains(GO.ID))
-                        {
-                            this.GameObject.SendEvent(
-                            new LostCollisionEvent(GO),
-                            EventsSystem.Priority.Normal,
-                            this.GameObject);
-                        }
-                    }
-                }
-            }
-
-            gameObjectsCollisionInPrevFrame=gameObjectsCollisionInFrame;
-            gameObjectsCollisionInFrame.Clear();
+            gameObjectsCollisionInPrevFrame = gameObjectsCollisionInFrame;
+            gameObjectsCollisionInFrame = new Dictionary<GameObjectInstance, int>();
         }
 
 
@@ -315,7 +298,7 @@ namespace PlagueEngine.Physics
         {
             foreach (Type gameObjectType in gameObjectTypes)
             {
-                this.gameObjectsTypeToColide.Remove(gameObjectType);
+                this.subscribedGameObjectTypesCollisionsEvents.Remove(gameObjectType);
             }
         }
         /****************************************************************************/
@@ -399,7 +382,6 @@ namespace PlagueEngine.Physics
 
         public void Update()
         {
-            frame = 0;
             SendLostCollisionEvents();
         }
 

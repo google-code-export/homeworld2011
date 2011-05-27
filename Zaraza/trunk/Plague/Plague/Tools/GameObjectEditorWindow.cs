@@ -1436,6 +1436,7 @@ namespace PlagueEngine.Tools
                 }
             }
 
+
             TreeNode[] nodes2 = treeView1.Nodes.Find("FreeCamera", false);
             if (nodes2.GetLength(0) != 0)
             {
