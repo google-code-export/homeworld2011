@@ -24,7 +24,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public MeshComponent mesh2;
 
         public SquareSkinComponent body;
-        bool mercInside = false;
+        int mercsInside = 0;
         /********************************************************************************/
 
 
@@ -38,7 +38,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.body = physcisComponent;
 
 
-            this.body.SubscribeCollisionEvent(typeof(Mercenary));
+            this.body.SubscribeStartCollisionEvent(typeof(Mercenary));
             this.body.SubscribeLostCollisionEvent(typeof(Mercenary));
             this.body.DontCollideWithGameObjectsType(typeof(Mercenary));
         }
@@ -48,17 +48,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
-            if (e.GetType().Equals(typeof(CollisionEvent)))
+            if (e.GetType().Equals(typeof(StartCollisionEvent)))
             {
-                mesh2.Enabled = false;
-                this.body.CancelCollisionWithGameObjectsType(typeof(Mercenary));
+                mercsInside++;
             }
 
 
             if (e.GetType().Equals(typeof(LostCollisionEvent)))
             {
+                mercsInside--;
+            }
+
+
+            if (mercsInside == 0)
+            {
                 mesh2.Enabled = true;
-                this.body.SubscribeCollisionEvent(typeof(Mercenary));
+            }
+            else
+            {
+                mesh2.Enabled = false;
             }
         }
 

@@ -39,14 +39,14 @@ namespace PlagueEngine.Physics
 
         private List<Type> subscribedGameObjectTypesCollisionsEvents = new List<Type>();
         private List<Type> subscribedGameObjectTypesLostCollisionsEvents = new List<Type>();
-
-        private List<Type> gameObjectsTypeToColide = new List<Type>();
-        private List<Type> gameObjectsTypeToNotColide = new List<Type>();
-
-
+        private List<Type> subscribedGameObjectTypesStartCollisionEvents = new List<Type>();
+        private List<int> subsribedGameObjectStartCollisionEvents = new List<int>();
         private List<int> subsribedGameObjectCollisionsEvents = new List<int>();
         private List<int> subscribedGameObjectLostCollisionsEvents = new List<int>();
 
+
+        private List<Type> gameObjectsTypeToColide = new List<Type>();
+        private List<Type> gameObjectsTypeToNotColide = new List<Type>();
         private List<int> gameObjectsToColide = new List<int>();
         private List<int> gameObjectsToNotColide = new List<int>();
 
@@ -148,9 +148,9 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-        private void SendLostCollisionEvents()
+        private void SendCollisionEvents()
         {
-            if (gameObjectsCollisionInPrevFrame.Count != 0 && (subscribedGameObjectLostCollisionsEvents.Count!=0 || subscribedGameObjectTypesLostCollisionsEvents.Count!=0))
+            if (gameObjectsCollisionInPrevFrame.Count != 0 && (subscribedGameObjectLostCollisionsEvents.Count != 0 || subscribedGameObjectTypesLostCollisionsEvents.Count != 0))
             {
                 foreach (GameObjectInstance go in gameObjectsCollisionInPrevFrame.Keys)
                 {
@@ -167,10 +167,75 @@ namespace PlagueEngine.Physics
                 }
             }
 
-
+            if (gameObjectsCollisionInFrame.Count != 0 && (subsribedGameObjectStartCollisionEvents.Count != 0 || subscribedGameObjectTypesStartCollisionEvents.Count != 0))
+            {
+                foreach (GameObjectInstance go in gameObjectsCollisionInFrame.Keys)
+                {
+                    if (!gameObjectsCollisionInPrevFrame.ContainsKey(go))
+                    {
+                        if (subsribedGameObjectStartCollisionEvents.Contains(go.ID) || subscribedGameObjectTypesStartCollisionEvents.Contains(go.GetType()))
+                        {
+                            this.GameObject.SendEvent(
+                            new StartCollisionEvent(go),
+                            EventsSystem.Priority.Normal,
+                            this.GameObject);
+                        }
+                    }
+                }
+            }
             gameObjectsCollisionInPrevFrame = gameObjectsCollisionInFrame;
             gameObjectsCollisionInFrame = new Dictionary<GameObjectInstance, int>();
+        
         }
+
+
+
+        /****************************************************************************/
+        /// Subscribe Start Collision Event
+        /****************************************************************************/
+        public void SubscribeStartCollisionEvent(params Type[] gameObjectTypes)
+        {
+            this.subscribedGameObjectTypesStartCollisionEvents.AddRange(gameObjectTypes);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Subscribe Start Collision Event
+        /****************************************************************************/
+        public void SubscribeStartCollisionEvent(params int[] gameObjects)
+        {
+            this.subsribedGameObjectStartCollisionEvents.AddRange(gameObjects);
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Cancel Subscribe Start Collision Event
+        /****************************************************************************/
+        public void CancelSubscribeStartCollisionEvent(params Type[] gameObjectTypes)
+        {
+            foreach (Type gameObjectType in gameObjectTypes)
+            {
+                this.subscribedGameObjectTypesStartCollisionEvents.Remove(gameObjectType);
+            }
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Cancel Subscribe Start Collision Event
+        /****************************************************************************/
+        public void CancelSubscribeStartCollisionEvent(params int[] gameObjects)
+        {
+            foreach (int gameObject in gameObjects)
+            {
+                this.subsribedGameObjectStartCollisionEvents.Remove(gameObject);
+            }
+        }
+        /****************************************************************************/
 
 
 
@@ -382,7 +447,7 @@ namespace PlagueEngine.Physics
 
         public void Update()
         {
-            SendLostCollisionEvents();
+            SendCollisionEvents();
         }
 
 
