@@ -27,6 +27,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         MeshComponent       mesh = null;
         SquareBodyComponent body = null;
+        public int ammoPerShot { get; set; }
         /****************************************************************************/
 
 
