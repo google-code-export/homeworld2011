@@ -723,7 +723,8 @@ namespace PlagueEngine.LowLevelGameFlow
             result.Init(renderingComponentsFactory.CreateSunlightComponent(result,
                                                                            data.Diffuse,
                                                                            data.Intensity,
-                                                                           data.Enabled));
+                                                                           data.Enabled,
+                                                                           data.DepthBias));
 
             return true;
         }

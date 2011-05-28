@@ -257,9 +257,13 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw Depth
         /****************************************************************************/
-        public void DrawDepth(Matrix ViewProjection, BoundingFrustum frustrum, Vector3 LightPosition, float depthPrecision)
+        public void DrawDepth(Matrix ViewProjection, BoundingFrustum frustrum, Vector3 LightPosition, float depthPrecision,bool directional)
         {
-            skinningEffect.CurrentTechnique = skinningEffect.Techniques["DepthWrite"];
+            if(directional) 
+                skinningEffect.CurrentTechnique = skinningEffect.Techniques["DepthWrite2"];
+            else
+                skinningEffect.CurrentTechnique = skinningEffect.Techniques["DepthWrite"];
+
             skinningEffect.Parameters["ViewProjection"].SetValue(ViewProjection);
             skinningEffect.Parameters["CameraPosition"].SetValue(LightPosition);
             skinningEffect.Parameters["DepthPrecision"].SetValue(depthPrecision);

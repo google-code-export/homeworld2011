@@ -65,11 +65,11 @@ namespace PlagueEngine.Rendering
         /**********************/
         // Specials
         /**********************/
-        private  Color   clearColor = Color.FromNonPremultiplied(new Vector4(1.0f,0.0f,0.0f,1));
-        private  Vector3 ambient    = new Vector3(0.1f, 0.1f, 0.1f);
+        private  Color   clearColor = Color.FromNonPremultiplied(new Vector4(0.015f,0.015f,0.015f,1));
+        private  Vector3 ambient    = new Vector3(0.015f, 0.015f, 0.015f);
         private  Vector3 fogColor   = new Vector3(0.0f, 0.0f, 0.5f);
-        private  Vector2 fogRange   = new Vector2(0.99f, 1.0f);
-        private  bool    fogEnabled = false;
+        private  Vector2 fogRange   = new Vector2(0.995f, 1.0f);
+        private  bool    fogEnabled = true;
         /**********************/
 
 
@@ -373,11 +373,7 @@ namespace PlagueEngine.Rendering
             Matrix InverseViewProjection = currentCamera.InverseViewProjection;
             BoundingFrustum Frustrum = currentCamera.Frustrum;
 
-            //RasterizerState r = new RasterizerState();
-            //r.FillMode = FillMode.WireFrame;
-            //Device.RasterizerState = r;
             Render(ref CameraPosition, ref View, ref Projection, ref ViewProjection, Frustrum);
-//            Device.RasterizerState = new RasterizerState();
 
             lightsManager.RenderShadows(Frustrum);
 
@@ -407,11 +403,11 @@ namespace PlagueEngine.Rendering
 
             //Device.SetRenderTarget(null);
 
-            //debugEffect.Parameters["Texture"].SetValue(color);
+            //debugEffect.Parameters["Texture"].SetValue(normal);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topLeft.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(lightsManager.shadowMap);
+            //debugEffect.Parameters["Texture"].SetValue(lightsManager.sunlightShadowMap);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topRight.Draw();
 

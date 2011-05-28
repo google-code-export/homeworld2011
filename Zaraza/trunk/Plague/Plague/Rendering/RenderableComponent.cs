@@ -67,7 +67,7 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw Depth
         /****************************************************************************/
-        public abstract void DrawDepth(ref Matrix ViewProjection, ref Vector3 LightPosition,float depthPrecision);      
+        public abstract void DrawDepth(ref Matrix ViewProjection, ref Vector3 LightPosition,float depthPrecision,bool directional);      
         /****************************************************************************/
 
 
