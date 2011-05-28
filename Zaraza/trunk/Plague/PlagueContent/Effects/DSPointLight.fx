@@ -127,7 +127,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
 	input.ScreenPosition.xy /= input.ScreenPosition.w;
 	float2 UV = 0.5f * (float2(input.ScreenPosition.x,-input.ScreenPosition.y) + 1.0f);
-	UV -= HalfPixel;
+	UV += HalfPixel;
 
 	float4 NormalData = tex2D(GBufferNormalSampler,UV);
 	float3 Normal = 2.0f * NormalData.xyz - 1.0f;

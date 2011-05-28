@@ -896,10 +896,10 @@ namespace PlagueEngine.LowLevelGameFlow
         public bool CreateGlowStick(GlowStick result, GlowStickData data)
         {
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       "GlowStick",
+                                                                       "Misc\\GlowStick",
                                                                        data.Texture,
-                                                                       "GlowStick_Specular",
-                                                                       "GlowStick_Normals",
+                                                                       "Misc\\GlowStick_Specular",
+                                                                       "Misc\\GlowStick_Normals",
                                                                        Renderer.UIntToInstancingMode(data.InstancingMode),
                                                                        data.EnabledMesh),
                         
@@ -977,9 +977,9 @@ namespace PlagueEngine.LowLevelGameFlow
             Matrix spotlighttrans = Matrix.CreateLookAt(new Vector3(-0.02f, -0.02f, 0.35f), new Vector3(-0.02f, -1, 0.35f), Vector3.Right);
 
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       "flashlight",
-                                                                       "flashlightdiff",
-                                                                       "flashlightspec",
+                                                                       "Misc\\flashlight",
+                                                                       "Misc\\flashlightdiff",
+                                                                       "Misc\\flashlightspec",
                                                                        String.Empty,
                                                                        Renderer.UIntToInstancingMode(data.InstancingMode),
                                                                        data.EnabledMesh),

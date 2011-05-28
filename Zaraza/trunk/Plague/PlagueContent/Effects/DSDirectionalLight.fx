@@ -84,7 +84,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
     VertexShaderOutput output;
 
     output.Position = float4(input.Position, 1);
-	output.UV		= input.UV - HalfPixel;
+	output.UV		= input.UV + HalfPixel;
 
     return output;
 }
