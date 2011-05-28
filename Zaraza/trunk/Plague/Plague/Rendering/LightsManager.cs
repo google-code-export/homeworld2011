@@ -29,7 +29,8 @@ namespace PlagueEngine.Rendering
         private RenderTarget2D     depth           = null;
         private RenderTarget2D     light           = null;
         internal RenderTarget2D shadowMapBlur = null;
-        internal RenderTarget2D shadowMap = null;        
+        internal RenderTarget2D shadowMap = null;
+        internal RenderTarget2D sunlightShadowMap = null;        
 
         private PlagueEngineModel pointLightModel  = null;
         private PlagueEngineModel spotLightModel   = null;
@@ -56,9 +57,11 @@ namespace PlagueEngine.Rendering
         private int                  lastShadowCasterID = 0;
 
         private Renderer renderer = null;
+        private Matrix SunlightViewProjection;
+        private Vector3 VectorZero = Vector3.Zero;
         /****************************************************************************/
 
-
+        
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
@@ -105,6 +108,13 @@ namespace PlagueEngine.Rendering
                                            SurfaceFormat.HalfVector2,
                                            DepthFormat.Depth24);
 
+            sunlightShadowMap = new RenderTarget2D(renderer.Device,
+                                                   2048,
+                                                   2048,
+                                                   false,
+                                                   SurfaceFormat.Single,
+                                                   DepthFormat.Depth24);
+
             lightBlendState = new BlendState();
 
             lightBlendState.ColorSourceBlend      = Blend.One;
@@ -141,7 +151,9 @@ namespace PlagueEngine.Rendering
                     directionalLight.Parameters["LightDirection"].SetValue(sunlight.Direction);
                     directionalLight.Parameters["LightColor"].SetValue(sunlight.DiffuseColor);
                     directionalLight.Parameters["LightIntensity"].SetValue(sunlight.Intensity);
-
+                    directionalLight.Parameters["ShadowMap"].SetValue(sunlightShadowMap);
+                    directionalLight.Parameters["LightViewProjection"].SetValue(SunlightViewProjection);
+                    directionalLight.Parameters["DepthBias"].SetValue(sunlight.DepthBias);       
                     directionalLight.Techniques[0].Passes[0].Apply();
                     fullScreenQuad.Draw();
                 }
@@ -447,7 +459,7 @@ namespace PlagueEngine.Rendering
                 {
                     if (!renderableComponent.FrustrumInteresction(LightFrustrum)) continue;
 
-                    renderableComponent.DrawDepth(ref LightViewProjection, ref Positon, depthPrecision);
+                    renderableComponent.DrawDepth(ref LightViewProjection, ref Positon, depthPrecision,false);
                 }
                 /*********************************/
 
@@ -458,7 +470,7 @@ namespace PlagueEngine.Rendering
                 renderer.batchedMeshes.DrawDepth(LightViewProjection,
                                                  LightFrustrum,
                                                  Positon,
-                                                 depthPrecision);
+                                                 depthPrecision,false);
                 /*********************************/
 
 
@@ -468,7 +480,7 @@ namespace PlagueEngine.Rendering
                 renderer.batchedSkinnedMeshes.DrawDepth(LightViewProjection,
                                                         LightFrustrum,
                                                         Positon,
-                                                        depthPrecision);
+                                                        depthPrecision,false);
                 /*********************************/
             }
 
@@ -488,6 +500,92 @@ namespace PlagueEngine.Rendering
             fullScreenQuad.JustDraw();
             /*********************************/
 
+
+            if (sunlight != null)
+            {
+                if (sunlight.Enabled)
+                {
+                    CreateSunlightViewProjectionMatrix(-sunlight.Direction, frustrum);
+                    
+                    LightFrustrum.Matrix = SunlightViewProjection;                    
+
+                    renderer.Device.SetRenderTarget(sunlightShadowMap);
+                    renderer.Device.Clear(Color.White);
+
+
+                    /*********************************/
+                    /// Renderable Components
+                    /*********************************/
+                    foreach (RenderableComponent renderableComponent in renderer.renderableComponents)
+                    {
+                        if (!renderableComponent.FrustrumInteresction(LightFrustrum)) continue;
+
+                        renderableComponent.DrawDepth(ref SunlightViewProjection, ref VectorZero, 0, true);
+                    }
+                    /*********************************/
+
+
+                    /*********************************/
+                    /// Batched Meshes
+                    /*********************************/
+                    renderer.batchedMeshes.DrawDepth(SunlightViewProjection,
+                                                     LightFrustrum,
+                                                     VectorZero,
+                                                     0, true);
+                    /*********************************/
+
+
+                    /*********************************/
+                    /// Skinned Meshes
+                    /*********************************/
+                    renderer.batchedSkinnedMeshes.DrawDepth(SunlightViewProjection,
+                                                            LightFrustrum,
+                                                            VectorZero,
+                                                            0, true);
+                    /*********************************/
+                    
+                }
+            }
+
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateSunlightViewProjectionMatrix
+        /****************************************************************************/        
+        void CreateSunlightViewProjectionMatrix(Vector3 lightDir,BoundingFrustum frustrum)
+        {            
+            Matrix lightRotation = Matrix.CreateLookAt(Vector3.Zero,
+                                                       -lightDir,
+                                                       Vector3.Up);
+
+            Vector3[] frustumCorners = frustrum.GetCorners();
+
+            for (int i = 0; i < frustumCorners.Length; i++)
+            {
+                frustumCorners[i] = Vector3.Transform(frustumCorners[i], lightRotation);
+            }
+
+            BoundingBox lightBox = BoundingBox.CreateFromPoints(frustumCorners);
+
+            Vector3 boxSize = lightBox.Max - lightBox.Min;
+            Vector3 halfBoxSize = boxSize * 0.5f;
+
+            Vector3 lightPosition = lightBox.Min + halfBoxSize;
+            lightPosition.Z = lightBox.Min.Z;
+
+            lightPosition = Vector3.Transform(lightPosition,
+                                              Matrix.Invert(lightRotation));
+
+            Matrix lightView = Matrix.CreateLookAt(lightPosition,
+                                                   lightPosition - lightDir,
+                                                   Vector3.Up);
+
+            Matrix lightProjection = Matrix.CreateOrthographic(boxSize.X, boxSize.Y,
+                                                               -boxSize.Z * 2, 0);
+
+            SunlightViewProjection = lightView * lightProjection;
         }
         /****************************************************************************/
 

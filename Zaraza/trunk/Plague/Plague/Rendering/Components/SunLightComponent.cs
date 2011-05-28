@@ -35,14 +35,16 @@ namespace PlagueEngine.Rendering.Components
                                  Renderer           renderer,
                                  Vector3            diffuseColor,
                                  float              intensity,
-                                 bool               enabled)
+                                 bool               enabled,
+                                 float              depthBias)
             : base(gameObject)
         {
             this.gameObject     = gameObject;
             this.renderer       = renderer;
             this.diffuseColor   = diffuseColor;            
             this.enabled        = enabled;
-            Intensity           = intensity;            
+            Intensity           = intensity;
+            DepthBias           = depthBias;
         }
         /****************************************************************************/
 
@@ -63,6 +65,7 @@ namespace PlagueEngine.Rendering.Components
         public bool    Enabled       { get { return enabled;       } set { enabled       = value; } }
         public Vector3 DiffuseColor  { get { return diffuseColor;  } set { diffuseColor  = value; } }
         public float   Intensity     { get; set; }
+        public float   DepthBias     { get; set; }
 
         public Vector3 Direction     
         { 

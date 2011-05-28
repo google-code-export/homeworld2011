@@ -137,13 +137,15 @@ namespace PlagueEngine.Rendering
         public SunlightComponent CreateSunlightComponent(GameObjectInstance gameObject,
                                                          Vector3 diffuseColor,
                                                          float   intensity,
-                                                         bool    enabled)
+                                                         bool    enabled,
+                                                         float   depthBias)
         {
             SunlightComponent result = new SunlightComponent(gameObject,
                                                              renderer,
                                                              diffuseColor,
                                                              intensity,
-                                                             enabled);
+                                                             enabled,
+                                                             depthBias);
             renderer.lightsManager.sunlight = result;
             return result;
         }                                                         

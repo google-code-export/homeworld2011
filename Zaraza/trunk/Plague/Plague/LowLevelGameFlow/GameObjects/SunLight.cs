@@ -78,6 +78,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Enabled   = SunlightComponent.Enabled;
             data.Diffuse   = SunlightComponent.DiffuseColor;
             data.Intensity = SunlightComponent.Intensity;
+            data.DepthBias = SunlightComponent.DepthBias;
 
             return data;
         }
@@ -113,6 +114,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Vector3 Diffuse   { get; set; }
         [CategoryAttribute("Intensity")]
         public float   Intensity { get; set; }
+
+        [CategoryAttribute("Shadows")]
+        public float DepthBias { get; set; }
 
         [CategoryAttribute("Direction")]
         public Vector3 Direction

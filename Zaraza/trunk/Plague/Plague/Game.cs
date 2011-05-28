@@ -113,8 +113,7 @@ namespace PlagueEngine
 
             Renderer.InitHelpers();
 
-            Level.NewLevel("TestLevel.lvl");
-            Level.PutSomeObjects();
+            Level.LoadLevel("Level1.lvl");
 
             Renderer.batchedMeshes.CommitMeshTransforms();
             

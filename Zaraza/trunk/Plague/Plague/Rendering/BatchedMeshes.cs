@@ -638,9 +638,17 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Draw Depth
         /****************************************************************************/
-        public void DrawDepth(Matrix ViewProjection, BoundingFrustum frustrum, Vector3 LightPosition,float depthPrecision)
+        public void DrawDepth(Matrix ViewProjection, BoundingFrustum frustrum, Vector3 LightPosition,float depthPrecision,bool directional)
         {
-            instancingEffect.CurrentTechnique = instancingEffect.Techniques["DepthWrite"];
+            if (directional)
+            {
+                instancingEffect.CurrentTechnique = instancingEffect.Techniques["DepthWrite2"];
+            }
+            else
+            {
+                instancingEffect.CurrentTechnique = instancingEffect.Techniques["DepthWrite"];
+            }
+
             instancingEffect.Parameters["ViewProjection"].SetValue(ViewProjection);
             instancingEffect.Parameters["CameraPosition"].SetValue(LightPosition);
             instancingEffect.Parameters["DepthPrecision"].SetValue(depthPrecision);
@@ -650,8 +658,18 @@ namespace PlagueEngine.Rendering
             DrawDepth(instDiffSpec,     frustrum);
             DrawDepth(instDiffNorm,     frustrum);
             DrawDepth(instDiffSpecNorm, frustrum);
+            
 
-            noInstancingEffect.CurrentTechnique = noInstancingEffect.Techniques["DepthWrite"];
+
+            if (directional)
+            {
+                noInstancingEffect.CurrentTechnique = noInstancingEffect.Techniques["DepthWrite2"];
+            }
+            else
+            {
+                noInstancingEffect.CurrentTechnique = noInstancingEffect.Techniques["DepthWrite"];
+            }
+
             noInstancingEffect.Parameters["ViewProjection"].SetValue(ViewProjection);
             noInstancingEffect.Parameters["CameraPosition"].SetValue(LightPosition);
             noInstancingEffect.Parameters["DepthPrecision"].SetValue(depthPrecision);

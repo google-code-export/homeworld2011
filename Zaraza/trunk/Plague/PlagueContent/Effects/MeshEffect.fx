@@ -128,6 +128,17 @@ struct VSDepthWriteOuput
 
 
 /****************************************************/
+/// VSDepthWriteOutput2
+/****************************************************/
+struct VSDepthWriteOuput2
+{
+    float4 Position		  : POSITION0;	
+	float2 ScreenPosition : TEXCOORD0;
+};
+/****************************************************/
+
+
+/****************************************************/
 /// Vertex Shader Simple Function
 /****************************************************/
 VSSimpleOutput VSSimpleFunction(VSSimpleInput input)
@@ -187,6 +198,23 @@ VSDepthWriteOuput VSDepthWrite(VSDepthWriteInput input)
 	float4 worldPosition = mul(input.Position, World);
 	output.Position		 = mul(worldPosition,ViewProjection);
 	output.WorldPosition = worldPosition;
+
+    return output;
+}
+/****************************************************/
+
+
+/****************************************************/
+/// VSDepth Write2
+/****************************************************/
+VSDepthWriteOuput2 VSDepthWrite2(VSDepthWriteInput input)
+{
+    VSDepthWriteOuput2 output;
+
+	float4 worldPosition	= mul(input.Position, World);
+	output.Position			= mul(worldPosition,ViewProjection);
+	output.ScreenPosition.x = output.Position.z;
+	output.ScreenPosition.y = output.Position.w;	
 
     return output;
 }
@@ -300,6 +328,17 @@ float4 PSDepthWrite(VSDepthWriteOuput input) : COLOR0
 
 
 /****************************************************/
+/// PSDepthWrite2
+/****************************************************/
+float4 PSDepthWrite2(VSDepthWriteOuput2 input) : COLOR0
+{		
+	float depth = input.ScreenPosition.x/input.ScreenPosition.y;
+	return float4(depth,0,0,1);
+}
+/****************************************************/
+
+
+/****************************************************/
 /// Diffuse-Specular-Normal Technique
 /****************************************************/
 technique DiffuseSpecularNormalTechnique
@@ -362,8 +401,22 @@ technique DepthWrite
 {
 	pass Pass1
 	{
-		VertexShader = compile vs_3_0 VSDepthWrite();
-        PixelShader  = compile ps_3_0 PSDepthWrite();
+		VertexShader = compile vs_2_0 VSDepthWrite();
+        PixelShader  = compile ps_2_0 PSDepthWrite();
+	}
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Depth Write Technique 2
+/****************************************************/
+technique DepthWrite2
+{
+	pass Pass1
+	{
+		VertexShader = compile vs_2_0 VSDepthWrite2();
+        PixelShader  = compile ps_2_0 PSDepthWrite2();
 	}
 }
 /****************************************************/

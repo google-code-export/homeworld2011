@@ -285,7 +285,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
 
 
-        public override void DrawDepth(ref Matrix ViewProjection, ref Vector3 LightPosition, float depthPrecision)
+        public override void DrawDepth(ref Matrix ViewProjection, ref Vector3 LightPosition, float depthPrecision,bool directional)
         {
             throw new NotImplementedException();
         }
