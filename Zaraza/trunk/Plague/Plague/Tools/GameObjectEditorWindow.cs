@@ -134,7 +134,7 @@ namespace PlagueEngine.Tools
         FreeCamera freeCamera = null;
         Type cameraType;
         bool linkedFirst = true;
-
+        public bool jiglibxSelection = false;
 
         //rysowanie ikonek
         List<GameObjectInstance> icons = new List<GameObjectInstance>();
@@ -1729,6 +1729,11 @@ namespace PlagueEngine.Tools
                 moveIcon = contentManager.LoadTexture2D("moveIcon");
                 rotateIcon = contentManager.LoadTexture2D("rotateIcon");
             }
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            jiglibxSelection = checkBox4.Checked;
         }
 
 
