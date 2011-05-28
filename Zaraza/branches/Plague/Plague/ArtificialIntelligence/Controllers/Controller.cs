@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Physics;
+using PlagueEngine.TimeControlSystem;
 
 
 namespace PlagueEngine.ArtificialIntelligence.Controllers
@@ -26,13 +27,17 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         protected List<Attack> availableAttacks;
         protected Attack currentAttack;
 
+        protected Timer cooldownTimer;
         protected LivingBeing attackTarget;
 
         public Controller(LivingBeing lb)
         {
             this.GameObject = lb;
             Controller.ai.addController(this);
+            PlagueEngine.TimeControlSystem.Timer.CallbackDelegate2 deleg = new PlagueEngine.TimeControlSystem.Timer.CallbackDelegate2(this.Attack);
+            this.cooldownTimer = new Timer(new TimeSpan(), 0, deleg);
         }
+
 
         /****************************************************************************/
         /// VIRTUAL
@@ -261,13 +266,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
         }
 
-        protected void Attack()
-        {
-            GameObject.SendEvent();
-        }
+        protected abstract void Attack();
 
         protected void AttackIdle()
         {
+            //DO NOTHING?
         }
     }
 }

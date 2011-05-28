@@ -25,6 +25,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.anglePrecision = angle;
         }
 
+        
+
         override public bool OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
             if (base.OnEvent(sender, e))
@@ -51,11 +53,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         
 
-        private void engageEvent(EventArgs e)
-        {
-
-        }
-
         public override void Update(TimeSpan deltaTime)
         {
             switch (action)
@@ -66,15 +63,27 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
         }
 
+
         /****************************************************************************/
         /// ACTIONS HANDLING
         /****************************************************************************/
-        
+        protected override void  Attack()
+        {
+            TakeDamage attack = new TakeDamage(currentAttack.minInflictedDamage, this.GameObject);
+            GameObject.SendEvent(attack, EventsSystem.Priority.Normal, this.attackTarget );
+            action = TacticalAction.ATTACK_IDLE;
+            cooldownTimer.Reset(this.currentAttack.cooldown, 1);
+        }
         
 
         /****************************************************************************/
         /// EVENTS HANDLING
         /****************************************************************************/
+
+        private void engageEvent(EventArgs e)
+        {
+
+        }
 
         
 

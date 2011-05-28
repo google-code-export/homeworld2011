@@ -29,6 +29,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.anglePrecision = angle;
         }
 
+        private Firearm currentWeapon;
+        private int ammoLeft;
+
         override public bool OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
             if (base.OnEvent(sender, e))
@@ -191,6 +194,25 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             GameObject.Body.SubscribeCollisionEvent(objectTarget.ID);
         }
 
+        protected override void Attack()
+        {
+            TakeDamage attack = new TakeDamage(currentAttack.minInflictedDamage, this.GameObject);
+            GameObject.SendEvent(attack, EventsSystem.Priority.Normal, this.attackTarget);
+            ammoLeft -= currentWeapon.ammoPerShot;
+            if (ammoLeft >= currentWeapon.ammoPerShot)
+            {
+                action = TacticalAction.ATTACK_IDLE;
+            }
+            else
+            {
+                action = TacticalAction.RELOAD;
+            }
+        }
+
+        protected void Reload()
+        {
+
+        }
         /*****************************************************************************************/
     }
 }
