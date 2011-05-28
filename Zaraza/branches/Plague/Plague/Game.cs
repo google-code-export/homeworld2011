@@ -28,7 +28,8 @@ namespace PlagueEngine
         internal Input.Input               Input              { get; private set; }
         internal GameObjectsFactory        GameObjectsFactory { get; private set; }
         internal PhysicsManager            PhysicsManager     { get; private set; }
-        
+        internal ArtificialIntelligence.AI AI                 { get; private set; }
+
         internal Level Level { get; private set; }
         
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
@@ -64,6 +65,8 @@ namespace PlagueEngine
             InitRenderer();
 
             Input = new Input.Input(this, Services,Renderer.Device);
+
+            AI = new ArtificialIntelligence.AI();
 
             GUI = new GUI.GUI(Services, Input.ComponentsFactory.CreateMouseListenerComponent(null, true));
 

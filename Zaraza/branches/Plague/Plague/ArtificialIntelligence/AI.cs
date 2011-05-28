@@ -18,6 +18,7 @@ namespace PlagueEngine.ArtificialIntelligence
         {
             this.GoodGuys = new List<MercenaryController>();
             this.BadGuys  = new List<Controller>();
+            Controller.ai = this;
         }
 
         public void Initialize()

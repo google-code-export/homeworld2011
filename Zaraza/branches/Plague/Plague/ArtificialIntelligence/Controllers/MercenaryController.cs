@@ -20,7 +20,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public MercenaryController(LivingBeing person, float rotationSpeed,
                          float movingSpeed,
                          float distance,
-                         float angle)
+                         float angle):base(person)
         {
             this.GameObject = person;
             this.rotationSpeed = rotationSpeed;
