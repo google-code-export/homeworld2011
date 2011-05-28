@@ -66,7 +66,7 @@ namespace PlagueEngine.Rendering
         // Specials
         /**********************/
         private  Color   clearColor = Color.FromNonPremultiplied(new Vector4(0.015f,0.015f,0.015f,1));
-        private  Vector3 ambient    = new Vector3(0.015f, 0.015f, 0.015f);
+        private  Vector3 ambient    = new Vector3(0.15f, 0.15f, 0.15f);
         private  Vector3 fogColor   = new Vector3(0.0f, 0.0f, 0.5f);
         private  Vector2 fogRange   = new Vector2(0.995f, 1.0f);
         private  bool    fogEnabled = true;
@@ -397,7 +397,10 @@ namespace PlagueEngine.Rendering
             particleManager.DrawParticles(gameTime);
 
             DrawFrontEnd(ViewProjection);
+            
+#if DEBUG
             DrawIcons(ViewProjection);
+#endif    
             DrawRect();
 
 

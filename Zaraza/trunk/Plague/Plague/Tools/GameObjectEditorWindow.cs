@@ -489,8 +489,8 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {            
-            //try
-            //{
+            try
+            {
                 this.currentObject.Type = currentClassNameNew.ClassType;
                 currentEditGameObject=this.level.GameObjectsFactory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
@@ -506,16 +506,16 @@ namespace PlagueEngine.Tools
 
                 levelSaved = false;
 
-              
-                
-               
-            //}
-            //catch(Exception execption)
-            //{
-            //    releaseInput = false;
-            //    MessageBox.Show("That makes 100 errors \nPlease try again.\n\n"+execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    releaseInput = true;
-            //}
+
+
+
+            }
+            catch (Exception execption)
+            {
+                releaseInput = false;
+                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                releaseInput = true;
+            }
 
             LoadIconsInfo();
         }
