@@ -180,6 +180,8 @@ namespace PlagueEngine.Tools
            
             Renderer.editor = this;
             FreeCamera.editor = this;
+            setUpCameraButton();
+            LoadIconsInfo();
         }
         /********************************************************************************/
 
@@ -518,6 +520,7 @@ namespace PlagueEngine.Tools
             }
 
             LoadIconsInfo();
+            setUpCameraButton();
         }
         /********************************************************************************/
 
@@ -1134,6 +1137,7 @@ namespace PlagueEngine.Tools
             }
 
             LoadIconsInfo();
+            setUpCameraButton();
         }
 
 
@@ -1419,6 +1423,7 @@ namespace PlagueEngine.Tools
         }
         private void setUpCameraButton()
         {
+            
             TreeNode [] nodes= treeView1.Nodes.Find("LinkedCamera",false);
             if (nodes.GetLength(0) != 0)
             {
@@ -1616,7 +1621,8 @@ namespace PlagueEngine.Tools
 
         public void DrawIcons(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
-            if(cameraType==typeof(FreeCamera))
+            
+            if(renderer.CurrentCamera!=null && renderer.CurrentCamera.GameObject.GetType()==typeof(FreeCamera))
             {
             if (icons.Count != 0)
             {

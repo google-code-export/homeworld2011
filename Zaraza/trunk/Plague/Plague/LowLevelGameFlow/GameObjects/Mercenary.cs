@@ -222,6 +222,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         objectTarget = null;
                         moving = 0;
+                        body.Immovable = true;
                         Controller.StopMoving();
                         Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         SendEvent(new ActionDoneEvent(), Priority.High, receiver);
