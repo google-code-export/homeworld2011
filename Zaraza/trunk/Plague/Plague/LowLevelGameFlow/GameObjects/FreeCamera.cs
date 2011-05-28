@@ -397,34 +397,37 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 
                 if (middleButton == false && isOnWindow)
                 {
-                    //selecting
-                    foreach (iconInfo info in editor.iconInfo)
+
+                    if (!editor.jiglibxSelection)
                     {
-                        if (mouseX > info.pos.X && mouseY > info.pos.Y && mouseX < (info.pos.X + info.width) && mouseY < (info.pos.Y + info.height))
+                        //selecting
+                        foreach (iconInfo info in editor.iconInfo)
                         {
-
-                           
-
-                            PickedObjects.Add(info.goID, Vector3.Distance(this.World.Translation, editor.level.GameObjects[info.goID].World.Translation));
-                           
-                        }
-                    }
-
-                    Microsoft.Xna.Framework.Ray ray = cameraComponent.GetMouseRay(new Vector2(mouseX, mouseY));
-
-
-
-                    foreach (MeshComponent mesh in renderer.meshes)
-                    {
-                        if (ray.Intersects(mesh.BoundingBox) != null)
-                        {
-                            if(!PickedObjects.Keys.Contains(mesh.GameObject.ID))
+                            if (mouseX > info.pos.X && mouseY > info.pos.Y && mouseX < (info.pos.X + info.width) && mouseY < (info.pos.Y + info.height))
                             {
-                            PickedObjects.Add(mesh.GameObject.ID, Vector3.Distance(this.World.Translation, mesh.GameObject.World.Translation));
-                            }
 
+
+
+                                PickedObjects.Add(info.goID, Vector3.Distance(this.World.Translation, editor.level.GameObjects[info.goID].World.Translation));
+
+                            }
                         }
-                    }
+
+                        Microsoft.Xna.Framework.Ray ray = cameraComponent.GetMouseRay(new Vector2(mouseX, mouseY));
+
+
+
+                        foreach (MeshComponent mesh in renderer.meshes)
+                        {
+                            if (ray.Intersects(mesh.BoundingBox) != null)
+                            {
+                                if (!PickedObjects.Keys.Contains(mesh.GameObject.ID))
+                                {
+                                    PickedObjects.Add(mesh.GameObject.ID, Vector3.Distance(this.World.Translation, mesh.GameObject.World.Translation));
+                                }
+
+                            }
+                        }
                         foreach (SkinnedMeshComponent mesh2 in renderer.skinnedMeshes)
                         {
                             if (ray.Intersects(mesh2.BoundingBox) != null)
@@ -435,14 +438,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                             }
                         }
-                   
-                            if(PickedObjects.Count!=0)
-                            {
-                                 var sortedDict = (from entry in PickedObjects orderby entry.Value ascending select entry);
-                                 this.Broadcast(new LowLevelGameFlow.GameObjectClicked(sortedDict.ElementAt(0).Key ));
-                                 selectedGameObject = editor.level.GameObjects[sortedDict.ElementAt(0).Key];
-                            }
-                        
+
+                        if (PickedObjects.Count != 0)
+                        {
+                            var sortedDict = (from entry in PickedObjects orderby entry.Value ascending select entry);
+                            this.Broadcast(new LowLevelGameFlow.GameObjectClicked(sortedDict.ElementAt(0).Key));
+                            selectedGameObject = editor.level.GameObjects[sortedDict.ElementAt(0).Key];
+                        }
+                    }
                     //draging
                     
                     Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
@@ -450,13 +453,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     float dist;
                     bool hit = false;
                     hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
-                    //if (skin != null)
-                    //{
-                      
-                    //this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
-                            
-                        
-                    //}
+                    if (skin != null)
+                    {
+                        if (editor.jiglibxSelection)
+                        {
+                            this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
+                            selectedGameObject = editor.level.GameObjects[(int)((GameObjectInstance)skin.ExternalData).ID];
+                        }
+                    }
 
                     if (hit)
                     {
@@ -503,7 +507,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
                 if (skin != null)
                 {
-                    skin.Owner.Immovable = true;
+                    if (skin.Owner != null)
+                    {
+                        skin.Owner.Immovable = true;
+                    }
                     skin = null;
                 }
             }

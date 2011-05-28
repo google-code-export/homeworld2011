@@ -57,6 +57,7 @@
             this.buttonNew = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
             this.inputEnable = new System.Windows.Forms.CheckBox();
@@ -381,6 +382,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.checkBox4);
             this.tabPage4.Controls.Add(this.checkBox3);
             this.tabPage4.Controls.Add(this.button3);
             this.tabPage4.Controls.Add(this.inputEnable);
@@ -395,6 +397,17 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Game Properites";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Location = new System.Drawing.Point(204, 159);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(101, 17);
+            this.checkBox4.TabIndex = 12;
+            this.checkBox4.Text = "JiglibX selection";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
             // checkBox3
             // 
@@ -590,6 +603,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkBox4;
 
 
     }
