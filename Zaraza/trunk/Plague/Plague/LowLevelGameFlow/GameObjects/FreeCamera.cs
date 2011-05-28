@@ -63,7 +63,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         float a = 0.11f;
         bool pressed = false;
         GameObjectInstance selectedGameObject = null;
-
+        CollisionSkin skin = null;
         /****************************************************************************/
 
 
@@ -375,7 +375,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction,ref ExtendedMouseKeyState mouseKeyState)
         {
-
+            
 
             Dictionary<int, float> PickedObjects = new Dictionary<int, float>();
 
@@ -444,7 +444,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             }
                         
                     //draging
-                    CollisionSkin skin;
+                    
                     Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
                     Vector3 pos, nor;
                     float dist;
@@ -467,7 +467,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         camPickDistance = (cameraComponent.Position - pos).Length();
 
-
+                        skin.Owner.Immovable = false;
                         skin.Owner.SetActive();
                         objectController.Destroy();
                         damperController.Destroy();
@@ -501,6 +501,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 damperController.DisableConstraint();
                 middleButton = false;
                 this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
+                if (skin != null)
+                {
+                    skin.Owner.Immovable = true;
+                    skin = null;
+                }
             }
          
             

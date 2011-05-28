@@ -48,6 +48,7 @@ namespace PlagueEngine.Physics
             body = (BodyExtended)rigidBodyComponent.Body;
             physicsManager.controllers.Add(this);
             EnableController();
+            body.Immovable = true;
         }
         /****************************************************************************/
 
@@ -69,6 +70,7 @@ namespace PlagueEngine.Physics
         {
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
+            body.Immovable = false;
             body.DesiredVelocity = Vector3.Up * dt;
             body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
@@ -77,6 +79,7 @@ namespace PlagueEngine.Physics
         {
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
+            body.Immovable = false;
             body.DesiredVelocity = Vector3.Down * dt;
             body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
@@ -84,6 +87,7 @@ namespace PlagueEngine.Physics
         {
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
+            body.Immovable = false;
             body.DesiredVelocity = Vector3.Left * dt;
             body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
@@ -92,6 +96,7 @@ namespace PlagueEngine.Physics
         {
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
+            body.Immovable = false;
             body.DesiredVelocity = Vector3.Right * dt;
             body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
@@ -100,6 +105,7 @@ namespace PlagueEngine.Physics
         {
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
+            body.Immovable = false;
             body.DesiredVelocity = Vector3.Backward * dt;
             body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
         }
@@ -107,7 +113,7 @@ namespace PlagueEngine.Physics
         public void MoveForward(float dt)
         {
             if (!body.OrientationSetuped) body.SetUpOrientationForController();
-
+            body.Immovable = false;
             body.Controllable = true;
             body.DesiredVelocity = Vector3.Forward * dt;
             body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
@@ -122,6 +128,7 @@ namespace PlagueEngine.Physics
             //body.Controllable = false;
 
             body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
+            body.Immovable = true;
         }
 
         public bool IsControlEnabled
@@ -142,6 +149,7 @@ namespace PlagueEngine.Physics
 
         public void Rotate(float dt)
         {
+
             body.DesiredOrientation *= Matrix.CreateRotationY(MathHelper.ToRadians(dt));
 
         }
