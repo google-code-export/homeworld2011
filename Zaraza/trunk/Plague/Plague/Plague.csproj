@@ -186,6 +186,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Armor.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BuildingWithRoof.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Clip.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Compass.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DescriptionWindow.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Flashlight.cs" />

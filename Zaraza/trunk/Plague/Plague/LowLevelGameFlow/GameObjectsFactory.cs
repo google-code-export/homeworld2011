@@ -986,8 +986,8 @@ namespace PlagueEngine.LowLevelGameFlow
 
                         physicsComponentFactory.CreateCylindricalBodyComponent(result,
                                                                                data.Mass,
-                                                                               0.06f,
-                                                                               0.4f,
+                                                                               1,
+                                                                               2,
                                                                                data.Elasticity,
                                                                                data.StaticRoughness,
                                                                                data.DynamicRoughness,
@@ -1012,8 +1012,9 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.AttenuationTexture,
                                                                             data.ShadowsEnabled,
                                                                             data.DepthBias),
-                        data.Icon,
-                        data.SlotsIcon);
+                        new Rectangle(0, 620, 50, 50),
+                        new Rectangle(50, 620, 32, 32)
+                        );
             return true;
         }
         /****************************************************************************/
@@ -1224,6 +1225,28 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
         
+        /****************************************************************************/
+        /// CreateCompass
+        /****************************************************************************/
+        public bool CreateCompass(Compass result, CompassData data)
+        {
+            LinkedCamera camera = (LinkedCamera)GetObject(data.LinkedCamera);
+
+            if (camera == null)
+            {
+                PushToWaitingRoom(result, data);
+                return false;
+            }
+
+            result.Init(renderingComponentsFactory.CreateFrontEndComponent(result, "compass"),
+                        data.Target,
+                        camera,
+                        data.Orientation);
+
+            return true;
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/    
 

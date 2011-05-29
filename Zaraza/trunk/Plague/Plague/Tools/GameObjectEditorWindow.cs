@@ -459,6 +459,13 @@ namespace PlagueEngine.Tools
             BuildingWithRoof.dataClassType = typeof(BuildingWithRoofData);
             gameObjectClassNames.Add(BuildingWithRoof);
 
+
+            gameObjectsClassName Compass = new gameObjectsClassName();
+            Compass.className = "Compass";
+            Compass.ClassType = typeof(Compass);
+            Compass.dataClassType = typeof(CompassData);
+            gameObjectClassNames.Add(Compass);
+
         }
         /********************************************************************************/
 
