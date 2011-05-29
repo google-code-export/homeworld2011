@@ -135,7 +135,7 @@ namespace PlagueEngine.Tools
         Type cameraType;
         bool linkedFirst = true;
         public bool jiglibxSelection = false;
-
+        public bool jiglibxDrag = false;
         //rysowanie ikonek
         List<GameObjectInstance> icons = new List<GameObjectInstance>();
         public List<iconInfo> iconInfo = new List<iconInfo>();
@@ -1741,6 +1741,11 @@ namespace PlagueEngine.Tools
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
             jiglibxSelection = checkBox4.Checked;
+        }
+
+        private void checkBox5_CheckedChanged(object sender, EventArgs e)
+        {
+            jiglibxDrag = checkBox5.Checked;
         }
 
 
