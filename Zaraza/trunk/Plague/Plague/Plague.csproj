@@ -70,7 +70,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JigLibX">
-      <HintPath>..\JigLibX.dll</HintPath>
+      <HintPath>.\JigLibX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
@@ -102,32 +102,23 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Nuclex.Input, Version=4.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Nuclex.Input.dll</HintPath>
+    <Reference Include="Nuclex.Input">
+      <HintPath>.\Nuclex.Input.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Nuclex.Support.dll</HintPath>
+    <Reference Include="Nuclex.Support">
+      <HintPath>.\Nuclex.Support.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.Testing.Xna, Version=1.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Nuclex.Testing.Xna.dll</HintPath>
+    <Reference Include="Nuclex.Testing.Xna">
+      <HintPath>.\Nuclex.Testing.Xna.dll</HintPath>
     </Reference>
-    <Reference Include="Nuclex.UserInterface, Version=4.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Nuclex.UserInterface.dll</HintPath>
+    <Reference Include="Nuclex.UserInterface">
+      <HintPath>.\Nuclex.UserInterface.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.5.5.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="nunit.framework">
       <HintPath>.\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="PlagueEngineSkinning">
-      <HintPath>..\..\PlagueEngineSkinning\bin\x86\Release\PlagueEngineSkinning.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX.DirectInput, Version=4.0.10.43, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SlimDX.DirectInput.dll</HintPath>
+    <Reference Include="SlimDX.DirectInput">
+      <HintPath>.\SlimDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -307,6 +298,10 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\PlagueEngineSkinning\PlagueEngineSkinning.csproj">
+      <Project>{1F938490-A946-4E1A-A1A2-51B61F8E2BC1}</Project>
+      <Name>PlagueEngineSkinning</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PlagueContent\PlagueContent.contentproj">
       <Name>PlagueContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>

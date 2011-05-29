@@ -17,7 +17,7 @@ namespace PlagueEngine.Audio
         #region Prywatne pola
 
         private readonly ContentManager _contentManager;
-        private readonly String _contentFolder;
+        public readonly String ContentFolder;
 
         private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();
         private readonly Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
@@ -99,7 +99,7 @@ namespace PlagueEngine.Audio
         private AudioManager(Game game, string contentFolder)
         {
             Listener = new AudioListener();
-            _contentFolder = contentFolder + "\\";
+            ContentFolder = contentFolder + "\\";
             _contentManager = game.ContentManager;
         }
         public Song LoadSong(string songName)
@@ -119,7 +119,7 @@ namespace PlagueEngine.Audio
             }
             else
             {
-                song = _contentManager.Load<Song>(_contentFolder + songPath);
+                song = _contentManager.Load<Song>(ContentFolder + songPath);
                 _songs.Add(songName, song);
             }
 
@@ -142,8 +142,21 @@ namespace PlagueEngine.Audio
             }
             else
             {
-                soundEffect = _contentManager.Load<SoundEffect>(_contentFolder + soundPath);
-                _sounds.Add(soundName, soundEffect);
+                try
+                {
+                    soundEffect = _contentManager.Load<SoundEffect>(ContentFolder + soundPath);
+                    _sounds.Add(soundName, soundEffect);
+                }
+                catch(Exception e)
+                {
+#if DEBUG
+                    Diagnostics.PushLog("Problem z załadowaniem dźwięku. " + e.Message);
+#endif
+                    
+                    soundEffect =null;
+
+                }
+                
             }
 
             return soundEffect;

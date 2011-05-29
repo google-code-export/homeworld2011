@@ -138,7 +138,7 @@ namespace PlagueEngine.Input
         private int                    cursorLock;
         private bool                   enabled;
 
-
+        private bool                    _isMouseVisibleTemp;
         private SpriteBatch             spriteBatch   = null;
         private Dictionary<String, int> cursors       = new Dictionary<String,int>();
         private Texture2D               cursorTexture = null;
@@ -162,6 +162,7 @@ namespace PlagueEngine.Input
             componentsFactory    = new InputComponentsFactory(this);
             InputComponent.input = this;
             spriteBatch          = new SpriteBatch(device);
+            _isMouseVisibleTemp  = game.IsMouseVisible;
         }
         /****************************************************************************/
 
@@ -302,15 +303,11 @@ namespace PlagueEngine.Input
         /****************************************************************************/
         public void Update()
         {
-            if (enabled)
-            {
-                inputManager.Update();
-                if (!Input.inTextInputMode)
-                {
-                    CheckKeyboard();
-                }
-                CheckMouse();
-            }
+            if (!enabled) return;
+            inputManager.Update();
+            CheckMouse();
+            if (Input.inTextInputMode) return;
+            CheckKeyboard();
         }
         /****************************************************************************/
 
@@ -507,20 +504,22 @@ namespace PlagueEngine.Input
                 {
                     inputManager.Enable = value;
                 }
-                if (!value)
-                {
-                    if (inputManager != null)
-                    {
-                        KeyboardState state = inputManager.GetKeyboard().GetState();
+                if (!value) game.IsMouseVisible = _isMouseVisibleTemp;
+                else return;
+                _isMouseVisibleTemp = game.IsMouseVisible;
+                game.IsMouseVisible = true;
+                if (inputManager == null) return;
+                var state = inputManager.GetKeyboard().GetState();
 
-                        foreach (Keys key in state.GetPressedKeys())
-                        {
-                            if (GuiScreen != null) GuiScreen.InjectKeyRelease(key);
-                            foreach (KeyboardListener keyboardListener in keyListeners[key])
-                            {
-                                if (keyboardListener.listener.Active) keyboardListener.onKey(key, new ExtendedKeyState(false, false));
-                            }
-                        }
+                foreach (var key in state.GetPressedKeys())
+                {
+                    if (GuiScreen != null) GuiScreen.InjectKeyRelease(key);
+                    var index = 0;
+                    for (; index < keyListeners[key].Count; index++)
+                    {
+                        var keyboardListener = keyListeners[key][index];
+                        if (keyboardListener.listener.Active)
+                            keyboardListener.onKey(key, new ExtendedKeyState(false, false));
                     }
                 }
             }
