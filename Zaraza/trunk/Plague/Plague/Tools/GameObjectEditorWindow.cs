@@ -196,8 +196,23 @@ namespace PlagueEngine.Tools
         {
             if (level.GameObjects.ContainsKey(gameObjectID))
             {
+
+
                 currentEditGameObject = level.GameObjects[gameObjectID].GetData();
                 currentEditGameObject.Position = currentEditGameObject.World.Translation;
+                currentClassNameEdit = new gameObjectsClassName();
+                currentClassNameEdit.dataClassType = currentEditGameObject.GetType();
+
+                foreach (gameObjectsClassName name in gameObjectClassNames)
+                {
+                    if (name.dataClassType == currentClassNameEdit.dataClassType)
+                    {
+                        currentClassNameEdit.className = name.className;
+                        currentClassNameEdit.ClassType = name.ClassType;
+                    }
+                }
+
+
                 propertyGrid2.SelectedObject = currentEditGameObject;
                 TreeNode[] tn = treeView1.Nodes.Find(gameObjectID.ToString(), true);
                 if (tn.GetLength(0) != 0)
@@ -498,8 +513,8 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 this.currentObject.Type = currentClassNameNew.ClassType;
                 currentEditGameObject = this.level.GameObjectsFactory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
@@ -518,13 +533,13 @@ namespace PlagueEngine.Tools
 
 
 
-            }
-            catch (Exception execption)
-            {
-                releaseInput = false;
-                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                releaseInput = true;
-            }
+            //}
+            //catch (Exception execption)
+            //{
+            //    releaseInput = false;
+            //    MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    releaseInput = true;
+            //}
 
             LoadIconsInfo();
             setUpCameraButton();
@@ -1368,7 +1383,7 @@ namespace PlagueEngine.Tools
                 currentClassNameEdit = new gameObjectsClassName();
                 currentClassNameEdit.dataClassType = currentEditGameObject.GetType();
 
-                currentObject = currentEditGameObject;
+                
 
                 foreach (gameObjectsClassName name in gameObjectClassNames)
                 {
@@ -1385,6 +1400,7 @@ namespace PlagueEngine.Tools
 
             }
         }
+
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -1749,7 +1765,25 @@ namespace PlagueEngine.Tools
         }
 
 
+        private void fillInfoInLabel()
+        {
+            if (propertyGrid2.SelectedObject != null)
+            {
+                label5.Text = ((GameObjectInstanceData)(propertyGrid2.SelectedObject)).ID.ToString();
+                label6.Text = propertyGrid2.SelectedObject.GetType().Name.ToString();
+            }
+            else
+            {
+                label5.Text = "";
+                label6.Text = "";
+            }
+        }
 
+        private void propertyGrid2_SelectedObjectsChanged(object sender, EventArgs e)
+        {
+            fillInfoInLabel();
+
+        }
 
 
 
