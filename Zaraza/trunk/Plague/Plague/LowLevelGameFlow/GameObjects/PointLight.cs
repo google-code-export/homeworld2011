@@ -25,17 +25,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         PointLightComponent    light = null;
-        SphericalBodyComponent body  = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(PointLightComponent lightComponent, SphericalBodyComponent physcisComponent)
+        public void Init(PointLightComponent lightComponent)
         {
             this.light = lightComponent;
-            this.body  = physcisComponent;
         }
         /****************************************************************************/
 
@@ -45,8 +43,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            light.ReleaseMe();
-            body.ReleaseMe();
+            light.ReleaseMe();            
         }
         /****************************************************************************/
 
@@ -58,17 +55,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             PointLightData data = new PointLightData();
             GetData(data);
-
-            data.Mass = body.Mass;
-            data.Elasticity = body.Elasticity;
-            data.StaticRoughness = body.StaticRoughness;
-            data.DynamicRoughness = body.DynamicRoughness;
-            data.Radius = body.Radius;
-            data.Immovable = body.Immovable;
-            data.Translation = body.SkinTranslation;
-            data.SkinPitch = body.Pitch;
-            data.SkinRoll = body.Roll;
-            data.SkinYaw = body.Yaw;
 
             data.Enabled = light.Enabled;
             data.Color = light.Color;
@@ -92,36 +78,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class PointLightData : GameObjectInstanceData
     {
-        [CategoryAttribute("Physics")]
-        public float Mass { get; set; }
-
-        [CategoryAttribute("Physics")]
-        public float Elasticity { get; set; }
-
-        [CategoryAttribute("Physics")]
-        public float StaticRoughness { get; set; }
-
-        [CategoryAttribute("Physics")]
-        public float DynamicRoughness { get; set; }
-
-        [CategoryAttribute("Physics")]
-        public bool Immovable { get; set; }
-
-        [CategoryAttribute("Collision Skin")]
-        public float Radius { get; set; }
-
-        [CategoryAttribute("Collision Skin")]
-        public Vector3 Translation { get; set; }
-
-        [CategoryAttribute("Collision Skin")]
-        public float SkinYaw { get; set; }
-
-        [CategoryAttribute("Collision Skin")]
-        public float SkinPitch { get; set; }
-
-        [CategoryAttribute("Collision Skin")]
-        public float SkinRoll { get; set; }
-
         [CategoryAttribute("Light")]
         public bool Enabled { get; set; }
 

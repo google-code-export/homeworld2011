@@ -138,14 +138,16 @@ namespace PlagueEngine.Rendering
                                                          Vector3 diffuseColor,
                                                          float   intensity,
                                                          bool    enabled,
-                                                         float   depthBias)
+                                                         float   depthBias,
+                                                         float   shadowIntensity)
         {
             SunlightComponent result = new SunlightComponent(gameObject,
                                                              renderer,
                                                              diffuseColor,
                                                              intensity,
                                                              enabled,
-                                                             depthBias);
+                                                             depthBias,
+                                                             shadowIntensity);
             renderer.lightsManager.sunlight = result;
             return result;
         }                                                         

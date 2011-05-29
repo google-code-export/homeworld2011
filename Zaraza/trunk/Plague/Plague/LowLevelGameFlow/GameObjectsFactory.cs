@@ -724,7 +724,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                            data.Diffuse,
                                                                            data.Intensity,
                                                                            data.Enabled,
-                                                                           data.DepthBias));
+                                                                           data.DepthBias,
+                                                                           data.ShadowIntensity));
 
             return true;
         }
@@ -870,20 +871,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              data.LightRadius,
                                                                              data.LinearAttenuation,
                                                                              data.QuadraticAttenuation,
-                                                                             Vector3.Zero),
-
-                        physicsComponentFactory.CreateSphericalBodyComponent(result,
-                                                                             data.Mass,
-                                                                             data.Radius,
-                                                                             data.Elasticity,
-                                                                             data.StaticRoughness,
-                                                                             data.DynamicRoughness,
-                                                                             data.Immovable,
-                                                                             data.World,
-                                                                             data.Translation,
-                                                                             data.SkinYaw,
-                                                                             data.SkinPitch,
-                                                                             data.SkinRoll));
+                                                                             Vector3.Zero));
 
             return true;
         }
