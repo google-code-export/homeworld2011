@@ -138,7 +138,6 @@ namespace PlagueEngine.Input
         private int                    cursorLock;
         private bool                   enabled;
 
-        private bool                    _isMouseVisibleTemp;
         private SpriteBatch             spriteBatch   = null;
         private Dictionary<String, int> cursors       = new Dictionary<String,int>();
         private Texture2D               cursorTexture = null;
@@ -162,7 +161,6 @@ namespace PlagueEngine.Input
             componentsFactory    = new InputComponentsFactory(this);
             InputComponent.input = this;
             spriteBatch          = new SpriteBatch(device);
-            _isMouseVisibleTemp  = game.IsMouseVisible;
         }
         /****************************************************************************/
 
@@ -504,10 +502,7 @@ namespace PlagueEngine.Input
                 {
                     inputManager.Enable = value;
                 }
-                if (!value) game.IsMouseVisible = _isMouseVisibleTemp;
-                else return;
-                _isMouseVisibleTemp = game.IsMouseVisible;
-                game.IsMouseVisible = true;
+                if (value) return;
                 if (inputManager == null) return;
                 var state = inputManager.GetKeyboard().GetState();
 
