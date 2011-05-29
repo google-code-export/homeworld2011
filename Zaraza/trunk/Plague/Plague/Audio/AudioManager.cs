@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 using PlagueEngine.Audio.Components;
+using PlagueEngine.Rendering.Components;
 
 namespace PlagueEngine.Audio
 {
@@ -81,7 +82,14 @@ namespace PlagueEngine.Audio
             }
         }
 
-        public AudioListener Listener { get; set; }
+        internal void SetListenerPosition(CameraComponent cameraComponent)
+        {
+            if (cameraComponent == null) return;
+            Listener.Position = cameraComponent.Position;
+            Listener.Forward = cameraComponent.Forward;
+            Listener.Up = cameraComponent.Up;
+        }
+        public AudioListener Listener { get; private set; }
 
         private AudioManager(Game game)
         {
@@ -261,6 +269,7 @@ namespace PlagueEngine.Audio
         /// <param name="gameTime">Czas jaki upłynał od ostatniej klatki</param>
         public void Update(GameTime gameTime)
         {
+            
             for (var i = 0; i < _playingSounds.Length; ++i)
             {
                 if (_playingSounds[i] == null || _playingSounds[i].State != SoundState.Stopped) continue;

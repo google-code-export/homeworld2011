@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework.Audio;
 
 namespace PlagueEngine.Audio
 {
@@ -20,6 +16,16 @@ namespace PlagueEngine.Audio
             Pitch = pitch;
             Pan = pan;
             SoundEffect = soundEffect;
+            SoundEffect.DistanceScale = 100f;
+        }
+
+        public SoundCue(float volume, float pitch, float pan, SoundEffect soundEffect, float distaceScale)
+        {
+            Volume = volume;
+            Pitch = pitch;
+            Pan = pan;
+            SoundEffect = soundEffect;
+            SoundEffect.DistanceScale = distaceScale;
         }
     }
 }
