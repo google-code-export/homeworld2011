@@ -41,6 +41,9 @@
             this.button1 = new System.Windows.Forms.Button();
             this.buttonCreateDefinition = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.propertyGrid2 = new System.Windows.Forms.PropertyGrid();
             this.panel5 = new System.Windows.Forms.Panel();
             this.button2 = new System.Windows.Forms.Button();
@@ -71,6 +74,7 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.label6 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -216,6 +220,10 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.label6);
+            this.tabPage3.Controls.Add(this.label5);
+            this.tabPage3.Controls.Add(this.label4);
+            this.tabPage3.Controls.Add(this.label3);
             this.tabPage3.Controls.Add(this.propertyGrid2);
             this.tabPage3.Controls.Add(this.panel5);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -225,6 +233,32 @@
             this.tabPage3.Text = "Edit GameObject";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(173, 6);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(73, 13);
+            this.label5.TabIndex = 24;
+            this.label5.Text = "                      ";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(217, 6);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(0, 13);
+            this.label4.TabIndex = 23;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(82, 6);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(85, 13);
+            this.label3.TabIndex = 22;
+            this.label3.Text = "Currently editing:";
+            // 
             // propertyGrid2
             // 
             this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -233,6 +267,7 @@
             this.propertyGrid2.Size = new System.Drawing.Size(402, 398);
             this.propertyGrid2.TabIndex = 18;
             this.propertyGrid2.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid2_PropertyValueChanged);
+            this.propertyGrid2.SelectedObjectsChanged += new System.EventHandler(this.propertyGrid2_SelectedObjectsChanged);
             // 
             // panel5
             // 
@@ -556,6 +591,15 @@
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(252, 6);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(43, 13);
+            this.label6.TabIndex = 25;
+            this.label6.Text = "            ";
+            // 
             // GameObjectEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -573,6 +617,7 @@
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             this.tabPage2.ResumeLayout(false);
@@ -635,6 +680,10 @@
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBox5;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label6;
 
 
     }
