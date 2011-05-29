@@ -224,7 +224,6 @@
     <Compile Include="LowLevelGameFlow\GameObjects\SquareSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Creature.cs" />
-    <Compile Include="LowLevelGameFlow\GameObjects\Suit.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Sunlight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Terrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\WaterSurface.cs" />
