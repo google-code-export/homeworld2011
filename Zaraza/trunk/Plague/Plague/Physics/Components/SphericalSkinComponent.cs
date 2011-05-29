@@ -60,6 +60,10 @@ namespace PlagueEngine.Physics.Components
         }
         /****************************************************************************/
 
+        protected override void MoveTo(Matrix world)
+        {
+            this.body.MoveTo(world.Translation, world);
+        }
 
         protected override void SetSkin(Matrix world)
         {
