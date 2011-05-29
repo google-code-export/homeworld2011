@@ -162,10 +162,6 @@ namespace PlagueEngine.Audio
             return soundEffect;
         }
 
-        public void UnloadContent()
-        {
-            _contentManager.Unload();
-        }
 
         public void PlaySong(string songName)
         {
@@ -241,11 +237,11 @@ namespace PlagueEngine.Audio
         /// </summary>
         /// <param name="soundCue">Obiekt klasy SoundCue</param>
         /// <param name="emitter">Obiekt klasy AudioEmitter wskazujący na źródło dźwięku</param>
-        public void PlaySound(SoundCue soundCue, AudioEmitter emitter)
+        public SoundEffectInstance PlaySound(SoundCue soundCue, AudioEmitter emitter)
         {
             var index = GetAvailableSoundIndex();
 
-            if (index == -1) return;
+            if (index == -1) return null;
             _playingSounds[index] = soundCue.SoundEffect.CreateInstance();
             _playingSounds[index].Volume = soundCue.Volume;
             _playingSounds[index].Pitch = soundCue.Pitch;
@@ -255,11 +251,11 @@ namespace PlagueEngine.Audio
                 _playingSounds[index].Apply3D(Listener, emitter);
             }
             _playingSounds[index].Play();
-
             if (!Enabled)
             {
                 _playingSounds[index].Pause();
             }
+            return _playingSounds[index];
         }
 
         /// <summary>

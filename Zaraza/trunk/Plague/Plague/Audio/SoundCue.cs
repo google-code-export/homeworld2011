@@ -7,6 +7,7 @@ namespace PlagueEngine.Audio
         public float Volume;
         public float Pitch;
         public float Pan;
+        public bool AllowMultiInstancing;
         public SoundEffect SoundEffect;
 
 
@@ -16,15 +17,27 @@ namespace PlagueEngine.Audio
             Pitch = pitch;
             Pan = pan;
             SoundEffect = soundEffect;
+            AllowMultiInstancing = false;
             SoundEffect.DistanceScale = 100f;
         }
 
-        public SoundCue(float volume, float pitch, float pan, SoundEffect soundEffect, float distaceScale)
+        public SoundCue(float volume, float pitch, float pan, SoundEffect soundEffect, bool allowMultiInstancing)
         {
             Volume = volume;
             Pitch = pitch;
             Pan = pan;
             SoundEffect = soundEffect;
+            AllowMultiInstancing = allowMultiInstancing;
+            SoundEffect.DistanceScale = 100f;
+        }
+
+        public SoundCue(float volume, float pitch, float pan, SoundEffect soundEffect, bool allowMultiInstancing, float distaceScale)
+        {
+            Volume = volume;
+            Pitch = pitch;
+            Pan = pan;
+            SoundEffect = soundEffect;
+            AllowMultiInstancing = allowMultiInstancing;
             SoundEffect.DistanceScale = distaceScale;
         }
     }
