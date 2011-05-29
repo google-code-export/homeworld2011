@@ -553,7 +553,8 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void ComboboxDefinitions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ComboboxDefinitions.SelectedIndex != -1)
+            
+            if (ComboboxDefinitions.SelectedIndex != -1 && currentObject!=null && propertyGrid1.SelectedObject!=null)
             {
                 if (currentDefinition != null)
                 {
@@ -1210,7 +1211,7 @@ namespace PlagueEngine.Tools
                     {
                         if (field.checkbox.Checked)
                         {
-                            god.Properties.Add(field.label.Text, currentClassNameEdit.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
+                            god.Properties.Add(field.label.Text, currentClassNameEdit.dataClassType.GetProperty(field.label.Text).GetValue(currentEditGameObject, null));
                         }
                     }
 
