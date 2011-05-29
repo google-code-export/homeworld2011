@@ -115,6 +115,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool ShadowsEnabled  { get; set; }
         [CategoryAttribute("Shadows")]
         public float DepthBias { get; set; }
+
     }
     /********************************************************************************/
 
