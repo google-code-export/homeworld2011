@@ -28,6 +28,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         MeshComponent       mesh = null;
         SquareBodyComponent body = null;
         public int ammoPerShot { get; set; }
+        public TimeSpan reloadCooldown { get; set; }
         /****************************************************************************/
 
 
@@ -90,6 +91,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinRoll         = body.Roll;
             data.SkinYaw          = body.Yaw;
 
+            data.AmmunitionPerShot = this.ammoPerShot;
+            data.reloadCooldown    = this.reloadCooldown;
+
             return data;
         }
         /****************************************************************************/
@@ -114,6 +118,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        
     }
     /********************************************************************************/
 
@@ -169,6 +175,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float SkinPitch { get; set; }
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
+
+        [CategoryAttribute("Firing Properties")]
+        public int AmmunitionPerShot { get; set; }
+        [CategoryAttribute("Firing Properties")]
+        public TimeSpan reloadCooldown { get; set; }
     }
     /********************************************************************************/
 
