@@ -113,6 +113,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (typeof(RigidBodyComponent).IsAssignableFrom(field.GetType()))
                 {
                     RigidBodyComponent body = (RigidBodyComponent)field;
+                    //body.Immovable = true;
                     body.DisableBody();
 
                 }
@@ -122,6 +123,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     body.Disable();
 
                 }
+
+
             }
         }
 
@@ -134,6 +137,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (typeof(RigidBodyComponent).IsAssignableFrom(field.GetType()))
                 {
                     RigidBodyComponent body = (RigidBodyComponent)field;
+                    //body.Immovable = false;
                     body.EnableBody();
 
                 }
@@ -465,20 +469,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     if (hit)
                     {
 
+                        if (editor.jiglibxDrag)
+                        {
+                            Vector3 delta = pos - skin.Owner.Position;
+                            delta = Vector3.Transform(delta, Matrix.Transpose(skin.Owner.Orientation));
 
-                        Vector3 delta = pos - skin.Owner.Position;
-                        delta = Vector3.Transform(delta, Matrix.Transpose(skin.Owner.Orientation));
+                            camPickDistance = (cameraComponent.Position - pos).Length();
 
-                        camPickDistance = (cameraComponent.Position - pos).Length();
-
-                        skin.Owner.Immovable = false;
-                        skin.Owner.SetActive();
-                        objectController.Destroy();
-                        damperController.Destroy();
-                        objectController.Initialise(skin.Owner, delta, pos);
-                        damperController.Initialise(skin.Owner, ConstraintVelocity.ReferenceFrame.Body, Vector3.Zero, Vector3.Zero);
-                        objectController.EnableConstraint();
-                        damperController.EnableConstraint();
+                            skin.Owner.Immovable = false;
+                            skin.Owner.SetActive();
+                            objectController.Destroy();
+                            damperController.Destroy();
+                            objectController.Initialise(skin.Owner, delta, pos);
+                            damperController.Initialise(skin.Owner, ConstraintVelocity.ReferenceFrame.Body, Vector3.Zero, Vector3.Zero);
+                            objectController.EnableConstraint();
+                            damperController.EnableConstraint();
+                        }
 
                     }
 
@@ -488,31 +494,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (objectController.IsConstraintEnabled && (objectController.Body != null))
                 {
-                    Vector3 delta = objectController.Body.Position - cameraComponent.Position;
-                    Vector3 ray = Physics.PhysicsUlitities.DirectionFromMousePosition(cameraComponent.Projection, cameraComponent.View, mouseX, mouseY);
+                    if (editor.jiglibxDrag)
+                    {
+                        Vector3 delta = objectController.Body.Position - cameraComponent.Position;
+                        Vector3 ray = Physics.PhysicsUlitities.DirectionFromMousePosition(cameraComponent.Projection, cameraComponent.View, mouseX, mouseY);
 
-                    Vector3 result = cameraComponent.Position + camPickDistance * ray;
+                        Vector3 result = cameraComponent.Position + camPickDistance * ray;
 
 
-                    objectController.WorldPosition = result;
-                    objectController.Body.SetActive();
+                        objectController.WorldPosition = result;
+                        objectController.Body.SetActive();
+                    }
                 }
             }
             else if(mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
-
-                objectController.DisableConstraint();
-                damperController.DisableConstraint();
-                middleButton = false;
-                this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
-                if (skin != null)
-                {
-                    if (skin.Owner != null)
+                
+                    objectController.DisableConstraint();
+                    damperController.DisableConstraint();
+                    middleButton = false;
+                    this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
+                    if (skin != null)
                     {
-                        skin.Owner.Immovable = true;
+                        if (skin.Owner != null)
+                        {
+                             skin.Owner.Immovable = true;
+                        }
+                        skin = null;
                     }
-                    skin = null;
-                }
+                
             }
          
             
