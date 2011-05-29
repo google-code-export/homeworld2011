@@ -1297,7 +1297,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\yesSir.mp3">
+    <Compile Include="Audio\Mercenary\yesSir.mp3">
       <Name>yesSir</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SoundEffectProcessor</Processor>
