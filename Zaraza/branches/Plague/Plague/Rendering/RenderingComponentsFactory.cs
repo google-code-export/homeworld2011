@@ -51,7 +51,7 @@ namespace PlagueEngine.Rendering
         {
             CameraComponent result = new CameraComponent(gameObject, renderer, fov, zNear, zFar);
             
-            renderer.CurrentCamera = result;
+            //renderer.CurrentCamera = result;
             
             return result;
         }                            
@@ -68,10 +68,9 @@ namespace PlagueEngine.Rendering
                                                         String gtexture,
                                                         String btexture,
                                                         String weightMap,                                    
-                                                        int width,
-                                                        int length,
-                                                        float height,
-                                                        float cellSize,
+                                                        float width,
+                                                        int segments,
+                                                        float height,                                                        
                                                         float textureTiling)
         {
             TerrainComponent result = new TerrainComponent( gameObject,
@@ -82,9 +81,8 @@ namespace PlagueEngine.Rendering
                                                             content.LoadTexture2D(btexture),
                                                             content.LoadTexture2D(weightMap),
                                                             width,
-                                                            length,
                                                             height,
-                                                            cellSize,
+                                                            segments,
                                                             textureTiling,
                                                             content.LoadEffect("TerrainEffect"));
             result.ComputeMesh();
@@ -139,13 +137,17 @@ namespace PlagueEngine.Rendering
         public SunlightComponent CreateSunlightComponent(GameObjectInstance gameObject,
                                                          Vector3 diffuseColor,
                                                          float   intensity,
-                                                         bool    enabled)
+                                                         bool    enabled,
+                                                         float   depthBias,
+                                                         float   shadowIntensity)
         {
             SunlightComponent result = new SunlightComponent(gameObject,
                                                              renderer,
                                                              diffuseColor,
                                                              intensity,
-                                                             enabled);
+                                                             enabled,
+                                                             depthBias,
+                                                             shadowIntensity);
             renderer.lightsManager.sunlight = result;
             return result;
         }                                                         
@@ -160,7 +162,8 @@ namespace PlagueEngine.Rendering
                                                  String diffuseMap,
                                                  String specularMap,
                                                  String normalMap,
-                                                 InstancingModes instancingMode)
+                                                 InstancingModes instancingMode,
+                                                 bool disabled)
         {
             MeshComponent result = null;
             
@@ -173,7 +176,8 @@ namespace PlagueEngine.Rendering
                                        model,
                                        textures,
                                        instancingMode,
-                                       technique);                    
+                                       technique,
+                                       disabled);                    
             return result;
         }                                            
         /****************************************************************************/

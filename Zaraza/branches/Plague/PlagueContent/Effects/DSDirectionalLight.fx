@@ -2,6 +2,7 @@
 /// Orientation
 /****************************************************/
 float4x4 InverseViewProjection;
+float4x4 LightViewProjection;
 float3	 CameraPosition;
 /****************************************************/
 
@@ -12,6 +13,23 @@ float3	 CameraPosition;
 float3 LightDirection;
 float3 LightColor;
 float  LightIntensity;
+/****************************************************/
+
+
+/****************************************************/
+/// Shadows
+/****************************************************/
+float DepthBias = 0.00001f;
+float ShadowIntensity = 0;
+
+texture ShadowMap;
+sampler ShadowMapSampler = sampler_state
+{
+	texture = <ShadowMap>;
+	MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
+};
 /****************************************************/
 
 
@@ -67,7 +85,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
     VertexShaderOutput output;
 
     output.Position = float4(input.Position, 1);
-	output.UV		= input.UV - HalfPixel;
+	output.UV		= input.UV + HalfPixel;
 
     return output;
 }
@@ -116,15 +134,29 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float4 Position = 1.0f;		
 
 	Position.x = input.UV.x * 2.0f - 1.0f;
-	Position.y = -(input.UV.x * 2.0f - 1.0f);
+	Position.y = -(input.UV.y * 2.0f - 1.0f);
 	Position.z = Depth;
 	
 	Position = mul(Position,InverseViewProjection);
 	Position /= Position.w;
 	
+	float4 LightScreenPos = mul(Position, LightViewProjection);
+	LightScreenPos /= LightScreenPos.w;
+
+	float2 LightUV = 0.5f * (float2(LightScreenPos.x,-LightScreenPos.y) + 1.0f);
+	
+	float ShadowFactor = 1;	
+	
+	float realDepth = LightScreenPos.z - DepthBias;
+
+	float lightDepth = tex2D(ShadowMapSampler, LightUV).r;
+			
+	if(lightDepth < realDepth) ShadowFactor = ShadowIntensity;	
+
 	float4 output = Phong(Position.xyz,Normal,NormalData.w);
-	output *= LightIntensity;
-    
+
+	output *= LightIntensity * ShadowFactor;   	
+
 	return output;
 }
 /****************************************************/
