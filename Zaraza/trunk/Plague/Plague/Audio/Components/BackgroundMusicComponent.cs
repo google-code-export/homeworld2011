@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework.Media;
 
 namespace PlagueEngine.Audio.Components
@@ -7,13 +8,19 @@ namespace PlagueEngine.Audio.Components
     class BackgroundMusicComponent
     {
 
-        private Dictionary<string, Song> _songs = new Dictionary<string, Song>();
+        private Dictionary<string, SongCue> _songs = new Dictionary<string, SongCue>();
         private bool _enabled = true;
         private string _currentGroup;
         private bool _isMusicPaused;
         private Song _currentSong;
         private bool _isFading;
+        private readonly AudioManager _audioManager;
 
+
+        BackgroundMusicComponent()
+        {
+            _audioManager = AudioManager.GetInstance;
+        }
         /// <summary>
         /// Pobiera bądź ustawia obecnie graną piosenkę
         /// </summary>
@@ -23,12 +30,28 @@ namespace PlagueEngine.Audio.Components
         /// Słownik przechowujący Piosenki ułożone w grupy tematyczne.
         /// Standardowo zawiera grupę default.
         /// </summary>
-        public Dictionary<string, Song> Songs
+        public Dictionary<string, SongCue> Songs
         {
             get { return _songs; }
             set { _songs = value; }
         }
 
+        public void LoadSong(string folderName, float volume)
+        {
+            var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
+            if (!dir.Exists) return;
+            var xbnFiles = dir.GetFiles("*.xnb");
+            foreach (var file in xbnFiles)
+            {
+                var soundName = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
+                var song = _audioManager.LoadSong(folderName + "\\" + soundName);
+                if (song != null)
+                {
+                    _songs.Add(soundName, new SongCue(volume,song));
+                }
+            }
+
+        }
         /// <summary>
         /// Ładuje piosenkę do AudioManager i przyspisuje ją do standardowej grupy w BackgroundMusicComponent.
         /// </summary>
