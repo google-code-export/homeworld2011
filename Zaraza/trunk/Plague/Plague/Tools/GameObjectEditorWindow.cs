@@ -84,7 +84,7 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
 
 
-        
+
         /********************************************************************************/
         /// game Objects Class Name
         /********************************************************************************/
@@ -105,21 +105,21 @@ namespace PlagueEngine.Tools
         private List<gameObjectsClassName> gameObjectClassNames = new List<gameObjectsClassName>();
         private ContentManager contentManager = null;
         private Renderer renderer = null;
-        private Input.Input input=null;
+        private Input.Input input = null;
         private Game game = null;
 
         private gameObjectsClassName currentClassNameNew = null;
         private GameObjectInstanceData currentObject = null;
 
-    
+
 
         private string levelDirectory = @"Data\levels";
         private string levelExtension = ".lvl";
-        public Level  level = null;
+        public Level level = null;
         private bool levelSaved = true;
 
         private GameObjectDefinition currentDefinition = null;
-        
+
 
         //pola do zakladki edytuj
 
@@ -153,7 +153,7 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public GameObjectEditorWindow(Level level,ContentManager contentManager,Renderer renderer,Input.Input input, Game game)
+        public GameObjectEditorWindow(Level level, ContentManager contentManager, Renderer renderer, Input.Input input, Game game)
         {
             InitializeComponent();
             FillClassNames();
@@ -169,15 +169,15 @@ namespace PlagueEngine.Tools
                 gameObjectsName.Items.Add(gameObject.className);
             }
 
-            inputEnable.Checked = input.Enabled;
+
             this.Visible = true;
             this.MaximizeBox = false;
 
-            
+
             loadLevelNames();
             LoadAllObjectsId();
             checkBoxShowCollisionSkin.Checked = renderer.debugDrawer.IsEnabled;
-           
+
             Renderer.editor = this;
             FreeCamera.editor = this;
             setUpCameraButton();
@@ -206,7 +206,7 @@ namespace PlagueEngine.Tools
                 }
             }
 
-            
+
         }
         /********************************************************************************/
 
@@ -220,8 +220,8 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void LoadDefinitionForClass(string gameObjectClass)
         {
-            
-           
+
+
             ComboboxDefinitions.SelectedIndex = -1;
             ComboboxDefinitions.SelectedIndex = -1;
             ComboboxDefinitions.SelectedText = "";
@@ -235,7 +235,7 @@ namespace PlagueEngine.Tools
                 {
 
                     ComboboxDefinitions.Items.Add(definition.Name);
-                    
+
                 }
             }
         }
@@ -257,10 +257,10 @@ namespace PlagueEngine.Tools
 
                 currentClassNameNew = getClass(objectname);
                 currentObject = (GameObjectInstanceData)(Activator.CreateInstance(currentClassNameNew.dataClassType));
-               
-             
+
+
                 propertyGrid1.SelectedObject = currentObject;
-                
+
                 LoadDefinitionForClass(objectname);
             }
         }
@@ -378,7 +378,7 @@ namespace PlagueEngine.Tools
             Flashlight.ClassType = typeof(Flashlight);
             Flashlight.dataClassType = typeof(FlashlightData);
             gameObjectClassNames.Add(Flashlight);
-            
+
             gameObjectsClassName Mercenary = new gameObjectsClassName();
             Mercenary.className = "Mercenary";
             Mercenary.ClassType = typeof(Mercenary);
@@ -497,11 +497,11 @@ namespace PlagueEngine.Tools
         /// button1_Click //klikniecie create
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
-        {            
+        {
             try
             {
                 this.currentObject.Type = currentClassNameNew.ClassType;
-                currentEditGameObject=this.level.GameObjectsFactory.Create(currentObject).GetData();
+                currentEditGameObject = this.level.GameObjectsFactory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
 
 
@@ -510,7 +510,7 @@ namespace PlagueEngine.Tools
                 {
                     tn[0].Nodes.Add(currentEditGameObject.ID.ToString());
                 }
-                
+
 
 
                 levelSaved = false;
@@ -548,13 +548,13 @@ namespace PlagueEngine.Tools
                     {
                         if (currentDefinition.Properties.ContainsKey(pI.Name))
                         {
-                            
-                            pI.SetValue(this.currentObject,null,null);
+
+                            pI.SetValue(this.currentObject, null, null);
                         }
                     }
                 }
 
-                
+
 
 
 
@@ -584,9 +584,9 @@ namespace PlagueEngine.Tools
         private void loadLevelNames()
         {
             listBoxLevelNames.Items.Clear();
-           
+
             DirectoryInfo di = new DirectoryInfo(levelDirectory);
-            FileInfo[] fileNames = di.GetFiles("*"+levelExtension);
+            FileInfo[] fileNames = di.GetFiles("*" + levelExtension);
 
             foreach (FileInfo fileInfo in fileNames)
             {
@@ -612,7 +612,7 @@ namespace PlagueEngine.Tools
             }
 
 
-            
+
 
 
             foreach (GameObjectInstance gameObject in level.GameObjects.Values)
@@ -622,7 +622,7 @@ namespace PlagueEngine.Tools
                 {
                     tn[0].Nodes.Add(gameObject.ID.ToString());
                 }
-                
+
 
 
             }
@@ -643,7 +643,7 @@ namespace PlagueEngine.Tools
         private void buttonLoad_Click(object sender, EventArgs e)
         {
             RestoreCamera();
-            
+
             if (listBoxLevelNames.SelectedIndex != -1)
             {
                 if (level.CurrentLevel != listBoxLevelNames.SelectedItem.ToString())
@@ -652,11 +652,11 @@ namespace PlagueEngine.Tools
 
                     //try
                     //{
-                        
-                        level.LoadLevel(currentLevelName);
-                        LoadAllObjectsId();
-                        renderer.debugDrawer.DisableHeightmapDrawing();
-                       
+
+                    level.LoadLevel(currentLevelName);
+                    LoadAllObjectsId();
+                    renderer.debugDrawer.DisableHeightmapDrawing();
+
                     //}
                     //catch (Exception ex)
                     //{
@@ -665,7 +665,7 @@ namespace PlagueEngine.Tools
                     //    releaseInput = true;
                     //}
                 }
-                
+
 
             }
 
@@ -685,7 +685,7 @@ namespace PlagueEngine.Tools
         private void buttonNew_Click(object sender, EventArgs e)
         {
             RestoreCamera();
-             
+
             bool NewCanceled = false;
             string lvlName;
 
@@ -700,13 +700,14 @@ namespace PlagueEngine.Tools
                     {
                         releaseInput = false;
                         var box = new LevelNameMessageBox("Old level name:");
+                        box.Activated += new EventHandler(GameObjectEditorWindow_Activated);
                         box.ShowDialog();
                         releaseInput = true;
                         if (!box.canceled)
                         {
 
-                            Regex reg = new Regex(@""+levelExtension+"$");
-                            if(!reg.IsMatch(box.levelName))
+                            Regex reg = new Regex(@"" + levelExtension + "$");
+                            if (!reg.IsMatch(box.levelName))
                             {
                                 lvlName = box.levelName + levelExtension;
                             }
@@ -741,8 +742,9 @@ namespace PlagueEngine.Tools
             if (!NewCanceled)
             {
                 renderer.debugDrawer.DisableHeightmapDrawing();
-                
+
                 var box2 = new LevelNameMessageBox("New level name:");
+                box2.Activated += new EventHandler(GameObjectEditorWindow_Activated);
                 bool newName;
                 do
                 {
@@ -767,10 +769,10 @@ namespace PlagueEngine.Tools
                 {
 
                     Regex reg2 = new Regex(@"" + levelExtension + "$");
-                    if(reg2.IsMatch(box2.levelName))
+                    if (reg2.IsMatch(box2.levelName))
                     {
-                        lvlName=box2.levelName;
-                    
+                        lvlName = box2.levelName;
+
                     }
                     else
                     {
@@ -787,7 +789,7 @@ namespace PlagueEngine.Tools
 
 
             LoadIconsInfo();
-         }
+        }
 
         /********************************************************************************/
 
@@ -797,17 +799,17 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void buttonSave_Click(object sender, EventArgs e)
         {
-                RestoreCamera();
+            RestoreCamera();
 
-                level.SaveLevel();
-                levelSaved = true;
+            level.SaveLevel();
+            levelSaved = true;
 
-                setUpCameraButton();
+            setUpCameraButton();
 
         }
         /********************************************************************************/
 
-        
+
         /********************************************************************************/
         /// Button Delete Click
         /********************************************************************************/
@@ -835,7 +837,7 @@ namespace PlagueEngine.Tools
                 releaseInput = true;
                 if (result == DialogResult.Yes)
                 {
-                    File.Delete(Directory.GetCurrentDirectory()+ "\\" + levelDirectory +"\\"+ filename);
+                    File.Delete(Directory.GetCurrentDirectory() + "\\" + levelDirectory + "\\" + filename);
                     if (filename == level.CurrentLevel)
                         level.Clear(true);
 
@@ -867,7 +869,7 @@ namespace PlagueEngine.Tools
                     level.SaveLevel();
                     levelSaved = true;
                 }
-                
+
             }
 
         }
@@ -887,7 +889,7 @@ namespace PlagueEngine.Tools
 
                 PropertyInfo[] PropertyInfo = currentClassNameNew.dataClassType.GetProperties();
                 List<PropertyInfo> list = PropertyInfo.ToList<PropertyInfo>();
-               
+
                 for (int i = 0; i < list.Count; i++)//zagniezdzanie definicji nam chyba nie jest potrzebne
                 {
 
@@ -898,7 +900,7 @@ namespace PlagueEngine.Tools
                     }
                 }
                 releaseInput = false;
-                DefinitionWindow definitionWindow = new DefinitionWindow(list,this.currentObject);
+                DefinitionWindow definitionWindow = new DefinitionWindow(list, this.currentObject);
                 definitionWindow.ShowDialog();
                 releaseInput = true;
                 if (!definitionWindow.canceled)
@@ -907,7 +909,7 @@ namespace PlagueEngine.Tools
                     god.Name = definitionWindow.textbox.Text;
                     god.GameObjectClass = this.currentClassNameNew.className;
 
-                    foreach(DefinitionWindow.Field field in definitionWindow.fields )
+                    foreach (DefinitionWindow.Field field in definitionWindow.fields)
                     {
                         if (field.checkbox.Checked)
                         {
@@ -915,26 +917,26 @@ namespace PlagueEngine.Tools
                         }
                     }
 
-                    if(contentManager.GameObjectsDefinitions.ContainsKey(god.Name))
+                    if (contentManager.GameObjectsDefinitions.ContainsKey(god.Name))
                     {
                         releaseInput = false;
-                        DialogResult dr=MessageBox.Show("Definition exists. Override?","",MessageBoxButtons.YesNo);
+                        DialogResult dr = MessageBox.Show("Definition exists. Override?", "", MessageBoxButtons.YesNo);
                         releaseInput = true;
-                        if(dr==DialogResult.Yes)
+                        if (dr == DialogResult.Yes)
                         {
                             contentManager.GameObjectsDefinitions.Remove(god.Name);
                             contentManager.GameObjectsDefinitions.Add(god.Name, god);
                             contentManager.SaveGameObjectsDefinitions();
                         }
-                        
+
                     }
                     else
                     {
-                    contentManager.GameObjectsDefinitions.Add(god.Name, god);
-                    contentManager.SaveGameObjectsDefinitions();
+                        contentManager.GameObjectsDefinitions.Add(god.Name, god);
+                        contentManager.SaveGameObjectsDefinitions();
 
 
-                    ComboboxDefinitions.Items.Add(definitionWindow.textbox.Text);
+                        ComboboxDefinitions.Items.Add(definitionWindow.textbox.Text);
 
                     }
 
@@ -942,10 +944,10 @@ namespace PlagueEngine.Tools
                 }
 
 
-                
+
             }
 
-       
+
         }
         /********************************************************************************/
 
@@ -1003,7 +1005,7 @@ namespace PlagueEngine.Tools
                 //wyswietlanie ilosci definicji w levelach
                 string messageBoxText = string.Empty;
 
-                for(int i=0;i<definitionCounter.Count;i++)
+                for (int i = 0; i < definitionCounter.Count; i++)
                 {
                     if (definitionCounter[i].count == 0)
                     {
@@ -1012,7 +1014,7 @@ namespace PlagueEngine.Tools
                     }
                     else
                     {
-                        messageBoxText += definitionCounter[i].count.ToString() + " objects in " + definitionCounter[i].levelName+"\n";
+                        messageBoxText += definitionCounter[i].count.ToString() + " objects in " + definitionCounter[i].levelName + "\n";
                     }
                 }
 
@@ -1025,7 +1027,7 @@ namespace PlagueEngine.Tools
                     releaseInput = true;
                 }
                 //usuwanie definicji z comboboxa
-                if (dialogResult == DialogResult.Yes || allDefinitions==0)
+                if (dialogResult == DialogResult.Yes || allDefinitions == 0)
                 {
 
 
@@ -1050,9 +1052,9 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            if(ComboboxDefinitions.SelectedIndex!=-1)
+            if (ComboboxDefinitions.SelectedIndex != -1)
             {
-            
+
                 bool cancelDefinition = false;
 
                 foreach (string propertyName in currentDefinition.Properties.Keys)
@@ -1074,7 +1076,7 @@ namespace PlagueEngine.Tools
                     this.ComboboxDefinitions.SelectedIndex = -1;
                     currentDefinition = null;
                     propertyGrid1.Refresh();
-                    
+
                 }
 
 
@@ -1097,7 +1099,7 @@ namespace PlagueEngine.Tools
         private void propertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             if (!checkBoxDisableEditing.Checked)
-            {                
+            {
                 level.GameObjectsFactory.RemoveGameObject(currentEditGameObject.ID);
                 level.GameObjectsFactory.Create(currentEditGameObject);
                 LoadIconsInfo();
@@ -1134,7 +1136,7 @@ namespace PlagueEngine.Tools
                 //    }
                 //}
 
-                
+
                 level.GameObjectsFactory.RemoveGameObject(((GameObjectInstanceData)(propertyGrid2.SelectedObject)).ID);
                 currentEditGameObject = null;
                 propertyGrid2.SelectedObject = null;
@@ -1150,7 +1152,7 @@ namespace PlagueEngine.Tools
         {
             if (!checkBoxDisableEditing.Checked)
             {
-              
+
                 level.GameObjectsFactory.RemoveGameObject(currentEditGameObject.ID);
                 level.GameObjectsFactory.Create(currentEditGameObject);
             }
@@ -1165,7 +1167,7 @@ namespace PlagueEngine.Tools
 
         private void buttonCreateDefinitionEdit_Click(object sender, EventArgs e)
         {
-            if (currentEditGameObject != null && currentClassNameEdit!=null)
+            if (currentEditGameObject != null && currentClassNameEdit != null)
             {
                 PropertyInfo[] PropertyInfo = currentEditGameObject.GetType().GetProperties();
                 List<PropertyInfo> list = PropertyInfo.ToList<PropertyInfo>();
@@ -1196,11 +1198,11 @@ namespace PlagueEngine.Tools
                             god.Properties.Add(field.label.Text, currentClassNameEdit.dataClassType.GetProperty(field.label.Text).GetValue(currentObject, null));
                         }
                     }
-                    
+
                     if (contentManager.GameObjectsDefinitions.ContainsKey(god.Name))
                     {
                         contentManager.GameObjectsDefinitions[god.Name] = god;
-                    }                    
+                    }
                     else
                     {
                         contentManager.GameObjectsDefinitions.Add(god.Name, god);
@@ -1219,32 +1221,32 @@ namespace PlagueEngine.Tools
         private void buttonSaveAs_Click(object sender, EventArgs e)
         {
 
-                        RestoreCamera();
+            RestoreCamera();
 
-                        releaseInput = false;
-                        LevelNameMessageBox box = new LevelNameMessageBox("Level name:");
-                        box.ShowDialog();
-                        releaseInput = true;
+            releaseInput = false;
+            LevelNameMessageBox box = new LevelNameMessageBox("Level name:");
+            box.ShowDialog();
+            releaseInput = true;
 
-                        string lvlName;
-                        if (!box.canceled)
-                        {
+            string lvlName;
+            if (!box.canceled)
+            {
 
-                            Regex reg = new Regex(@""+levelExtension+"$");
-                            if(!reg.IsMatch(box.levelName))
-                            {
-                                lvlName = box.levelName + levelExtension;
-                            }
-                            else
-                            {
-                                lvlName = box.levelName;
-                            }
+                Regex reg = new Regex(@"" + levelExtension + "$");
+                if (!reg.IsMatch(box.levelName))
+                {
+                    lvlName = box.levelName + levelExtension;
+                }
+                else
+                {
+                    lvlName = box.levelName;
+                }
 
-                            level.SaveLevel(lvlName);
-                            listBoxLevelNames.Items.Add(lvlName);
-                        }
-                
-          
+                level.SaveLevel(lvlName);
+                listBoxLevelNames.Items.Add(lvlName);
+            }
+
+
 
 
 
@@ -1299,6 +1301,23 @@ namespace PlagueEngine.Tools
             }
         }
 
+
+
+
+        private void GameObjectEditorWindow_Activated(object sender, EventArgs e)
+        {
+            inputEnable.Checked = input.Enabled;
+            input.Enabled = false;
+        }
+
+        private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
+        {
+            if (releaseInput)
+            {
+                input.Enabled = true;
+            }
+        }
+
         private void checkBoxGamePaused_CheckedChanged(object sender, EventArgs e)
         {
             this.game.GameStopped = checkBoxGamePaused.Checked;
@@ -1306,7 +1325,7 @@ namespace PlagueEngine.Tools
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            
+
 
             if (checkBox1.Checked)
             {
@@ -1341,28 +1360,28 @@ namespace PlagueEngine.Tools
             if (e.Node.Parent != null)
             {
 
-                    int id;
-                    int.TryParse(e.Node.Text, out id);
+                int id;
+                int.TryParse(e.Node.Text, out id);
 
-                    currentEditGameObject = level.GameObjects[id].GetData();
-                    currentEditGameObject.Position = currentEditGameObject.World.Translation;
-                    currentClassNameEdit = new gameObjectsClassName();
-                    currentClassNameEdit.dataClassType = currentEditGameObject.GetType();
-                    
-                    currentObject = currentEditGameObject;
+                currentEditGameObject = level.GameObjects[id].GetData();
+                currentEditGameObject.Position = currentEditGameObject.World.Translation;
+                currentClassNameEdit = new gameObjectsClassName();
+                currentClassNameEdit.dataClassType = currentEditGameObject.GetType();
 
-                    foreach (gameObjectsClassName name in gameObjectClassNames)
+                currentObject = currentEditGameObject;
+
+                foreach (gameObjectsClassName name in gameObjectClassNames)
+                {
+                    if (name.dataClassType == currentClassNameEdit.dataClassType)
                     {
-                        if (name.dataClassType == currentClassNameEdit.dataClassType)
-                        {
-                            currentClassNameEdit.className = name.className;
-                            currentClassNameEdit.ClassType = name.ClassType;
-                        }
+                        currentClassNameEdit.className = name.className;
+                        currentClassNameEdit.ClassType = name.ClassType;
                     }
+                }
 
 
-                    propertyGrid2.SelectedObject = currentEditGameObject;
-     
+                propertyGrid2.SelectedObject = currentEditGameObject;
+
 
             }
         }
@@ -1411,8 +1430,8 @@ namespace PlagueEngine.Tools
         }
         private void setUpCameraButton()
         {
-            
-            TreeNode [] nodes= treeView1.Nodes.Find("LinkedCamera",false);
+
+            TreeNode[] nodes = treeView1.Nodes.Find("LinkedCamera", false);
             if (nodes.GetLength(0) != 0)
             {
                 if (nodes[0].Nodes.Count != 0)
@@ -1475,12 +1494,12 @@ namespace PlagueEngine.Tools
                 FreeCameraData fcdata = new FreeCameraData();
                 fcdata.Type = typeof(FreeCamera);
                 fcdata.World = Matrix.Invert(Matrix.CreateLookAt(pos,
-                                                                 new Vector3(pos.X, pos.Y-70, pos.Z+60),
+                                                                 new Vector3(pos.X, pos.Y - 70, pos.Z + 60),
                                                                  new Vector3(0, 1, 0)));
                 fcdata.MovementSpeed = 0.05f;
                 fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
                 fcdata.FoV = 60;
-                fcdata.ZNear = 1; 
+                fcdata.ZNear = 1;
                 fcdata.ZFar = 200;
                 fcdata.ActiveKeyListener = true;
                 fcdata.ActiveMouseListener = true;
@@ -1488,29 +1507,29 @@ namespace PlagueEngine.Tools
 
 
 
-                
+
             }
 
-                renderer.CurrentCamera = freeCamera.cameraComponent;
-                cameraType = typeof(FreeCamera);
-                freeCamera.keyboardListenerComponent.Active = true;
-                freeCamera.mouseListenerComponent.Active = true;
-                linkedCamera.keyboardListenerComponent.Active = false;
-                linkedCamera.mouseListenerComponent.Active = false;
-                //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
+            renderer.CurrentCamera = freeCamera.cameraComponent;
+            cameraType = typeof(FreeCamera);
+            freeCamera.keyboardListenerComponent.Active = true;
+            freeCamera.mouseListenerComponent.Active = true;
+            linkedCamera.keyboardListenerComponent.Active = false;
+            linkedCamera.mouseListenerComponent.Active = false;
+            //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
 
         }
 
         private void switchToLinkedCamera()
         {
-                int id = 0;
-                TreeNode[] nodes;
-                MercenariesManager mercManager;
+            int id = 0;
+            TreeNode[] nodes;
+            MercenariesManager mercManager;
             if (linkedCamera == null)
             {
-                Vector3 pos=renderer.CurrentCamera.Position;
+                Vector3 pos = renderer.CurrentCamera.Position;
 
-               
+
                 id = 0;
                 nodes = treeView1.Nodes.Find("MercenariesManager", false);
                 if (nodes.GetLength(0) != 0)
@@ -1519,11 +1538,11 @@ namespace PlagueEngine.Tools
 
                 }
                 mercManager = (MercenariesManager)level.GameObjects[id];
-                
+
                 LinkedCameraData lcdata = new LinkedCameraData();
                 lcdata.Type = typeof(LinkedCamera);
                 lcdata.position = pos;
-                lcdata.Target = new Vector3(pos.X, pos.Y-35, pos.Z+25);
+                lcdata.Target = new Vector3(pos.X, pos.Y - 35, pos.Z + 25);
                 lcdata.MovementSpeed = 0.07f;
                 lcdata.RotationSpeed = 0.005f;
                 lcdata.ZoomSpeed = 0.01f;
@@ -1542,28 +1561,28 @@ namespace PlagueEngine.Tools
 
             }
 
-                renderer.CurrentCamera = linkedCamera.cameraComponent;
-                cameraType = typeof(LinkedCamera);
-                
-                linkedCamera.keyboardListenerComponent.Active = true;
-                linkedCamera.mouseListenerComponent.Active = true;
-                freeCamera.keyboardListenerComponent.Active = false;
-                freeCamera.mouseListenerComponent.Active = false;
+            renderer.CurrentCamera = linkedCamera.cameraComponent;
+            cameraType = typeof(LinkedCamera);
+
+            linkedCamera.keyboardListenerComponent.Active = true;
+            linkedCamera.mouseListenerComponent.Active = true;
+            freeCamera.keyboardListenerComponent.Active = false;
+            freeCamera.mouseListenerComponent.Active = false;
 
 
-                nodes = treeView1.Nodes.Find("MercenariesManager", false);
-                if (nodes.GetLength(0) != 0)
-                {
-                    id = int.Parse(nodes[0].Nodes[0].Text);
+            nodes = treeView1.Nodes.Find("MercenariesManager", false);
+            if (nodes.GetLength(0) != 0)
+            {
+                id = int.Parse(nodes[0].Nodes[0].Text);
 
-                }
-                mercManager = (MercenariesManager)level.GameObjects[id];
-            
-                linkedCamera.mercenariesManager = mercManager;
-                if (mercManager != null)
-                {
-                    mercManager.LinkedCamera = linkedCamera;
-                }
+            }
+            mercManager = (MercenariesManager)level.GameObjects[id];
+
+            linkedCamera.mercenariesManager = mercManager;
+            if (mercManager != null)
+            {
+                mercManager.LinkedCamera = linkedCamera;
+            }
             //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
         }
 
@@ -1572,7 +1591,7 @@ namespace PlagueEngine.Tools
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if(cameraType!=null)
+            if (cameraType != null)
             {
                 if (cameraType == typeof(LinkedCamera))
                 {
@@ -1609,73 +1628,73 @@ namespace PlagueEngine.Tools
 
         public void DrawIcons(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
-            
-            if(renderer.CurrentCamera!=null && renderer.CurrentCamera.GameObject.GetType()==typeof(FreeCamera))
+
+            if (renderer.CurrentCamera != null && renderer.CurrentCamera.GameObject.GetType() == typeof(FreeCamera))
             {
-            if (icons.Count != 0)
-            {
-                iconInfo.Clear();
-
-
-
-                foreach (GameObjectInstance gameobject in icons)
+                if (icons.Count != 0)
                 {
-                    Vector4 position;
-                    Vector2 pos2;
-                    int textureWidth=0;
-                    int textureHeight=0;
-                    Texture2D texture=null;
+                    iconInfo.Clear();
 
 
-                    if (gameobject.GetType().Name.Equals("Sunlight"))
+
+                    foreach (GameObjectInstance gameobject in icons)
                     {
-                        textureWidth=sunLightIcon.Width;
-                        textureHeight=sunLightIcon.Height;
-                        texture = sunLightIcon;
+                        Vector4 position;
+                        Vector2 pos2;
+                        int textureWidth = 0;
+                        int textureHeight = 0;
+                        Texture2D texture = null;
+
+
+                        if (gameobject.GetType().Name.Equals("Sunlight"))
+                        {
+                            textureWidth = sunLightIcon.Width;
+                            textureHeight = sunLightIcon.Height;
+                            texture = sunLightIcon;
+
+                        }
+                        else if (gameobject.GetType().Name.Equals("SpotLight"))
+                        {
+                            textureWidth = spotLightIcon.Width;
+                            textureHeight = spotLightIcon.Height;
+                            texture = spotLightIcon;
+                        }
+                        else if (gameobject.GetType().Name.Equals("PointLight"))
+                        {
+                            textureWidth = pointLightIcon.Width;
+                            textureHeight = pointLightIcon.Height;
+                            texture = pointLightIcon;
+                        }
+
+                        position = Vector4.Transform(Vector3.Transform(Vector3.Zero, gameobject.World), ViewProjection);
+
+                        pos2.X = MathHelper.Clamp(0.5f * ((position.X / Math.Abs(position.W)) + 1.0f), 0.01f, 0.99f);
+                        pos2.X *= screenWidth;
+
+
+                        pos2.Y = MathHelper.Clamp(1.0f - (0.5f * ((position.Y / Math.Abs(position.W)) + 1.0f)), 0.01f, 0.99f);
+                        pos2.Y *= screenHeight;
+                        pos2.Y -= textureHeight / 2;
+                        pos2.X -= textureWidth / 2;
+                        spriteBatch.Draw(texture, pos2, Color.White);
+
+
+                        iconInfo.Add(new iconInfo(pos2, textureWidth, textureHeight, gameobject.ID));
+
+
 
                     }
-                    else if (gameobject.GetType().Name.Equals("SpotLight"))
-                    {
-                        textureWidth=spotLightIcon.Width;
-                        textureHeight=spotLightIcon.Height;
-                        texture = spotLightIcon;
-                    }
-                    else if (gameobject.GetType().Name.Equals("PointLight"))
-                    {
-                        textureWidth=pointLightIcon.Width;
-                        textureHeight=pointLightIcon.Height;
-                        texture = pointLightIcon;
-                    }
-
-                    position = Vector4.Transform(Vector3.Transform(Vector3.Zero, gameobject.World), ViewProjection);
-
-                    pos2.X = MathHelper.Clamp(0.5f * ((position.X / Math.Abs(position.W)) + 1.0f), 0.01f, 0.99f);
-                    pos2.X *= screenWidth;
-                    
-
-                    pos2.Y = MathHelper.Clamp(1.0f - (0.5f * ((position.Y / Math.Abs(position.W)) + 1.0f)), 0.01f, 0.99f);
-                    pos2.Y *= screenHeight;
-                    pos2.Y -= textureHeight / 2;
-                    pos2.X -= textureWidth / 2;
-                    spriteBatch.Draw(texture, pos2, Color.White);
-
-
-                    iconInfo.Add(new iconInfo(pos2, textureWidth, textureHeight, gameobject.ID));
-
-
 
                 }
-
-            }
-                if(moveObject)
+                if (moveObject)
                 {
-                Vector2 pos=new Vector2(screenWidth-moveIcon.Width,screenHeight-moveIcon.Height);
-                spriteBatch.Draw(moveIcon,pos,Color.White);
+                    Vector2 pos = new Vector2(screenWidth - moveIcon.Width, screenHeight - moveIcon.Height);
+                    spriteBatch.Draw(moveIcon, pos, Color.White);
                 }
                 else
                 {
-                Vector2 pos=new Vector2(screenWidth-rotateIcon.Width,screenHeight-rotateIcon.Height);
-                spriteBatch.Draw(rotateIcon,pos,Color.White);
+                    Vector2 pos = new Vector2(screenWidth - rotateIcon.Width, screenHeight - rotateIcon.Height);
+                    spriteBatch.Draw(rotateIcon, pos, Color.White);
                 }
             }
         }
@@ -1734,7 +1753,7 @@ namespace PlagueEngine.Tools
 
         /********************************************************************************/
 
-    
+
 
 
     }
