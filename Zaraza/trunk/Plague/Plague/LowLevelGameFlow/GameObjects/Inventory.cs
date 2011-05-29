@@ -111,7 +111,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// OnDraw
         /****************************************************************************/
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
-        {
+        {            
             localPosition = new Vector2((screenWidth/2) - 420,100);
             /***********************/
             /// Draw Main Inventory

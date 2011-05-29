@@ -125,36 +125,36 @@ namespace PlagueEngine.Rendering.Components
                                                                ).GetCorners();
 
 
-            //float[] tempHeights = new float[vertexCount];
+            float[] tempHeights = new float[vertexCount];
 
-            //for (int i = 0; i < vertexCount; i++)
-            //{
-            //    tempHeights[i] = vertices[i].Position.Y;
-            //}
+            for (int i = 0; i < vertexCount; i++)
+            {
+                tempHeights[i] = vertices[i].Position.Y;
+            }
 
-            //for (int x = 5; x < Segments - 5; x++)
-            //{
-            //    for (int y = 5; y < Segments - 5; y++)
-            //    {
-            //        float h = 0;
+            for (int x = 5; x < Segments - 5; x++)
+            {
+                for (int y = 5; y < Segments - 5; y++)
+                {
+                    float h = 0;
 
-            //        for (int i = -5; i <= 5; i++)
-            //        {
-            //            for (int j = -5; j <= 5; j++)
-            //            {
-            //                h += vertices[((x + i) * Segments) + y + j].Position.Y;
-            //            }
-            //        }
+                    for (int i = -5; i <= 5; i++)
+                    {
+                        for (int j = -5; j <= 5; j++)
+                        {
+                            h += vertices[((x + i) * Segments) + y + j].Position.Y;
+                        }
+                    }
 
-            //        h /= 121.0f;
-            //        tempHeights[(x * Segments) + y] = h;
-            //    }
-            //}
+                    h /= 121.0f;
+                    tempHeights[(x * Segments) + y] = h;
+                }
+            }
 
-            //for (int i = 0; i < vertexCount; i++)
-            //{
-            //    vertices[i].Position.Y = tempHeights[i];
-            //}
+            for (int i = 0; i < vertexCount; i++)
+            {
+                vertices[i].Position.Y = tempHeights[i];
+            }
 
             int[] indices = new int[indexCount];
 
