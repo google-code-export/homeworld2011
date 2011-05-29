@@ -80,8 +80,7 @@ namespace PlagueEngine.AItest
                 dir.Y = 0;
                 ownerForward.Y = 0;
                 float dot = Vector3.Dot(ownerForward, dir);
-                float lenght=(ownerForward.Length() * (go.World.Translation - owner.World.Translation).Length());
-
+               
                 float angleBetweenGO = MathHelper.ToDegrees((float)Math.Abs(Math.Acos(dot  )));
 
                 if ( angleBetweenGO <= angle)
