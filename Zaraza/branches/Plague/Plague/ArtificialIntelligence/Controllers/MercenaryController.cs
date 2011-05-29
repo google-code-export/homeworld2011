@@ -202,10 +202,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             if (ammoLeft >= currentWeapon.ammoPerShot)
             {
                 action = TacticalAction.ATTACK_IDLE;
+                cooldownTimer.Reset(this.currentAttack.cooldown, 1);
             }
             else
             {
                 action = TacticalAction.RELOAD;
+                cooldownTimer.Reset(this.currentWeapon.reloadCooldown, 1);
             }
         }
 
