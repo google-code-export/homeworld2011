@@ -169,7 +169,7 @@ namespace PlagueEngine.Tools
                 gameObjectsName.Items.Add(gameObject.className);
             }
 
-
+            inputEnable.Checked = input.Enabled;
             this.Visible = true;
             this.MaximizeBox = false;
 
@@ -693,7 +693,6 @@ namespace PlagueEngine.Tools
                     {
                         releaseInput = false;
                         var box = new LevelNameMessageBox("Old level name:");
-                        box.Activated += new EventHandler(GameObjectEditorWindow_Activated);
                         box.ShowDialog();
                         releaseInput = true;
                         if (!box.canceled)
@@ -737,7 +736,6 @@ namespace PlagueEngine.Tools
                 renderer.debugDrawer.DisableHeightmapDrawing();
                 
                 var box2 = new LevelNameMessageBox("New level name:");
-                box2.Activated += new EventHandler(GameObjectEditorWindow_Activated);
                 bool newName;
                 do
                 {
@@ -1291,23 +1289,6 @@ namespace PlagueEngine.Tools
             else
             {
                 renderer.debugDrawer.Disable();
-            }
-        }
-
-
-
-
-        private void GameObjectEditorWindow_Activated(object sender, EventArgs e)
-        {
-            inputEnable.Checked = input.Enabled;
-            input.Enabled = false;
-        }
-
-        private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
-        {
-            if (releaseInput)
-            {
-                input.Enabled = true;
             }
         }
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
@@ -20,7 +22,27 @@ namespace PlagueEngine.Audio.Components
         public void CreateNewSound(string soundEffectName, string soundName, float volume, float pitch, float pan)
         {
             var sf = _audioManager.LoadSound(soundName);
-            _sounds.Add(soundEffectName, new SoundCue(volume, pitch, pan, sf));
+            if (sf != null)
+            {
+                _sounds.Add(soundEffectName, new SoundCue(volume, pitch, pan, sf));
+            }
+        }
+
+        public void CreateNewSoundFromFolder(string folderName, float volume, float pitch, float pan)
+        {
+            var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
+            if (!dir.Exists) return;
+            var xbnFiles = dir.GetFiles("*.xnb");
+            foreach (var file in xbnFiles)
+            {
+                var soundName = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
+                var sf = _audioManager.LoadSound(folderName + "\\" + soundName);
+                if (sf != null)
+                {
+                    _sounds.Add(soundName, new SoundCue(volume, pitch, pan, sf));
+                }
+            }
+
         }
         /// <summary>
         /// Plays the sound of the given name.
@@ -34,9 +56,8 @@ namespace PlagueEngine.Audio.Components
             {
 #if DEBUG
                 Diagnostics.PushLog("Dźwięk " + soundName + " nie istnieje");
-#else   
-          return;
 #endif
+                return;
             }
 
             _audioManager.PlaySound(sound, _emitter);

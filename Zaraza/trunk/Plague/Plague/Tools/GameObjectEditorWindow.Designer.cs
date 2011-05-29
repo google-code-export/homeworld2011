@@ -537,8 +537,6 @@
             this.Controls.Add(this.panel6);
             this.Name = "GameObjectEditorWindow";
             this.Text = "Game-Object-Editor";
-            this.Activated += new System.EventHandler(this.GameObjectEditorWindow_Activated);
-            this.Deactivate += new System.EventHandler(this.GameObjectEditorWindow_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GameObjectEditorWindow_FormClosing);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

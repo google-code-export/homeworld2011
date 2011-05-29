@@ -114,7 +114,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
-            SoundEffectComponent.CreateNewSound("yesSir", "yesSir",1,0,0);
+            SoundEffectComponent.CreateNewSoundFromFolder("Mercenary", 1, 0, 0);
             this.rotationSpeed  = rotationSpeed;
             this.movingSpeed    = movingSpeed;
             this.distance       = distance;
