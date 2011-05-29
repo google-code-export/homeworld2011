@@ -1043,6 +1043,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                            data.SkinYaw,
                                                                            data.SkinPitch,
                                                                            data.SkinRoll),
+
                         renderingComponentsFactory.CreateFrontEndComponent(result,
                                                                            "marker"),
                         data.MarkerPosition,

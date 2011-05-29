@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Audio.Components;
 using PlagueEngine.LowLevelGameFlow;
@@ -14,6 +15,8 @@ using PlagueEngine.Input.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
 
+
+using PlagueEngine.AItest;
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
@@ -89,6 +92,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public SkinnedMeshComponent Mesh { get { return this.mesh; } private set { this.mesh = value; } }
         public CapsuleBodyComponent Body { get { return this.body; } private set { this.body = value; } }
         public PhysicsController    Controller { get; private set; }
+
+
+        private EventsSnifferComponent sniffer = new EventsSnifferComponent();
+        List<GameObjectInstance> barrels = new List<GameObjectInstance>();
+        KeyboardListenerComponent keyboard;
         /****************************************************************************/
 
 
@@ -132,7 +140,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             markerLocalPosition = markerPosition;
             marker.Draw = MarkerDraw;
             Marker = false;
-
+            
             Controller = new PhysicsController(Body);
             Controller.EnableControl();
 
@@ -142,9 +150,41 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             Items = new Dictionary<IStorable, ItemPosition>();
 
+            sniffer.SetOnSniffedEvent(OnSniffedEvent);
+            sniffer.SubscribeEvents(typeof(CreateEvent),
+                                    typeof(DestroyEvent));
+            keyboard = new KeyboardListenerComponent(this, true);
+            keyboard.SubscibeKeys(OnKey, Keys.T);
+
         }
         /****************************************************************************/
 
+
+        private void OnKey(Keys key, ExtendedKeyState state)
+        {
+            if (key == Keys.T && state.WasPressed())
+            {
+                
+                GameObjectInstance closesEnemy= AI.FindClosestVisible(barrels, this,this.World.Backward, 45, 150);
+                if(closesEnemy!=null)
+                Diagnostics.PushLog("CLOSEST ENEMY: " + closesEnemy.ID.ToString());
+            }
+        }
+        private void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
+        {
+
+            /*************************************/
+            /// CreateEvent
+            /*************************************/
+            if (e.GetType().Equals(typeof(CreateEvent)) && sender.GetType().Equals(typeof(CylindricalBodyMesh)))
+            {
+                barrels.Add(sender as CylindricalBodyMesh);
+            }
+            if (e.GetType().Equals(typeof(DestroyEvent)) && sender.GetType().Equals(typeof(CylindricalBodyMesh)))
+            {
+                barrels.Remove(sender as CylindricalBodyMesh);
+            }
+        }
 
         /****************************************************************************/
         /// Get World
@@ -556,8 +596,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinRoll         = Body.Roll;
             data.SkinYaw          = Body.Yaw;
 
+
             data.Radius = Body.Radius;
             data.Length = Body.Length;
+
 
             data.MarkerPosition = markerLocalPosition;
             data.GripBone       = gripBone;
@@ -573,7 +615,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.RotationSpeed      = rotationSpeed;
             data.DistancePrecision  = distance;
             data.AnglePrecision     = anglePrecision;
-
+           
 
             return data;
         }
@@ -669,7 +711,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float SkinPitch { get; set; }
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
-        
+
+
         [CategoryAttribute("Marker")]
         public Vector3 MarkerPosition { get; set; }
 

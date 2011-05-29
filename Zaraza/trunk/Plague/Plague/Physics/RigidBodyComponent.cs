@@ -59,7 +59,7 @@ namespace PlagueEngine.Physics
         private List<int> gameObjectsToColide       = new List<int>();
         private List<int> gameObjectsToNotColide    = new List<int>();
 
-
+        public bool dontCollide { get; set; }
         /****************************************************************************/
 
 
@@ -86,6 +86,7 @@ namespace PlagueEngine.Physics
             
             physicsManager.rigidBodies.Add(gameObject.ID, this);
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
+            dontCollide=false;
         }
         /****************************************************************************/
 
@@ -135,7 +136,10 @@ namespace PlagueEngine.Physics
 
                 }
 
-
+                if (dontCollide)
+                {
+                    return false;
+                }
 
 
                 if (gameObjectsToNotColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
@@ -239,6 +243,8 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
+
+
 
 
         /****************************************************************************/

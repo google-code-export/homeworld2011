@@ -140,10 +140,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AItest\AI.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\Components\BackgroundMusicComponent.cs" />
     <Compile Include="Audio\Components\SoundEffectComponent.cs" />
     <Compile Include="Audio\MusicFadeEffect.cs" />
+    <Compile Include="Audio\SongCue.cs" />
     <Compile Include="Audio\SoundCue.cs" />
     <Compile Include="EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />

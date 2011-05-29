@@ -49,7 +49,8 @@ namespace PlagueEngine.Physics
         private List<Type> gameObjectsTypeToNotColide = new List<Type>();
         private List<int> gameObjectsToColide = new List<int>();
         private List<int> gameObjectsToNotColide = new List<int>();
-
+        public bool DontCollide { get; set; }
+        public bool RequireUpdate { get; set; }
         /****************************************************************************/
 
 
@@ -72,6 +73,8 @@ namespace PlagueEngine.Physics
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
 
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
+            DontCollide = false;
+            RequireUpdate = false;
         }
         /****************************************************************************/
 
@@ -123,7 +126,10 @@ namespace PlagueEngine.Physics
                 }
 
 
-
+                if (DontCollide)
+                {
+                    return false;
+                }
 
                 if (gameObjectsToNotColide.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
                 {
@@ -453,8 +459,17 @@ namespace PlagueEngine.Physics
         public void Update()
         {
             SendCollisionEvents();
+            if (RequireUpdate)
+            {
+                this.MoveTo(gameObject.World);
+            }
         }
 
+
+        protected virtual void MoveTo(Matrix world)
+        {
+
+        }
 
         /****************************************************************************/
         /// Enable
