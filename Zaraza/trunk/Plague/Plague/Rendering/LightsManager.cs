@@ -153,7 +153,8 @@ namespace PlagueEngine.Rendering
                     directionalLight.Parameters["LightIntensity"].SetValue(sunlight.Intensity);
                     directionalLight.Parameters["ShadowMap"].SetValue(sunlightShadowMap);
                     directionalLight.Parameters["LightViewProjection"].SetValue(SunlightViewProjection);
-                    directionalLight.Parameters["DepthBias"].SetValue(sunlight.DepthBias);       
+                    directionalLight.Parameters["DepthBias"].SetValue(sunlight.DepthBias);
+                    directionalLight.Parameters["ShadowIntensity"].SetValue(sunlight.ShadowIntensity);
                     directionalLight.Techniques[0].Passes[0].Apply();
                     fullScreenQuad.Draw();
                 }

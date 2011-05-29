@@ -20,6 +20,7 @@ float  LightIntensity;
 /// Shadows
 /****************************************************/
 float DepthBias = 0.00001f;
+float ShadowIntensity = 0;
 
 texture ShadowMap;
 sampler ShadowMapSampler = sampler_state
@@ -150,7 +151,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
 	float lightDepth = tex2D(ShadowMapSampler, LightUV).r;
 			
-	if(lightDepth < realDepth) ShadowFactor = 0;	
+	if(lightDepth < realDepth) ShadowFactor = ShadowIntensity;	
 
 	float4 output = Phong(Position.xyz,Normal,NormalData.w);
 

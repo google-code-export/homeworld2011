@@ -81,6 +81,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 spriteBatch.Draw(frontEnd.Texture, new Vector2(58 + (int)(angle * 64), screenHeight - 33), new Rectangle(0, 33, 13, 17), Color.White);            
             }
+
+            spriteBatch.Draw(frontEnd.Texture, new Vector2(58, screenHeight - 10), new Rectangle(50, 33, 13, 17), Color.White);
         }
         /****************************************************************************/
 

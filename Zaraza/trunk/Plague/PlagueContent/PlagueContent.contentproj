@@ -1304,27 +1304,90 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Vehicles\blackhawk.fbx">
-      <Name>blackhawk</Name>
+    <Compile Include="Textures\Vehicles\blackhawk.diff.tga">
+      <Name>blackhawk.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Vehicles\blackhawk.norm.tga">
+      <Name>blackhawk.norm</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Vehicles\blackhawk.spec.tga">
+      <Name>blackhawk.spec</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Vehicles\blackhawk.back.fbx">
+      <Name>blackhawk.back</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Vehicles\blackhawk.front.fbx">
+      <Name>blackhawk.front</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlagueEngineModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Vehicles\blackhowk.diff.tga">
-      <Name>blackhowk.diff</Name>
+    <Compile Include="Textures\compass.png">
+      <Name>compass</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Vehicles\blackhowk.norm.tga">
-      <Name>blackhowk.norm</Name>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Vehicles\truck01.crash.spec.tga">
+      <Name>truck01.crash.spec</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Vehicles\blackhowk.spec.tga">
-      <Name>blackhowk.spec</Name>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Vehicles\CrashedTruckLightsAttenuation.bmp">
+      <Name>CrashedTruckLightsAttenuation</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Misc\dzwig01.tga">
+      <Name>dzwig01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+    </Compile>
+    <Compile Include="Textures\Misc\pipe.diff.tga">
+      <Name>pipe.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+    </Compile>
+    <Compile Include="Textures\Misc\pipe.spec.tga">
+      <Name>pipe.spec</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Misc\BrokenPipe.FBX">
+      <Name>BrokenPipe</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Misc\Pipe.FBX">
+      <Name>Pipe</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Misc\PipeStand.FBX">
+      <Name>PipeStand</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
