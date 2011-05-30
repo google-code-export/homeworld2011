@@ -33,6 +33,7 @@ namespace PlagueEngine.Rendering.Components
         private readonly InstancingModes instancingMode;
         private Vector3[] corners = new Vector3[8];
         private Vector3[] _bbCorners = new Vector3[8];
+        private BoundingBox PrecomputedBoundingBox;
         /****************************************************************************/
 
 
@@ -44,7 +45,8 @@ namespace PlagueEngine.Rendering.Components
                              TexturesPack       textures,
                              InstancingModes    instancingMode,
                              Techniques         technique,
-                             bool               enabled)
+                             bool               enabled,
+                             bool               staticMesh)
             : base(gameObject)
         {
             this.model          = model;
@@ -52,6 +54,15 @@ namespace PlagueEngine.Rendering.Components
             this.instancingMode = instancingMode;
             this.technique      = technique;
             Enabled = enabled;
+            Static = staticMesh;
+            
+            if (Static)
+            { 
+                var world = gameObject.GetWorld(); 
+                _bbCorners = Model.BoundingBox.GetCorners();
+                Vector3.Transform(_bbCorners, ref world, corners);
+                PrecomputedBoundingBox = BoundingBox.CreateFromPoints(corners);
+            }
 
             _bbCorners = Model.BoundingBox.GetCorners();
             
@@ -81,6 +92,8 @@ namespace PlagueEngine.Rendering.Components
         {
             get
             {
+                if (Static) return PrecomputedBoundingBox;
+
                 var world = gameObject.GetWorld(); 
                 Vector3.Transform(_bbCorners, ref world, corners);
                 return BoundingBox.CreateFromPoints(corners);
@@ -96,6 +109,7 @@ namespace PlagueEngine.Rendering.Components
         public TexturesPack      Textures       { get { return textures;       } }
         public InstancingModes   InstancingMode { get { return instancingMode; } }
         public bool              Enabled        { get; set; }
+        public bool Static                      { get; private set; }
         /****************************************************************************/
 
     }

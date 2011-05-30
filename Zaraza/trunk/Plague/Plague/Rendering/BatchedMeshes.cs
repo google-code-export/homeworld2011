@@ -237,18 +237,6 @@ namespace PlagueEngine.Rendering
                     }
                     break;
 
-                case InstancingModes.StaticInstancing:
-                    {
-                        switch (technique)
-                        {
-                            case Techniques.Diffuse:               instDiff        [mesh.Model][mesh.Textures].StaticMeshes.Add(mesh); break;
-                            case Techniques.DiffuseSpecular:       instDiffSpec    [mesh.Model][mesh.Textures].StaticMeshes.Add(mesh); break;
-                            case Techniques.DiffuseNormal:         instDiffNorm    [mesh.Model][mesh.Textures].StaticMeshes.Add(mesh); break;
-                            case Techniques.DiffuseSpecularNormal: instDiffSpecNorm[mesh.Model][mesh.Textures].StaticMeshes.Add(mesh); break;
-                        }                                       
-                    }
-                    break;
-
                 case InstancingModes.DynamicInstancing:
                     {
                         switch (technique)
@@ -319,23 +307,10 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         private void RemoveMeshComponent(MeshComponent mesh, InstancingModes instancingMode, Dictionary<PlagueEngineModel, Dictionary<TexturesPack, InstancesData>> container)
         {
-            if (instancingMode == InstancingModes.StaticInstancing)
+            container[mesh.Model][mesh.Textures].DynamicMeshes.Remove(mesh);
+            
+            if (container[mesh.Model][mesh.Textures].DynamicMeshes.Count == 0) 
             {
-                container[mesh.Model][mesh.Textures].StaticMeshes.Remove(mesh);
-            }
-            else
-            {
-                container[mesh.Model][mesh.Textures].DynamicMeshes.Remove(mesh);
-            }
-
-            if (container[mesh.Model][mesh.Textures].DynamicMeshes.Count == 0 && 
-                container[mesh.Model][mesh.Textures].StaticMeshes.Count  == 0)
-            {
-                if(container[mesh.Model][mesh.Textures].StaticInstances != null)
-                {
-                    container[mesh.Model][mesh.Textures].StaticInstances.Dispose();
-                }
-
                 if (container[mesh.Model][mesh.Textures].DynamicInstances != null)
                 {
                     container[mesh.Model][mesh.Textures].DynamicInstances.Dispose();
@@ -430,24 +405,6 @@ namespace PlagueEngine.Rendering
 
                     InstancesData instancesData = texturesPack.Value;
                     
-                    /*************************/
-                    // Static Instances
-                    /*************************/
-                    if (instancesData.StaticInstances != null && instancesData.StaticInstanceCount != 0)
-                    {
-                        renderer.Device.SetVertexBuffers(vertexBufferBinding,
-                                                         new VertexBufferBinding(instancesData.StaticInstances, 0, 1));
-
-                        renderer.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList,
-                                                                0,
-                                                                0,
-                                                                model.Key.VertexCount,
-                                                                0,
-                                                                model.Key.TriangleCount,
-                                                                instancesData.StaticInstanceCount);
-                    }
-                    /*************************/
-
 
                     /*************************/
                     // Dynamic Instances
@@ -498,52 +455,6 @@ namespace PlagueEngine.Rendering
                     }
                     /*************************/
 
-                }
-            }
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Commit Mesh Transforms (0)
-        /****************************************************************************/
-        public void CommitMeshTransforms()
-        {
-            CommitMeshTransforms(instDiff);
-            CommitMeshTransforms(instDiffSpec);
-            CommitMeshTransforms(instDiffNorm);
-            CommitMeshTransforms(instDiffSpecNorm);
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Commit Mesh Transforms (1)
-        /****************************************************************************/
-        private void CommitMeshTransforms(Dictionary<PlagueEngineModel, Dictionary<TexturesPack, InstancesData>> container)
-        {
-            foreach (PlagueEngineModel model in container.Keys)
-            {
-                foreach (TexturesPack texturesPack in container[model].Keys)
-                {
-                    InstancesData instancesData = container[model][texturesPack];
-
-                    Matrix[] transforms = new Matrix[instancesData.StaticMeshes.Count];
-
-                    if (instancesData.StaticMeshes.Count == 0) continue;
-
-                    int instances = 0;
-                    foreach (MeshComponent meshComponent in instancesData.StaticMeshes)
-                    {
-                        transforms[instances++] = meshComponent.GameObject.World;
-                    }
-
-                    if (instancesData.StaticInstances != null) instancesData.StaticInstances.Dispose();
-
-                    instancesData.StaticInstanceCount = instances;
-
-                    instancesData.StaticInstances = new VertexBuffer(renderer.Device, InstanceVertexDeclaration, instances, BufferUsage.WriteOnly);
-                    instancesData.StaticInstances.SetData(transforms, 0, instances);
                 }
             }
         }
@@ -696,24 +607,6 @@ namespace PlagueEngine.Rendering
                 {
                     InstancesData instancesData = texturesPack.Value;
 
-                    /*************************/
-                    // Static Instances
-                    /*************************/
-                    if (instancesData.StaticInstances != null && instancesData.StaticInstanceCount != 0)
-                    {
-                        renderer.Device.SetVertexBuffers(vertexBufferBinding,
-                                                         new VertexBufferBinding(instancesData.StaticInstances, 0, 1));
-
-                        renderer.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList,
-                                                                0,
-                                                                0,
-                                                                model.Key.VertexCount,
-                                                                0,
-                                                                model.Key.TriangleCount,
-                                                                instancesData.StaticInstanceCount);
-                    }
-                    /*************************/
-
 
                     /*************************/
                     // Dynamic Instances
@@ -805,11 +698,8 @@ namespace PlagueEngine.Rendering
             /************************************************************************/
             /// Fields
             /************************************************************************/
-            public List<MeshComponent> StaticMeshes = new List<MeshComponent>();
             public List<MeshComponent> DynamicMeshes = new List<MeshComponent>();
-            public VertexBuffer StaticInstances = null;
             public DynamicVertexBuffer DynamicInstances = null;
-            public int StaticInstanceCount = 0;
             /************************************************************************/
 
         }
@@ -824,8 +714,7 @@ namespace PlagueEngine.Rendering
     /********************************************************************************/
     public enum InstancingModes
     {
-        NoInstancing,
-        StaticInstancing,
+        NoInstancing,        
         DynamicInstancing
     }
     /********************************************************************************/

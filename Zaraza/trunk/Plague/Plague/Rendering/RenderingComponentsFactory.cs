@@ -163,7 +163,8 @@ namespace PlagueEngine.Rendering
                                                  String specularMap,
                                                  String normalMap,
                                                  InstancingModes instancingMode,
-                                                 bool disabled)
+                                                 bool disabled,
+                                                 bool staticMesh)
         {
             MeshComponent result = null;
             
@@ -177,7 +178,8 @@ namespace PlagueEngine.Rendering
                                        textures,
                                        instancingMode,
                                        technique,
-                                       disabled);                    
+                                       disabled,
+                                       staticMesh);                    
             return result;
         }                                            
         /****************************************************************************/

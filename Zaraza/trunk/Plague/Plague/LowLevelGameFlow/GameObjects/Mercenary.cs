@@ -117,7 +117,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Rectangle icon,
                          Rectangle inventoryIcon,
                          uint tinySlots,
-                         uint slots)
+                         uint slots,
+                         Dictionary<IStorable, ItemPosition> items,
+                         GameObjectInstance currentObject)
         {
             Mesh = mesh;
             Body = body;
@@ -131,6 +133,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.InventoryIcon  = inventoryIcon;
             this.TinySlots      = tinySlots;
             this.Slots          = slots;
+            this.currentObject  = currentObject;
+
+            Items = items;
 
             this.HP = HP;
             MaxHP = maxHP;
@@ -147,9 +152,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mesh.StartClip("Idle");
             
             RequiresUpdate = true;
-
-            Items = new Dictionary<IStorable, ItemPosition>();
-
+                        
             sniffer.SetOnSniffedEvent(OnSniffedEvent);
             sniffer.SubscribeEvents(typeof(CreateEvent),
                                     typeof(DestroyEvent));
@@ -615,7 +618,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.RotationSpeed      = rotationSpeed;
             data.DistancePrecision  = distance;
             data.AnglePrecision     = anglePrecision;
-           
+
+            data.CurrentItem = currentObject == null ? 0 : currentObject.ID;
+            data.Items = new List<int[]>();
+
+            foreach (KeyValuePair<IStorable, ItemPosition> item in Items)
+            {
+                data.Items.Add(new int[] { (item.Key as GameObjectInstance).ID, item.Value.Slot, item.Value.Orientation });
+            }
 
             return data;
         }
@@ -738,13 +748,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Icon")]
         public Rectangle InventoryIcon { get; set; }
 
-        [CategoryAttribute("Slots")]
+        [CategoryAttribute("Inventory")]
         public uint TinySlots { get; set; }
-        [CategoryAttribute("Slots")]
+        [CategoryAttribute("Inventory")]
         public uint Slots { get; set; }
-
+        [CategoryAttribute("Inventory")]
+        public List<int[]> Items { get; set; }
+        [CategoryAttribute("Inventory")]
+        public int CurrentItem { get; set; }
     }
     /********************************************************************************/
 
+    
 }
 /************************************************************************************/

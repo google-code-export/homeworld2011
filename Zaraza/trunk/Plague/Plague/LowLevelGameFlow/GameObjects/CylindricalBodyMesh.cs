@@ -94,6 +94,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinRoll = body.Roll;
             data.SkinYaw = body.Yaw;
             data.EnabledMesh = mesh.Enabled;
+            data.Static = mesh.Static;
 
             return data;
         }
@@ -122,6 +123,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Textures")]
         public String Normals { get; set; }
+
+        [CategoryAttribute("Mesh")]
+        public bool Static { get; set; }
 
         [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]

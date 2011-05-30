@@ -434,7 +434,9 @@ namespace PlagueEngine.Rendering
 
             viewport.Width  = 512;
             viewport.Height = 512;
-            
+
+            int renderedShadows = 0;
+
             foreach (SpotLightComponent spotLight in shadowCasters)
             {
                 if (spotLight == null) continue;
@@ -443,8 +445,10 @@ namespace PlagueEngine.Rendering
                 LightFrustrum.Matrix = LightViewProjection;
 
                 if (!spotLight.Enabled) continue;
-                if (!frustrum.Intersects(LightFrustrum)) continue;                             
-                
+                if (!frustrum.Intersects(LightFrustrum)) continue;
+
+                ++renderedShadows;
+
                 depthPrecision = spotLight.FarPlane;
                 Positon        = spotLight.World.Translation;
 
@@ -488,17 +492,20 @@ namespace PlagueEngine.Rendering
             /*********************************/
             /// Blur
             /*********************************/
-            fullScreenQuad.SetBuffers();
+            if (renderedShadows > 0)
+            {
+                fullScreenQuad.SetBuffers();
 
-            renderer.Device.SetRenderTarget(shadowMapBlur);
-            blur.Parameters["Texture"].SetValue(shadowMap);
-            blur.CurrentTechnique.Passes[0].Apply();
-            fullScreenQuad.JustDraw();
+                renderer.Device.SetRenderTarget(shadowMapBlur);
+                blur.Parameters["Texture"].SetValue(shadowMap);
+                blur.CurrentTechnique.Passes[0].Apply();
+                fullScreenQuad.JustDraw();
 
-            renderer.Device.SetRenderTarget(shadowMap);
-            blur.Parameters["Texture"].SetValue(shadowMapBlur);
-            blur.CurrentTechnique.Passes[1].Apply();
-            fullScreenQuad.JustDraw();
+                renderer.Device.SetRenderTarget(shadowMap);
+                blur.Parameters["Texture"].SetValue(shadowMapBlur);
+                blur.CurrentTechnique.Passes[1].Apply();
+                fullScreenQuad.JustDraw();
+            }
             /*********************************/
 
 

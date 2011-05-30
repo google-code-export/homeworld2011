@@ -57,7 +57,7 @@ namespace PlagueEngine
 #if DEBUG
             Diagnostics.Game                = this;
             Diagnostics.ShowDiagnostics     = true;
-            Diagnostics.ForceGCOnUpdate     = true;
+            Diagnostics.ForceGCOnUpdate     = false;
             Diagnostics.LimitUpdateTimeStep = false;
             Diagnostics.ShowLogWindow       = true;
             Diagnostics.OpenLogFile("log");
@@ -114,8 +114,6 @@ namespace PlagueEngine
             Renderer.InitHelpers();
 
             Level.LoadLevel("Level1.lvl");
-
-            Renderer.batchedMeshes.CommitMeshTransforms();
             
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
