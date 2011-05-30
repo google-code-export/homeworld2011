@@ -138,6 +138,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public TerrainSkinComponent CreateTerrainSkinComponent(GameObjectInstance gameObject,
                                                                String heightMap,
+                                                               String heightmapSkin,
                                                                int width,
                                                                int length,
                                                                float height,
@@ -152,7 +153,8 @@ namespace PlagueEngine.Physics
 
             TerrainSkinComponent result = new TerrainSkinComponent(gameObject,
                                                                    content.LoadTexture2D(heightMap),
-                                                                   //content.Load<Model>(heightMap),
+                                                                   content.Load<Model>(heightmapSkin),
+                                                                   heightmapSkin,
                                                                    width,
                                                                    length,
                                                                    height,

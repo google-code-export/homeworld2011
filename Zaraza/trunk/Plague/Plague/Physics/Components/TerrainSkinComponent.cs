@@ -29,12 +29,14 @@ namespace PlagueEngine.Physics.Components
     class TerrainSkinComponent : CollisionSkinComponent
     {
 
+        public string HeightmapSkin { get; set; }
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
         public TerrainSkinComponent(GameObjectInstance gameObject,
                                     Texture2D heightMap,
-                                    //Model model,
+                                    Model model,
+                                    string HeightmapSkin,
                                     int width,
                                     int length,
                                     float height,
@@ -42,8 +44,12 @@ namespace PlagueEngine.Physics.Components
                                     MaterialProperties material)
             : base(false,gameObject, material,Vector3.Zero,0,0,0)
         {
+            this.HeightmapSkin = HeightmapSkin;
+
+
             Color[] heightMapData = new Color[heightMap.Width * heightMap.Height];
             heightMap.GetData<Color>(heightMapData);
+
 
             Array2D field = new Array2D(width, length);
             float vertexHeight;
@@ -61,8 +67,8 @@ namespace PlagueEngine.Physics.Components
                 }
             }
 
-            skin.AddPrimitive(new Heightmap(field, scale * width / 2 - scale/2, scale * length / 2 - scale/2, scale, scale), material);
-           
+            skin.AddPrimitive(new Heightmap(field, scale * width / 2 - scale / 2, scale * length / 2 - scale / 2, scale, scale), material);
+
             //HeightMapInfo heightMapInfo = model.Tag as HeightMapInfo;
             //Array2D field = new Array2D(heightMapInfo.heights.GetLength(0), heightMapInfo.heights.GetLength(1));
 
@@ -70,7 +76,7 @@ namespace PlagueEngine.Physics.Components
             //{
             //    for (int z = 0; z < heightMapInfo.heights.GetLength(1); z++)
             //    {
-            //        field.SetAt(x, z, heightMapInfo.heights[x, z]);
+            //        field.SetAt(x, z, heightMapInfo.heights[x, z] * height);
             //    }
             //}
 

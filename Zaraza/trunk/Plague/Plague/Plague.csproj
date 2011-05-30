@@ -70,7 +70,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JigLibX">
-      <HintPath>..\JigLibX.dll</HintPath>
+      <HintPath>bin\JigLibX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
@@ -106,19 +106,19 @@
       <HintPath>..\NMock2.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Input">
-      <HintPath>..\Nuclex.Input.dll</HintPath>
+      <HintPath>bin\Nuclex.Input.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Support">
-      <HintPath>..\Nuclex.Support.dll</HintPath>
+      <HintPath>bin\Nuclex.Support.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Testing.Xna">
-      <HintPath>..\Nuclex.Testing.Xna.dll</HintPath>
+      <HintPath>bin\Nuclex.Testing.Xna.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.UserInterface">
-      <HintPath>..\Nuclex.UserInterface.dll</HintPath>
+      <HintPath>bin\Nuclex.UserInterface.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\nunit.framework.dll</HintPath>
+      <HintPath>bin\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX.DirectInput">
       <HintPath>..\SlimDX.DirectInput.dll</HintPath>
@@ -143,7 +143,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-
     <Compile Include="ArtificialInteligence\AI.cs" />
     <Compile Include="ArtificialInteligence\Attack.cs" />
     <Compile Include="ArtificialInteligence\Controllers\AbstractAIController.cs" />
@@ -152,9 +151,7 @@
     <Compile Include="ArtificialInteligence\Controllers\MercenaryController.cs" />
     <Compile Include="ArtificialInteligence\Controllers\MobController.cs" />
     <Compile Include="ArtificialInteligence\EventArgs.cs" />
-
     <Compile Include="AItest\AI.cs" />
-
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\Components\BackgroundMusicComponent.cs" />
     <Compile Include="Audio\Components\SoundEffectComponent.cs" />
