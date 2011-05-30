@@ -6,7 +6,7 @@ namespace PlagueEngine.Audio
     /// <summary>
     /// Struktura odpowiadająca za efekt wyciaszania dźwięku, muzyki
     /// </summary>
-    struct MusicFadeEffect
+    public struct MusicFadeEffect
     {
         public float SourceVolume;
         public float TargetVolume;

@@ -11,7 +11,7 @@ namespace PlagueEngine.Audio
 
         public SongCue(float volume, Song song)
         {
-            Volume =  MathHelper.Clamp(volume,1.0f,0.0f);
+            Volume = MathHelper.Clamp(volume, 1.0f, 0.0f);
             Song = song;
         }
 
