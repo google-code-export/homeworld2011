@@ -573,10 +573,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             uint onTiny = 0;
                             uint onNormal = 0;
 
+                            if (pickedFromMerc2)
+                            {
+                                if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) > 3) blockAll = true;
+                            }    
+
                             for (int i = x + width; i >= x; --i)
                             {
                                 for (int j = y + height; j >= y; --j)
-                                {
+                                {                               
                                     if (i > Items.GetLength(0) - 1) blockAll = true;
                                     else if (j > Items.GetLength(1) - 1) blockAll = true;
                                     else if (blockAll)
@@ -645,12 +650,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             uint onTiny = 0;
                             uint onNormal = 0;
 
+                            if (!pickedFromMerc2)
+                            {
+                                if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) > 3) blockAll = true;
+                            }   
+
                             for (int i = x + width; i >= x; --i)
                             {
                                 for (int j = y + height; j >= y; --j)
                                 {
                                     if (i > Items2.GetLength(0) - 1) blockAll = true;
-                                    else if (j > Items2.GetLength(1) - 1) blockAll = true;
+                                    else if (j > Items2.GetLength(1) - 1) blockAll = true; 
                                     else if (blockAll)
                                     {
                                         Items2[i, j].Blocked = true;
@@ -835,14 +845,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             if (mercenary.currentObject == null)
                             {
-                                mercenary.PickItem(pickedItem as GameObjectInstance);
-                                pickedItem = null;
-                                mouse.CursorVisible = true;
+                                if (pickedFromMerc2)
+                                {
+                                    if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
+                                    {
+                                        mercenary.PickItem(pickedItem as GameObjectInstance);
+                                        pickedItem = null;
+                                        mouse.CursorVisible = true;
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    mercenary.PickItem(pickedItem as GameObjectInstance);
+                                    pickedItem = null;
+                                    mouse.CursorVisible = true;
+                                    return;
+                                }
                             }
-                            else
-                            {
-                                PutBackPickedItem();
-                            }
+                            PutBackPickedItem();        
                         }
                         else if (mercenary2 != null                   &&
                                  mousePos.X > CurrItemIconPos2.X      &&
@@ -852,14 +873,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             if (mercenary2.currentObject == null)
                             {
-                                mercenary2.PickItem(pickedItem as GameObjectInstance);
-                                pickedItem = null;
-                                mouse.CursorVisible = true;
+                                if (!pickedFromMerc2)
+                                {
+                                    if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
+                                    {
+                                        mercenary2.PickItem(pickedItem as GameObjectInstance);
+                                        pickedItem = null;
+                                        mouse.CursorVisible = true;
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    mercenary2.PickItem(pickedItem as GameObjectInstance);
+                                    pickedItem = null;
+                                    mouse.CursorVisible = true;
+                                    return;
+                                }
                             }
-                            else
-                            {
-                                PutBackPickedItem();
-                            }
+                            PutBackPickedItem();  
                         }                        
                         /*************************/
                         #endregion
@@ -887,6 +919,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             bool block = false;
                             uint onTiny = 0;
                             uint onNormal = 0;
+
+                            if (pickedFromMerc2)
+                            {
+                                if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) > 3) block = true;
+                            }    
 
                             for (int i = x + width; i >= x; --i)
                             {
@@ -953,6 +990,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             bool block = false;
                             uint onTiny = 0;
                             uint onNormal = 0;
+
+                            if (!pickedFromMerc2)
+                            {
+                                if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) > 3) block = true;
+                            }    
 
                             for (int i = x + width; i >= x; --i)
                             {

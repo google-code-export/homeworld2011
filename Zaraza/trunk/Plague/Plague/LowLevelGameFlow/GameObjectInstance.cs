@@ -110,8 +110,6 @@ namespace PlagueEngine.LowLevelGameFlow
             Status    = status;
             Name      = name;
 
-            Broadcast(new CreateEvent());
-
             return true;            
         }
         /****************************************************************************/
