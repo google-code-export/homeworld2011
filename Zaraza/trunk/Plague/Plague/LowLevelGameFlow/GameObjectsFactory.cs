@@ -1176,6 +1176,7 @@ namespace PlagueEngine.LowLevelGameFlow
         public bool CreateInventory(Inventory result, InventoryData data)
         {
             Mercenary          merc        = (Mercenary)GetObject(data.Mercenary);
+            Mercenary          merc2       = (data.Mercenary2 == 0 ? null : (Mercenary)GetObject(data.Mercenary2));
             MercenariesManager mercManager = (MercenariesManager)GetObject(data.MercenariesManager);
 
             if (merc == null || mercManager == null)
@@ -1188,6 +1189,7 @@ namespace PlagueEngine.LowLevelGameFlow
                         inputComponentsFactory.CreateKeyboardListenerComponent(result, true),
                         inputComponentsFactory.CreateMouseListenerComponent(result, true),
                         merc,
+                        merc2,
                         mercManager);
 
             return true;
