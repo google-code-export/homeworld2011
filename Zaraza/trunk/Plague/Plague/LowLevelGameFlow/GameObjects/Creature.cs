@@ -238,6 +238,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.Radius = body.Radius;
             data.Length = body.Length;
+            data.EnabledPhysics = body.Enabled;
 
             return data;
         }
@@ -299,6 +300,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float DynamicRoughness { get; set; }
         [CategoryAttribute("Physics")]
         public float Mass             { get; set; }
+        [CategoryAttribute("Physics")]
+        public bool EnabledPhysics { get; set; }
+
 
         [CategoryAttribute("Collision Skin")]
         public float Length           { get; set; }

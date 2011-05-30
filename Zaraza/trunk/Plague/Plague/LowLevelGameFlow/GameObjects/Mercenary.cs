@@ -349,7 +349,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.BlendKeyframe  = Mesh.blendAnimation.Keyframe;
 
             data.Immovable        = Body.Immovable;
-            data.IsEnabled        = Body.IsEnabled;
+            //data.IsEnabled        = Body.IsEnabled;
             data.Elasticity       = Body.Elasticity;
             data.StaticRoughness  = Body.StaticRoughness;
             data.DynamicRoughness = Body.DynamicRoughness;
@@ -387,7 +387,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 data.Items.Add(new int[] { (item.Key as GameObjectInstance).ID, item.Value.Slot, item.Value.Orientation });
             }
-
+            data.EnabledPhysics = body.Enabled;
             return data;
         }
         /****************************************************************************/
@@ -459,8 +459,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Physics")]
         public bool Immovable { get; set; }
-        [CategoryAttribute("Physics")]
-        public bool IsEnabled { get; set; }
+        //[CategoryAttribute("Physics")]
+        //public bool IsEnabled { get; set; }
         [CategoryAttribute("Physics")]
         public float Elasticity { get; set; }
         [CategoryAttribute("Physics")]
@@ -469,6 +469,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float DynamicRoughness { get; set; }
         [CategoryAttribute("Physics")]
         public float Mass { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public bool EnabledPhysics { get; set; }
+
 
         [CategoryAttribute("Collision Skin")]
         public float Length { get; set; }

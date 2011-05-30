@@ -116,7 +116,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinPitch = body.Pitch;
             data.SkinRoll = body.Roll;
             data.SkinYaw = body.Yaw;
-
+            data.EnabledPhysics = body.Enabled;
             return data;
         }
         /********************************************************************************/
@@ -183,6 +183,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Physics")]
         public float DynamicRoughness { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public bool EnabledPhysics { get; set; }
 
         [CategoryAttribute("Collision Skin")]
         public float Lenght { get; set; }

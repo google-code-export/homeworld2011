@@ -248,7 +248,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.EnabledMesh,
                                                                        data.Static),
 
-                        physicsComponentFactory.CreateCylindricalBodyComponent( result,
+                        physicsComponentFactory.CreateCylindricalBodyComponent( data.EnabledPhysics, result,
                                                                                 data.Mass,
                                                                                 data.Radius,
                                                                                 data.Lenght,
@@ -291,7 +291,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.EnabledMesh,
                                                                        data.Static),
 
-                        physicsComponentFactory.CreateCylindricalBodyComponent2(result,
+                        physicsComponentFactory.CreateCylindricalBodyComponent2(data.EnabledPhysics, result,
                                                                                 data.Mass,
                                                                                 data.Radius,
                                                                                 data.Lenght,
@@ -327,7 +327,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.EnabledMesh,
                                                                        data.Static),
 
-                        physicsComponentFactory.CreateSphericalBodyComponent(result,
+                        physicsComponentFactory.CreateSphericalBodyComponent(data.EnabledPhysics, result,
                                                                             data.Mass,
                                                                             data.Radius,
                                                                             data.Elasticity,
@@ -362,7 +362,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.EnabledMesh,
                                                                        data.Static),
 
-                        physicsComponentFactory.CreateSquareBodyComponent(result,
+                        physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
                                                                             data.Mass,
                                                                             data.Lenght,
                                                                             data.Height,
@@ -411,7 +411,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        InstancingMode2,
                                                                        data.EnabledMesh2,
                                                                        true),
-                        physicsComponentFactory.CreateSquareSkinComponent(result,
+                        physicsComponentFactory.CreateSquareSkinComponent(data.EnabledPhysics, result,
                         data.Elasticity,
                         data.StaticRoughness,
                         data.DynamicRoughness,
@@ -526,7 +526,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.EnabledMesh,
                                                                         data.Static),
 
-                        physicsComponentFactory.CreateCylindricalSkinComponent( result,
+                        physicsComponentFactory.CreateCylindricalSkinComponent(data.EnabledPhysics, result,
                                                                                 data.Elasticity,
                                                                                 data.StaticRoughness,
                                                                                 data.DynamicRoughness,
@@ -557,7 +557,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.EnabledMesh,
                                                                         data.Static),
 
-                        physicsComponentFactory.CreateSquareSkinComponent(result,
+                        physicsComponentFactory.CreateSquareSkinComponent(data.EnabledPhysics, result,
                                                                             data.Elasticity,
                                                                             data.StaticRoughness,
                                                                             data.DynamicRoughness,
@@ -588,8 +588,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         Renderer.UIntToInstancingMode(data.InstancingMode),
                                                                         data.EnabledMesh,
                                                                         data.Static),
-                        
-                        physicsComponentFactory.CreateSphericalSkinComponent(result,
+
+                        physicsComponentFactory.CreateSphericalSkinComponent(data.EnabledPhysics, result,
                                                                             data.Elasticity,
                                                                             data.StaticRoughness,
                                                                             data.DynamicRoughness,
@@ -700,7 +700,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
                         inputComponentsFactory.CreateKeyboardListenerComponent(result, true),
 
-                        physicsComponentFactory.CreateCapsuleBodyComponent(result,
+                        physicsComponentFactory.CreateCapsuleBodyComponent(data.EnabledPhysics, result,
                                                                           data.Mass,
                                                                           data.Radius,
                                                                           data.Length,
@@ -835,8 +835,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        Renderer.UIntToInstancingMode(data.InstancingMode),
                                                                        data.EnabledMesh,
                                                                        false),
-                        
-                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
+
+                        physicsComponentFactory.CreateCylindricalBodyComponent(data.EnabledPhysics, result,
                                                                                data.Mass,
                                                                                0.08f,
                                                                                1.0f,
@@ -918,7 +918,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.EnabledMesh,
                                                                        false),
 
-                        physicsComponentFactory.CreateCylindricalBodyComponent(result,
+                        physicsComponentFactory.CreateCylindricalBodyComponent(data.EnabledPhysics, result,
                                                                                data.Mass,
                                                                                1,
                                                                                2,
@@ -1006,9 +1006,9 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                               data.BlendKeyframe,
                                                                               data.BlendClipTime,
                                                                               data.BlendDuration,
-                                                                              data.BlendTime),            
+                                                                              data.BlendTime),
 
-                        physicsComponentFactory.CreateCapsuleBodyComponent(result,
+                        physicsComponentFactory.CreateCapsuleBodyComponent(data.EnabledPhysics, result,
                                                                            data.Mass,
                                                                            data.Radius,
                                                                            data.Length,
@@ -1094,7 +1094,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        Renderer.UIntToInstancingMode(data.InstancingMode),
                                                                        data.EnabledMesh,
                                                                        false),
-                        physicsComponentFactory.CreateSquareBodyComponent(result,
+                        physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
                                                                           data.Mass,
                                                                           data.Lenght,
                                                                           data.Height,

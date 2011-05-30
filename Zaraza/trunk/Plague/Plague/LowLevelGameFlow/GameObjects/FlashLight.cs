@@ -123,6 +123,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Specular = light.Specular;
             data.DepthBias = light.DepthBias;
             data.EnabledMesh = mesh.Enabled;
+            data.EnabledPhysics = body.Enabled;
 
             return data;
         }
@@ -221,6 +222,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Physics")]
         public bool Immovable { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public bool EnabledPhysics { get; set; }
 
         [CategoryAttribute("Misc")]
         public bool Enabled { get; set; }

@@ -41,7 +41,7 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public CylindricalSkinComponent(GameObjectInstance gameObject,
+        public CylindricalSkinComponent(bool enabled, GameObjectInstance gameObject,
                                     Matrix world,
                                     float length,
                                     float radius,
@@ -50,7 +50,7 @@ namespace PlagueEngine.Physics.Components
                                     float yaw,
                                     float pitch,
                                     float roll)
-            : base(gameObject, material, skinTranslation, yaw, pitch, roll)
+            : base( enabled,gameObject, material, skinTranslation, yaw, pitch, roll)
         {
             this.radius = radius;
             this.length = length;

@@ -130,7 +130,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
             data.EnabledMesh = mesh.Enabled;
-
+            data.EnabledPhysics = body.Enabled;
             return data;
         }
         /****************************************************************************/
@@ -204,6 +204,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Physics")]
         public bool Immovable { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public bool EnabledPhysics { get; set; }
 
         [CategoryAttribute("Light")]
         public bool Enabled { get; set; }

@@ -28,6 +28,8 @@ namespace PlagueEngine.Physics
         protected CollisionSkin skin = null;
         protected MaterialProperties material;
         private bool isEnabled = false;
+        public bool Enabled { get { return this.isEnabled; } }
+
         internal static PhysicsManager physicsManager = null;
         protected Vector3 translation = Vector3.Zero;
         protected float yaw;
@@ -58,7 +60,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public CollisionSkinComponent(GameObjectInstance gameObject, MaterialProperties material, Vector3 translation, float yaw, float pitch, float roll)
+        public CollisionSkinComponent(bool enabled,GameObjectInstance gameObject, MaterialProperties material, Vector3 translation, float yaw, float pitch, float roll)
             : base(gameObject)
         {
             skin = new CollisionSkin();
@@ -68,6 +70,7 @@ namespace PlagueEngine.Physics
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
+            //this.isEnabled = enabled;
             physicsManager.collisionSkins.Add(gameObject.ID,this);
 
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
@@ -75,6 +78,11 @@ namespace PlagueEngine.Physics
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
             DontCollide = false;
             RequireUpdate = false;
+            this.isEnabled = true;
+            if (!isEnabled)
+            {
+                Disable();
+            }
         }
         /****************************************************************************/
 
