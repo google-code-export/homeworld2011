@@ -119,7 +119,9 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (result.RequiresUpdate) UpdatableObjects.Add(result);
 
-            if (ProcessWaitingRoom) ++ProcessedObjects;            
+            if (ProcessWaitingRoom) ++ProcessedObjects;
+
+            result.Broadcast(new CreateEvent());
 
             return result;
         }
