@@ -25,6 +25,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
         {
             switch (action)
             {
+                case Action.EXCHANGE:
                 case Action.EXAMINE:
                 case Action.PICK:
                     #region PickOrExamine
@@ -80,6 +81,20 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                 }
                 #endregion
             }
+            else if (e.GetType().Equals(typeof(ExchangeItemsCommandEvent)))
+            {
+                #region Exchange Items Event
+                ExchangeItemsCommandEvent exchangeEvent = e as ExchangeItemsCommandEvent;
+                receiver = sender as IEventsReceiver;
+
+                if (exchangeEvent.mercenary != this.controlledObject)
+                {
+                    objectTarget = exchangeEvent.mercenary;
+                    action = Action.EXCHANGE;
+                    controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
+                }
+                #endregion
+            }
             else if (e.GetType().Equals(typeof(CollisionEvent)))
             {
                 #region CollisionEvent
@@ -89,6 +104,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                 {
                     if (action == Action.PICK)
                     {
+                        #region PICK Action
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
 
                         if (objectTarget.Status == GameObjectStatus.Pickable)
@@ -111,9 +127,11 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
+                        #endregion
                     }
                     else if (action == Action.EXAMINE)
                     {
+                        #region EXAMINE Action
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
 
                         controlledObject.SendEvent(new ExamineEvent(), EventsSystem.Priority.Normal, objectTarget);
@@ -123,6 +141,20 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
+                        #endregion
+                    }
+                    else if (action == Action.EXCHANGE)
+                    {
+                        #region EXCHANGE Action
+                        controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
+                        action = Action.IDLE;
+                        controlledObject.Controller.StopMoving();
+                        controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        
+                        controlledObject.SendEvent(new ExchangeItemsEvent(controlledObject as Mercenary, objectTarget as Mercenary), Priority.Normal, receiver);
+                        objectTarget = null;
+                        
+                        #endregion
                     }
                 }
                 #endregion
