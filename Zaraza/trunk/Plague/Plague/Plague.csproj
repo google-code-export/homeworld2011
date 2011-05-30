@@ -70,7 +70,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JigLibX">
-      <HintPath>.\JigLibX.dll</HintPath>
+      <HintPath>..\JigLibX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
@@ -102,23 +102,26 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
+    <Reference Include="NMock2">
+      <HintPath>..\NMock2.dll</HintPath>
+    </Reference>
     <Reference Include="Nuclex.Input">
-      <HintPath>.\Nuclex.Input.dll</HintPath>
+      <HintPath>..\Nuclex.Input.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Support">
-      <HintPath>.\Nuclex.Support.dll</HintPath>
+      <HintPath>..\Nuclex.Support.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Testing.Xna">
-      <HintPath>.\Nuclex.Testing.Xna.dll</HintPath>
+      <HintPath>..\Nuclex.Testing.Xna.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.UserInterface">
-      <HintPath>.\Nuclex.UserInterface.dll</HintPath>
+      <HintPath>..\Nuclex.UserInterface.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>.\nunit.framework.dll</HintPath>
+      <HintPath>..\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX.DirectInput">
-      <HintPath>.\SlimDX.DirectInput.dll</HintPath>
+      <HintPath>..\SlimDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -140,7 +143,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+
+    <Compile Include="ArtificialInteligence\AI.cs" />
+    <Compile Include="ArtificialInteligence\Attack.cs" />
+    <Compile Include="ArtificialInteligence\Controllers\AbstractAIController.cs" />
+    <Compile Include="ArtificialInteligence\Controllers\IAIController.cs" />
+    <Compile Include="ArtificialInteligence\IAttackable.cs" />
+    <Compile Include="ArtificialInteligence\Controllers\MercenaryController.cs" />
+    <Compile Include="ArtificialInteligence\Controllers\MobController.cs" />
+    <Compile Include="ArtificialInteligence\EventArgs.cs" />
+
     <Compile Include="AItest\AI.cs" />
+
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\Components\BackgroundMusicComponent.cs" />
     <Compile Include="Audio\Components\SoundEffectComponent.cs" />
@@ -183,6 +197,7 @@
     <Compile Include="LowLevelGameFlow\GameObjectDefinition.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\AbstractLivingBeing.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActionSwitch.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Armor.cs" />

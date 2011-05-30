@@ -480,7 +480,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                         case GameObjectStatus.Interesting: cursor = "QuestionMark"; break;
                                         case GameObjectStatus.Pickable: cursor = "Hand"; break;
                                         case GameObjectStatus.Targetable: cursor = "Target"; break;
-                                        case GameObjectStatus.Walk: cursor = "Footsteps"; break;
+                                        case GameObjectStatus.Passable: cursor = "Footsteps"; break;
                                         case GameObjectStatus.Mercenary: cursor = "Person"; break;
                                         default: cursor = "Default"; break;
                                     }

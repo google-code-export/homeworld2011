@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PlagueEngine.Audio;
+
 
 namespace PlagueEngine.Audio.Components
 {

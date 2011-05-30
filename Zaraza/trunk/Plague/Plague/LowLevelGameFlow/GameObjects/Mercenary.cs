@@ -14,6 +14,7 @@ using PlagueEngine.Physics.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
+using PlagueEngine.ArtificialInteligence.Controllers;
 
 
 using PlagueEngine.AItest;
@@ -26,23 +27,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Mercenary
     /********************************************************************************/
-    class Mercenary : GameObjectInstance, IActiveGameObject
+    class Mercenary : AbstractLivingBeing, IActiveGameObject
     {
 
         /****************************************************************************/
-        /// Fields
+        /// Fields => INHERITED
         /****************************************************************************/                        
-        private Vector3            target;
-        private GameObjectInstance objectTarget;
+        //private Vector3            target;
+        //private GameObjectInstance objectTarget;
         
-        private int    moving = 0;
+        //private int    moving = 0;
 
-        private float rotationSpeed  = 0;
-        private float movingSpeed    = 0;
-        private float distance       = 0;
-        private float anglePrecision = 0;
+        //private float rotationSpeed  = 0;
+        //private float movingSpeed    = 0;
+        //private float distance       = 0;
+        //private float anglePrecision = 0;
 
-        private IEventsReceiver receiver = null;
+        //private IEventsReceiver receiver = null;
         /****************************************************************************/
 
 
@@ -56,7 +57,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Firearm sideArm  = null;
         public Armor   armor    = null;
 
-        private String gripBone;
+        public String gripBone;
 
         public Dictionary<IStorable, ItemPosition> Items { get; private set; }
         /****************************************************************************/
@@ -72,10 +73,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Properties => INHERITED
+        /****************************************************************************/
+        //public uint      MaxHP         { get; private set; }
+        //public uint      HP            { get; private set; }
+        /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public uint      MaxHP         { get; private set; }
-        public uint      HP            { get; private set; }
         public Rectangle Icon          { get; private set; }
         public Rectangle InventoryIcon { get; private set; }
         public uint      TinySlots     { get; private set; }
@@ -84,14 +88,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// Components
+        /// Components => INHERITED
         /****************************************************************************/
-        public SkinnedMeshComponent mesh;
-        public CapsuleBodyComponent body;
-        public SoundEffectComponent SoundEffectComponent;
-        public SkinnedMeshComponent Mesh { get { return this.mesh; } private set { this.mesh = value; } }
-        public CapsuleBodyComponent Body { get { return this.body; } private set { this.body = value; } }
-        public PhysicsController    Controller { get; private set; }
+        //public SkinnedMeshComponent mesh;
+        //public CapsuleBodyComponent body;
+        //public SoundEffectComponent SoundEffectComponent;
+        //public SkinnedMeshComponent Mesh { get { return this.mesh; } private set { this.mesh = value; } }
+        //public CapsuleBodyComponent Body { get { return this.body; } private set { this.body = value; } }
+        //public PhysicsController    Controller { get; private set; }
 
 
         private EventsSnifferComponent sniffer = new EventsSnifferComponent();
@@ -121,14 +125,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Dictionary<IStorable, ItemPosition> items,
                          GameObjectInstance currentObject)
         {
+            this.objectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle);
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
             SoundEffectComponent.CreateNewSoundFromFolder("Mercenary", 1, 0, 0);
-            this.rotationSpeed  = rotationSpeed;
-            this.movingSpeed    = movingSpeed;
-            this.distance       = distance;
-            this.anglePrecision = angle;
+            //this.rotationSpeed  = rotationSpeed;
+            //this.movingSpeed    = movingSpeed;
+            //this.distance       = distance;
+            //this.anglePrecision = angle;
             this.gripBone       = gripBone;
             this.InventoryIcon  = inventoryIcon;
             this.TinySlots      = tinySlots;
@@ -206,123 +211,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// On Event
         /****************************************************************************/
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
-        {                        
-
-            /*************************************/
-            /// MoveToPointCommandEvent
-            /*************************************/
-            if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
-            {
-                SoundEffectComponent.PlaySound("yesSir");
-                MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
-
-                receiver = sender as IEventsReceiver;
-                target = moveToPointCommandEvent.point;
-                moving = 1;
-            }
-            /*************************************/
-            /// GrabObjectCommandEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
-            {
-                GrabObjectCommandEvent moveToObjectCommandEvent = e as GrabObjectCommandEvent;
-
-                receiver = sender as IEventsReceiver;
-
-                if (moveToObjectCommandEvent.gameObject != this)
-                {
-                    objectTarget = moveToObjectCommandEvent.gameObject;
-                    moving = 2;
-                    Body.SubscribeCollisionEvent(objectTarget.ID);
-                }
-            }
-            /*************************************/
-            /// CollisionEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(CollisionEvent)))
-            {
-                CollisionEvent collisionEvent = e as CollisionEvent;
-
-                if (collisionEvent.gameObject == objectTarget)
-                {
-                    if (moving == 2)
-                    {
-                        Body.CancelSubscribeCollisionEvent(objectTarget.ID);
-
-                        if (objectTarget.Status == GameObjectStatus.Pickable)
-                        {
-                            if (currentObject != null)
-                            {
-                                currentObject.World.Translation += Vector3.Normalize(World.Forward) * 2;
-                                currentObject.Owner = null;
-                                currentObject.OwnerBone = -1;
-                            }
-
-                            currentObject = objectTarget;
-                            objectTarget.Owner = this;
-                            objectTarget.OwnerBone = Mesh.BoneMap[gripBone];
-                        }
-
-                        objectTarget = null;
-                        moving = 0;
-                        body.Immovable = true;
-                        Controller.StopMoving();
-                        Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
-                        SendEvent(new ActionDoneEvent(), Priority.High, receiver);
-                    }
-                    else if (moving == 4)
-                    {
-                        Body.CancelSubscribeCollisionEvent(objectTarget.ID);
-
-                        SendEvent(new ExamineEvent(), EventsSystem.Priority.Normal, objectTarget);
-                                            
-                        objectTarget = null;
-                        moving = 0;
-                        Controller.StopMoving();
-                        Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
-                        SendEvent(new ActionDoneEvent(), Priority.High, receiver);                    
-                    }
-                }
-            }
-            /*************************************/
-            /// FollowObjectCommandEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(FollowObjectCommandEvent)))
-            {
-                FollowObjectCommandEvent FollowObjectCommandEvent = e as FollowObjectCommandEvent;
-
-                receiver = sender as IEventsReceiver;
-
-                if (FollowObjectCommandEvent.gameObject != this)
-                {
-                    objectTarget = FollowObjectCommandEvent.gameObject;
-                    moving = 3;
-                }
-            }
-            /*************************************/
-            /// ExamineObjectCommandEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(ExamineObjectCommandEvent)))
-            {
-                ExamineObjectCommandEvent ExamineObjectCommandEvent = e as ExamineObjectCommandEvent;
-
-                receiver = sender as IEventsReceiver;
-
-                objectTarget = ExamineObjectCommandEvent.gameObject;                    
-                moving = 4;
-                Body.SubscribeCollisionEvent(objectTarget.ID);                
-            }
-            /*************************************/
-            /// StopActionEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(StopActionEvent)))
-            {
-                moving       = 0;
-                objectTarget = null;
-                Controller.StopMoving();
-                Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));     
-            }
-            /*************************************/
+        {
+            this.objectAIController.OnEvent(sender, e);
+            
 
         }
         /****************************************************************************/
@@ -333,132 +224,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
         {
-            
 
-            SoundEffectComponent.SetPosiotion(World.Translation);
-            if (moving == 1)
-            {
-                if (Vector2.Distance(new Vector2(World.Translation.X,
-                                                 World.Translation.Z),
-                                     new Vector2(target.X,
-                                                 target.Z)) < distance)
-                {
-                    moving = 0;
-                    Controller.StopMoving();
-                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
-                    SendEvent(new ActionDoneEvent(), Priority.High, receiver);
-                }
-                else
-                {
-                    Vector3 direction = World.Translation - target;
-                    Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                    Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
 
-                    float det = v1.X * v2.Y - v1.Y * v2.X;
-                    float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                    if (det < 0) angle = -angle;
-
-                    if (Math.Abs(angle) > anglePrecision) Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
-                    
-                    Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
-                                        
-                    if (Mesh.CurrentClip != "Run")
-                    {
-                        Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                        
-                    }                    
-                }
-            }
-            else if (moving == 2 || moving == 4)
-            {
-                if (objectTarget.IsDisposed() || objectTarget.Owner != null)
-                {
-                    objectTarget = null;
-                    moving = 0;
-                    Controller.StopMoving();
-                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));                    
-                    return;
-                }
-
-                Vector3 direction = World.Translation - objectTarget.World.Translation;
-                Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
-
-                float det = v1.X * v2.Y - v1.Y * v2.X;
-                float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                if (det < 0) angle = -angle;
-
-                if (Math.Abs(angle) > anglePrecision) Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
-
-                Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
-
-                if (Mesh.CurrentClip != "Run")
-                {
-                    Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));                    
-                }                                    
-            }
-            else if (moving == 3)
-            {
-                if (objectTarget.IsDisposed())
-                {
-                    objectTarget = null;
-                    moving = 0;
-                    Controller.StopMoving();
-                    Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
-                    return;
-                }
-                else if (Vector2.Distance(new Vector2(World.Translation.X, World.Translation.Z),
-                                         new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) < 4)
-                {
-                    Controller.StopMoving();
-                    if (Mesh.CurrentClip != "Idle")
-                    {
-                        Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
-                    }
-                    return;
-                }
-                else if (Mesh.CurrentClip == "Idle" && Vector2.Distance(new Vector2(World.Translation.X, World.Translation.Z), new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) > 8)
-                {
-                    Vector3 direction = World.Translation - objectTarget.World.Translation;
-                    Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                    Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
-
-                    float det = v1.X * v2.Y - v1.Y * v2.X;
-                    float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                    if (det < 0) angle = -angle;
-
-                    if (Math.Abs(angle) > anglePrecision) Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
-
-                    Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
-
-                    if (Mesh.CurrentClip != "Run")
-                    {
-                        Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
-                    }
-                }
-                else if (Mesh.CurrentClip != "Idle")
-                {
-                    Vector3 direction = World.Translation - objectTarget.World.Translation;
-                    Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                    Vector2 v2 = Vector2.Normalize(new Vector2(World.Forward.X, World.Forward.Z));
-
-                    float det = v1.X * v2.Y - v1.Y * v2.X;
-                    float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                    if (det < 0) angle = -angle;
-
-                    if (Math.Abs(angle) > anglePrecision) Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
-
-                    Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
-
-                    if (Mesh.CurrentClip != "Run")
-                    {
-                        Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
-                    }                
-                }
-            }
+            this.objectAIController.Update(deltaTime);
         }
         /****************************************************************************/
 
@@ -614,10 +382,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.TinySlots          = TinySlots;
             data.Slots              = Slots;
-            data.MovingSpeed        = movingSpeed;
-            data.RotationSpeed      = rotationSpeed;
-            data.DistancePrecision  = distance;
-            data.AnglePrecision     = anglePrecision;
+            //data.MovingSpeed        = movingSpeed;
+            //data.RotationSpeed      = rotationSpeed;
+            //data.DistancePrecision  = distance;
+            //data.AnglePrecision     = anglePrecision;
 
             data.CurrentItem = currentObject == null ? 0 : currentObject.ID;
             data.Items = new List<int[]>();

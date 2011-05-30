@@ -343,7 +343,7 @@ namespace PlagueEngine.LowLevelGameFlow
                 case GameObjectStatus.Pickable:     return 2;
                 case GameObjectStatus.Mercenary:    return 3;
                 case GameObjectStatus.Targetable:   return 4;
-                case GameObjectStatus.Walk:         return 5;
+                case GameObjectStatus.Passable:         return 5;
                 default: return 0;
             }
         }
@@ -362,7 +362,7 @@ namespace PlagueEngine.LowLevelGameFlow
                 case 2:  return GameObjectStatus.Pickable;
                 case 3:  return GameObjectStatus.Mercenary;
                 case 4:  return GameObjectStatus.Targetable;
-                case 5:  return GameObjectStatus.Walk;
+                case 5:  return GameObjectStatus.Passable;
                 default: return GameObjectStatus.Nothing;
             }
         }
@@ -382,7 +382,7 @@ namespace PlagueEngine.LowLevelGameFlow
         Pickable,
         Mercenary,
         Targetable,
-        Walk
+        Passable
     }
     /********************************************************************************/
 
