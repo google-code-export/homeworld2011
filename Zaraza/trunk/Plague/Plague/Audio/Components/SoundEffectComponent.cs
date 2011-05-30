@@ -88,7 +88,12 @@ namespace PlagueEngine.Audio.Components
         /// </summary>
         public void StopAllSounds()
         {
-
+            foreach (var soundEffectInstance in _playingSounds.Values)
+            {
+                soundEffectInstance.Stop();
+                soundEffectInstance.Dispose();
+            }
+            _playingSounds.Clear();
         }
     }
 }

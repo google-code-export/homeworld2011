@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -22,13 +23,9 @@ namespace PlagueEngine.Audio
         private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();
         private readonly Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
 
-        private BackgroundMusicComponent _activeBMC;
         private readonly SoundEffectInstance[] _playingSounds = new SoundEffectInstance[MaxSounds];
-        private Song _currentSong;
-        private bool _isMusicPaused;
         private bool _isFading;
         private bool _enabled = true;
-        private MusicFadeEffect _fadeEffect;
         // Maksymalna ilość dźwięków która będzie odtwarzana jednocześnie.
         private const int MaxSounds = 64;
 
@@ -57,8 +54,6 @@ namespace PlagueEngine.Audio
                 return _audioManager;
             }
         }
-
-        public string CurrentSong { get; private set; }
 
         public float MusicVolume
         {
@@ -90,6 +85,10 @@ namespace PlagueEngine.Audio
             Listener.Up = cameraComponent.Up;
         }
         public AudioListener Listener { get; private set; }
+
+        public MusicFadeEffect FadeEffect { get; set; }
+
+        public BackgroundMusicComponent BackgroundMusicComponent { get; set; }
 
         private AudioManager(Game game)
         {
@@ -163,38 +162,17 @@ namespace PlagueEngine.Audio
         }
 
 
-        public void PlaySong(string songName)
+        public void PlaySong(SongCue songCue)
         {
-            PlaySong(songName, false);
+            PlaySong(songCue, false);
         }
 
-        public void PlaySong(string songName, bool loop)
+        public void PlaySong(SongCue songCue, bool loop)
         {
-            if (CurrentSong == songName) return;
-
-            if (!_songs.ContainsKey(songName))
-            {
-                LoadSong(songName);
-
-            }
-            if (!_songs.TryGetValue(songName, out _currentSong))
-            {
-#if DEBUG
-                Diagnostics.PushLog("Piosenka " + songName + " nie istnieje");
-#else 
-          return;
-#endif
-            }
-            if (_currentSong != null)
-            {
-                MediaPlayer.Stop();
-            }
-            CurrentSong = songName;
-
-            _isMusicPaused = false;
+            MediaPlayer.Stop();
+            MediaPlayer.Volume = songCue.Volume;
             MediaPlayer.IsRepeating = loop;
-            MediaPlayer.Play(_currentSong);
-
+            MediaPlayer.Play(songCue.Song);
             if (!Enabled)
             {
                 MediaPlayer.Pause();
@@ -206,10 +184,8 @@ namespace PlagueEngine.Audio
         /// </summary>
         public void PauseSong()
         {
-            if (_currentSong == null || _isMusicPaused) return;
-
+            if (MediaPlayer.State==MediaState.Paused) return;
             if (Enabled) MediaPlayer.Pause();
-            _isMusicPaused = true;
         }
 
         /// <summary>
@@ -217,9 +193,8 @@ namespace PlagueEngine.Audio
         /// </summary>
         public void ResumeSong()
         {
-            if (_currentSong == null || !_isMusicPaused) return;
+            if (MediaPlayer.State != MediaState.Paused) return;
             if (Enabled) MediaPlayer.Resume();
-            _isMusicPaused = false;
         }
 
         /// <summary>
@@ -227,9 +202,8 @@ namespace PlagueEngine.Audio
         /// </summary>
         public void StopSong()
         {
-            if (_currentSong == null || MediaPlayer.State == MediaState.Stopped) return;
+            if (MediaPlayer.State == MediaState.Stopped) return;
             MediaPlayer.Stop();
-            _isMusicPaused = false;
         }
 
         /// <summary>
@@ -278,36 +252,30 @@ namespace PlagueEngine.Audio
         /// <param name="gameTime">Czas jaki upłynał od ostatniej klatki</param>
         public void Update(GameTime gameTime)
         {
-            
+            if(BackgroundMusicComponent!=null)
+            {
+                BackgroundMusicComponent.Update(gameTime.ElapsedGameTime);
+            }
             for (var i = 0; i < _playingSounds.Length; ++i)
             {
-                if (_playingSounds[i] == null || _playingSounds[i].State != SoundState.Stopped) continue;
+                if (_playingSounds[i] == null || (_playingSounds[i].State != SoundState.Stopped && !_playingSounds[i].IsDisposed)) continue;
                 _playingSounds[i].Dispose();
                 _playingSounds[i] = null;
             }
 
-            if (_currentSong != null && MediaPlayer.State == MediaState.Stopped)
+            if (!_isFading || MediaPlayer.State==MediaState.Paused) return;
+            if (MediaPlayer.State == MediaState.Playing)
             {
-                _currentSong = null;
-                CurrentSong = null;
-                _isMusicPaused = false;
-            }
-
-            if (_isFading && !_isMusicPaused)
-            {
-                if (_currentSong != null && MediaPlayer.State == MediaState.Playing)
-                {
-                    if (_fadeEffect.Update(gameTime.ElapsedGameTime))
-                    {
-                        _isFading = false;
-                    }
-
-                    MediaPlayer.Volume = _fadeEffect.GetVolume();
-                }
-                else
+                if (FadeEffect.Update(gameTime.ElapsedGameTime))
                 {
                     _isFading = false;
                 }
+
+                MediaPlayer.Volume = FadeEffect.GetVolume();
+            }
+            else
+            {
+                _isFading = false;
             }
         }
 
@@ -318,27 +286,21 @@ namespace PlagueEngine.Audio
         {
             if (Enabled)
             {
-                foreach (var t in _playingSounds)
+                foreach (var t in _playingSounds.Where(t => t != null && t.State == SoundState.Paused))
                 {
-                    if (t != null && t.State == SoundState.Paused)
-                    {
-                        t.Resume();
-                    }
+                    t.Resume();
                 }
 
-                if (!_isMusicPaused)
+                if (MediaPlayer.State != MediaState.Paused)
                 {
                     MediaPlayer.Resume();
                 }
             }
             else
             {
-                foreach (var t in _playingSounds)
+                foreach (var t in _playingSounds.Where(t => t != null && t.State == SoundState.Playing))
                 {
-                    if (t != null && t.State == SoundState.Playing)
-                    {
-                        t.Pause();
-                    }
+                    t.Pause();
                 }
 
                 MediaPlayer.Pause();

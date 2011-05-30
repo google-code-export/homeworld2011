@@ -1,56 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework.Media;
+using System.Linq;
 
 namespace PlagueEngine.Audio.Components
 {
-    class BackgroundMusicComponent
+    public class BackgroundMusicComponent
     {
-
-        private Dictionary<string, SongCue> _songs = new Dictionary<string, SongCue>();
         private bool _enabled = true;
         private string _currentGroup;
-        private bool _isMusicPaused;
-        private Song _currentSong;
-        private bool _isFading;
         private readonly AudioManager _audioManager;
-
-
+        public TimeSpan ChangeTime = TimeSpan.FromSeconds(5);
+        private TimeSpan _changeTimer;
+        private bool _changeAllowed = true;
+        private bool automaticMode = true;
         BackgroundMusicComponent()
         {
             _audioManager = AudioManager.GetInstance;
+            Songs = new Dictionary<string, Dictionary<string, SongCue>>();
         }
-        /// <summary>
-        /// Pobiera bądź ustawia obecnie graną piosenkę
-        /// </summary>
-        public string CurrentSong { get; private set; }
 
         /// <summary>
         /// Słownik przechowujący Piosenki ułożone w grupy tematyczne.
         /// Standardowo zawiera grupę default.
         /// </summary>
-        public Dictionary<string, SongCue> Songs
+        public Dictionary<string, Dictionary<string, SongCue>> Songs { get; set; }
+
+        public void LoadFolder(string folderName, float volume)
         {
-            get { return _songs; }
-            set { _songs = value; }
+            LoadFolder(folderName, volume, "default");
         }
 
-        public void LoadSong(string folderName, float volume)
+        public void LoadFolder(string folderName, float volume, string groupName)
         {
             var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
             if (!dir.Exists) return;
             var xbnFiles = dir.GetFiles("*.xnb");
-            foreach (var file in xbnFiles)
+            foreach (var songName in xbnFiles.Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
             {
-                var soundName = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
-                var song = _audioManager.LoadSong(folderName + "\\" + soundName);
-                if (song != null)
-                {
-                    _songs.Add(soundName, new SongCue(volume,song));
-                }
+                LoadSong(songName,folderName + "\\" + songName, groupName, volume);
             }
+        }
 
+        public void LoadFolderTree(string folderName, float volume)
+        {
+            var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
+            if (!dir.Exists) return;
+            var dirFiles = dir.GetDirectories();
+            foreach (var directoryInfo in dirFiles)
+            {
+                LoadFolderTree(folderName + "\\" + directoryInfo.Name, volume, 1);
+            }
+            foreach (var songName in dir.GetFiles("*.xnb").Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
+            {
+                LoadSong(songName, folderName + "\\" + songName, "default", volume);
+            }
+        }
+
+        public void LoadFolderTree(string folderName, float volume, int depth)
+        {
+            if (depth >= 5) return; 
+            var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
+            if (!dir.Exists) return;
+            var dirFiles = dir.GetDirectories();
+            foreach (var directoryInfo in dirFiles)
+            {
+                LoadFolderTree(folderName + "\\" + directoryInfo.Name, volume, depth+1);
+            }
+            foreach (var songName in dir.GetFiles("*.xnb").Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
+            {
+                LoadSong(songName, folderName + "\\" + songName, folderName.Replace("\\","_"), volume);
+            }
         }
         /// <summary>
         /// Ładuje piosenkę do AudioManager i przyspisuje ją do standardowej grupy w BackgroundMusicComponent.
@@ -58,47 +78,56 @@ namespace PlagueEngine.Audio.Components
         /// <param name="songName">Nazwa piosenki do załadowania</param>
         public void LoadSong(string songName)
         {
-#if DEBUG
-            try
-            {
-#endif
-                LoadSong(songName, songName);
-#if DEBUG
-            }
-            catch (InvalidOperationException e)
-            {
-                Diagnostics.PushLog(e.Message);
-            }
-#endif
+            LoadSong(songName, songName, "default", 1.0f);
         }
 
-        /// <summary>
-        /// Loads a Song into the AudioManager.
-        /// </summary>
-        /// <param name="songName">Name of the song to load</param>
-        /// <param name="songPath">Path to the song asset file</param>
-        public void LoadSong(string songName, string songPath)
+        public void LoadSong(string songCueName, string songName, string groupName, float volume)
         {
-            if (Songs.ContainsKey(songName))
+            if (!Songs.ContainsKey(groupName)) Songs.Add("groupName", new Dictionary<string, SongCue>());
+
+            if(Songs[groupName].ContainsKey(songName))
             {
 #if DEBUG
-                throw new InvalidOperationException("Piosenka " + songName + " została już załadowana");
-#else 
-          return;
+                Diagnostics.PushLog("Piosenka " + songName + " została już załadowana");
 #endif
+                return;
             }
-            //_songs.Add(songName, _contentManager.Load<Song>(_contentFolder + songPath));
+            var song = _audioManager.LoadSong(songName);
+            if (song != null)
+            {
+                Songs[groupName].Add(songCueName, new SongCue(volume, song));
+            }
         }
 
-        /// <summary>
-        /// Gets whether a song is playing or paused (i.e. not stopped).
-        /// </summary>
-        public bool IsSongActive { get { return _currentSong != null && MediaPlayer.State != MediaState.Stopped; } }
+        public void PlaySong(string groupName, string songName)
+        {
+            PlaySong(groupName, songName, false);
+        }
 
-        /// <summary>
-        /// Gets whether the current song is paused.
-        /// </summary>
-        public bool IsSongPaused { get { return _currentSong != null && _isMusicPaused; } }
+        public void PlaySong(string groupName, string songName, bool loop)
+        {
+            if (!Songs.ContainsKey(groupName))
+            {
+#if DEBUG
+                Diagnostics.PushLog("Grupa piosenk o nazwie "+groupName+" nie występuje w tym komponencie");
+#endif
+                return;
+            }
+            if (Songs[groupName].ContainsKey(songName))
+            {
+#if DEBUG
+                Diagnostics.PushLog("Piosenka "+songName+" nie występuje w tej grupie:"+groupName);
+#endif
+                return;
+            }
+            _audioManager.PlaySong(Songs[groupName][songName], loop);
+        }
+
+        public void Update(TimeSpan elapsedGameTime)
+        {
+            if (!Enabled || !automaticMode) return;
+          
+        }
 
         public bool Enabled
         {
