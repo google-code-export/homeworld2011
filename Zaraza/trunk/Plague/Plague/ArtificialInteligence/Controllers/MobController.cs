@@ -21,10 +21,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                          float angle)
             : base(person)
         {
-            this.rotationSpeed = rotationSpeed;
-            this.movingSpeed = movingSpeed;
-            this.distance = distance;
-            this.anglePrecision = angle;
+            RotationSpeed   = rotationSpeed;
+            MovingSpeed     = movingSpeed;
+            Distance        = distance;
+            AnglePrecision  = angle;
         }
 
 

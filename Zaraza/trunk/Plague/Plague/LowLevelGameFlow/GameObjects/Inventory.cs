@@ -326,6 +326,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         bool blockAll = false;
 
+                        uint onTiny   = 0;
+                        uint onNormal = 0;
+
                         for (int i = x + width; i >= x; --i)
                         {
                             for (int j = y + height; j >= y; --j)
@@ -344,9 +347,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 {
                                     Items[i, j].Blocked = true;
                                 }
+                                else if (Items[i, j].Tiny && (width > 2 || height > 2))
+                                {
+                                    Items[i, j].Blocked = true;
+                                }
                                 else
                                 {
-                                    Items[i, j].Hover = true;
+                                    if (Items[i, j].Tiny) onTiny++;
+                                    else onNormal++;
+
+                                    if (onTiny > 0 && onNormal > 0) Items[i, j].Blocked = true;
+                                    else                            Items[i, j].Hover   = true;
                                 }
                             }
                         }
@@ -476,7 +487,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             height = tmp;
                         }
 
-                        bool block = false;
+                        bool block    = false;
+                        uint onTiny   = 0;
+                        uint onNormal = 0;
+
                         for (int i = x + width; i >= x; --i)
                         {
                             for (int j = y + height; j >= y; --j)
@@ -484,7 +498,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 if      (i > Items.GetLength(0) - 1)    block = true;
                                 else if (j > Items.GetLength(1) - 1)    block = true;
                                 else if (Items[i, j].Blank         )    block = true;
-                                else if (Items[i, j].Item != null  )    block = true;
+                                else if (Items[i, j].Item != null  )    block = true;    
+                                else if (Items[i, j].Tiny && (width > 2 || height > 2)) block = true;
+                                else
+                                {
+                                    if (Items[i, j].Tiny) onTiny++;
+                                    else onNormal++;
+
+                                    if (onTiny > 0 && onNormal > 0) block = true;                                    
+                                }
 
                                 if (block) break;
                             }

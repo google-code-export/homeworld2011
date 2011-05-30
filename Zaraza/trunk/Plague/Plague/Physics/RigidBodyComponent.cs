@@ -69,7 +69,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public RigidBodyComponent(GameObjectInstance gameObject, float mass, bool immovable, MaterialProperties material, Vector3 translation,float yaw,float pitch,float roll )
+        public RigidBodyComponent(GameObjectInstance gameObject, float mass, bool immovable, MaterialProperties material, Vector3 translation,float yaw,float pitch,float roll)
             : base(gameObject)
         {
             this.mass = mass;
@@ -83,7 +83,7 @@ namespace PlagueEngine.Physics
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
-            
+                       
             physicsManager.rigidBodies.Add(gameObject.ID, this);
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
             dontCollide=false;

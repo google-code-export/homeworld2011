@@ -11,15 +11,14 @@ using Microsoft.Xna.Framework;
 namespace PlagueEngine.ArtificialInteligence.Controllers
 {
     class MercenaryController : AbstractAIController
-    {
-        private float angle;
+    {        
 
         public MercenaryController(AbstractLivingBeing lb, float rotationSpeed, float movingSpeed, float distance, float angle):base(lb)
         {
-            this.rotationSpeed = rotationSpeed;
-            this.movingSpeed = movingSpeed;
-            this.distance = distance;
-            this.angle = angle;
+            RotationSpeed   = rotationSpeed;
+            MovingSpeed     = movingSpeed;
+            Distance        = distance;
+            AnglePrecision  = angle;
         }
 
         public override void Update(TimeSpan deltaTime)
@@ -47,9 +46,9 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         if (det < 0) angle = -angle;
 
-                        if (Math.Abs(angle) > anglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
 
-                        controlledObject.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                        controlledObject.Controller.MoveForward(MovingSpeed * (float)deltaTime.TotalSeconds);
 
                         if (controlledObject.Mesh.CurrentClip != "Run")
                         {
