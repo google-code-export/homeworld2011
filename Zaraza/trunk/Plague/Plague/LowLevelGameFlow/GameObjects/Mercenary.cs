@@ -130,10 +130,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
             SoundEffectComponent.CreateNewSoundFromFolder("Mercenary", 1, 0, 0);
-            //this.rotationSpeed  = rotationSpeed;
-            //this.movingSpeed    = movingSpeed;
-            //this.distance       = distance;
-            //this.anglePrecision = angle;
             this.gripBone       = gripBone;
             this.InventoryIcon  = inventoryIcon;
             this.TinySlots      = tinySlots;
@@ -212,9 +208,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
-            this.objectAIController.OnEvent(sender, e);
-            
-
+            this.objectAIController.OnEvent(sender, e);          
         }
         /****************************************************************************/
 
@@ -224,8 +218,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
         {
-
-
             this.objectAIController.Update(deltaTime);
         }
         /****************************************************************************/
@@ -382,10 +374,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.TinySlots          = TinySlots;
             data.Slots              = Slots;
-            //data.MovingSpeed        = movingSpeed;
-            //data.RotationSpeed      = rotationSpeed;
-            //data.DistancePrecision  = distance;
-            //data.AnglePrecision     = anglePrecision;
+            data.MovingSpeed        = (objectAIController as MercenaryController).MovingSpeed;
+            data.RotationSpeed      = (objectAIController as MercenaryController).RotationSpeed;
+            data.DistancePrecision  = (objectAIController as MercenaryController).Distance;
+            data.AnglePrecision     = (objectAIController as MercenaryController).AnglePrecision;
+            
 
             data.CurrentItem = currentObject == null ? 0 : currentObject.ID;
             data.Items = new List<int[]>();

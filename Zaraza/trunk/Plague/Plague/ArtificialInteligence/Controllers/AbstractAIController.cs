@@ -30,10 +30,10 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
         protected Action action = Action.IDLE;
         protected Attack attack;
 
-        protected float rotationSpeed = 0;
-        protected float movingSpeed = 0;
-        protected float distance = 0;
-        protected float anglePrecision = 0;
+        public float RotationSpeed  { get; protected set; }
+        public float MovingSpeed    { get; protected set; }
+        public float Distance       { get; protected set; }
+        public float AnglePrecision { get; protected set; }
 
         protected IEventsReceiver receiver = null;
         protected Timer cooldownTimer;
@@ -82,7 +82,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
             if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
             {
                 #region MoveToPoint
-                controlledObject.SoundEffectComponent.PlaySound("yesSir");
+                //controlledObject.SoundEffectComponent.PlaySound("yesSir");
                 MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
 
                 receiver = sender as IEventsReceiver;
@@ -129,7 +129,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                                                  controlledObject.World.Translation.Z),
                                      new Vector2(target.X,
                                                  target.Z)); 
-                    if (currentDistance < distance)
+                    if (currentDistance < Distance)
                     {
                         action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
@@ -147,9 +147,9 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         if (det < 0) angle = -angle;
 
-                        if (Math.Abs(angle) > anglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
 
-                        controlledObject.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                        controlledObject.Controller.MoveForward(MovingSpeed * (float)deltaTime.TotalSeconds);
 
                         if (controlledObject.Mesh.CurrentClip != "Run")
                         {
@@ -191,9 +191,9 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         if (det < 0) angle = -angle;
 
-                        if (Math.Abs(angle) > anglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
 
-                        controlledObject.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                        controlledObject.Controller.MoveForward(MovingSpeed * (float)deltaTime.TotalSeconds);
 
                         if (controlledObject.Mesh.CurrentClip != "Run")
                         {
@@ -211,9 +211,9 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         if (det < 0) angle = -angle;
 
-                        if (Math.Abs(angle) > anglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * rotationSpeed * (float)deltaTime.TotalSeconds);
+                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
 
-                        controlledObject.Controller.MoveForward(movingSpeed * (float)deltaTime.TotalSeconds);
+                        controlledObject.Controller.MoveForward(MovingSpeed * (float)deltaTime.TotalSeconds);
 
                         if (controlledObject.Mesh.CurrentClip != "Run")
                         {
