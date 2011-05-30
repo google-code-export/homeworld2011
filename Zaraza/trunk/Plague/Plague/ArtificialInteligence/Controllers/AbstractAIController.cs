@@ -14,7 +14,7 @@ using PlagueEngine.ArtificialIntelligence;
 
 namespace PlagueEngine.ArtificialInteligence.Controllers
 {
-    public enum Action { IDLE, MOVE, TO_IDLE, PICK, EXAMINE, FOLLOW, ATTACK_IDLE, ENGAGE };
+    public enum Action { IDLE, MOVE, TO_IDLE, PICK, EXAMINE, FOLLOW, ATTACK_IDLE, ENGAGE, EXCHANGE };
     abstract class AbstractAIController : IAIController, IAttackable
     {
         public static AI ai;
