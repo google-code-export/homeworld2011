@@ -385,13 +385,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         else mouseOnActions = false;
                         
                         mouseX = (int)mouseMovementState.Position.X - (screenWithOver2 - offset);
-                        mouseMovementState.Propagate = false;
+
+                        LinkedCamera.mouseListenerComponent.Active = false;
+                        
                         mouse.SetCursor("Default");
                         return;
                     }                    
                 }                
             }
             useGUI = false;
+            LinkedCamera.mouseListenerComponent.Active = true;
         }
         /****************************************************************************/
 
@@ -500,8 +503,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                     /*********************************/                        
                 }
-
-                mouseKeyState.Propagate = false;
             }
         }
         /****************************************************************************/
