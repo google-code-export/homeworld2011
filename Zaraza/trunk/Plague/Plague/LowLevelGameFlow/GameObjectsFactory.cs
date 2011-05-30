@@ -624,6 +624,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
                          physicsComponentFactory.CreateTerrainSkinComponent(result,
                                                                             data.HeightMap,
+                                                                            data.HeightMapSkin,
                                                                             data.Segments,
                                                                             data.Segments,
                                                                             data.Height,

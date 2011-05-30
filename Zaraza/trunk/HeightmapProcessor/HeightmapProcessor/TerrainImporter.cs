@@ -25,10 +25,7 @@ namespace HeightmapProcessor
     [ContentProcessor(DisplayName = "Plague Engine Heightmap Processor")]
     public class TerrainProcessor : ContentProcessor<Texture2DContent, ModelContent>
     {
-        const float terrainScale = 1f;
-        const float terrainBumpiness = 15;
         const float texCoordScale = 1.0f;
-        const string terrainTexture = "Checker.bmp";
 
 
         /// <summary>
@@ -46,18 +43,18 @@ namespace HeightmapProcessor
             heightfield = (PixelBitmapContent<float>)input.Mipmaps[0];
 
             // Create the terrain vertices.
-            for (int y = 0; y < heightfield.Height; y++)
+            for (int y = 0; y < 256; y++)
             {
-                for (int x = 0; x < heightfield.Width; x++)
+                for (int x = 0; x < 256; x++)
                 {
                     Vector3 position;
 
                     // position the vertices so that the heightfield is centered
                     // around x=0,z=0
-                    position.X = terrainScale * (x - ((heightfield.Width - 1) / 2.0f));
-                    position.Z = terrainScale * (y - ((heightfield.Height - 1) / 2.0f));
+                    position.X =   ((x*heightfield.Width/256) - ((heightfield.Width - 1) / 2.0f));
+                    position.Z =   ((y*heightfield.Height/256) - ((heightfield.Height - 1) / 2.0f));
 
-                    position.Y = (heightfield.GetPixel(x, y) - 1) * terrainBumpiness;
+                    position.Y = (heightfield.GetPixel(x * heightfield.Width / 256, y * heightfield.Height / 256) - 1);
 
                     builder.CreatePosition(position);
                 }
@@ -72,17 +69,17 @@ namespace HeightmapProcessor
                                             VertexChannelNames.TextureCoordinate(0));
 
             // Create the individual triangles that make up our terrain.
-            for (int y = 0; y < heightfield.Height - 1; y++)
+            for (int y = 0; y < 255; y++)
             {
-                for (int x = 0; x < heightfield.Width - 1; x++)
+                for (int x = 0; x < 255; x++)
                 {
-                    AddVertex(builder, texCoordId, heightfield.Width, x, y);
-                    AddVertex(builder, texCoordId, heightfield.Width, x + 1, y);
-                    AddVertex(builder, texCoordId, heightfield.Width, x + 1, y + 1);
+                    AddVertex(builder, texCoordId, 256, x , y  );
+                    AddVertex(builder, texCoordId, 256, x  + 1 , y  );
+                    AddVertex(builder, texCoordId, 256, x  + 1 , y   + 1  );
 
-                    AddVertex(builder, texCoordId, heightfield.Width, x, y);
-                    AddVertex(builder, texCoordId, heightfield.Width, x + 1, y + 1);
-                    AddVertex(builder, texCoordId, heightfield.Width, x, y + 1);
+                    AddVertex(builder, texCoordId, 256, x , y );
+                    AddVertex(builder, texCoordId, 256, x  + 1 , y   + 1  );
+                    AddVertex(builder, texCoordId, 256, x , y   + 1  );
                 }
             }
 
@@ -94,8 +91,8 @@ namespace HeightmapProcessor
 
             // generate information about the height map, and attach it to the finished
             // model's tag.
-            model.Tag = new HeightMapInfoContent(heightfield, terrainScale,
-                terrainBumpiness);
+            model.Tag = new HeightMapInfoContent(heightfield, 1,
+                1);
 
             return model;
         }

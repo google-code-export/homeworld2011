@@ -58,15 +58,15 @@ namespace HeightmapProcessor
         {
             this.terrainScale = terrainScale;
 
-            height = new float[bitmap.Width, bitmap.Height];
-            for (int y = 0; y < bitmap.Height; y++)
+            height = new float[256, 256];
+            for (int y = 0; y < 256; y++)
             {
-                for (int x = 0; x < bitmap.Width; x++)
+                for (int x = 0; x < 256; x++)
                 {
                     // the pixels will vary from 0 (black) to 1 (white).
                     // by subtracting 1, our heights vary from -1 to 0, which we then
                     // multiply by the "bumpiness" to get our final height.
-                    height[x, y] = (bitmap.GetPixel(x, y) - 1) * terrainBumpiness;
+                    height[x, y] = (bitmap.GetPixel(x*bitmap.Width/256, y*bitmap.Height/256) - 1);
                 }
             }
         }

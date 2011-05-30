@@ -74,7 +74,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Elasticity = terrainSkinComponent.Elasticity;
             data.StaticRoughness = terrainSkinComponent.StaticRoughness;
             data.DynamicRoughness = terrainSkinComponent.DynamicRoughness;
-
+            data.HeightMapSkin = terrainSkinComponent.HeightmapSkin;
             return data;
         }
         /****************************************************************************/
@@ -102,6 +102,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Textures")]
         public String HeightMap     { get; set; }
+
+        [CategoryAttribute("Textures")]
+        public String HeightMapSkin { get; set; }
+
         [CategoryAttribute("Textures")]
         public String BaseTexture   { get; set; }
         [CategoryAttribute("Textures")]
