@@ -64,10 +64,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (owner != null)
             {
                 World = Matrix.Identity;
-                mesh.Enabled = true;
-                light1.Enabled = true;
-                light2.Enabled = true;
-                body.DisableBody();
+                if(mesh != null) mesh.Enabled = true;
+                if (light1 != null) light1.Enabled = true;
+                if (light2 != null) light2.Enabled = true;
+                if (body != null) body.DisableBody();
             }
             else
             {                
@@ -123,9 +123,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.Enabled              = light1.Enabled;
             data.Color                = light1.Color;
+            data.Intensity = light1.Intensity;
+            data.Radius = light1.Radius;
+            data.LinearAttenuation = light1.LinearAttenuation;
+            data.QuadraticAttenuation = light1.QuadraticAttenuation;
 
-            data.Icon = Icon;
-            data.SlotsIcon = SlotsIcon;
+
             data.EnabledMesh = mesh.Enabled;
 
             return data;
@@ -208,11 +211,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Light")]
         public Vector3 Color { get; set; }
 
+        [CategoryAttribute("Light")]
+        public float Radius { get; set; }
 
-        [CategoryAttribute("Icon")]
-        public Rectangle Icon { get; set; }
-        [CategoryAttribute("Icon")]
-        public Rectangle SlotsIcon { get; set; }
+        [CategoryAttribute("Light")]
+        public float Intensity { get; set; }
+
+        [CategoryAttribute("Light")]
+        public float LinearAttenuation { get; set; }
+
+        [CategoryAttribute("Light")]
+        public float QuadraticAttenuation { get; set; }
 
         [CategoryAttribute("EnabledMesh")]
         public bool EnabledMesh { get; set; }

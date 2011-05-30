@@ -297,12 +297,12 @@ namespace PlagueEngine.Rendering.Components
                 effect.CurrentTechnique = effect.Techniques["DepthWrite2"];
             else
                 effect.CurrentTechnique = effect.Techniques["DepthWrite"];
-            
+
             effect.CurrentTechnique.Passes[0].Apply();
-            
+
             device.Indices = indexBuffer;
             device.SetVertexBuffer(vertexBuffer);
-            
+
             device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, trianglesCount);
 
             effect.CurrentTechnique = effect.Techniques[0];

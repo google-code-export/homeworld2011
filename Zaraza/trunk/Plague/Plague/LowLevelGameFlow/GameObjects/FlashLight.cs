@@ -122,8 +122,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ShadowsEnabled = light.ShadowsEnabled;
             data.Specular = light.Specular;
             data.DepthBias = light.DepthBias;
-            data.Icon = Icon;
-            data.SlotsIcon = SlotsIcon;
             data.EnabledMesh = mesh.Enabled;
 
             return data;
@@ -255,11 +253,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool ShadowsEnabled { get; set; }
         [CategoryAttribute("Shadows")]
         public float DepthBias { get; set; }
-
-        [CategoryAttribute("Icon")]
-        public Rectangle Icon      { get; set; }
-        [CategoryAttribute("Icon")]
-        public Rectangle SlotsIcon { get; set; }
 
         [CategoryAttribute("EnabledMesh")]
         public bool EnabledMesh { get; set; }

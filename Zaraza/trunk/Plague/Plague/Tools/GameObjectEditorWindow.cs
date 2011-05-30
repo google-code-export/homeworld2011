@@ -382,12 +382,6 @@ namespace PlagueEngine.Tools
             SpotLight.dataClassType = typeof(SpotLightData);
             gameObjectClassNames.Add(SpotLight);
 
-            gameObjectsClassName BurningBarrel = new gameObjectsClassName();
-            BurningBarrel.className = "BurningBarrel";
-            BurningBarrel.ClassType = typeof(BurningBarrel);
-            BurningBarrel.dataClassType = typeof(BurningBarrelData);
-            gameObjectClassNames.Add(BurningBarrel);
-
             gameObjectsClassName Flashlight = new gameObjectsClassName();
             Flashlight.className = "Flashlight";
             Flashlight.ClassType = typeof(Flashlight);
@@ -1302,7 +1296,6 @@ namespace PlagueEngine.Tools
 
         private void buttonCommitMeshTransforms_Click(object sender, EventArgs e)
         {
-            renderer.batchedMeshes.CommitMeshTransforms();
         }
 
         private void checkBoxShowCollisionSkin_CheckedChanged(object sender, EventArgs e)

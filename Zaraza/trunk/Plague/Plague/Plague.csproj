@@ -203,7 +203,6 @@
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FreeCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
-    <Compile Include="LowLevelGameFlow\GameObjects\BurningBarrel.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MercenariesManager.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Mercenary.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Panel.cs" />
