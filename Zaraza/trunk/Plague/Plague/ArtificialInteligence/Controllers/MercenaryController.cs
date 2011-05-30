@@ -152,6 +152,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                         controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         
                         controlledObject.SendEvent(new ExchangeItemsEvent(controlledObject as Mercenary, objectTarget as Mercenary), Priority.Normal, receiver);
+                        controlledObject.SendEvent(new ActionDoneEvent(), Priority.Normal, receiver);
                         objectTarget = null;
                         
                         #endregion
