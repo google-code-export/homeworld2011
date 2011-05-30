@@ -41,7 +41,7 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public SquareBodyComponent (GameObjectInstance gameObject,
+        public SquareBodyComponent(bool enabled, GameObjectInstance gameObject,
                                     float mass,
                                     float length,
                                     float height,
@@ -53,7 +53,7 @@ namespace PlagueEngine.Physics.Components
                                     float yaw,
                                     float pitch,
                                     float roll)
-            : base(gameObject, mass, immovable, material, skinTranslation,yaw,pitch,roll)
+            : base( enabled,gameObject, mass, immovable, material, skinTranslation,yaw,pitch,roll)
         {
             this.length = length;
             this.width = width;

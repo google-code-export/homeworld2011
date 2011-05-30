@@ -40,8 +40,8 @@ namespace PlagueEngine.Physics
         private float yaw;
         private float pitch;
         private float roll;
-        private bool enabled = true;
-
+        private bool isEnabled = true;
+        public bool Enabled { get { return this.isEnabled; } }
 
         private Dictionary<GameObjectInstance, int> gameObjectsCollisionInFrame = new Dictionary<GameObjectInstance, int>();
         private Dictionary<GameObjectInstance, int> gameObjectsCollisionInPrevFrame = new Dictionary<GameObjectInstance, int>();
@@ -69,7 +69,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public RigidBodyComponent(GameObjectInstance gameObject, float mass, bool immovable, MaterialProperties material, Vector3 translation,float yaw,float pitch,float roll)
+        public RigidBodyComponent(bool enabled,GameObjectInstance gameObject, float mass, bool immovable, MaterialProperties material, Vector3 translation,float yaw,float pitch,float roll )
             : base(gameObject)
         {
             this.mass = mass;
@@ -83,10 +83,15 @@ namespace PlagueEngine.Physics
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
-                       
+            //this.enabled = enabled;
             physicsManager.rigidBodies.Add(gameObject.ID, this);
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
             dontCollide=false;
+            this.isEnabled = true;
+            if (!isEnabled)
+            {
+                DisableBody();
+            }
         }
         /****************************************************************************/
 
@@ -215,12 +220,12 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void DisableBody()
         {
-            if (enabled)
+            if (isEnabled)
             {
-                this.body.DisableBody();                
+                this.body.DisableBody();
                 PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(this.skin);
                 physicsManager.rigidBodies.Remove(this.gameObject.ID);
-                enabled = false;
+                isEnabled = false;
             }
         }
         /****************************************************************************/
@@ -232,14 +237,14 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void EnableBody()
         {
-            if (!enabled)
+            if (!isEnabled)
             {
                 UpdateRotation();
                 PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(this.skin);
                 this.body.EnableBody();
                 this.MoveTo(gameObject.World);
                 physicsManager.rigidBodies.Add(this.gameObject.ID, this);
-                enabled = true;
+                isEnabled = true;
             }
         }
         /****************************************************************************/
@@ -536,30 +541,31 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void Update()
         {
-            
-            gameObject.World=body.Orientation;
+            if (isEnabled)
+            {
+                gameObject.World = body.Orientation;
 
 
-            Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(-roll));
-            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+                Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(-roll));
+                gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+                gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+                gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
 
-            quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Right, MathHelper.ToRadians(-pitch));
-            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+                quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Right, MathHelper.ToRadians(-pitch));
+                gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+                gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+                gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
 
-            quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Forward, MathHelper.ToRadians(-yaw));
-            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
+                quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Forward, MathHelper.ToRadians(-yaw));
+                gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
+                gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
+                gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
 
-            Vector3 t = Vector3.Transform(translation, gameObject.World);
+                Vector3 t = Vector3.Transform(translation, gameObject.World);
 
 
-            gameObject.World.Translation = body.Position - t;
-
+                gameObject.World.Translation = body.Position - t;
+            }
             SendCollisionEvents();
         }
         /****************************************************************************/
@@ -610,6 +616,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void Disable()
         {
+            
             body.DisableBody();
         }
         /****************************************************************************/

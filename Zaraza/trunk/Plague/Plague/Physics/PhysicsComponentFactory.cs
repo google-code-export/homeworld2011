@@ -50,7 +50,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Create Capsule Body Component
         /****************************************************************************/
-        public CapsuleBodyComponent CreateCapsuleBodyComponent(GameObjectInstance gameObject,
+        public CapsuleBodyComponent CreateCapsuleBodyComponent(bool enabled, GameObjectInstance gameObject,
                                     float mass,
                                     float radius,
                                     float length,
@@ -66,7 +66,7 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            CapsuleBodyComponent result = new CapsuleBodyComponent(gameObject, mass, radius, length, material, immovable, world, skinTranslation, skinYaw, skinPitch, skinRoll);
+            CapsuleBodyComponent result = new CapsuleBodyComponent( enabled,gameObject, mass, radius, length, material, immovable, world, skinTranslation, skinYaw, skinPitch, skinRoll);
             return result;
         }
         /****************************************************************************/
@@ -79,7 +79,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Create Square Body Component
         /****************************************************************************/
-        public SquareBodyComponent CreateSquareBodyComponent(GameObjectInstance gameObject,
+        public SquareBodyComponent CreateSquareBodyComponent(bool enabled, GameObjectInstance gameObject,
                                     float mass,
                                     float length,
                                     float height,
@@ -96,7 +96,7 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            SquareBodyComponent result = new SquareBodyComponent(gameObject, mass, length, height, width, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
+            SquareBodyComponent result = new SquareBodyComponent( enabled,gameObject, mass, length, height, width, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
             return result;
         }
         /****************************************************************************/
@@ -109,7 +109,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Create Spherical Body Component
         /****************************************************************************/
-        public SphericalBodyComponent CreateSphericalBodyComponent(GameObjectInstance gameObject,
+        public SphericalBodyComponent CreateSphericalBodyComponent(bool enabled, GameObjectInstance gameObject,
                                     float mass,
                                     float radius,
                                     float elasticity,
@@ -124,7 +124,7 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            SphericalBodyComponent result = new SphericalBodyComponent(gameObject, mass, radius, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
+            SphericalBodyComponent result = new SphericalBodyComponent( enabled,gameObject, mass, radius, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
             return result;
         }
         /****************************************************************************/
@@ -152,6 +152,7 @@ namespace PlagueEngine.Physics
 
             TerrainSkinComponent result = new TerrainSkinComponent(gameObject,
                                                                    content.LoadTexture2D(heightMap),
+                                                                   //content.Load<Model>(heightMap),
                                                                    width,
                                                                    length,
                                                                    height,
@@ -168,7 +169,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Create Square Skin Component
         /****************************************************************************/
-        public SquareSkinComponent CreateSquareSkinComponent(GameObjectInstance gameObject,
+        public SquareSkinComponent CreateSquareSkinComponent(bool enabled, GameObjectInstance gameObject,
                                                                 float elasticity,
                                                                 float staticRoughness,
                                                                 float dynamicRoughness,
@@ -185,7 +186,7 @@ namespace PlagueEngine.Physics
                                                                 staticRoughness,
                                                                 dynamicRoughness);
 
-            SquareSkinComponent result = new SquareSkinComponent(gameObject,
+            SquareSkinComponent result = new SquareSkinComponent( enabled,gameObject,
                                                                  world,
                                                                  length,
                                                                  height,
@@ -206,7 +207,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Create Square Skin Component
         /****************************************************************************/
-        public SphericalSkinComponent CreateSphericalSkinComponent(GameObjectInstance gameObject,
+        public SphericalSkinComponent CreateSphericalSkinComponent(bool enabled, GameObjectInstance gameObject,
                                                                 float elasticity,
                                                                 float staticRoughness,
                                                                 float dynamicRoughness,
@@ -221,7 +222,7 @@ namespace PlagueEngine.Physics
                                                                 staticRoughness,
                                                                 dynamicRoughness);
 
-            SphericalSkinComponent result = new SphericalSkinComponent(gameObject,
+            SphericalSkinComponent result = new SphericalSkinComponent( enabled,gameObject,
                                                                  world,
                                                                  radius,
                                                                  material,
@@ -240,7 +241,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Create Cylindrical Skin Component
         /****************************************************************************/
-        public CylindricalSkinComponent CreateCylindricalSkinComponent(GameObjectInstance gameObject,
+        public CylindricalSkinComponent CreateCylindricalSkinComponent(bool enabled, GameObjectInstance gameObject,
                                                                 float elasticity,
                                                                 float staticRoughness,
                                                                 float dynamicRoughness,
@@ -256,7 +257,7 @@ namespace PlagueEngine.Physics
                                                                 staticRoughness,
                                                                 dynamicRoughness);
 
-            CylindricalSkinComponent result = new CylindricalSkinComponent(gameObject,
+            CylindricalSkinComponent result = new CylindricalSkinComponent( enabled,gameObject,
                                                                  world,
                                                                  length,
                                                                  radius,
@@ -275,7 +276,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Create Cylidrical Body Component
         /****************************************************************************/
-        public CylindricalBodyComponent CreateCylindricalBodyComponent(GameObjectInstance gameObject,
+        public CylindricalBodyComponent CreateCylindricalBodyComponent(bool enabled, GameObjectInstance gameObject,
                                     float mass,
                                     float radius,
                                     float length,
@@ -291,7 +292,7 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            CylindricalBodyComponent result = new CylindricalBodyComponent(gameObject, mass, radius, length, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
+            CylindricalBodyComponent result = new CylindricalBodyComponent( enabled,gameObject, mass, radius, length, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
             return result;
         }
             /********************************************************************************/
@@ -301,7 +302,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         /// Create Cylidrical Body Component 2
         /****************************************************************************/
-        public CylindricalBodyComponent2 CreateCylindricalBodyComponent2(GameObjectInstance gameObject,
+        public CylindricalBodyComponent2 CreateCylindricalBodyComponent2(bool enabled, GameObjectInstance gameObject,
                                     float mass,
                                     float radius,
                                     float length,
@@ -317,7 +318,7 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            CylindricalBodyComponent2 result = new CylindricalBodyComponent2(gameObject, mass, radius, length, material, immovable, world, skinTranslation, skinYaw, skinPitch, skinRoll);
+            CylindricalBodyComponent2 result = new CylindricalBodyComponent2( enabled,gameObject, mass, radius, length, material, immovable, world, skinTranslation, skinYaw, skinPitch, skinRoll);
             return result;
         }
         /********************************************************************************/

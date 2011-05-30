@@ -40,7 +40,7 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public SphericalBodyComponent(GameObjectInstance gameObject,
+        public SphericalBodyComponent(bool enabled, GameObjectInstance gameObject,
                             float mass,
                             float radius,
                             MaterialProperties material,
@@ -50,7 +50,7 @@ namespace PlagueEngine.Physics.Components
                             float yaw,
                             float pitch,
                             float roll)
-            : base(gameObject, mass, immovable, material, skinTranslation,yaw,pitch,roll)
+            : base( enabled,gameObject, mass, immovable, material, skinTranslation,yaw,pitch,roll)
     {
             this.radius = radius;
             Sphere sphere = new Sphere(Vector3.Zero, radius);

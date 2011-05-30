@@ -93,7 +93,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinYaw = body.Yaw;
             data.EnabledMesh = mesh.Enabled;
             data.Static = mesh.Static;
-
+            data.EnabledPhysics = body.Enabled;
             return data;
         }
         /********************************************************************************/
@@ -143,6 +143,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Physics")]
         public bool Immovable { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public bool EnabledPhysics { get; set; }
 
         [CategoryAttribute("Collision Skin")]
         public float Radius { get; set; }

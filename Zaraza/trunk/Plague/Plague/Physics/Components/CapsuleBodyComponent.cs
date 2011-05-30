@@ -41,7 +41,7 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public CapsuleBodyComponent(GameObjectInstance gameObject,
+        public CapsuleBodyComponent(bool enabled,GameObjectInstance gameObject,
                             float mass,
                             float radius,
                             float length,
@@ -52,7 +52,7 @@ namespace PlagueEngine.Physics.Components
                             float yaw,
                             float pitch,
                             float roll)
-            : base(gameObject, mass, immovable, material, skinTranslation, yaw, pitch, roll)
+            : base(enabled,gameObject, mass, immovable, material, skinTranslation, yaw, pitch, roll)
         {
 
             this.radius = radius;

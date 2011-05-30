@@ -50,13 +50,13 @@ namespace PlagueEngine.Physics
             physicsSystem.CollisionSystem = new CollisionSystemSAP();
 
             physicsSystem.SolverType = PhysicsSystem.Solver.Fast;
-            physicsSystem.EnableFreezing                = false;
-            physicsSystem.IsShockStepEnabled = true;
+           // physicsSystem.EnableFreezing                = false;
+            //physicsSystem.IsShockStepEnabled = true;
             physicsSystem.CollisionSystem.UseSweepTests = true;
             
-            physicsSystem.NumCollisionIterations           = 10;
-            physicsSystem.NumContactIterations             = 10;
-            physicsSystem.NumPenetrationRelaxtionTimesteps = 15;
+            physicsSystem.NumCollisionIterations           = 1;
+            physicsSystem.NumContactIterations             = 1;
+            physicsSystem.NumPenetrationRelaxtionTimesteps = 1;
 
             RigidBodyComponent.physicsManager = this;
             CollisionSkinComponent.physicsManager = this;

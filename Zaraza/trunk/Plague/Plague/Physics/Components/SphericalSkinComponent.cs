@@ -43,7 +43,7 @@ namespace PlagueEngine.Physics.Components
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public SphericalSkinComponent(GameObjectInstance gameObject,
+        public SphericalSkinComponent(bool enabled, GameObjectInstance gameObject,
                                     Matrix world,
                                     float radius,
                                     MaterialProperties material,
@@ -51,7 +51,7 @@ namespace PlagueEngine.Physics.Components
                                     float yaw,
                                     float pitch,
                                     float roll)
-            : base(gameObject, material, skinTranslation, yaw, pitch, roll)
+            : base( enabled,gameObject, material, skinTranslation, yaw, pitch, roll)
         {
 
             this.radius = radius;
