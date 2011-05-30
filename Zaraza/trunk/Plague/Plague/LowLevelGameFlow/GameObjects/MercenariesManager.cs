@@ -174,7 +174,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     CommandOnObjectEvent commandOnObjectEvent = e as CommandOnObjectEvent;
 
-                    if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Walk)
+                    if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Passable)
                     {
                         QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position),!leftControl, SelectedMercenaries.ToArray());
                     }
