@@ -1390,6 +1390,91 @@
       <Processor>PlagueEngineModelProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Enemies\Mutant01.X">
+      <Name>Mutant01</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
+      <ProcessorParameters_AnimationClip1>Lying</ProcessorParameters_AnimationClip1>
+      <ProcessorParameters_AnimationClip1End>26</ProcessorParameters_AnimationClip1End>
+      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
+      <ProcessorParameters_AnimationClip2>WakeUp</ProcessorParameters_AnimationClip2>
+      <ProcessorParameters_AnimationClip1Start>25</ProcessorParameters_AnimationClip1Start>
+      <ProcessorParameters_AnimationClip2Start>25</ProcessorParameters_AnimationClip2Start>
+      <ProcessorParameters_AnimationClip2End>60</ProcessorParameters_AnimationClip2End>
+      <ProcessorParameters_AnimationClip3>Stand-Up</ProcessorParameters_AnimationClip3>
+      <ProcessorParameters_AnimationClip3Start>61</ProcessorParameters_AnimationClip3Start>
+      <ProcessorParameters_AnimationClip3End>90</ProcessorParameters_AnimationClip3End>
+      <ProcessorParameters_AnimationClip4>Run</ProcessorParameters_AnimationClip4>
+      <ProcessorParameters_AnimationClip4Start>91</ProcessorParameters_AnimationClip4Start>
+      <ProcessorParameters_AnimationClip4End>110</ProcessorParameters_AnimationClip4End>
+      <ProcessorParameters_AnimationClip5>Crawling</ProcessorParameters_AnimationClip5>
+      <ProcessorParameters_AnimationClip4Loop>True</ProcessorParameters_AnimationClip4Loop>
+      <ProcessorParameters_AnimationClip5Start>111</ProcessorParameters_AnimationClip5Start>
+      <ProcessorParameters_AnimationClip5End>160</ProcessorParameters_AnimationClip5End>
+      <ProcessorParameters_AnimationClip5Loop>True</ProcessorParameters_AnimationClip5Loop>
+      <ProcessorParameters_AnimationClip6>Attack01</ProcessorParameters_AnimationClip6>
+      <ProcessorParameters_AnimationClip6Start>161</ProcessorParameters_AnimationClip6Start>
+      <ProcessorParameters_AnimationClip6End>180</ProcessorParameters_AnimationClip6End>
+      <ProcessorParameters_AnimationClip7>Attack02</ProcessorParameters_AnimationClip7>
+      <ProcessorParameters_AnimationClip7Start>181</ProcessorParameters_AnimationClip7Start>
+      <ProcessorParameters_AnimationClip7End>210</ProcessorParameters_AnimationClip7End>
+      <ProcessorParameters_AnimationClip8>Attack03</ProcessorParameters_AnimationClip8>
+      <ProcessorParameters_AnimationClip8Start>211</ProcessorParameters_AnimationClip8Start>
+      <ProcessorParameters_AnimationClip8End>241</ProcessorParameters_AnimationClip8End>
+      <ProcessorParameters_AnimationClip9>Idle</ProcessorParameters_AnimationClip9>
+      <ProcessorParameters_AnimationClip9Start>242</ProcessorParameters_AnimationClip9Start>
+      <ProcessorParameters_AnimationClip9End>362</ProcessorParameters_AnimationClip9End>
+      <ProcessorParameters_AnimationClip9Loop>True</ProcessorParameters_AnimationClip9Loop>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Enemies\mutant01.diff.bmp">
+      <Name>mutant01.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Enemies\mutant01.norm.bmp">
+      <Name>mutant01.norm</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Characters\Psycho.X">
+      <Name>Psycho</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
+      <ProcessorParameters_AnimationClip1>Idle</ProcessorParameters_AnimationClip1>
+      <ProcessorParameters_AnimationClip1Start>77</ProcessorParameters_AnimationClip1Start>
+      <ProcessorParameters_AnimationClip1End>146</ProcessorParameters_AnimationClip1End>
+      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
+      <ProcessorParameters_AnimationClip2>Run</ProcessorParameters_AnimationClip2>
+      <ProcessorParameters_AnimationClip2Start>26</ProcessorParameters_AnimationClip2Start>
+      <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
+      <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Characters\Psycho.norm.bmp">
+      <Name>Psycho.norm</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Characters\Psycho.diff.BMP">
+      <Name>Psycho.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

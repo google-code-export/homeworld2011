@@ -132,10 +132,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          KeyboardListenerComponent keyboard,
                          MouseListenerComponent    mouse,
                          Mercenary                 mercenary,
+                         Mercenary                 mercenary2,
                          MercenariesManager        mercenariesManager)
         {
             this.frontEnd           = frontEnd;
             this.mercenary          = mercenary;
+            this.mercenary2         = mercenary2;
             this.mercenariesManager = mercenariesManager;
             this.keyboard           = keyboard;
             this.mouse              = mouse;
@@ -152,6 +154,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mercenaryName       = frontEnd.GetFont("Arial");
 
             SetupMercenary();
+            if (mercenary2 != null) SetupMercenary2();
         }
         /****************************************************************************/
 
