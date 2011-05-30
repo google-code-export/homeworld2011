@@ -43,9 +43,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private GameObjectInstance targetGameObject = null;
         private Mercenary          currentMercenary = null;        
 
-        private int screenWithOver2 = 0;
-        private int mouseX          = 0;
-        private int mouseOnMerc     = 0;        
+        private int screenWidthOver2 = 0;
+        private int mouseX           = 0;
+        private int mouseOnMerc      = 0;
+
+        private int iconsOffset      = 0;
         /****************************************************************************/
 
 
@@ -218,18 +220,33 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     switch (SelectedActionEvent.Action)
                     {
-                        case "Grab":    QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl,currentMercenary); break;
-                        case "Examine": QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl,currentMercenary); break;
-                        case "Follow":  QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl,currentMercenary); break;
+                        case "Grab"          : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl,currentMercenary); break;
+                        case "Examine"       : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl,currentMercenary); break;
+                        case "Follow"        : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl,currentMercenary); break;
+                        case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, currentMercenary); break;
+                        case "Inventory": 
+                                        InventoryData data = new InventoryData();
+                                        data.MercenariesManager = this.ID;
+                                        data.Mercenary = targetGameObject.ID;
+                                        SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                                        break;                                                                                                                                                
                     }
                 }
                 else
                 {
                     switch (SelectedActionEvent.Action)
                     {
-                        case "Grab":    QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
-                        case "Examine": QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
-                        case "Follow":  QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
+                        case "Grab"          : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
+                        case "Examine"       : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
+                        case "Follow"        : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
+                        case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, SelectedMercenaries.ElementAt(0)); break;
+                        case "Inventory":
+                                        InventoryData data = new InventoryData();
+                                        data.MercenariesManager = this.ID;
+                                        data.Mercenary = targetGameObject.ID;
+                                        SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                                        break;
+
                     }                
                 }
             }
@@ -243,7 +260,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (Actions.Count != 0) SendEvent(Actions.ElementAt(0), Priority.Normal, sender as Mercenary);
             }
             /*************************************/
-            
+            /// ExchangeItemsEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(ExchangeItemsEvent)))
+            {
+                ExchangeItemsEvent ExchangeItemsEvent = e as ExchangeItemsEvent;
+
+                InventoryData data = new InventoryData();
+                data.MercenariesManager = this.ID;
+                data.Mercenary  = ExchangeItemsEvent.mercenary1.ID;
+                data.Mercenary2 = ExchangeItemsEvent.mercenary2.ID;
+                SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+            }
+
         }
         /****************************************************************************/
 
@@ -259,7 +288,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*************************************/
             if (e.GetType().Equals(typeof(CreateEvent)) && sender.GetType().Equals(typeof(Mercenary)))
             {
-                Mercenaries.Add(sender as Mercenary, new List<EventArgs>());  
+                Mercenaries.Add(sender as Mercenary, new List<EventArgs>());
+                iconsOffset = (66 * Mercenaries.Count) / 2;
             }
             /*************************************/
             /// DestroyEvent
@@ -273,6 +303,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     commandMode = false;
                 }
                 Mercenaries.Remove(sender as Mercenary);
+                iconsOffset = (66 * Mercenaries.Count) / 2;
             }
             /*************************************/
 
@@ -375,16 +406,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (mouseMovementState.Position.Y > 5 && mouseMovementState.Position.Y < 85)
                 { 
-                    int offset = (66 * Mercenaries.Count)/2;
-                    if (mouseMovementState.Position.X > (screenWithOver2 - offset) &&
-                        mouseMovementState.Position.X < (screenWithOver2 + offset))
+                    if (mouseMovementState.Position.X > (screenWidthOver2 - iconsOffset) &&
+                        mouseMovementState.Position.X < (screenWidthOver2 + iconsOffset))
                     {
                         useGUI = true;
                         
                         if (mouseMovementState.Position.Y > 69) mouseOnActions = true;
                         else mouseOnActions = false;
-                        
-                        mouseX = (int)mouseMovementState.Position.X - (screenWithOver2 - offset);
+
+                        mouseX = (int)mouseMovementState.Position.X - (screenWidthOver2 - iconsOffset);
 
                         LinkedCamera.mouseListenerComponent.Active = false;
                         
@@ -509,6 +539,26 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Get Mercenary From Icon
+        /****************************************************************************/
+        public Mercenary GetMercenaryFromIcon(int mouseX, int mouseY)
+        {
+            if (mouseY > 5 && mouseY < 69)
+            {
+                if (mouseX > (screenWidthOver2 - iconsOffset) &&
+                    mouseX < (screenWidthOver2 + iconsOffset))
+                {
+                    int merc = (mouseX - (screenWidthOver2 - iconsOffset)) / 66;
+                    return Mercenaries.Keys.ElementAt(merc);
+                }
+            }
+
+            return null;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Process Mercenary
         /****************************************************************************/
         private void ProcessMercenary(int i)
@@ -574,8 +624,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
             int i = 0;            
-            screenWithOver2 = screenWidth/2;
-            float offset = screenWithOver2;
+            screenWidthOver2 = screenWidth/2;
+            float offset = screenWidthOver2;
             offset -= (66 * Mercenaries.Count)/2.0f;
             foreach (KeyValuePair<Mercenary,List<EventArgs>> pair in Mercenaries)
             {
@@ -729,6 +779,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else if (e.GetType().Equals(typeof(FollowObjectCommandEvent)))
             {
                 return new Rectangle(64, 384, 16, 16);
+            }
+            else if (e.GetType().Equals(typeof(ExchangeItemsCommandEvent)))
+            {
+                return new Rectangle(80, 384, 16, 16);
             }
             else return new Rectangle();
         }
