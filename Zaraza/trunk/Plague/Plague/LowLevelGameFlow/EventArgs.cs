@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
+using PlagueEngine.LowLevelGameFlow.GameObjects;
+
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
 /************************************************************************************/
@@ -375,5 +377,47 @@ namespace PlagueEngine.LowLevelGameFlow
     }
     /********************************************************************************/
 
-   
+
+    /********************************************************************************/
+    /// ExchangeItemsCommandEvent
+    /********************************************************************************/
+    class ExchangeItemsCommandEvent : EventArgs
+    {
+        public Mercenary mercenary;
+
+        public ExchangeItemsCommandEvent(Mercenary mercenary)
+        {
+            this.mercenary = mercenary;
+        }
+
+        public override string ToString()
+        {
+            if (mercenary != null) return "ID: " + mercenary.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// ExchangeItemsEvent
+    /********************************************************************************/
+    class ExchangeItemsEvent : EventArgs
+    {
+        public Mercenary mercenary1;
+        public Mercenary mercenary2;
+
+        public ExchangeItemsEvent(Mercenary mercenary1,Mercenary mercenary2)
+        {
+            this.mercenary1 = mercenary1;
+            this.mercenary2 = mercenary2;
+        }
+
+        public override string ToString()
+        {
+            if (mercenary1 != null && mercenary2 != null) return "ID1: " + mercenary1.ID.ToString() + ", ID2: " + mercenary2.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
 }

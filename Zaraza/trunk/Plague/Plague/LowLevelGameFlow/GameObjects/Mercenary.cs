@@ -398,7 +398,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public String[] GetActions()
         {
-            return new String[] { "Follow" };
+            return new String[] { "Inventory", "Follow" , "Exchange Items" };
         }
         /****************************************************************************/
 
@@ -408,8 +408,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public string[] GetActions(Mercenary mercenary)
         {
-            if (mercenary == this) return new String[] { };
-            else return new String[] { "Follow" };
+            if (mercenary == this) return new String[] { "Inventory" };
+            else return new String[] { "Inventory", "Follow", "Exchange Items" };
         }
         /****************************************************************************/
 

@@ -266,9 +266,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             switch (action)
             {
-                case "Grab"   : rect.X = 64;  rect.Y = 0; break;
-                case "Examine": rect.X = 96;  rect.Y = 0; break;
-                case "Follow" : rect.X = 128; rect.Y = 0; break;
+                case "Grab"          : rect.X = 64;  rect.Y = 0; break;
+                case "Examine"       : rect.X = 96;  rect.Y = 0; break;
+                case "Follow"        : rect.X = 128; rect.Y = 0; break;
+                case "Inventory"     : rect.X = 160; rect.Y = 0; break;
+                case "Exchange Items": rect.X = 192; rect.Y = 0; break;
             }
 
             return rect;
