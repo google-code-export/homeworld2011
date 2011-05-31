@@ -153,7 +153,7 @@ namespace PlagueEngine.Physics
 
             TerrainSkinComponent result = new TerrainSkinComponent(gameObject,
                                                                    content.LoadTexture2D(heightMap),
-                                                                   content.Load<Model>(heightmapSkin),
+                                                                   //content.Load<Model>(heightmapSkin),
                                                                    heightmapSkin,
                                                                    width,
                                                                    length,
