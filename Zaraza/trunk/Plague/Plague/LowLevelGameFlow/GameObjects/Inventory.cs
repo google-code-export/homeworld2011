@@ -89,7 +89,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /*****************/        
 
 
-        private IStorable pickedItem     = null;
+        private StorableObject pickedItem     = null;
         private Slot      pickedItemSlot = Slot.Empty;
         private List<int> pickedItemSlots;
         private int       newPickedItemOrientation = 1;
@@ -151,6 +151,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             mercenaryName       = frontEnd.GetFont("Arial");
 
+            mouse.SetCursor("Default");
+
             SetupMercenary();
             if (mercenary2 != null) SetupMercenary2();
         }
@@ -179,8 +181,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             // Exit Inventory Button
             spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInvButtonPos, (exitInv ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
             // Current Item
-            IStorable currenItem = mercenary.currentObject as IStorable;
-            if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.GetIcon(), Color.White);
+            StorableObject currenItem = mercenary.currentObject;
+            if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.Icon, Color.White);
             // Scroll
             spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUpButtonPos,   (scrollUp   ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
             spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDownButtonPos, (scrollDown ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
@@ -215,9 +217,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
             }
             // Items in inventory
-            foreach (KeyValuePair<IStorable, ItemPosition> pair in mercenary.Items)
+            foreach (KeyValuePair<StorableObject, ItemPosition> pair in mercenary.Items)
             {
-                Rectangle rect = pair.Key.GetSlotsIcon();
+                Rectangle rect = pair.Key.SlotsIcon;
                 int itemSlot = pair.Value.Slot;
                 int height = (pair.Value.Orientation < 0 ? rect.Width / 32 : rect.Height / 32);
                 int y = itemSlot / 11;
@@ -262,7 +264,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                     else
                     {
-                        spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)) + new Vector2(pair.Key.GetSlotsIcon().Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                        spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
                     }
                 }
             }
@@ -284,8 +286,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 // Exit Inventory Button
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInv2ButtonPos, (exitInv2 ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
                 // Current Item
-                currenItem = mercenary2.currentObject as IStorable;
-                if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.GetIcon(), Color.White);
+                currenItem = mercenary2.currentObject;
+                if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, Color.White);
                 // Scroll
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUp2ButtonPos, (scrollUp2 ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDown2ButtonPos, (scrollDown2 ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
@@ -320,9 +322,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                 }
                 // Items in inventory
-                foreach (KeyValuePair<IStorable, ItemPosition> pair in mercenary2.Items)
+                foreach (KeyValuePair<StorableObject, ItemPosition> pair in mercenary2.Items)
                 {
-                    Rectangle rect = pair.Key.GetSlotsIcon();
+                    Rectangle rect = pair.Key.SlotsIcon;
                     int itemSlot = pair.Value.Slot;
                     int height = (pair.Value.Orientation < 0 ? rect.Width / 32 : rect.Height / 32);
                     int y = itemSlot / 11;
@@ -367,7 +369,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
                         else
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos2 + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2 + diff)) + new Vector2(pair.Key.GetSlotsIcon().Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos2 + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2 + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
                         }
                     }
                 }
@@ -383,11 +385,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (newPickedItemOrientation > 0)
                 {
-                    spriteBatch.Draw(frontEnd.Texture, realMousePos, pickedItem.GetSlotsIcon(), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, 
+                                     realMousePos - new Vector2(pickedItem.SlotsIcon.Width/2, 
+                                                                pickedItem.SlotsIcon.Height/2), 
+                                    pickedItem.SlotsIcon, 
+                                    Color.White);
                 }
                 else
                 {
-                    spriteBatch.Draw(frontEnd.Texture, realMousePos + new Vector2(pickedItem.GetSlotsIcon().Height, 0), pickedItem.GetSlotsIcon(), Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                    spriteBatch.Draw(frontEnd.Texture,
+                                     realMousePos + new Vector2( pickedItem.SlotsIcon.Height/2,
+                                                                -pickedItem.SlotsIcon.Width/2), 
+                                     pickedItem.SlotsIcon, 
+                                     Color.White, 
+                                     MathHelper.PiOver2, 
+                                     new Vector2(0, 0), 
+                                     1, 
+                                     SpriteEffects.None, 
+                                     0);
                 }
             }
             /***********************/
@@ -438,7 +453,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                              mousePos.Y > CurrItemIconPos.Y &&
                              mousePos.Y < CurrItemIconPos.Y + 50)
                     {
-                        pickedItem = mercenary.currentObject as IStorable;
+                        pickedItem = mercenary.currentObject;
                         if (pickedItem != null)
                         {
                             pickedItemSlot = Slot.CurrentItem;
@@ -455,7 +470,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                              mousePos.Y > CurrItemIconPos2.Y &&
                              mousePos.Y < CurrItemIconPos2.Y + 50)
                     {
-                        pickedItem = mercenary2.currentObject as IStorable;
+                        pickedItem = mercenary2.currentObject;
                         if (pickedItem != null)
                         {
                             pickedItemSlot = Slot.CurrentItem;
@@ -553,8 +568,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
                             int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
 
-                            int width = (pickedItem.GetSlotsIcon().Width / 32) - 1;
-                            int height = (pickedItem.GetSlotsIcon().Height / 32) - 1;
+                            int width = (pickedItem.SlotsIcon.Width / 32) - 1;
+                            int height = (pickedItem.SlotsIcon.Height / 32) - 1;
 
                             if (newPickedItemOrientation < 0)
                             {
@@ -630,8 +645,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             int x = (int)((mousePos.X - SlotsStartPos2.X) / 32);
                             int y = (int)((mousePos.Y - SlotsStartPos2.Y) / 32) + scrollCurrentOffset2;
 
-                            int width = (pickedItem.GetSlotsIcon().Width / 32) - 1;
-                            int height = (pickedItem.GetSlotsIcon().Height / 32) - 1;
+                            int width = (pickedItem.SlotsIcon.Width / 32) - 1;
+                            int height = (pickedItem.SlotsIcon.Height / 32) - 1;
 
                             if (newPickedItemOrientation < 0)
                             {
@@ -822,7 +837,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 {
                                     if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
                                     {
-                                        mercenary.PickItem(pickedItem as GameObjectInstance);
+                                        mercenary.PickItem(pickedItem);
                                         pickedItem = null;
                                         mouse.CursorVisible = true;
                                         return;
@@ -830,7 +845,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                                 else
                                 {
-                                    mercenary.PickItem(pickedItem as GameObjectInstance);
+                                    mercenary.PickItem(pickedItem);
                                     pickedItem = null;
                                     mouse.CursorVisible = true;
                                     return;
@@ -850,7 +865,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 {
                                     if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
                                     {
-                                        mercenary2.PickItem(pickedItem as GameObjectInstance);
+                                        mercenary2.PickItem(pickedItem);
                                         pickedItem = null;
                                         mouse.CursorVisible = true;
                                         return;
@@ -858,7 +873,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                                 else
                                 {
-                                    mercenary2.PickItem(pickedItem as GameObjectInstance);
+                                    mercenary2.PickItem(pickedItem);
                                     pickedItem = null;
                                     mouse.CursorVisible = true;
                                     return;
@@ -879,8 +894,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
                             int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
 
-                            int width = (pickedItem.GetSlotsIcon().Width / 32) - 1;
-                            int height = (pickedItem.GetSlotsIcon().Height / 32) - 1;
+                            int width = (pickedItem.SlotsIcon.Width / 32) - 1;
+                            int height = (pickedItem.SlotsIcon.Height / 32) - 1;
 
                             if (newPickedItemOrientation < 0)
                             {
@@ -950,8 +965,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             int x = (int)((mousePos.X - SlotsStartPos2.X) / 32);
                             int y = (int)((mousePos.Y - SlotsStartPos2.Y) / 32) + scrollCurrentOffset2;
 
-                            int width = (pickedItem.GetSlotsIcon().Width / 32) - 1;
-                            int height = (pickedItem.GetSlotsIcon().Height / 32) - 1;
+                            int width = (pickedItem.SlotsIcon.Width / 32) - 1;
+                            int height = (pickedItem.SlotsIcon.Height / 32) - 1;
 
                             if (newPickedItemOrientation < 0)
                             {
@@ -1011,6 +1026,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 pickedItemSlot = Slot.Empty;
                                 mouse.CursorVisible = true;
                             }
+                        }
+                        /*************************/
+                        #endregion
+                        /*************************/                        
+                        #region Outside Inventory
+                        /*************************/
+                        else if (realMousePos.X < localPosition.X       ||                                 
+                                 realMousePos.Y > localPosition.Y + 620 ||
+                                 realMousePos.Y < localPosition.Y       ||
+                                 (mercenary2 == null && realMousePos.X > localPosition.X + 420) ||
+                                 (mercenary2 != null && realMousePos.X > localPosition.X + 840))
+                        {
+                            mercenary.DropItem(pickedItem);
+                            pickedItem = null;
+                            pickedItemSlot = Slot.Empty;
+                            mouse.CursorVisible = true;
                         }
                         /*************************/
                         #endregion
@@ -1190,7 +1221,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
             }
 
-            foreach (KeyValuePair<IStorable, ItemPosition> pair in mercenary.Items)
+            foreach (KeyValuePair<StorableObject, ItemPosition> pair in mercenary.Items)
             {
                 List<int> slots = CalculateSlots(pair.Key, pair.Value.Slot, pair.Value.Orientation, true);
                 foreach (int slot in slots)
@@ -1239,7 +1270,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
             }
 
-            foreach (KeyValuePair<IStorable, ItemPosition> pair in mercenary2.Items)
+            foreach (KeyValuePair<StorableObject, ItemPosition> pair in mercenary2.Items)
             {
                 List<int> slots = CalculateSlots(pair.Key, pair.Value.Slot, pair.Value.Orientation, true);
                 foreach (int slot in slots)
@@ -1429,11 +1460,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private struct SlotContent
         {
-            public IStorable Item;
-            public bool      Blocked;
-            public bool      Tiny;
-            public bool      Hover;
-            public bool      Blank;
+            public StorableObject Item;
+            
+            public bool Blocked;
+            public bool Tiny;
+            public bool Hover;
+            public bool Blank;
         }
         /****************************************************************************/
 
@@ -1446,8 +1478,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             switch (pickedItemSlot)
             {
                 case Slot.CurrentItem:
-                    if (!pickedFromMerc2) mercenary.PickItem(pickedItem as GameObjectInstance);
-                    else                  mercenary2.PickItem(pickedItem as GameObjectInstance);
+                    if (!pickedFromMerc2) mercenary.PickItem(pickedItem);
+                    else                  mercenary2.PickItem(pickedItem);
                     
                     pickedItem = null;
                     mouse.CursorVisible = true;                    
@@ -1479,11 +1511,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Calculate Slots
         /****************************************************************************/
-        private List<int> CalculateSlots(IStorable item, int slot,int orientation,bool oriented)
+        private List<int> CalculateSlots(StorableObject item, int slot,int orientation,bool oriented)
         { 
             List<int> slots = new List<int>();
-            int width  = (item.GetSlotsIcon().Width  / 32) - 1;
-            int height = (item.GetSlotsIcon().Height / 32) - 1;
+            int width  = (item.SlotsIcon.Width  / 32) - 1;
+            int height = (item.SlotsIcon.Height / 32) - 1;
 
             if (oriented && orientation < 0) 
             {

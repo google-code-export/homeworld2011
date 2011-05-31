@@ -116,7 +116,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                                 (controlledObject as Mercenary).currentObject.OwnerBone = -1;
                             }
 
-                            (controlledObject as Mercenary).currentObject = objectTarget;
+                            (controlledObject as Mercenary).currentObject = objectTarget as StorableObject;
                             objectTarget.Owner = this.controlledObject;
                             objectTarget.OwnerBone = controlledObject.Mesh.BoneMap[(controlledObject as Mercenary).gripBone];
                         }

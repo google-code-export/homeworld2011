@@ -83,14 +83,17 @@ namespace PlagueEngine.Physics
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
-            //this.enabled = enabled;
-            physicsManager.rigidBodies.Add(gameObject.ID, this);
+            //this.enabled = enabled;            
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
             dontCollide=false;
             this.isEnabled = enabled;
             if (!isEnabled)
             {
                 DisableBody();
+            }
+            else
+            {
+                physicsManager.rigidBodies.Add(gameObject.ID, this);
             }
         }
         /****************************************************************************/

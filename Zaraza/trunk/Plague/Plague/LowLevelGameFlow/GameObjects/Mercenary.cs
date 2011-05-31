@@ -51,15 +51,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Slots
         /****************************************************************************/
-        public GameObjectInstance currentObject   = null;
+        public StorableObject currentObject = null;
 
         public Firearm Weapon   = null;
-        public Firearm sideArm  = null;
-        public Armor   armor    = null;
+        public Firearm SideArm  = null;
+        public Armor   Armor    = null;
 
         public String gripBone;
 
-        public Dictionary<IStorable, ItemPosition> Items { get; private set; }
+        public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
         /****************************************************************************/
 
 
@@ -122,8 +122,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Rectangle inventoryIcon,
                          uint tinySlots,
                          uint slots,
-                         Dictionary<IStorable, ItemPosition> items,
-                         GameObjectInstance currentObject)
+                         Dictionary<StorableObject, ItemPosition> items,
+                         StorableObject currentObject)
         {
             this.objectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle);
             Mesh = mesh;
@@ -226,7 +226,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Pick Item
         /****************************************************************************/
-        public void PickItem(GameObjectInstance item)
+        public void PickItem(StorableObject item)
         {
             currentObject  = item;
             item.Owner     = this;
@@ -238,13 +238,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Drop Item
         /****************************************************************************/
-        public void DropItem(GameObjectInstance item = null)
+        public void DropItem(StorableObject item = null)
         {
             if (item != null)
             {
-                currentObject.World.Translation += Vector3.Normalize(World.Forward) * 2;
-                currentObject.Owner = null;
-                currentObject.OwnerBone = -1;            
+                item.World.Translation += Vector3.Normalize(World.Forward) * 2;
+                item.Owner = null;
+                item.OwnerBone = -1;            
             }
             else if (currentObject != null)
             {
@@ -261,10 +261,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void StoreCurrentItem()
         {
-            IStorable item = currentObject as IStorable;
-            if (item != null)
+            if (currentObject != null)
             {
-                item.OnStoring();
+                currentObject.OnStoring();
                 currentObject = null;
             }
         }
@@ -383,7 +382,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.CurrentItem = currentObject == null ? 0 : currentObject.ID;
             data.Items = new List<int[]>();
 
-            foreach (KeyValuePair<IStorable, ItemPosition> item in Items)
+            foreach (KeyValuePair<StorableObject, ItemPosition> item in Items)
             {
                 data.Items.Add(new int[] { (item.Key as GameObjectInstance).ID, item.Value.Slot, item.Value.Orientation });
             }
