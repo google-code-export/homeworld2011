@@ -86,8 +86,12 @@ namespace HeightmapProcessor
             // Chain to the ModelProcessor so it can convert the mesh we just generated.
             MeshContent terrainMesh = builder.FinishMesh();
 
+            MeshHelper.CalculateNormals(terrainMesh, false);
+
             ModelContent model = context.Convert<MeshContent, ModelContent>(terrainMesh,
                                                               "ModelProcessor");
+
+            
 
             // generate information about the height map, and attach it to the finished
             // model's tag.

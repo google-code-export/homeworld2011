@@ -1391,13 +1391,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Terrain\Level1Skin.tga">
-      <Name>Level1Skin</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TerrainProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\Enemies\Mutant01.X">
       <Name>Mutant01</Name>
       <Importer>XImporter</Importer>

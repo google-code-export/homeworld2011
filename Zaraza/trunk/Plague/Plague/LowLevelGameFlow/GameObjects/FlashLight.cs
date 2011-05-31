@@ -61,9 +61,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 World = Matrix.Identity;
                 World *= Matrix.CreateRotationY(MathHelper.ToRadians(180));
-                mesh.Enabled = true;
-                light.Enabled = true;
-                if(body != null) body.DisableBody();
+
+                if (mesh  != null) mesh.Enabled     = true;
+                if (light != null) light.Enabled    = true;
+                if (body  != null) body.DisableBody();
             }
             else
             {

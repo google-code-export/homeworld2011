@@ -115,7 +115,7 @@ namespace PlagueEngine.Physics.Components
 
             
             MoveTo(dummyWorld);
-            Enable();
+            if(enabled) Enable();
 
 
         }

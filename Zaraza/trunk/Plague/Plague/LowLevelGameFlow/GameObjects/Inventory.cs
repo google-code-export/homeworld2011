@@ -70,8 +70,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /******************/
         /// Inventory Tab2
         /******************/
-        private bool    nextMerc2            = false;
-        private bool    prevMerc2            = false;
         private bool    exitInv2             = false;
         private bool    scrollUp2            = false;
         private bool    scrollDown2          = false;
@@ -114,8 +112,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Vector2 ScrollButtonBasePos = new Vector2(400, 237);
         private Vector2 SlotsStartPos       = new Vector2(31, 120);
         
-        private Vector2 NextMerc2ButtonPos   = new Vector2(518, 30);
-        private Vector2 PrevMerc2ButtonPos   = new Vector2(440, 30);
         private Vector2 ExitInv2ButtonPos    = new Vector2(805, 0);
         private Vector2 CurrItemIconPos2     = new Vector2(542, 40);
         private Vector2 ScrollUp2ButtonPos   = new Vector2(424, 223);
@@ -145,7 +141,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mouse.Modal    = true;
             keyboard.Modal = true;
 
-            keyboard.SubscibeKeys   (OnKey, Keys.Escape,Keys.Space,Keys.LeftControl);
+            keyboard.SubscibeKeys   (OnKey, Keys.Escape,Keys.Space,Keys.E,Keys.Tab);
+            keyboard.SubscibeKeys   (delegate(Keys key, ExtendedKeyState state) { leftControl = state.IsDown(); }, Keys.LeftControl);
+
             mouse.SubscribeKeys     (OnMouseKey, MouseKeyAction.LeftClick,MouseKeyAction.RightClick);
             mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move,MouseMoveAction.Scroll);
             
@@ -283,9 +281,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(461, 5), mercenary2.InventoryIcon, Color.White);
                 //// Merc Name
                 spriteBatch.DrawString(mercenaryName, mercenary2.Name, localPosition + mercenary2NamePos, Color.WhiteSmoke);
-                //// Switch Merc Button
-                spriteBatch.Draw(frontEnd.Texture, localPosition + NextMerc2ButtonPos, (nextMerc2 ? new Rectangle(1290, 14, 15, 14) : new Rectangle(1290, 0, 15, 14)), Color.White);
-                spriteBatch.Draw(frontEnd.Texture, localPosition + PrevMerc2ButtonPos, (prevMerc2 ? new Rectangle(1275, 14, 15, 14) : new Rectangle(1275, 0, 15, 14)), Color.White);
                 // Exit Inventory Button
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInv2ButtonPos, (exitInv2 ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
                 // Current Item
@@ -764,28 +759,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             scrollDown = true;
                         }
                         /*************************/
-                        /// Next Merc 2 Button
-                        /*************************/
-                        else if (mousePos.X > NextMerc2ButtonPos.X &&
-                            mousePos.X < NextMerc2ButtonPos.X + 15 &&
-                            mousePos.Y > NextMerc2ButtonPos.Y &&
-                            mousePos.Y < NextMerc2ButtonPos.Y + 14)
-                        {
-                            UncheckButtons();
-                            nextMerc2 = true;
-                        }
-                        /*************************/
-                        /// Prev Merc 2 Button
-                        /*************************/
-                        else if (mousePos.X > PrevMerc2ButtonPos.X &&
-                                 mousePos.X < PrevMerc2ButtonPos.X + 15 &&
-                                 mousePos.Y > PrevMerc2ButtonPos.Y &&
-                                 mousePos.Y < PrevMerc2ButtonPos.Y + 14)
-                        {
-                            UncheckButtons();
-                            prevMerc2 = true;
-                        }
-                        /*************************/
                         /// Exit Inv 2 Button
                         /*************************/
                         else if (mousePos.X > ExitInv2ButtonPos.X &&
@@ -1116,28 +1089,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*************************/
                     #endregion
                     /*************************/
-                    #region Next Merc2
-                    /*************************/
-                    else if (nextMerc2)
-                    {
-                        mercenary2 = mercenariesManager.GetNextMercenary(mercenary2);
-                        if (mercenary2 == mercenary) mercenary2 = mercenariesManager.GetNextMercenary(mercenary2);
-                        SetupMercenary2();
-                    }
-                    /*************************/
-                    #endregion
-                    /*************************/
-                    #region Prev Merc2
-                    /*************************/
-                    else if (prevMerc2)
-                    {
-                        mercenary2 = mercenariesManager.GetPrevMercenary(mercenary2);
-                        if (mercenary2 == mercenary) mercenary2 = mercenariesManager.GetPrevMercenary(mercenary2);
-                        SetupMercenary2();
-                    }
-                    /*************************/
-                    #endregion
-                    /*************************/
                     #region Exit Inventory 2
                     /*************************/
                     else if (exitInv2)
@@ -1186,15 +1137,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                             mouse.Modal = false;
                             keyboard.Modal = false;
-                        }
-                        else if (mercenary2 == merc)
-                        {
-                            mercenary2 = null;
-                        }
-                        else if (leftControl)
-                        {
-                            mercenary2 = merc;
-                            SetupMercenary2();
                         }
                         else
                         {
@@ -1319,8 +1261,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             exitInv     = false;
             scrollUp    = false;
             scrollDown  = false;
-            nextMerc2   = false;
-            prevMerc2   = false;
             exitInv2    = false;
             scrollUp2   = false;
             scrollDown2 = false;
@@ -1428,9 +1368,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     if(pickedItem != null) newPickedItemOrientation = -newPickedItemOrientation;
                 }
-            }
-
-            if(key == Keys.LeftControl) leftControl = state.IsDown();
+                else if (key == Keys.E)
+                {
+                    SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+                    mouse.Modal = false;
+                    keyboard.Modal = false;
+                }
+                else if (key == Keys.Tab)
+                {
+                    if (!leftControl)
+                    {
+                        mercenary = mercenariesManager.GetNextMercenary(mercenary);
+                        if (mercenary == mercenary2) mercenary = mercenariesManager.GetNextMercenary(mercenary);
+                        SetupMercenary();
+                    }
+                    else
+                    {
+                        mercenary = mercenariesManager.GetPrevMercenary(mercenary);
+                        if (mercenary == mercenary2) mercenary = mercenariesManager.GetPrevMercenary(mercenary);
+                        SetupMercenary();
+                    }
+                }
+            }            
         }
         /****************************************************************************/
 
