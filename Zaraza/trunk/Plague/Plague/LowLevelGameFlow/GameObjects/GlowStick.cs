@@ -19,7 +19,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// GlowStick
     /********************************************************************************/
-    class GlowStick : GameObjectInstance, IActiveGameObject, IStorable
+    class GlowStick : StorableObject
     {
 
         /****************************************************************************/
@@ -29,29 +29,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public CylindricalBodyComponent body = null;
         PointLightComponent      light1 = null;
         PointLightComponent      light2 = null;
-
-        private Rectangle Icon;
-        private Rectangle SlotsIcon;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(MeshComponent mesh,
+        public void Init(MeshComponent            mesh,
                          CylindricalBodyComponent body,
-                         PointLightComponent light1,
-                         PointLightComponent light2,
-                         Rectangle icon,
-                         Rectangle slotsIcon)
+                         PointLightComponent      light1,
+                         PointLightComponent      light2,
+                         Rectangle                icon,
+                         Rectangle                slotsIcon,
+                         String                   description,
+                         int                      descriptionWindowWidth,
+                         int                      descriptionWindowHeight)
         {
             this.mesh   = mesh;
             this.body   = body;
             this.light1 = light1;
             this.light2 = light2;
 
-            Icon = icon;
-            SlotsIcon = slotsIcon;
+            Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight);
         }
         /****************************************************************************/
 
@@ -64,15 +63,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (owner != null)
             {
                 World = Matrix.Identity;
-                if(mesh != null) mesh.Enabled = true;
+                if (mesh   != null) mesh.Enabled   = true;
                 if (light1 != null) light1.Enabled = true;
                 if (light2 != null) light2.Enabled = true;
-                if (body != null) body.DisableBody();
+                if (body   != null) body.DisableBody();
             }
             else
             {                
                 if(getWorld != null) World = GetWorld();
                 if(body != null) body.EnableBody();
+
+                if (mesh != null) mesh.Enabled = true;
+                if (light1 != null) light1.Enabled = true;
+                if (light2 != null) light2.Enabled = true;
             }
         }
         /****************************************************************************/
@@ -137,42 +140,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// GetActions
+        /// OnStoring
         /****************************************************************************/
-        public string[] GetActions()
-        {
-            return new String[] {};
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// GetActions
-        /****************************************************************************/
-        public string[] GetActions(Mercenary mercenary)
-        {
-            return new String[] { "Grab" };
-        }
-        /****************************************************************************/
-
-        public Rectangle GetIcon()
-        {
-            return Icon;
-        }
-
-        public Rectangle GetSlotsIcon()
-        {
-            return SlotsIcon;
-        }
-
-
-        public void OnStoring()
+        public override void OnStoring()
         {
             body.DisableBody();
             mesh.Enabled   = false;
             light1.Enabled = false;
             light2.Enabled = false;
         }
+        /****************************************************************************/
+
     }
     /********************************************************************************/
 
@@ -181,7 +159,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// GlowStickData
     /********************************************************************************/
     [Serializable]
-    public class GlowStickData : GameObjectInstanceData
+    public class GlowStickData : StorableObjectData
     {
         [CategoryAttribute("Textures")]
         public String Texture { get; set; }

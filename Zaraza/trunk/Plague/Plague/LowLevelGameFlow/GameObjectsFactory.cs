@@ -873,7 +873,10 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              data.QuadraticAttenuation,
                                                                              new Vector3(0, -0.5f, 0)),
                         new Rectangle(0, 670, 50, 50),
-                        new Rectangle(50, 670, 64, 32));                        
+                        new Rectangle(50, 670, 64, 32),
+                        data.Description,
+                        data.DescriptionWindowWidth,
+                        data.DescriptionWindowHeight);                        
 
             return true;
         }
@@ -950,7 +953,10 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.ShadowsEnabled,
                                                                             data.DepthBias),
                         new Rectangle(0, 620, 50, 50),
-                        new Rectangle(50, 620, 32, 32)
+                        new Rectangle(50, 620, 32, 32),
+                        data.Description,
+                        data.DescriptionWindowWidth,
+                        data.DescriptionWindowHeight
                         );
             return true;
         }
@@ -963,14 +969,14 @@ namespace PlagueEngine.LowLevelGameFlow
         public bool CreateMercenary(Mercenary result, MercenaryData data)
         {
 
-            Dictionary<IStorable, ItemPosition> Items = new Dictionary<IStorable,ItemPosition>();
+            Dictionary<StorableObject, ItemPosition> Items = new Dictionary<StorableObject, ItemPosition>();
 
             if (data.Items != null)
             {
 
                 foreach (int[] itemData in data.Items)
                 {
-                    IStorable storable = GetObject(itemData[0]) as IStorable;
+                    StorableObject storable = GetObject(itemData[0]) as StorableObject;
 
                     if (storable == null)
                     {
@@ -982,10 +988,10 @@ namespace PlagueEngine.LowLevelGameFlow
                 }
             }
 
-            GameObjectInstance currentObject = null;
+            StorableObject currentObject = null;
             if (data.CurrentItem != 0)
             {
-                currentObject = GetObject(data.CurrentItem);
+                currentObject = (StorableObject)GetObject(data.CurrentItem);
                 if (currentObject == null)
                 {
                     PushToWaitingRoom(result, data);
@@ -1112,7 +1118,10 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.SkinPitch,
                                                                           data.SkinRoll),
                       data.Icon,
-                      data.SlotsIcon);
+                      data.SlotsIcon,
+                      data.Description,
+                      data.DescriptionWindowWidth,
+                      data.DescriptionWindowHeight);
             return true;
         }
         /****************************************************************************/

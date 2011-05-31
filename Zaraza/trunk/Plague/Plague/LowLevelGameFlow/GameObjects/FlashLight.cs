@@ -19,7 +19,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Flashlight
     /********************************************************************************/
-    class Flashlight : GameObjectInstance, IActiveGameObject, IStorable
+    class Flashlight : StorableObject
     {
 
         /****************************************************************************/
@@ -28,26 +28,26 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public MeshComponent mesh = null;
         public CylindricalBodyComponent body = null;
         SpotLightComponent       light = null;
-
-        private Rectangle Icon;
-        private Rectangle SlotsIcon;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(MeshComponent mesh,
+        public void Init(MeshComponent            mesh,
                          CylindricalBodyComponent body,
-                         SpotLightComponent light,
-                         Rectangle icon,
-                         Rectangle slotsIcon)
+                         SpotLightComponent       light,
+                         Rectangle                icon,
+                         Rectangle                slotsIcon,
+                         String                   description,
+                         int                      descriptionWindowWidth,
+                         int                      descriptionWindowHeight)
         {
             this.mesh  = mesh;
             this.body  = body;
             this.light = light;
-            Icon = icon;
-            SlotsIcon = slotsIcon;
+
+            Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight);
         }
         /****************************************************************************/
 
@@ -69,7 +69,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else
             {
                 if (getWorld != null) World = GetWorld();
-                if(body != null) body.EnableBody();
+                if (body     != null) body.EnableBody();
+                if (mesh     != null) mesh.Enabled = true;
+                if (light    != null) light.Enabled = true;
             }
         }
         /****************************************************************************/
@@ -132,69 +134,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// GetActions
+        /// On Storing
         /****************************************************************************/
-        public String[] GetActions()
-        {
-            return new String[] {};
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// GetActions
-        /****************************************************************************/
-        public string[] GetActions(Mercenary mercenary)
-        {
-            return new String[] { "Grab", "Examine" };
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// On Event
-        /****************************************************************************/
-        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
-        {
-            if (e.GetType().Equals(typeof(ExamineEvent)))
-            { 
-                DescriptionWindowData data = new DescriptionWindowData();
-                data.Title = "Flashlight";
-                data.Text = "A flashlight (usually called a torch outside North America) is\n" +
-                            "a hand-held electric-powered light source. Usually the light\n"   +
-                            "source is a small incandescent lightbulb or light-emitting \n"    +
-                            "diode (LED). Typical flashlight designs consist of the light \n"  +
-                            "source mounted in a parabolic or other shaped reflector, \n"      + 
-                            "a transparent lens to protect the light source from damage \n"    +
-                            "and debris, a power source (typically electric batteries), \n"    +
-                            "and an electric power switch.";
-
-                data.Width  = 410;
-                data.Height = 220;
-
-                SendEvent(new CreateObjectEvent(data), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
-            }
-        }
-        /****************************************************************************/
-
-
-        public Rectangle GetIcon()
-        {
-            return Icon;
-        }
-
-        public Rectangle GetSlotsIcon()
-        {
-            return SlotsIcon;
-        }
-
-
-        public void OnStoring()
+        public override void OnStoring()
         {
             body.DisableBody();
             mesh.Enabled  = false;
             light.Enabled = false;
         }
+        /****************************************************************************/
+
     }
     /********************************************************************************/
 
@@ -203,7 +152,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// FlashlightData
     /********************************************************************************/
     [Serializable]
-    public class FlashlightData : GameObjectInstanceData
+    public class FlashlightData : StorableObjectData
     {
         [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
