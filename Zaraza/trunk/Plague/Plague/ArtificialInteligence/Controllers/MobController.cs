@@ -33,24 +33,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         {
             if (e.GetType().Equals(typeof(TakeDamage)))
             {
-                #region Take Damage
-                TakeDamage evt = e as TakeDamage;
-                if (HP <= evt.amount)
-                {
-                    EnemyKilled args = new EnemyKilled(this.controlledObject);
-                    this.controlledObject.SendEvent(args, Priority.Normal, this.receiver);
-                }
-                else
-                {
-                    this.HP -= (uint)evt.amount;
-                    if (this.attackTarget == null)
-                    {
-                        this.attackTarget = evt.attacker;
-                        action = PlagueEngine.ArtificialInteligence.Controllers.Action.ENGAGE;
-                    }
-                }
-                
-                #endregion
+               
                 return;
             }
             else if (e.GetType().Equals(typeof(EnemyNoticed)))
