@@ -740,7 +740,7 @@ namespace PlagueEngine.Physics
                 Vector3 deltaVel = DesiredVelocity - Velocity;
 
 
-                deltaVel.Y = -5.0f;
+                deltaVel.Y = 0.0f;
                 //deltaVel.Y = 0.0f;
                 deltaVel *= 10.0f;
 
