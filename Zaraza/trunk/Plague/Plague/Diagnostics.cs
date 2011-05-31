@@ -132,7 +132,7 @@ namespace PlagueEngine
             sb.Append(text);
             sb.AppendLine();
             _logWindow.TextBox.Text += sb.ToString();
-                
+            _textWriter.Write(sb.ToString());
             _logWindow.TextBox.SelectionStart = _logWindow.TextBox.TextLength;
             _logWindow.TextBox.ScrollToCaret();
         }
@@ -153,7 +153,7 @@ namespace PlagueEngine
             sb.Append(text);
             sb.AppendLine();
             _logWindow.TextBox.Text += sb.ToString();
-
+            _textWriter.Write(sb.ToString());
             _logWindow.TextBox.SelectionStart = _logWindow.TextBox.TextLength;
             _logWindow.TextBox.ScrollToCaret();
         }
