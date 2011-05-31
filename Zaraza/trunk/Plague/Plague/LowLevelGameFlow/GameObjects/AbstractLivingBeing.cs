@@ -15,7 +15,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     class AbstractLivingBeing : GameObjectInstance
     {
         protected IAIController objectAIController;
-
+        public IAIController ObjectAIController { get; protected set; }
         /****************************************************************************/
         /// Fields
         /****************************************************************************/

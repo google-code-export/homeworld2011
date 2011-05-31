@@ -14,8 +14,8 @@ using PlagueEngine.ArtificialIntelligence;
 
 namespace PlagueEngine.ArtificialInteligence.Controllers
 {
-    public enum Action { IDLE, MOVE, TO_IDLE, PICK, EXAMINE, FOLLOW, ATTACK_IDLE, ENGAGE, EXCHANGE };
-    abstract class AbstractAIController : IAIController, IAttackable
+    public enum Action { IDLE, MOVE, TO_IDLE, PICK, EXAMINE, FOLLOW, ATTACK_IDLE, ENGAGE, EXCHANGE, ATTACK };
+    abstract class AbstractAIController : IAIController, IAttackable, IEventsReceiver
     {
         public static AI ai;
         
@@ -66,8 +66,9 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
         protected virtual void useAttack()
         {
-            TakeDamage dmg = new TakeDamage(attack.minInflictedDamage, this.controlledObject);
-            this.controlledObject.SendEvent(dmg, Priority.Normal, this.attackTarget);
+            action = Action.ATTACK;
+            //TakeDamage dmg = new TakeDamage(attack.minInflictedDamage, this.controlledObject);
+            //this.controlledObject.SendEvent(dmg, Priority.Normal, this.attackTarget);
         }
 
         /****************************************************************************/
@@ -90,7 +91,27 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                 action = Action.MOVE;
                 #endregion
             }
-            
+            else if (e.GetType().Equals(typeof(TakeDamage)))
+            {
+                 #region Take Damage
+                TakeDamage evt = e as TakeDamage;
+                if (HP <= evt.amount)
+                {
+                    EnemyKilled args = new EnemyKilled(this.controlledObject);
+                    this.controlledObject.SendEvent(args, Priority.Normal, this.receiver);
+                }
+                else
+                {
+                    this.HP -= (uint)evt.amount;
+                    if (this.attackTarget == null)
+                    {
+                        this.attackTarget = evt.attacker;
+                        action = PlagueEngine.ArtificialInteligence.Controllers.Action.ENGAGE;
+                    }
+                }
+                
+                #endregion
+            }
             else if (e.GetType().Equals(typeof(FollowObjectCommandEvent)))
             {
                 #region FollowEvent
@@ -114,6 +135,18 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                 controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                 #endregion
             }
+            else if (e.GetType().Equals(typeof(EnemyKilled)))
+            {
+                #region Stop Attacking Killed Enemy
+                EnemyKilled evt = e as EnemyKilled;
+                if (evt.DeadEnemy.Equals(attackTarget))
+                {
+                    this.cooldownTimer.Reset(TimeSpan.Zero, 0);
+                    attackTarget = null;
+                    this.action = Action.IDLE;
+                }
+                #endregion
+            }
             /*************************************/
 
         }
@@ -121,11 +154,13 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
         public virtual void Update(TimeSpan deltaTime)
         {
             controlledObject.SoundEffectComponent.SetPosiotion(controlledObject.World.Translation);
+            double currentDistance;
+            
             switch (action)
             {
                 case Action.MOVE:
                     #region MoveAction
-                    double currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X,
+                    currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X,
                                                  controlledObject.World.Translation.Z),
                                      new Vector2(target.X,
                                                  target.Z)); 
@@ -224,21 +259,85 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                     return;
                 case Action.ENGAGE:
                     #region Engage to Enemy
-                    double distanceToTarget = Vector2.Distance(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Y),
+                    currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Y),
                                                                new Vector2(attackTarget.World.Forward.X, attackTarget.World.Forward.Y));
-                    if (distanceToTarget < attack.maxAttackDistance && distanceToTarget > attack.minAttackDistance)
+                    if (currentDistance < attack.maxAttackDistance && currentDistance > attack.minAttackDistance)
                     {
-
+                        action = Action.ATTACK_IDLE;
+                        controlledObject.SendEvent(new TakeDamage(4.5, this.controlledObject), Priority.Normal, this.attackTarget);
+                        if (controlledObject.Mesh.CurrentClip != "Attack")
+                        {
+                            controlledObject.Mesh.BlendTo("Attack", TimeSpan.FromSeconds(0.5f));
+                        }
                     }
                     else
                     {
+                        Vector3 direction = controlledObject.World.Translation - attackTarget.World.Translation;
+                        Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                        Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
 
+                        float det = v1.X * v2.Y - v1.Y * v2.X;
+                        float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+
+                        if (det < 0) angle = -angle;
+
+                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
+
+                        controlledObject.Controller.MoveForward(MovingSpeed * (float)deltaTime.TotalSeconds);
+
+                        if (controlledObject.Mesh.CurrentClip != "Run")
+                        {
+                            controlledObject.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
+                        }
                     }
                     #endregion
-                    break;
+                    return;
+                case Action.ATTACK:
+                    #region Attack Enemy
+                    {
+                        currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Y),
+                                                           new Vector2(attackTarget.World.Forward.X, attackTarget.World.Forward.Y));
+                        if (currentDistance < attack.maxAttackDistance && currentDistance > attack.minAttackDistance)
+                        {
+                            this.cooldownTimer.Reset(attack.cooldown, 1);
+                            controlledObject.SendEvent(new TakeDamage(4.5, this.controlledObject), Priority.Normal, this.attackTarget);
+                        }
+                        else
+                        {
+                            action = Action.ENGAGE;
+                        }
+                    }
+                    #endregion
+                    return;
+                case Action.ATTACK_IDLE:
+                    #region Attack Idle
+                    currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Y),
+                                                       new Vector2(attackTarget.World.Forward.X, attackTarget.World.Forward.Y));
+                    if (currentDistance > attack.maxAttackDistance)
+                    {
+                        this.cooldownTimer.Reset(TimeSpan.Zero, 0);
+                        action = Action.ENGAGE;
+                    }
+                    #endregion
+                    return;
                 default:
                     break;
             }
+            
+        }
+
+
+        public bool IsDisposed()
+        {
+            return false;
+            //TODO: is Disposed?
+        }
+
+        public void Dispose()
+        {
+            this.objectTarget = null;
+            this.receiver = null;
+            //TODO: Dispose
             
         }
     }
