@@ -50,7 +50,7 @@ namespace PlagueEngine.Physics
             physicsSystem.CollisionSystem = new CollisionSystemSAP();
 
             physicsSystem.SolverType = PhysicsSystem.Solver.Fast;
-           // physicsSystem.EnableFreezing                = false;
+            physicsSystem.EnableFreezing                = true;
             //physicsSystem.IsShockStepEnabled = true;
             physicsSystem.CollisionSystem.UseSweepTests = true;
             

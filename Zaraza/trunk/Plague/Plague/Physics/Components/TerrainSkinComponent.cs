@@ -67,6 +67,10 @@ namespace PlagueEngine.Physics.Components
                 }
             }
 
+
+
+
+
             skin.AddPrimitive(new Heightmap(field, scale * width / 2 - scale / 2, scale * length / 2 - scale / 2, scale, scale), material);
 
             //HeightMapInfo heightMapInfo = model.Tag as HeightMapInfo;
