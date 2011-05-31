@@ -92,7 +92,7 @@ namespace PlagueEngine.Rendering.Components
         public void ComputeMesh()
         {
             if (vertexBuffer != null) vertexBuffer.Dispose();
-            if (indexBuffer  != null) indexBuffer.Dispose();
+            if (indexBuffer != null) indexBuffer.Dispose();
 
             Color[] heightMapData = new Color[heightMap.Width * heightMap.Height];
             heightMap.GetData<Color>(heightMapData);
@@ -102,19 +102,19 @@ namespace PlagueEngine.Rendering.Components
             float vertexHeight;
             float cellSize = Width / (float)Segments;
 
-            for (int z = 0; z < Segments; z++)            
+            for (int z = 0; z < Segments; z++)
             {
-                for (int x = 0; x < Segments ; x++)
+                for (int x = 0; x < Segments; x++)
                 {
 
-                    int t1 = (heightMap.Height > Segments  ? z * (heightMap.Height/Segments) : z / (Segments/heightMap.Height));
-                    int t2 = (heightMap.Width  > Segments  ? x * (heightMap.Width /Segments) : x / (Segments/heightMap.Width));
+                    int t1 = (heightMap.Height > Segments ? z * (heightMap.Height / Segments) : z / (Segments / heightMap.Height));
+                    int t2 = (heightMap.Width > Segments ? x * (heightMap.Width / Segments) : x / (Segments / heightMap.Width));
                     vertexHeight = heightMapData[(t1 * heightMap.Width) + t2].R;
                     vertexHeight /= 255.0f;
                     vertexHeight *= height;
 
                     vertices[(z * Segments) + x].Position = new Vector3(x * cellSize, vertexHeight, z * cellSize);
-                    vertices[(z * Segments) + x].TextureCoordinate = new Vector2(vertices[(z * Segments) + x].Position.X + gameObject.World.Translation.X, 
+                    vertices[(z * Segments) + x].TextureCoordinate = new Vector2(vertices[(z * Segments) + x].Position.X + gameObject.World.Translation.X,
                                                                                        vertices[(z * Segments) + x].Position.Z + gameObject.World.Translation.Z);
                 }
             }
@@ -125,36 +125,36 @@ namespace PlagueEngine.Rendering.Components
                                                                ).GetCorners();
 
 
-            float[] tempHeights = new float[vertexCount];
+            //float[] tempHeights = new float[vertexCount];
 
-            for (int i = 0; i < vertexCount; i++)
-            {
-                tempHeights[i] = vertices[i].Position.Y;
-            }
+            //for (int i = 0; i < vertexCount; i++)
+            //{
+            //    tempHeights[i] = vertices[i].Position.Y;
+            //}
 
-            for (int x = 5; x < Segments - 5; x++)
-            {
-                for (int y = 5; y < Segments - 5; y++)
-                {
-                    float h = 0;
+            //for (int x = 5; x < Segments - 5; x++)
+            //{
+            //    for (int y = 5; y < Segments - 5; y++)
+            //    {
+            //        float h = 0;
 
-                    for (int i = -5; i <= 5; i++)
-                    {
-                        for (int j = -5; j <= 5; j++)
-                        {
-                            h += vertices[((x + i) * Segments) + y + j].Position.Y;
-                        }
-                    }
+            //        for (int i = -5; i <= 5; i++)
+            //        {
+            //            for (int j = -5; j <= 5; j++)
+            //            {
+            //                h += vertices[((x + i) * Segments) + y + j].Position.Y;
+            //            }
+            //        }
 
-                    h /= 121.0f;
-                    tempHeights[(x * Segments) + y] = h;
-                }
-            }
+            //        h /= 121.0f;
+            //        tempHeights[(x * Segments) + y] = h;
+            //    }
+            //}
 
-            for (int i = 0; i < vertexCount; i++)
-            {
-                vertices[i].Position.Y = tempHeights[i];
-            }
+            //for (int i = 0; i < vertexCount; i++)
+            //{
+            //    vertices[i].Position.Y = tempHeights[i];
+            //}
 
             int[] indices = new int[indexCount];
 
@@ -165,9 +165,9 @@ namespace PlagueEngine.Rendering.Components
                 {
                     for (int z = 0; z < Segments - 1; z++)
                     {
-                        int upperLeft  = z * Segments + x;
+                        int upperLeft = z * Segments + x;
                         int upperRight = upperLeft + 1;
-                        int lowerLeft  = upperLeft + Segments;
+                        int lowerLeft = upperLeft + Segments;
                         int lowerRight = lowerLeft + 1;
 
                         indices[i++] = upperLeft;
@@ -180,7 +180,7 @@ namespace PlagueEngine.Rendering.Components
                     }
                 }
             }
-            
+
 
             for (int i = 0; i < indexCount; i += 3)
             {
@@ -206,8 +206,8 @@ namespace PlagueEngine.Rendering.Components
 
             vertexBuffer = new VertexBuffer(renderer.Device, typeof(VertexPositionNormalTexture), vertexCount, BufferUsage.WriteOnly);
             vertexBuffer.SetData<VertexPositionNormalTexture>(vertices);
-            
-            indexBuffer = new IndexBuffer(renderer.Device, IndexElementSize.ThirtyTwoBits, indexCount,BufferUsage.WriteOnly);
+
+            indexBuffer = new IndexBuffer(renderer.Device, IndexElementSize.ThirtyTwoBits, indexCount, BufferUsage.WriteOnly);
             indexBuffer.SetData<int>(indices);
         }
         /****************************************************************************/

@@ -87,7 +87,7 @@ namespace PlagueEngine.Physics
             physicsManager.rigidBodies.Add(gameObject.ID, this);
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
             dontCollide=false;
-            this.isEnabled = true;
+            this.isEnabled = enabled;
             if (!isEnabled)
             {
                 DisableBody();

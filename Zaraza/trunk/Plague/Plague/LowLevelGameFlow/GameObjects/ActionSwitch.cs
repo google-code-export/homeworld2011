@@ -35,12 +35,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Vector3 Position;
         private Action[] actions = new Action[8];
         private int selectedAction = 0;
+        private int actionsCount = 0;
         private GameObjectInstance feedback;
 
         private Rectangle switchRect = new Rectangle(0, 0, 40, 84);        
         private float rotation = 0;
         private Vector2 mousePosition;
-        private Color fade = Color.FromNonPremultiplied(new Vector4(0.5f, 0.5f, 0.5f, 0.5f));
+        private Color fade = Color.FromNonPremultiplied(new Vector4(0.75f, 0.75f, 0.75f, 0.75f));
 
         private SpriteFont front = null;        
 
@@ -106,7 +107,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 nameOffset = front.MeasureString(objectName);
                 nameOffset.X *= -0.5f;
                 nameOffset.Y += 64;
-            }
+            }            
 
             for(int i = 0 ; i < actions.Length && i < 8; i++)
             {
@@ -114,6 +115,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                              GetPosition(i),
                                              GetDescriptionPosition(i,actions[i]),
                                              GetRect(actions[i]));
+
+                if (!String.IsNullOrEmpty(actions[i])) actionsCount++;
             }
 
             SendEvent(new ChangeSpeedEvent(0.5f), EventsSystem.Priority.High, GlobalGameObjects.GameController);
@@ -192,7 +195,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 angle *= Math.Sign(-direction.X);                
 
-                rotation = (float)Math.Round(angle / MathHelper.PiOver4,0) * MathHelper.PiOver4;
+                rotation = (float)Math.Round(angle / MathHelper.PiOver4,0) * MathHelper.PiOver4;                
 
                 selectedAction = (int)Math.Round(angle / MathHelper.PiOver4, 0);
                 if (-direction.X < 0 && selectedAction != 0) selectedAction += 8;
@@ -202,8 +205,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 rotation = 0;
             }
 
-            spriteBatch.Draw(frontEndComponent.Texture, pos2, switchRect, Color.White,rotation ,new Vector2(20,64),1,SpriteEffects.None,0);
 
+            if (selectedAction < actionsCount)
+            {
+                spriteBatch.Draw(frontEndComponent.Texture, pos2, switchRect, Color.White, rotation, new Vector2(20, 64), 1, SpriteEffects.None, 0);
+            }
 
             for(int i = 0; i < actions.Length ; i++)
             {

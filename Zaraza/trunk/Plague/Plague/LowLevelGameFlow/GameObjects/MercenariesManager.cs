@@ -81,7 +81,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             keyboard.SubscibeKeys(OnKey,  Keys.Tab,Keys.LeftControl, Keys.LeftAlt,Keys.OemTilde,
                                           Keys.D1, Keys.D2,Keys.D3,Keys.D4,Keys.D5,
-                                          Keys.D6, Keys.D7,Keys.D8,Keys.D9,Keys.D0);
+                                          Keys.D6, Keys.D7,Keys.D8,Keys.D9,Keys.D0,
+                                          Keys.E);
             
             mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
             mouse.SubscribeKeys(OnMouseKey, MouseKeyAction.LeftClick,
@@ -375,9 +376,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
             }
             /************************************************************************/
+            /// E
+            /************************************************************************/
+            else if (key == Keys.E && state.WasPressed())
+            {
+                if (SelectedMercenaries.Count == 1)
+                {
+                    InventoryData data = new InventoryData();
+                    data.MercenariesManager = this.ID;
+                    data.Mercenary = SelectedMercenaries.ElementAt(0).ID;
+
+                    SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                }
+            }
+            /************************************************************************/
             /// 1,2,3,4,5,6,7,8,9,0
             /************************************************************************/
-            else if(state.WasPressed())
+            else if (state.WasPressed())
             {
                 switch (key)
                 {
@@ -390,7 +405,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     case Keys.D7: ProcessMercenary(6); break;
                     case Keys.D8: ProcessMercenary(7); break;
                     case Keys.D9: ProcessMercenary(8); break;
-                    case Keys.D0: ProcessMercenary(9); break;                                                
+                    case Keys.D0: ProcessMercenary(9); break;
                 }
             }
         }

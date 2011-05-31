@@ -129,7 +129,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
-            SoundEffectComponent.CreateNewSoundFromFolder("Mercenary", 1, 0, 0);
+            SoundEffectComponent.CreateNewSoundFromFolder("Mercenary", 0.2f, 0, 0);
             this.gripBone       = gripBone;
             this.InventoryIcon  = inventoryIcon;
             this.TinySlots      = tinySlots;
