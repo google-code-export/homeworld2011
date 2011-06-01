@@ -29,14 +29,12 @@ namespace PlagueEngine.Physics.Components
     class TerrainSkinComponent : CollisionSkinComponent
     {
 
-        public string HeightmapSkin { get; set; }
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
         public TerrainSkinComponent(GameObjectInstance gameObject,
+                                    Matrix world,
                                     Texture2D heightMap,
-                                    //Model model,
-                                    string HeightmapSkin,
                                     int width,
                                     int length,
                                     float height,
@@ -44,7 +42,6 @@ namespace PlagueEngine.Physics.Components
                                     MaterialProperties material)
             : base(false,gameObject, material,Vector3.Zero,0,0,0)
         {
-            this.HeightmapSkin = HeightmapSkin;
 
 
             Color[] heightMapData = new Color[heightMap.Width * heightMap.Height];
@@ -63,30 +60,24 @@ namespace PlagueEngine.Physics.Components
                     vertexHeight = heightMapData[(t1 * heightMap.Width) + t2].R;
                     vertexHeight /= 255;
                     vertexHeight *= height;
-                    field.SetAt(x, y, vertexHeight);
+                    field.SetAt(x, y, vertexHeight+world.Translation.Y);
                 }
             }
 
 
 
 
+   
+            skin.AddPrimitive(new Heightmap(field,
+                scale * width / 2.0f - scale / 2.0f+world.Translation.X,
+                scale * length / 2.0f - scale / 2.0f + world.Translation.Z,
+                scale, scale),
+                material);
 
-            skin.AddPrimitive(new Heightmap(field, scale * width / 2 - scale / 2, scale * length / 2 - scale / 2, scale, scale), material);
-
-            //HeightMapInfo heightMapInfo = model.Tag as HeightMapInfo;
-            //Array2D field = new Array2D(heightMapInfo.heights.GetLength(0), heightMapInfo.heights.GetLength(1));
-
-            //for (int x = 0; x < heightMapInfo.heights.GetLength(0); x++)
-            //{
-            //    for (int z = 0; z < heightMapInfo.heights.GetLength(1); z++)
-            //    {
-            //        field.SetAt(x, z, heightMapInfo.heights[x, z] * height);
-            //    }
-            //}
-
-            //skin.AddPrimitive(new Heightmap(field, 0, 0, scale, scale), new MaterialProperties(0.7f, 0.7f, 0.6f));
 
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
+
+           
 
         }
         /****************************************************************************/
