@@ -257,7 +257,7 @@ namespace PlagueEngine.Rendering.Components
             TimeSpan deltaTime = time;
 
             if (Pause) deltaTime = TimeSpan.Zero;
-            //else       deltaTime = TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
+            else       deltaTime = TimeSpan.FromTicks((TimeRatio >= 1 ? time.Ticks * (long)TimeRatio : time.Ticks / (long)(1 / TimeRatio)));
 
             currentAnimation.Update(deltaTime, rootTransform);
 

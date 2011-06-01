@@ -19,15 +19,12 @@ namespace PlagueEngineSkinning
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public AnimationClip(TimeSpan start,TimeSpan end, List<Keyframe> keyframes,bool loop,String name)
+        public AnimationClip(TimeSpan duration, List<Keyframe> keyframes,bool loop,String name)
         {
-            StartTime = start;
-            EndTime   = end;
             Keyframes = keyframes;
             Loop      = loop;
             Name      = name;
-
-            Duration = EndTime - StartTime;
+            Duration  = duration;
         }
         /****************************************************************************/
 
@@ -46,10 +43,6 @@ namespace PlagueEngineSkinning
         /****************************************************************************/
         [ContentSerializer]
         public TimeSpan Duration        { get; private set; }
-        [ContentSerializer]
-        public TimeSpan StartTime       { get; private set; }
-        [ContentSerializer]
-        public TimeSpan EndTime         { get; private set; }
         [ContentSerializer]
         public List<Keyframe> Keyframes { get; private set; }
         [ContentSerializer]
