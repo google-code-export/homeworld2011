@@ -128,6 +128,7 @@ namespace PlagueEngine.Rendering
                 {
                     while (ClipTime >= Clip.Duration) ClipTime -= Clip.Duration;                    
                     Keyframe = 0;
+                    skinningData.BindPose.CopyTo(BoneTransforms);
                 }
                 else
                 {
