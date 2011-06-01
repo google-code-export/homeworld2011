@@ -1,12 +1,20 @@
+/****************************************************/
+/// Orientation
+/****************************************************/
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
 float4x4 ViewProjection;
 
-float4x4 ReflectedView;
-float ViewportWidth;
-float ViewportHeight;
+float3x3 TBN = float3x3(float3(1,0,0),
+						float3(0,0,1),
+					    float3(0,1,0));
+/****************************************************/
 
+
+/****************************************************/
+/// Water
+/****************************************************/
 float3 Color;
 float  ColorAmount;
 
@@ -14,30 +22,20 @@ float WaveLength;
 float WaveHeight;
 float WaveSpeed;
 float Time;
+float Bias;
+float SpecularStrength;
+/****************************************************/
+
+
+/****************************************************/
+/// Reflection/Refraction
+/****************************************************/
+float4x4 ReflectedView;
+float ViewportWidth;
+float ViewportHeight;
 
 texture ReflectionMap;
 texture RefractionMap;
-
-float Bias;
-
-float3 Ambient;
-
-bool FogEnabled = false;
-float3 FogColor;
-float2 FogRange;
-
-bool   SunlightEnabled = false;
-float3 SunlightDirection;
-float3 SunlightDiffuse;
-float3 SunlightSpecular;
-
-float SpecularStrength;
-
-float3 CameraPosition;
-
-float3x3 TBN = float3x3(float3(1,0,0),
-						float3(0,0,1),
-					    float3(0,1,0));
 
 sampler2D reflectionMapSampler = sampler_state
 {
@@ -56,46 +54,76 @@ sampler2D refractionMapSampler = sampler_state
 	AddressU = Mirror;
 	AddressV = Mirror;
 };
+/****************************************************/
 
+
+/****************************************************/
+/// Normal Map
+/****************************************************/
 texture WaterNormalMap;
 
 sampler2D waterNormalSampler = sampler_state 
 {
 	texture = <WaterNormalMap>;
 };
+/****************************************************/
 
+
+/****************************************************/
+/// VertexShaderInput
+/****************************************************/
 struct VertexShaderInput
 {
     float4 Position : POSITION0;
 	float2 UV		: TEXCOORD0;
 };
+/****************************************************/
 
+
+/****************************************************/
+/// VertexShaderOutput
+/****************************************************/
 struct VertexShaderOutput
 {
     float4 Position			  : POSITION0;
 	float4 ReflectionPosition : TEXCOORD1;
 	float2 NormalMapPosition  : TEXCOORD2;
 	float3 WorldPosition	  : TEXCOORD3;
-	float  Depth			  : TEXCOORD4;
+	float3 Depth			  : TEXCOORD4;
 };
+/****************************************************/
 
+
+/****************************************************/
+/// PostProjToScreen
+/****************************************************/
 float2 postProjToScreen(float4 position)
 {
 	float2 screenPos = position.xy / position.w;
 	return 0.5f * (float2(screenPos.x, -screenPos.y) + 1);
 }
+/****************************************************/
 
+
+/****************************************************/
+/// halfPixel
+/****************************************************/
 float2 halfPixel()
 {
 	return 0.5f / float2(ViewportWidth, ViewportHeight);
 }
+/****************************************************/
 
+
+/****************************************************/
+/// VertexShaderFunction
+/****************************************************/
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 {
     VertexShaderOutput output;		
-
-	float4x4 wvp	= mul(World,ViewProjection);
-	output.Position = mul(input.Position, wvp);
+	
+	float4 worldPosition = mul(input.Position,World);
+	output.Position = mul(worldPosition, ViewProjection);
 	
 	float4x4 rwvp			  = mul(World, mul(ReflectedView, Projection));
 	output.ReflectionPosition = mul(input.Position, rwvp);
@@ -105,14 +133,34 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 
 	output.WorldPosition = mul(input.Position,World);
 	
-	output.Depth		 = output.Position.z;
+	output.Depth.x		 = output.Position.z;
+	output.Depth.y		 = output.Position.w;
+	output.Depth.z		 = mul(worldPosition,View).z;
 
     return output;
 }
+/****************************************************/
 
-float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
+
+/****************************************************/
+/// PixelShaderOutput
+/****************************************************/
+struct PixelShaderOutput
 {
-	if(!SunlightEnabled) return float4(0,0,0,1);
+	float4 Color	 : COLOR0;
+	float4 Normal	 : COLOR1;
+	float4 Depth	 : COLOR2;
+	float4 SSAODepth : COLOR3;
+};
+/****************************************************/
+
+
+/****************************************************/
+/// PixelShaderFunction
+/****************************************************/
+PixelShaderOutput PixelShaderFunction(VertexShaderOutput input)
+{	
+	PixelShaderOutput output;
 
 	float3 normal	= normalize(tex2D(waterNormalSampler, input.NormalMapPosition) * 2 - 1);
 	float2 UVOffset = WaveHeight * normal.rg;
@@ -121,25 +169,22 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 reflection	= tex2D(reflectionMapSampler, reflectionUV + UVOffset);
 	float3 refraction	= tex2D(refractionMapSampler, reflectionUV + UVOffset);	
 		
-	float3 output = lerp(lerp(refraction,reflection,Bias), Color * SunlightDiffuse, ColorAmount);			
-
-	float3 viewDirection = normalize(CameraPosition - input.WorldPosition);
+	output.Color = float4(lerp(lerp(refraction,reflection,Bias), Color, ColorAmount),0);			
 	
-	float3 reflectionVector = reflect(normalize(SunlightDirection), normalize(mul(normal,TBN)));
-	float specular			= dot(normalize(reflectionVector), viewDirection);
+	normal		  = normalize(mul(normal,TBN));
+	output.Normal = float4(0.5f * (normal + 1.0f),SpecularStrength);
 	
-	specular = pow(specular, SpecularStrength);
+	output.Depth	 = input.Depth.x / input.Depth.y;	
+	output.SSAODepth = input.Depth.z;				
 
-	output += SunlightSpecular * specular;
-
-	if(FogEnabled)
-	{	
-		output = lerp(output,FogColor,saturate((input.Depth - FogRange.x)/(FogRange.y - FogRange.x)));
-	}
-
-	return float4(output, 1);
+	return output;
 }
+/****************************************************/
 
+
+/****************************************************/
+/// Technique1
+/****************************************************/
 technique Technique1
 {
     pass Pass1
@@ -148,3 +193,4 @@ technique Technique1
         PixelShader  = compile ps_2_0 PixelShaderFunction();
     }
 }
+/****************************************************/
