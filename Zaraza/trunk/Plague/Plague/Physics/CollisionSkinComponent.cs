@@ -73,8 +73,7 @@ namespace PlagueEngine.Physics
             //this.isEnabled = enabled;
             physicsManager.collisionSkins.Add(gameObject.ID,this);
 
-            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
-
+            
             skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
             DontCollide = false;
             RequireUpdate = false;
