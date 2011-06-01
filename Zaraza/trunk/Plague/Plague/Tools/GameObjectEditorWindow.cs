@@ -475,6 +475,15 @@ namespace PlagueEngine.Tools
             Compass.dataClassType = typeof(CompassData);
             gameObjectClassNames.Add(Compass);
 
+
+            gameObjectsClassName SquareSkin = new gameObjectsClassName();
+            SquareSkin.className = "SquareSkin";
+            SquareSkin.ClassType = typeof(SquareSkin);
+            SquareSkin.dataClassType = typeof(SquareSkinData);
+            gameObjectClassNames.Add(SquareSkin);
+
+            
+
         }
         /********************************************************************************/
 
@@ -797,7 +806,7 @@ namespace PlagueEngine.Tools
                 }
             }
 
-
+            LoadAllObjectsId();
             LoadIconsInfo();
         }
 
