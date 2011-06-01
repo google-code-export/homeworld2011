@@ -35,6 +35,11 @@ namespace PlagueEngine.Physics.Components
         public TerrainSkinComponent(GameObjectInstance gameObject,
                                     Matrix world,
                                     Texture2D heightMap,
+<<<<<<< .mine
+                                    //Model model,
+                                    string HeightmapSkin,
+=======
+>>>>>>> .r436
                                     int width,
                                     int length,
                                     float height,
@@ -63,8 +68,6 @@ namespace PlagueEngine.Physics.Components
                     field.SetAt(x, y, vertexHeight+world.Translation.Y);
                 }
             }
-
-
 
 
    

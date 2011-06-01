@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Content;
 
 /************************************************************************************/
 /// PlagueEngine.Rendering
@@ -18,16 +18,18 @@ namespace PlagueEngine.Rendering
     /********************************************************************************/
     public class PlagueEngineModel
     {
-
         /****************************************************************************/
         /// Fields
-        /****************************************************************************/        
-        public int          TriangleCount;
-        public int          VertexCount;
+        /****************************************************************************/
+        public int TriangleCount;
+        public int VertexCount;
         public VertexBuffer VertexBuffer;
-        public IndexBuffer  IndexBuffer;
-        public String       Name;
-        public BoundingBox  BoundingBox;
+        public IndexBuffer IndexBuffer;
+        public String Name;
+        public BoundingBox BoundingBox;
+        public List<Vector3> VertexList;
+        public List<Vector3> NormalList;
+        public Dictionary<uint, List<uint>> Adjacency;
         /****************************************************************************/
 
 

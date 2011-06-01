@@ -19,7 +19,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
     {
         public static AI ai;
         
-        protected AbstractLivingBeing controlledObject;
+        public AbstractLivingBeing controlledObject;
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
