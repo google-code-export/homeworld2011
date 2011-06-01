@@ -47,6 +47,8 @@ namespace PlagueEngine.Rendering.Components
             Intensity           = intensity;
             DepthBias           = depthBias;
             ShadowIntensity     = shadowIntensity;
+
+            renderer.lightsManager.sunlight = this;
         }
         /****************************************************************************/
 
@@ -56,6 +58,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
+            renderer.lightsManager.sunlight = null;
             base.ReleaseMe();
         }
         /****************************************************************************/

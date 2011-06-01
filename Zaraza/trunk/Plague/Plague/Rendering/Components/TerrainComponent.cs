@@ -114,8 +114,7 @@ namespace PlagueEngine.Rendering.Components
                     vertexHeight *= height;
 
                     vertices[(z * Segments) + x].Position = new Vector3(x * cellSize, vertexHeight, z * cellSize);
-                    vertices[(z * Segments) + x].TextureCoordinate = new Vector2(vertices[(z * Segments) + x].Position.X + gameObject.World.Translation.X,
-                                                                                       vertices[(z * Segments) + x].Position.Z + gameObject.World.Translation.Z);
+                    vertices[(z * Segments) + x].TextureCoordinate = new Vector2((float)x / (float)Segments, (float)z / (float)Segments);
                 }
             }
 
@@ -218,6 +217,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override void Draw()
         {
+            SetEffect();
             effect.Parameters["World"].SetValue(gameObject.World);
             effect.CurrentTechnique.Passes[0].Apply();
             device.Indices = indexBuffer;
@@ -254,8 +254,8 @@ namespace PlagueEngine.Rendering.Components
         public String HeightMap    { get { return heightMap.Name;   } }
         public String BaseTexture  { get { return baseTexture.Name; } }
         public String RTexture     { get { return (rTexture == null ? String.Empty : rTexture.Name);    } }
-        public String GTexture     { get { return (gTexture == null ? String.Empty : rTexture.Name);    } }
-        public String BTexture     { get { return (bTexture == null ? String.Empty : rTexture.Name);    } }
+        public String GTexture     { get { return (gTexture == null ? String.Empty : gTexture.Name);    } }
+        public String BTexture     { get { return (bTexture == null ? String.Empty : bTexture.Name);    } }
         public String WeightMap    { get { return weightMap.Name;   } }
         /****************************************************************************/
 
