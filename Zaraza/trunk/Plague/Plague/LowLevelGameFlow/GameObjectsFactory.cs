@@ -578,6 +578,35 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
+
+
+        /****************************************************************************/
+        /// CreateSquareSkin
+        /****************************************************************************/
+        public bool CreateSquareSkin(SquareSkin result, SquareSkinData data)
+        {
+            result.Init(physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                            data.Mass,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll));
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
+
         /****************************************************************************/
         /// Create Spherical Skin Mesh
         /****************************************************************************/

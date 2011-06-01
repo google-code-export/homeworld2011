@@ -223,6 +223,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SpotLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareBodyMesh.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\SquareSkin.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareSkinMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\StaticMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Creature.cs" />
