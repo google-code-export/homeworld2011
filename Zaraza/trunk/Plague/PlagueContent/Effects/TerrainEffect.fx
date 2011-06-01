@@ -9,6 +9,14 @@ float4x4 ViewProjection;
 
 
 /****************************************************/
+/// Clip Plane
+/****************************************************/
+bool ClipPlaneEnabled = false;
+float4 ClipPlane;
+/****************************************************/
+
+
+/****************************************************/
 /// Depth
 /****************************************************/
 float  DepthPrecision;
@@ -198,6 +206,11 @@ struct PixelShaderOutput
 /****************************************************/
 PixelShaderOutput PixelShaderFunction(VertexShaderOutput input)
 {
+	if (ClipPlaneEnabled)
+	{
+		clip(dot(float4(input.WorldPosition, 1), ClipPlane));		
+	}
+
 	float3 baseTex = tex2D(BaseTextureSampler, input.UV * TextureTiling);
 	float3 rTex	   = tex2D(RTextureSampler,	   input.UV * TextureTiling);
 	float3 gTex	   = tex2D(GTextureSampler,	   input.UV * TextureTiling);

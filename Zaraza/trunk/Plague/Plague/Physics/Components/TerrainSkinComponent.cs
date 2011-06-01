@@ -35,11 +35,6 @@ namespace PlagueEngine.Physics.Components
         public TerrainSkinComponent(GameObjectInstance gameObject,
                                     Matrix world,
                                     Texture2D heightMap,
-<<<<<<< .mine
-                                    //Model model,
-                                    string HeightmapSkin,
-=======
->>>>>>> .r436
                                     int width,
                                     int length,
                                     float height,

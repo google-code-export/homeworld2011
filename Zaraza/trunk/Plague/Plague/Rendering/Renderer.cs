@@ -350,11 +350,11 @@ namespace PlagueEngine.Rendering
             Device.SamplerStates[0] = SamplerState.LinearWrap;
             /*************************/
 
-            //foreach (RenderableComponent renderableComponent in preRender)
-            //{
-            //    if (!renderableComponent.FrustrumInteresction(CurrentCamera.Frustrum)) continue;
-            //    renderableComponent.PreRender(currentCamera);
-            //}
+            foreach (RenderableComponent renderableComponent in preRender)
+            {
+                if (!renderableComponent.FrustrumInteresction(CurrentCamera.Frustrum)) continue;
+                renderableComponent.PreRender(currentCamera);
+            }
 
             /*********************************/
             /// Clear GBuffer
@@ -406,11 +406,11 @@ namespace PlagueEngine.Rendering
 
             //Device.SetRenderTarget(null);
 
-            //debugEffect.Parameters["Texture"].SetValue(normal);
+            //debugEffect.Parameters["Texture"].SetValue((preRender[0] as WaterSurfaceComponent).reflectionMap);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topLeft.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue(lightsManager.sunlightShadowMap);
+            //debugEffect.Parameters["Texture"].SetValue((preRender[0] as WaterSurfaceComponent).refractionMap);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topRight.Draw();
 
@@ -475,7 +475,95 @@ namespace PlagueEngine.Rendering
             /************************************/
 
         }
-        /****************************************************************************/             
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Pre Render
+        /****************************************************************************/
+        internal void PreRender(Vector3 cameraPosition, Matrix view, Matrix projection, Matrix viewProjection, BoundingFrustum frustrum, RenderTarget2D renderTarget,bool clip,Vector4 clipPlane)
+        {
+            Vector3 CameraPosition = cameraPosition;
+            Matrix View = view;
+            Matrix Projection = projection;
+            Matrix ViewProjection = viewProjection;
+            Matrix InverseViewProjection = Matrix.Invert(viewProjection);
+            BoundingFrustum Frustrum = frustrum;
+
+
+            /*********************************/
+            /// Clear GBuffer
+            /*********************************/
+            Device.SetRenderTargets(color, normal, depth, ssaoDepth);
+            Device.DepthStencilState = DepthStencilState.DepthRead;
+            clearEffect.Techniques[0].Passes[0].Apply();
+            fullScreenQuad.Draw();
+            Device.DepthStencilState = DepthStencilState.Default;
+            /*********************************/
+
+
+            /************************************/
+            /// Batched Skinned Meshes
+            /************************************/
+            batchedSkinnedMeshes.Effect.Parameters["View"].SetValue(view);
+            batchedSkinnedMeshes.Effect.Parameters["Projection"].SetValue(projection);
+            batchedSkinnedMeshes.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
+            batchedSkinnedMeshes.Effect.Parameters["ClipPlaneEnabled"].SetValue(clip);
+            batchedSkinnedMeshes.Effect.Parameters["ClipPlane"].SetValue(clipPlane);
+            batchedSkinnedMeshes.Draw(frustrum);
+            batchedSkinnedMeshes.Effect.Parameters["ClipPlaneEnabled"].SetValue(false);
+            /************************************/
+
+
+            /************************************/
+            /// Renderable Components
+            /************************************/
+            foreach (RenderableComponent renderableComponent in renderableComponents)
+            {
+                if (!renderableComponent.FrustrumInteresction(frustrum)) continue;
+
+                renderableComponent.Effect.Parameters["View"].SetValue(view);
+                renderableComponent.Effect.Parameters["Projection"].SetValue(projection);
+                renderableComponent.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
+                renderableComponent.Effect.Parameters["ClipPlaneEnabled"].SetValue(clip);
+                renderableComponent.Effect.Parameters["ClipPlane"].SetValue(clipPlane);
+                renderableComponent.Draw();
+                renderableComponent.Effect.Parameters["ClipPlaneEnabled"].SetValue(false);
+            }
+            /************************************/
+
+
+            /************************************/
+            /// Batched Meshes
+            /************************************/
+            batchedMeshes.SetEffectParameter("View", view);
+            batchedMeshes.SetEffectParameter("Projection", projection);
+            batchedMeshes.SetEffectParameter("ViewProjection", viewProjection);
+            batchedMeshes.SetEffectParameter("ClipPlaneEnabled",clip);
+            batchedMeshes.SetEffectParameter("ClipPlane",clipPlane);                
+            batchedMeshes.Draw(frustrum);
+            batchedMeshes.SetEffectParameter("ClipPlaneEnabled", false);            
+            /************************************/
+
+            Device.RasterizerState = RasterizerState.CullCounterClockwise;
+            lightsManager.RenderLights(ref ViewProjection, ref InverseViewProjection, ref CameraPosition, Frustrum);
+
+            if (ssaoEnabled) RenderSSAO(ref Projection, ref View, currentCamera.ZFar, currentCamera.Aspect);
+
+            Device.SetRenderTarget(renderTarget);
+
+            composition.Parameters["Ambient"].SetValue(ambient);
+            composition.Parameters["FogEnabled"].SetValue(fogEnabled);
+            composition.Parameters["FogColor"].SetValue(fogColor);
+            composition.Parameters["FogRange"].SetValue(fogRange);
+            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
+
+            composition.Techniques[0].Passes[0].Apply();
+            fullScreenQuad.Draw();
+
+            Device.SetRenderTarget(null);
+        }
+        /****************************************************************************/
 
 
         /****************************************************************************/

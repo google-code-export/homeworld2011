@@ -27,8 +27,8 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private RenderTarget2D      reflectionMap       = null;
-        private RenderTarget2D      refractionMap       = null;
+        public RenderTarget2D      reflectionMap       = null;
+        public RenderTarget2D refractionMap = null;
         private VertexBuffer        vertexBuffer        = null;
         private IndexBuffer         indexBuffer         = null;
         private float               width               = 0;
@@ -105,10 +105,10 @@ namespace PlagueEngine.Rendering.Components
             rasterizerState.CullMode = CullMode.CullClockwiseFace;
 
             surfacePosition  = gameObject.World.Translation.Y + level;
-            
+
             reflectionMatrix = Matrix.CreateTranslation(0f, -surfacePosition, 0f) *
-                               Matrix.CreateScale(1f, -1f, 1f) *
-                               Matrix.CreateTranslation(0f, surfacePosition, 0f);
+                               Matrix.CreateScale(1f, -1f, 1f) * 
+                               Matrix.CreateTranslation(0f, surfacePosition, 0f);            
 
             ComputeMesh();
             SetupEffect();            
@@ -152,7 +152,7 @@ namespace PlagueEngine.Rendering.Components
         /// Draw
         /****************************************************************************/
         public override void Draw()
-        {
+        {            
             effect.Parameters["World"].SetValue(gameObject.World * Matrix.CreateTranslation(0, level, 0));
             effect.Parameters["Time"].SetValue((float)clock.Time.TotalSeconds);
             
@@ -176,7 +176,7 @@ namespace PlagueEngine.Rendering.Components
             RenderReflection(camera);
             RenderRefraction(camera);
 
-            renderer.renderableComponents.Add(this);
+            renderer.renderableComponents.Add(this);            
         }
         /****************************************************************************/
 
@@ -191,16 +191,11 @@ namespace PlagueEngine.Rendering.Components
             
             effect.Parameters["ReflectedView"].SetValue(reflectedView);
 
-            Vector4 clipPlane = new Vector4(0, 1, 0, surfacePosition + clipPlaneAdjustment);
+            Vector4 clipPlane = new Vector4(0, 1, 0, -(surfacePosition + clipPlaneAdjustment));
 
-            RasterizerState defaultRasterizerState = device.RasterizerState;
-            device.RasterizerState = rasterizerState;
-            device.SetRenderTarget(reflectionMap);
-            
-            //renderer.Render(camera.Position, reflectedView, camera.Projection, reflectedViewProjection, true, clipPlane);
-
-            device.SetRenderTarget(null);
-            device.RasterizerState = defaultRasterizerState;
+            device.RasterizerState = RasterizerState.CullNone;
+            renderer.PreRender(camera.Position, reflectedView, camera.Projection, reflectedViewProjection, new BoundingFrustum(reflectedViewProjection), reflectionMap,true,clipPlane);
+            device.RasterizerState = RasterizerState.CullCounterClockwise;
 
             effect.Parameters["ReflectionMap"].SetValue(reflectionMap);
         }
@@ -213,12 +208,7 @@ namespace PlagueEngine.Rendering.Components
         private void RenderRefraction(CameraComponent camera)
         {
             Vector4 clipPlane = new Vector4(0, -1, 0, surfacePosition + clipPlaneAdjustment);
-
-            device.SetRenderTarget(refractionMap);
-
-            //renderer.Render(camera.Position, camera.View, camera.Projection, camera.ViewProjection, true, clipPlane);
-
-            device.SetRenderTarget(null);
+            renderer.PreRender(camera.Position, camera.View, camera.Projection, camera.ViewProjection, camera.Frustrum, refractionMap,true,clipPlane);
             effect.Parameters["RefractionMap"].SetValue(refractionMap);
         }
         /****************************************************************************/
@@ -248,7 +238,7 @@ namespace PlagueEngine.Rendering.Components
         /****************************************************************************/
         public override bool FrustrumInteresction(BoundingFrustum frustrum)
         {
-            return (frustrum.Intersects(new Plane(0, 1, 0, surfacePosition)) == PlaneIntersectionType.Intersecting);
+            return true;// (frustrum.Intersects(new Plane(0, 1, 0, surfacePosition)) == PlaneIntersectionType.Intersecting);
         }
         /****************************************************************************/
 
@@ -287,7 +277,7 @@ namespace PlagueEngine.Rendering.Components
 
         public override void DrawDepth(ref Matrix ViewProjection, ref Vector3 LightPosition, float depthPrecision,bool directional)
         {
-            throw new NotImplementedException();
+            
         }
     }
     /********************************************************************************/

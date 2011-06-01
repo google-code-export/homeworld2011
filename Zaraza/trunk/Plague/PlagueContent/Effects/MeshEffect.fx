@@ -10,6 +10,14 @@ float3	 CameraPosition;
 
 
 /****************************************************/
+/// Clip Plane
+/****************************************************/
+bool ClipPlaneEnabled = false;
+float4 ClipPlane;
+/****************************************************/
+
+
+/****************************************************/
 /// Depth
 /****************************************************/
 float DepthPrecision;
@@ -256,6 +264,11 @@ PixelShaderOutput PixelColor(float3 texColor,float3 normal,float3 depth,float sp
 /****************************************************/
 PixelShaderOutput PSDNFunction(VSComplexOutput input)
 {
+	if (ClipPlaneEnabled)
+	{
+		clip(dot(float4(input.WorldPosition, 1), ClipPlane));		
+	}
+
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);	
 	
 	float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
@@ -271,6 +284,11 @@ PixelShaderOutput PSDNFunction(VSComplexOutput input)
 /****************************************************/
 PixelShaderOutput PSDSNFunction(VSComplexOutput input)
 {
+	if (ClipPlaneEnabled)
+	{
+		clip(dot(float4(input.WorldPosition, 1), ClipPlane));		
+	}
+
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 
 	float3 normal = normalize(tex2D(NormalsMapSampler,input.UV) * 2.0 - 1.0);
@@ -288,6 +306,11 @@ PixelShaderOutput PSDSNFunction(VSComplexOutput input)
 /****************************************************/
 PixelShaderOutput PSDFunction(VSSimpleOutput input)
 {
+	if (ClipPlaneEnabled)
+	{
+		clip(dot(float4(input.WorldPosition, 1), ClipPlane));		
+	}
+
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 	
 	float3 normal = normalize(input.Normal);		
@@ -302,6 +325,11 @@ PixelShaderOutput PSDFunction(VSSimpleOutput input)
 /****************************************************/
 PixelShaderOutput PSDSFunction(VSSimpleOutput input)
 {
+	if (ClipPlaneEnabled)
+	{
+		clip(dot(float4(input.WorldPosition, 1), ClipPlane));		
+	}
+
 	float3 texColor = tex2D(DiffuseMapSampler,input.UV);
 
 	float3 normal = normalize(input.Normal);		
