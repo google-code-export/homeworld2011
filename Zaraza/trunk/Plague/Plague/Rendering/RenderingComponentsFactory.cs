@@ -148,7 +148,6 @@ namespace PlagueEngine.Rendering
                                                              enabled,
                                                              depthBias,
                                                              shadowIntensity);
-            renderer.lightsManager.sunlight = result;
             return result;
         }                                                         
         /****************************************************************************/
