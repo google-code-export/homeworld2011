@@ -9,6 +9,8 @@ using PlagueEngine.LowLevelGameFlow;
 using JigLibX.Geometry;
 using JigLibX.Collision;
 using JigLibX.Physics;
+using PlagueEngine.ArtificialInteligence.Controllers;
+using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 
 namespace PlagueEngine.AItest
@@ -20,13 +22,13 @@ namespace PlagueEngine.AItest
 
         static class GOcomparator
         {
-            public static GameObjectInstance GO;
+            public static AbstractAIController GO;
 
 
-            public static int compareGO(GameObjectInstance go1, GameObjectInstance go2)
+            public static int compareGO(AbstractAIController go1, AbstractAIController go2)
             {
-                float d1 = Vector3.Distance(go1.World.Translation, GO.World.Translation);
-                float d2 = Vector3.Distance(go2.World.Translation, GO.World.Translation);
+                float d1 = Vector3.Distance(go1.controlledObject.World.Translation, GO.controlledObject.World.Translation);
+                float d2 = Vector3.Distance(go2.controlledObject.World.Translation, GO.controlledObject.World.Translation);
                 return d1.CompareTo(d2);
             }
         }
@@ -45,7 +47,7 @@ namespace PlagueEngine.AItest
 
 
 
-        public static GameObjectInstance FindClosestVisible(List<GameObjectInstance> targets, GameObjectInstance owner,Vector3 ownerForward, float angle, float maxDistance,float rayForwardTranslation=0.75f)
+        public static AbstractAIController FindClosestVisible(List<AbstractAIController> targets, AbstractAIController owner, Vector3 ownerForward, float angle, float maxDistance, float rayForwardTranslation = 0.75f)
         {
 
             //ownerForward.Y = 0;
@@ -53,12 +55,12 @@ namespace PlagueEngine.AItest
             Vector3 ownerForwardCopy = ownerForward;
 
 
-            List<GameObjectInstance> testedTargets = new List<GameObjectInstance>();
+            List<AbstractAIController> testedTargets = new List<AbstractAIController>();
 
             //test odleglosci
-            foreach (GameObjectInstance go in targets)
+            foreach (AbstractAIController go in targets)
             {
-                if (Vector3.Distance(go.World.Translation, owner.World.Translation) <= maxDistance)
+                if (Vector3.Distance(go.controlledObject.World.Translation, owner.controlledObject.World.Translation) <= maxDistance)
                 {
                     testedTargets.Add(go);
                 }
@@ -71,12 +73,12 @@ namespace PlagueEngine.AItest
             testedTargets.Sort(GOcomparator.compareGO);
 
 
-            List<GameObjectInstance> testedTargets2 = new List<GameObjectInstance>();
+            List<AbstractAIController> testedTargets2 = new List<AbstractAIController>();
 
             //testowanie kata widocznosci
-            foreach (GameObjectInstance go in testedTargets)
+            foreach (AbstractAIController go in testedTargets)
             {
-                Vector3 dir = Vector3.Normalize(go.World.Translation - owner.World.Translation);
+                Vector3 dir = Vector3.Normalize(go.controlledObject.World.Translation - owner.controlledObject.World.Translation);
                 dir.Y = 0;
                 ownerForward.Y = 0;
                 float dot = Vector3.Dot(ownerForward, dir);
@@ -92,7 +94,7 @@ namespace PlagueEngine.AItest
 
             //testowanie promieniem
 
-            foreach(GameObjectInstance go in testedTargets2)
+            foreach (AbstractAIController go in testedTargets2)
             {
 
 
@@ -100,12 +102,12 @@ namespace PlagueEngine.AItest
             CollisionSkin skin;
             Vector3 skinPosition;
             Vector3 normal;
-            Vector3 modifiedOwnerPosition = owner.World.Translation + rayForwardTranslation * ownerForwardCopy;
-            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.SegmentIntersect(out distance, out skin, out skinPosition, out normal, new Segment(modifiedOwnerPosition, go.World.Translation - modifiedOwnerPosition), new ImmovableSkinPredicate());
+            Vector3 modifiedOwnerPosition = owner.controlledObject.World.Translation + rayForwardTranslation * ownerForwardCopy;
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.SegmentIntersect(out distance, out skin, out skinPosition, out normal, new Segment(modifiedOwnerPosition, go.controlledObject.World.Translation - modifiedOwnerPosition), new ImmovableSkinPredicate());
 
             if (skin != null)
             {
-                if (skin.ExternalData!=null && ((GameObjectInstance)(skin.ExternalData)).ID == go.ID)
+                if (skin.ExternalData!=null && ((GameObjectInstance)(skin.ExternalData)).ID == go.controlledObject.ID)
                 {
                     //znaleziony!!!
                     return go;

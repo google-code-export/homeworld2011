@@ -262,7 +262,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                                 data.Translation,
                                                                                 data.SkinYaw,
                                                                                 data.SkinPitch,
-                                                                                data.SkinRoll));
+                                                                                data.SkinRoll),
+                        inputComponentsFactory.CreateKeyboardListenerComponent(result, true));
 
             return true;
         }

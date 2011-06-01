@@ -166,13 +166,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private void OnKey(Keys key, ExtendedKeyState state)
         {
-            if (key == Keys.T && state.WasPressed())
+            /*if (key == Keys.T && state.WasPressed())
             {
                 
                 GameObjectInstance closesEnemy= AI.FindClosestVisible(barrels, this,this.World.Backward, 45, 150);
                 if(closesEnemy!=null)
                 Diagnostics.PushLog("CLOSEST ENEMY: " + closesEnemy.ID.ToString());
-            }
+            }*/
         }
         private void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
         {

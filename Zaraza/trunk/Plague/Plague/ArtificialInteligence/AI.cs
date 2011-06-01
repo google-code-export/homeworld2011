@@ -12,16 +12,18 @@ namespace PlagueEngine.ArtificialInteligence
 {
     class AI : IEventsReceiver
     {
-        private List<MercenaryController> GoodGuys;
-        private List<MobController> BadGuys;
+        private List<AbstractAIController> GoodGuys;
+        private List<AbstractAIController> BadGuys;
 
         private List<Mercenary> GoodGuysObjects;
         private List<Creature> BadGuysObjects;
 
+        int counter = 0;
+
         public AI()
         {
-            this.BadGuys            = new List<MobController>();
-            this.GoodGuys           = new List<MercenaryController>();
+            this.BadGuys            = new List<AbstractAIController>();
+            this.GoodGuys = new List<AbstractAIController>();
             AbstractAIController.ai = this;
         }
         
@@ -67,6 +69,25 @@ namespace PlagueEngine.ArtificialInteligence
             this.BadGuys = null;
             this.GoodGuys.Clear();
             this.GoodGuys = null;
+        }
+
+        public void Update()
+        {
+            if (counter % 2 == 0)
+            {
+                foreach(MobController contr in BadGuys)
+                {
+                    PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
+                    
+                }
+                counter = 1;
+            }
+            else
+            {
+                
+                counter = 0;
+            }
+
         }
     }
 }
