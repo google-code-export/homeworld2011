@@ -14,6 +14,7 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.GUI;
 using PlagueEngine.Particles;
 using PlagueEngine.HighLevelGameFlow;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
@@ -1149,7 +1150,9 @@ namespace PlagueEngine.LowLevelGameFlow
         /// CreateFirearm
         /****************************************************************************/
         public bool CreateFirearm(Firearm result, FirearmData data)
-        { 
+        {
+            
+
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                                                                        data.Model,
                                                                        data.Diffuse,
@@ -1172,6 +1175,16 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.SkinYaw,
                                                                           data.SkinPitch,
                                                                           data.SkinRoll),
+                        new Attack(data.BAMinimumDistance,
+                                   data.BAMaximumDistance,
+                                   data.BAMinimumDamage,
+                                   data.BAMaximumDamage,
+                                   data.BACooldownTicks),
+                        new Attack(data.AAMinimumDistance,
+                                   data.AAMaximumDistance,
+                                   data.AAMinimumDamage,
+                                   data.AAMaximumDamage,
+                                   data.AACooldownTicks),
                       data.Icon,
                       data.SlotsIcon,
                       data.Description,

@@ -269,13 +269,15 @@ namespace PlagueEngine.Audio
             {
                 BackgroundMusicComponent.Update(gameTime.ElapsedGameTime);
             }
-            for (var i = 0; i < _playingSounds.Length; ++i)
+            if (_playingSounds != null)
             {
-                if (_playingSounds[i] == null || (_playingSounds[i].State != SoundState.Stopped && !_playingSounds[i].IsDisposed)) continue;
-                _playingSounds[i].Dispose();
-                _playingSounds[i] = null;
+                for (var i = 0; i < _playingSounds.Length; ++i)
+                {
+                    if (_playingSounds[i] == null || (_playingSounds[i].State != SoundState.Stopped && !_playingSounds[i].IsDisposed)) continue;
+                    _playingSounds[i].Dispose();
+                    _playingSounds[i] = null;
+                }
             }
-
             if (!_isFading || MediaPlayer.State==MediaState.Paused) return;
             if (MediaPlayer.State == MediaState.Playing)
             {
@@ -323,11 +325,14 @@ namespace PlagueEngine.Audio
         // Wyznacza pierwszy wolny indeks dla nowego SoundEffectu
         private int GetAvailableSoundIndex()
         {
-            for (var i = 0; i < _playingSounds.Length; ++i)
+            if (_playingSounds != null)
             {
-                if (_playingSounds[i] == null)
+                for (var i = 0; i < _playingSounds.Length; ++i)
                 {
-                    return i;
+                    if (_playingSounds[i] == null)
+                    {
+                        return i;
+                    }
                 }
             }
             return -1;

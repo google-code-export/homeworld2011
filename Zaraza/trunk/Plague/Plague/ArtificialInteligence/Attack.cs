@@ -14,6 +14,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public int maxInflictedDamage;
         public int minInflictedDamage;
 
-
+        public Attack(float minDist, float maxDist, int minDmg, int maxDmg, long ticks)
+        {
+            this.minAttackDistance = minDist;
+            this.minInflictedDamage = minDmg;
+            this.maxAttackDistance = maxDist;
+            this.maxInflictedDamage = maxDmg;
+            this.cooldown = new TimeSpan(ticks);
+        }
     }
 }

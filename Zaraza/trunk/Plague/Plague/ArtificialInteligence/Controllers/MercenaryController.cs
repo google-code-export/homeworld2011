@@ -21,6 +21,17 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
             AnglePrecision  = angle;
         }
 
+        protected override void useAttack()
+        {
+            Mercenary unit = controlledObject as Mercenary;
+            if(typeof(Firearm).Equals(unit.CurrentObject) )
+            {
+                Firearm weapon = unit.CurrentObject as Firearm;
+                //TODO: dorobić wybór między basic a additionalAttack
+                this.attack = weapon.basicAttack;
+            }
+            base.useAttack();
+        }
         public override void Update(TimeSpan deltaTime)
         {
             switch (action)

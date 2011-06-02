@@ -300,7 +300,8 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                         if (currentDistance < attack.maxAttackDistance && currentDistance > attack.minAttackDistance)
                         {
                             this.cooldownTimer.Reset(attack.cooldown, 1);
-                            controlledObject.SendEvent(new TakeDamage(4.5, this.controlledObject), Priority.Normal, this.attackTarget);
+                            controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject), Priority.Normal, this.attackTarget);
+                            action = Action.ATTACK_IDLE;
                         }
                         else
                         {
