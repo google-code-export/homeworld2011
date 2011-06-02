@@ -62,9 +62,11 @@ namespace PlagueEngine.Particles
             this.texture = texture;
             this.particleEffect = effect;
             this.settings = settings;
-
-            Initialize();
-            LoadContent();
+            if (texture != null)
+            {
+                Initialize();
+                LoadContent();
+            }
 
         }
         /********************************************************************************/
@@ -246,7 +248,7 @@ namespace PlagueEngine.Particles
         /********************************************************************************/
         public void Draw(GameTime gameTime)
         {
-
+            if (texture == null) return;
 
             effectViewParameter.SetValue(renderer.CurrentCamera.View);
             effectProjectionParameter.SetValue(renderer.CurrentCamera.Projection);

@@ -10,13 +10,13 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Rendering;
 using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
+using PlagueEngine.Particles.Components;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
     class SquareSkin:GameObjectInstance
     {
         public SquareBodyComponent body = null;
-
 
 
 
@@ -67,6 +67,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinRoll = body.Roll;
             data.SkinYaw = body.Yaw;
             data.EnabledPhysics = body.Enabled;
+
+
             return data;
         }
         /********************************************************************************/
@@ -125,6 +127,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
+
+
+
 
     }
     /********************************************************************************/
