@@ -1028,7 +1028,28 @@ namespace PlagueEngine.LowLevelGameFlow
                     return false;
                 }
             }
-            
+
+            Firearm weapon = null;
+            if (data.Weapon != 0)
+            {
+                weapon = (Firearm)GetObject(data.Weapon);
+                if (weapon == null)
+                {
+                    PushToWaitingRoom(result, data);
+                    return false;
+                }
+            }
+
+            Firearm sideArm = null;
+            if (data.SideArm != 0)
+            {
+                sideArm = (Firearm)GetObject(data.SideArm);
+                if (sideArm == null)
+                {
+                    PushToWaitingRoom(result, data);
+                    return false;
+                }
+            }    
 
             result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
                                                                               data.Model,
@@ -1068,7 +1089,9 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.MovingSpeed,
                         data.DistancePrecision,
                         data.AnglePrecision,
-                        data.GripBone,
+                        data.Grip,
+                        data.SideArmGrip,
+                        data.WeaponGrip,                        
                         data.MaxHP,
                         data.HP,
                         data.Icon,
@@ -1076,7 +1099,9 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.TinySlots,
                         data.Slots,
                         Items,
-                        currentObject);
+                        currentObject,
+                        weapon,
+                        sideArm);
 
             return true;
         }
@@ -1151,7 +1176,8 @@ namespace PlagueEngine.LowLevelGameFlow
                       data.SlotsIcon,
                       data.Description,
                       data.DescriptionWindowWidth,
-                      data.DescriptionWindowHeight);
+                      data.DescriptionWindowHeight,
+                      data.SideArm);
             return true;
         }
         /****************************************************************************/

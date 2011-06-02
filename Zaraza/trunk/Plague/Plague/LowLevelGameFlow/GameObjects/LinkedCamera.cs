@@ -499,9 +499,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         mouseListenerComponent.SetCursor(cursor);
                     }
                     break;
-            }
-
-            cameraComponent.LookAt(position, target, Vector3.Up);
+            }            
         }
         /****************************************************************************/
 
@@ -588,9 +586,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                     break;
             }
-
-
-            cameraComponent.LookAt(position, target, Vector3.Up);
         }
         /****************************************************************************/
 
@@ -752,6 +747,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 /***************************************/
             }
 
+            cameraComponent.LookAt(position, target, Vector3.Up);
         }
         /****************************************************************************/
 

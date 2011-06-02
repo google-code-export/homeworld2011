@@ -107,6 +107,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Vector2 PrevMercButtonPos   = new Vector2(308, 30);
         private Vector2 ExitInvButtonPos    = new Vector2(20, 0);
         private Vector2 CurrItemIconPos     = new Vector2(26, 40);
+        private Vector2 WeaponIconPos       = new Vector2(99, 40);
+        private Vector2 SideArmIconPos      = new Vector2(174, 40);
         private Vector2 ScrollUpButtonPos   = new Vector2(400, 223);
         private Vector2 ScrollDownButtonPos = new Vector2(400, 561);
         private Vector2 ScrollButtonBasePos = new Vector2(400, 237);
@@ -181,8 +183,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             // Exit Inventory Button
             spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInvButtonPos, (exitInv ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
             // Current Item
-            StorableObject currenItem = mercenary.currentObject;
+            StorableObject currenItem = mercenary.CurrentObject;
             if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.Icon, Color.White);
+            // Weapon
+            Firearm weapon = mercenary.Weapon;
+            if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, weapon.Icon, Color.White);
+            // Side Arm
+            weapon = mercenary.SideArm;
+            if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos, weapon.Icon, Color.White);                        
             // Scroll
             spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUpButtonPos,   (scrollUp   ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
             spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDownButtonPos, (scrollDown ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
@@ -286,7 +294,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 // Exit Inventory Button
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInv2ButtonPos, (exitInv2 ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
                 // Current Item
-                currenItem = mercenary2.currentObject;
+                currenItem = mercenary2.CurrentObject;
                 if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, Color.White);
                 // Scroll
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUp2ButtonPos, (scrollUp2 ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
@@ -453,11 +461,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                              mousePos.Y > CurrItemIconPos.Y &&
                              mousePos.Y < CurrItemIconPos.Y + 50)
                     {
-                        pickedItem = mercenary.currentObject;
+                        pickedItem = mercenary.CurrentObject;
                         if (pickedItem != null)
                         {
                             pickedItemSlot = Slot.CurrentItem;
-                            mercenary.StoreCurrentItem();
+                            mercenary.StoreItem(0);
                             mouse.CursorVisible = false;
                             newPickedItemOrientation = 1;
                             oldPickedItemOrientation = 1;
@@ -470,15 +478,57 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                              mousePos.Y > CurrItemIconPos2.Y &&
                              mousePos.Y < CurrItemIconPos2.Y + 50)
                     {
-                        pickedItem = mercenary2.currentObject;
+                        pickedItem = mercenary2.CurrentObject;
                         if (pickedItem != null)
                         {
                             pickedItemSlot = Slot.CurrentItem;
-                            mercenary2.StoreCurrentItem();
+                            mercenary2.StoreItem(0);
                             mouse.CursorVisible = false;
                             newPickedItemOrientation = 1;
                             oldPickedItemOrientation = 1;
                             pickedFromMerc2 = true;
+                        }
+                    }
+                    /*************************/
+                    #endregion
+                    /*************************/
+                    #region Pick Weapon
+                    /*************************/
+                    else if (mousePos.X > WeaponIconPos.X &&
+                             mousePos.X < WeaponIconPos.X + 50 &&
+                             mousePos.Y > WeaponIconPos.Y &&
+                             mousePos.Y < WeaponIconPos.Y + 50)
+                    {
+                        pickedItem = mercenary.Weapon;
+                        if (pickedItem != null)
+                        {
+                            pickedItemSlot = Slot.Weapon;
+                            mercenary.StoreItem(1);
+                            mouse.CursorVisible = false;
+                            newPickedItemOrientation = 1;
+                            oldPickedItemOrientation = 1;
+                            pickedFromMerc2 = false;
+                        }
+                    }
+                    /*************************/
+                    #endregion
+                    /*************************/                    
+                    #region Pick SideArm
+                    /*************************/
+                    else if (mousePos.X > SideArmIconPos.X &&
+                             mousePos.X < SideArmIconPos.X + 50 &&
+                             mousePos.Y > SideArmIconPos.Y &&
+                             mousePos.Y < SideArmIconPos.Y + 50)
+                    {
+                        pickedItem = mercenary.SideArm;
+                        if (pickedItem != null)
+                        {
+                            pickedItemSlot = Slot.SideArm;
+                            mercenary.StoreItem(2);
+                            mouse.CursorVisible = false;
+                            newPickedItemOrientation = 1;
+                            oldPickedItemOrientation = 1;
+                            pickedFromMerc2 = false;
                         }
                     }
                     /*************************/
@@ -557,6 +607,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /******************************/
                     if (pickedItem != null)
                     {
+                        mousePos.X -= (pickedItem.SlotsIcon.Width / 2) - 32;
+                        mousePos.Y -= (pickedItem.SlotsIcon.Height / 2) - 32;
+
                         /******************************/
                         #region West Side (Bitch!)
                         /******************************/
@@ -606,7 +659,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                     {
                                         Items[i, j].Blocked = true;
                                     }
-                                    else if (Items[i, j].Tiny && (width > 2 || height > 2))
+                                    else if (Items[i, j].Tiny && (width > 1 || height > 1))
                                     {
                                         Items[i, j].Blocked = true;
                                     }
@@ -683,7 +736,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                     {
                                         Items2[i, j].Blocked = true;
                                     }
-                                    else if (Items2[i, j].Tiny && (width > 2 || height > 2))
+                                    else if (Items2[i, j].Tiny && (width > 1 || height > 1))
                                     {
                                         Items2[i, j].Blocked = true;
                                     }
@@ -831,7 +884,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             mousePos.Y > CurrItemIconPos.Y &&
                             mousePos.Y < CurrItemIconPos.Y + 50)
                         {
-                            if (mercenary.currentObject == null)
+                            if (mercenary.CurrentObject == null)
                             {
                                 if (pickedFromMerc2)
                                 {
@@ -859,7 +912,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > CurrItemIconPos2.Y      &&
                                  mousePos.Y < CurrItemIconPos2.Y + 50)
                         {
-                            if (mercenary2.currentObject == null)
+                            if (mercenary2.CurrentObject == null)
                             {
                                 if (!pickedFromMerc2)
                                 {
@@ -883,158 +936,90 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }                        
                         /*************************/
                         #endregion
+                        /*************************/                        
+                        #region On Weapon
                         /*************************/
-                        #region On Inventory
-                        /*************************/
-                        else if (mousePos.X > SlotsStartPos.X &&
-                                 mousePos.X < SlotsStartPos.X + 11 * 32 &&
-                                 mousePos.Y > SlotsStartPos.Y &&
-                                 mousePos.Y < SlotsStartPos.Y + (Items.GetLength(1) < 15 ? Items.GetLength(1) : 15) * 32)
+                        else if (mousePos.X > WeaponIconPos.X &&
+                            mousePos.X < WeaponIconPos.X + 50 &&
+                            mousePos.Y > WeaponIconPos.Y &&
+                            mousePos.Y < WeaponIconPos.Y + 50)
                         {
-                            int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
-                            int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
-
-                            int width = (pickedItem.SlotsIcon.Width / 32) - 1;
-                            int height = (pickedItem.SlotsIcon.Height / 32) - 1;
-
-                            if (newPickedItemOrientation < 0)
+                            if (mercenary.Weapon == null)
                             {
-                                int tmp = width;
-                                width = height;
-                                height = tmp;
-                            }
-
-                            bool block = false;
-                            uint onTiny = 0;
-                            uint onNormal = 0;
-
-                            if (pickedFromMerc2)
-                            {
-                                if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) > 3) block = true;
-                            }    
-
-                            for (int i = x + width; i >= x; --i)
-                            {
-                                for (int j = y + height; j >= y; --j)
+                                Firearm weapon = pickedItem as Firearm;
+                                if (weapon != null)
                                 {
-                                    if (i > Items.GetLength(0) - 1) block = true;
-                                    else if (j > Items.GetLength(1) - 1) block = true;
-                                    else if (Items[i, j].Blank) block = true;
-                                    else if (Items[i, j].Item != null) block = true;
-                                    else if (Items[i, j].Tiny && (width > 2 || height > 2)) block = true;
-                                    else
+                                    if (!weapon.SideArm)
                                     {
-                                        if (Items[i, j].Tiny) onTiny++;
-                                        else onNormal++;
-
-                                        if (onTiny > 0 && onNormal > 0) block = true;
-                                    }
-
-                                    if (block) break;
-                                }
-                                if (block) break;
-                            }
-
-                            if (block)
-                            {
-                                PutBackPickedItem();
-                            }
-                            else
-                            {
-                                List<int> slots = new List<int>();
-                                for (int i = x; i < x + width + 1; ++i)
-                                {
-                                    for (int j = y; j < y + height + 1; ++j)
-                                    {
-                                        Items[i, j].Item = pickedItem;
-                                        slots.Add(i + (j * 11));
+                                        if (pickedFromMerc2)
+                                        {
+                                            if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
+                                            {
+                                                mercenary.PlaceItem(pickedItem,1);
+                                                pickedItem = null;
+                                                mouse.CursorVisible = true;
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            mercenary.PlaceItem(pickedItem, 1);
+                                            pickedItem = null;
+                                            mouse.CursorVisible = true;
+                                            return;
+                                        }
                                     }
                                 }
-                                mercenary.Items.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
-                                pickedItem = null;
-                                pickedItemSlot = Slot.Empty;
-                                mouse.CursorVisible = true;
                             }
-                        }
-                        else if (mercenary2 != null &&
-                                 mousePos.X > SlotsStartPos2.X &&
-                                 mousePos.X < SlotsStartPos2.X + 11 * 32 &&
-                                 mousePos.Y > SlotsStartPos2.Y &&
-                                 mousePos.Y < SlotsStartPos2.Y + (Items2.GetLength(1) < 15 ? Items2.GetLength(1) : 15) * 32)
-                        {
-                            int x = (int)((mousePos.X - SlotsStartPos2.X) / 32);
-                            int y = (int)((mousePos.Y - SlotsStartPos2.Y) / 32) + scrollCurrentOffset2;
-
-                            int width = (pickedItem.SlotsIcon.Width / 32) - 1;
-                            int height = (pickedItem.SlotsIcon.Height / 32) - 1;
-
-                            if (newPickedItemOrientation < 0)
-                            {
-                                int tmp = width;
-                                width = height;
-                                height = tmp;
-                            }
-
-                            bool block = false;
-                            uint onTiny = 0;
-                            uint onNormal = 0;
-
-                            if (!pickedFromMerc2)
-                            {
-                                if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) > 3) block = true;
-                            }    
-
-                            for (int i = x + width; i >= x; --i)
-                            {
-                                for (int j = y + height; j >= y; --j)
-                                {
-                                    if (i > Items2.GetLength(0) - 1) block = true;
-                                    else if (j > Items2.GetLength(1) - 1) block = true;
-                                    else if (Items2[i, j].Blank) block = true;
-                                    else if (Items2[i, j].Item != null) block = true;
-                                    else if (Items2[i, j].Tiny && (width > 2 || height > 2)) block = true;
-                                    else
-                                    {
-                                        if (Items2[i, j].Tiny) onTiny++;
-                                        else onNormal++;
-
-                                        if (onTiny > 0 && onNormal > 0) block = true;
-                                    }
-
-                                    if (block) break;
-                                }
-                                if (block) break;
-                            }
-
-                            if (block)
-                            {
-                                PutBackPickedItem();
-                            }
-                            else
-                            {
-                                List<int> slots = new List<int>();
-                                for (int i = x; i < x + width + 1; ++i)
-                                {
-                                    for (int j = y; j < y + height + 1; ++j)
-                                    {
-                                        Items2[i, j].Item = pickedItem;
-                                        slots.Add(i + (j * 11));
-                                    }
-                                }
-                                mercenary2.Items.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
-                                pickedItem = null;
-                                pickedItemSlot = Slot.Empty;
-                                mouse.CursorVisible = true;
-                            }
+                            PutBackPickedItem();
                         }
                         /*************************/
                         #endregion
-                        /*************************/                        
+                        /*************************/
+                        #region On Side Arm
+                        /*************************/
+                        else if (mousePos.X > SideArmIconPos.X &&
+                                 mousePos.X < SideArmIconPos.X + 50 &&
+                                 mousePos.Y > SideArmIconPos.Y &&
+                                 mousePos.Y < SideArmIconPos.Y + 50)
+                        {
+                            if (mercenary.SideArm == null)
+                            {
+                                Firearm weapon = pickedItem as Firearm;
+                                if (weapon != null)
+                                {
+                                    if (weapon.SideArm)
+                                    {
+                                        if (pickedFromMerc2)
+                                        {
+                                            if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
+                                            {
+                                                mercenary.PlaceItem(pickedItem, 2);
+                                                pickedItem = null;
+                                                mouse.CursorVisible = true;
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            mercenary.PlaceItem(pickedItem, 2);
+                                            pickedItem = null;
+                                            mouse.CursorVisible = true;
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            PutBackPickedItem();
+                        }
+                        /*************************/
+                        #endregion
+                        /*************************/                       
                         #region Outside Inventory
                         /*************************/
-                        else if (realMousePos.X < localPosition.X       ||                                 
+                        else if (realMousePos.X < localPosition.X ||
                                  realMousePos.Y > localPosition.Y + 620 ||
-                                 realMousePos.Y < localPosition.Y       ||
+                                 realMousePos.Y < localPosition.Y ||
                                  (mercenary2 == null && realMousePos.X > localPosition.X + 420) ||
                                  (mercenary2 != null && realMousePos.X > localPosition.X + 840))
                         {
@@ -1046,7 +1031,162 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         /*************************/
                         #endregion
                         /*************************/
-                        else PutBackPickedItem();
+                        #region On Inventory
+                        /*************************/
+                        else
+                        {
+                            mousePos.X -= (pickedItem.SlotsIcon.Width / 2)  - 32;
+                            mousePos.Y -= (pickedItem.SlotsIcon.Height / 2) - 32;
+
+                            if (mousePos.X > SlotsStartPos.X &&
+                                mousePos.X < SlotsStartPos.X + 11 * 32 &&
+                                mousePos.Y > SlotsStartPos.Y &&
+                                mousePos.Y < SlotsStartPos.Y + (Items.GetLength(1) < 15 ? Items.GetLength(1) : 15) * 32)
+                            {
+                                int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
+                                int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
+
+                                int width = (pickedItem.SlotsIcon.Width / 32) - 1;
+                                int height = (pickedItem.SlotsIcon.Height / 32) - 1;
+
+                                if (newPickedItemOrientation < 0)
+                                {
+                                    int tmp = width;
+                                    width = height;
+                                    height = tmp;
+                                }
+
+                                bool block = false;
+                                uint onTiny = 0;
+                                uint onNormal = 0;
+
+                                if (pickedFromMerc2)
+                                {
+                                    if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) > 3) block = true;
+                                }
+
+                                for (int i = x + width; i >= x; --i)
+                                {
+                                    for (int j = y + height; j >= y; --j)
+                                    {
+                                        if (i > Items.GetLength(0) - 1) block = true;
+                                        else if (j > Items.GetLength(1) - 1) block = true;
+                                        else if (Items[i, j].Blank) block = true;
+                                        else if (Items[i, j].Item != null) block = true;
+                                        else if (Items[i, j].Tiny && (width > 1 || height > 1)) block = true;
+                                        else
+                                        {
+                                            if (Items[i, j].Tiny) onTiny++;
+                                            else onNormal++;
+
+                                            if (onTiny > 0 && onNormal > 0) block = true;
+                                        }
+
+                                        if (block) break;
+                                    }
+                                    if (block) break;
+                                }
+
+                                if (block)
+                                {
+                                    PutBackPickedItem();
+                                }
+                                else
+                                {
+                                    List<int> slots = new List<int>();
+                                    for (int i = x; i < x + width + 1; ++i)
+                                    {
+                                        for (int j = y; j < y + height + 1; ++j)
+                                        {
+                                            Items[i, j].Item = pickedItem;
+                                            slots.Add(i + (j * 11));
+                                        }
+                                    }
+                                    mercenary.Items.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
+                                    pickedItem = null;
+                                    pickedItemSlot = Slot.Empty;
+                                    mouse.CursorVisible = true;
+                                }
+                            }
+                            else if (mercenary2 != null &&
+                                     mousePos.X > SlotsStartPos2.X &&
+                                     mousePos.X < SlotsStartPos2.X + 11 * 32 &&
+                                     mousePos.Y > SlotsStartPos2.Y &&
+                                     mousePos.Y < SlotsStartPos2.Y + (Items2.GetLength(1) < 15 ? Items2.GetLength(1) : 15) * 32)
+                            {
+                                int x = (int)((mousePos.X - SlotsStartPos2.X) / 32);
+                                int y = (int)((mousePos.Y - SlotsStartPos2.Y) / 32) + scrollCurrentOffset2;
+
+                                int width = (pickedItem.SlotsIcon.Width / 32) - 1;
+                                int height = (pickedItem.SlotsIcon.Height / 32) - 1;
+
+                                if (newPickedItemOrientation < 0)
+                                {
+                                    int tmp = width;
+                                    width = height;
+                                    height = tmp;
+                                }
+
+                                bool block = false;
+                                uint onTiny = 0;
+                                uint onNormal = 0;
+
+                                if (!pickedFromMerc2)
+                                {
+                                    if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) > 3) block = true;
+                                }
+
+                                for (int i = x + width; i >= x; --i)
+                                {
+                                    for (int j = y + height; j >= y; --j)
+                                    {
+                                        if (i > Items2.GetLength(0) - 1) block = true;
+                                        else if (j > Items2.GetLength(1) - 1) block = true;
+                                        else if (Items2[i, j].Blank) block = true;
+                                        else if (Items2[i, j].Item != null) block = true;
+                                        else if (Items2[i, j].Tiny && (width > 1 || height > 1)) block = true;
+                                        else
+                                        {
+                                            if (Items2[i, j].Tiny) onTiny++;
+                                            else onNormal++;
+
+                                            if (onTiny > 0 && onNormal > 0) block = true;
+                                        }
+
+                                        if (block) break;
+                                    }
+                                    if (block) break;
+                                }
+
+                                if (block)
+                                {
+                                    PutBackPickedItem();
+                                }
+                                else
+                                {
+                                    List<int> slots = new List<int>();
+                                    for (int i = x; i < x + width + 1; ++i)
+                                    {
+                                        for (int j = y; j < y + height + 1; ++j)
+                                        {
+                                            Items2[i, j].Item = pickedItem;
+                                            slots.Add(i + (j * 11));
+                                        }
+                                    }
+                                    mercenary2.Items.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
+                                    pickedItem = null;
+                                    pickedItemSlot = Slot.Empty;
+                                    mouse.CursorVisible = true;
+                                }
+                            }
+                            else
+                            {
+                                PutBackPickedItem();
+                            }
+                        }
+                        /*************************/
+                        #endregion
+                        /*************************/ 
                     }
                     /*************************/
                     #endregion
@@ -1502,6 +1642,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     pickedItem = null;
                     mouse.CursorVisible = true;
                     
+                    break;
+
+                case Slot.Weapon:
+                    
+                    if (!pickedFromMerc2) mercenary.PlaceItem(pickedItem,1);
+                    else                  mercenary2.PlaceItem(pickedItem,1);
+                    
+                    pickedItem = null;
+                    mouse.CursorVisible = true;          
+                    break;
+
+                case Slot.SideArm:
+
+                    if (!pickedFromMerc2) mercenary.PlaceItem(pickedItem, 2);
+                    else mercenary2.PlaceItem(pickedItem, 2);
+
+                    pickedItem = null;
+                    mouse.CursorVisible = true;
                     break;
             }
         }

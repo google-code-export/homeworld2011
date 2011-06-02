@@ -31,6 +31,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public bool SideArm { get; private set; }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Init
         /****************************************************************************/
         public void Init(MeshComponent       mesh,
@@ -39,10 +46,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Rectangle slotsIcon,
                          String description,
                          int descriptionWindowWidth,
-                         int descriptionWindowHeight)
+                         int descriptionWindowHeight,
+                         bool sideArm)
         {
             this.mesh = mesh;
             this.body = body;
+            SideArm = sideArm;
 
             Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight);
         }
@@ -100,6 +109,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.EnabledPhysics   = body.Enabled;
             data.EnabledMesh      = mesh.Enabled;
             
+            data.SideArm          = SideArm;
+
             return data;
         }
         /****************************************************************************/
@@ -132,6 +143,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             body.DisableBody();
             mesh.Enabled = false;
+
+            base.OnStoring();
         }
         /****************************************************************************/
 
@@ -196,6 +209,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("EnabledMesh")]
         public bool EnabledMesh { get; set; }
+
+        [CategoryAttribute("Weapon Genre")]
+        public bool SideArm { get; set; }
+
     }
     /********************************************************************************/
 

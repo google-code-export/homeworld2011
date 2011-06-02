@@ -31,7 +31,7 @@ namespace PlagueEngine.LowLevelGameFlow
         private static int       lastID    = 0;
         private static List<int> freeIDs   = new List<int>();
 
-        private GameObjectInstance owner     = null;        
+        protected GameObjectInstance owner     = null;        
         
         protected delegate Matrix GetWorldDelegate(int bone);
         protected GetWorldDelegate getWorld = null;

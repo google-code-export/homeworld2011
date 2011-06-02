@@ -374,7 +374,7 @@ namespace PlagueEngine.Rendering
                         if (!mesh.Enabled) continue;
                         if (!frustrum.Intersects(mesh.BoundingBox)) continue;
 
-                        noInstancingEffect.Parameters["World"].SetValue(mesh.GameObject.World);
+                        noInstancingEffect.Parameters["World"].SetValue(mesh.GameObject.GetWorld());
                         noInstancingEffect.CurrentTechnique.Passes[0].Apply();
 
                         renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, model.Key.VertexCount, 0, model.Key.TriangleCount);
@@ -635,9 +635,10 @@ namespace PlagueEngine.Rendering
                         int i = 0;
                         foreach (MeshComponent mesh in instancesData.DynamicMeshes)
                         {
+                            if (!mesh.Enabled) continue;
                             if (!frustrum.Intersects(mesh.BoundingBox)) continue;
 
-                            transforms[i++] = mesh.GameObject.World;
+                            transforms[i++] = mesh.GameObject.GetWorld();
                         }
                         if (i == 0) continue;
 
@@ -676,9 +677,10 @@ namespace PlagueEngine.Rendering
                 {                    
                     foreach (MeshComponent mesh in texturesPack.Value)
                     {
+                        if (!mesh.Enabled) continue;
                         if (!frustrum.Intersects(mesh.BoundingBox)) continue;
 
-                        noInstancingEffect.Parameters["World"].SetValue(mesh.GameObject.World);
+                        noInstancingEffect.Parameters["World"].SetValue(mesh.GameObject.GetWorld());
                         noInstancingEffect.CurrentTechnique.Passes[0].Apply();
 
                         renderer.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, model.Key.VertexCount, 0, model.Key.TriangleCount);

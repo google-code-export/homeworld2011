@@ -109,16 +109,12 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         if (objectTarget.Status == GameObjectStatus.Pickable)
                         {
-                            if ((controlledObject as Mercenary).currentObject != null)
+                            if ((controlledObject as Mercenary).CurrentObject != null)
                             {
-                                (controlledObject as Mercenary).World.Translation += Vector3.Normalize(controlledObject.World.Forward) * 2;
-                                (controlledObject as Mercenary).currentObject.Owner = null;
-                                (controlledObject as Mercenary).currentObject.OwnerBone = -1;
+                                (controlledObject as Mercenary).DropItem();
                             }
 
-                            (controlledObject as Mercenary).currentObject = objectTarget as StorableObject;
-                            objectTarget.Owner = this.controlledObject;
-                            objectTarget.OwnerBone = controlledObject.Mesh.BoneMap[(controlledObject as Mercenary).gripBone];
+                            (controlledObject as Mercenary).PickItem(objectTarget as StorableObject);
                         }
 
                         objectTarget = null;
