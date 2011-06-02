@@ -45,7 +45,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>2</WarningLevel>
     <NoStdLib>true</NoStdLib>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
@@ -233,6 +233,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Firearm.cs" />
     <Compile Include="LowLevelGameFlow\IActiveGameObject.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\StorableObject.cs" />
+    <Compile Include="Particles\Components\AreaParticleEmitterComponent.cs" />
     <Compile Include="Particles\Components\ParticleEmitterComponent.cs" />
     <Compile Include="Particles\ParticleFactory.cs" />
     <Compile Include="Particles\ParticleManager.cs" />

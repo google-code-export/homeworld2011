@@ -1190,12 +1190,41 @@ namespace PlagueEngine.LowLevelGameFlow
                       data.Description,
                       data.DescriptionWindowWidth,
                       data.DescriptionWindowHeight,
-                      data.SideArm);
+                      data.SideArm,
+                      
+                      particleFactory.CreateAreaParticleEmitterComponent(result,
+                      data.blendState,
+                      data.duration,
+                      data.durationRandomnes,
+                      data.emitterVelocitySensitivity,
+                      data.endVelocity,
+                      data.gravity,
+                      data.maxColor,
+                      data.maxEndSize,
+                      data.maxHorizontalVelocity,
+                      data.maxParticles,
+                      data.maxRotateSpeed,
+                      data.maxStartSize,
+                      data.maxVerticalVelocity,
+            data.minColor,
+            data.minEndSize,
+            data.minHorizontalVelocity,
+            data.minRotateSpeed,
+            data.minStartSize,
+            data.minVerticalVelocity,
+            data.particleTexture,
+            data.particlesPerSecond,
+            data.particleTranslation,
+            data.World,
+            data.SpawnAreaWidth,
+            data.SpawnAreaLength,
+            data.ParticlesEnabled));
+
             return true;
         }
         /****************************************************************************/
 
-
+        
         /****************************************************************************/
         /// CreateActionSwitch
         /****************************************************************************/

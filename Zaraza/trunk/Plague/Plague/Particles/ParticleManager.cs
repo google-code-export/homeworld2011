@@ -28,6 +28,8 @@ namespace PlagueEngine.Particles
         /// Fields
         /********************************************************************************/
         public List<ParticleEmitterComponent> particleEmitters = new List<ParticleEmitterComponent>();
+
+        public List<AreaParticleEmitterComponent> AreaparticleEmitters = new List<AreaParticleEmitterComponent>();
         public ParticleFactory particleFactory = null;
         /********************************************************************************/
 
@@ -38,6 +40,7 @@ namespace PlagueEngine.Particles
         public ParticleManager()
         {
             ParticleEmitterComponent.particleManager = this;
+            AreaParticleEmitterComponent.particleManager = this;
         }
         /********************************************************************************/
 
@@ -68,6 +71,11 @@ namespace PlagueEngine.Particles
             {
                 emitter.Update(gameTime);
             }
+
+            foreach (AreaParticleEmitterComponent emitter in AreaparticleEmitters)
+            {
+                emitter.Update(gameTime);
+            }
         }
         /********************************************************************************/
 
@@ -82,6 +90,11 @@ namespace PlagueEngine.Particles
 
 
             foreach (ParticleEmitterComponent emmiter in particleEmitters)
+            {
+                emmiter.Draw(gameTime);
+            }
+
+            foreach (AreaParticleEmitterComponent emmiter in AreaparticleEmitters)
             {
                 emmiter.Draw(gameTime);
             }

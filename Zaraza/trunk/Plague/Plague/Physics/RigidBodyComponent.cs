@@ -547,7 +547,7 @@ namespace PlagueEngine.Physics
             if (isEnabled)
             {
                 gameObject.World = body.Orientation;
-
+                
 
                 Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(-roll));
                 gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);

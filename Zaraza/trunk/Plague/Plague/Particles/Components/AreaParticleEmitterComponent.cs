@@ -13,7 +13,7 @@ namespace PlagueEngine.Particles.Components
     /********************************************************************************/
     /// ParticleEmitter
     /********************************************************************************/
-    class ParticleEmitterComponent:GameObjectComponent
+    class AreaParticleEmitterComponent:GameObjectComponent
     {
        
 
@@ -32,15 +32,17 @@ namespace PlagueEngine.Particles.Components
         
         internal static ParticleManager particleManager;
         public Vector3 particleTranslation = Vector3.Zero;
-        public bool enabled = false;
+
+        public float areaWidth, areaLength;
+        public bool enabled;
         /********************************************************************************/
 
 
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public ParticleEmitterComponent(ParticleSystem particleSystem,
-                               float particlesPerSecond, GameObjectInstance gameObject,Vector3 particleTranslation,Matrix world,bool enabled)
+        public AreaParticleEmitterComponent(ParticleSystem particleSystem,
+                               float particlesPerSecond, GameObjectInstance gameObject,Vector3 particleTranslation,Matrix world,float width,float length,bool enabled)
             : base(gameObject)
         {
             this.particleSystem = particleSystem;
@@ -49,7 +51,8 @@ namespace PlagueEngine.Particles.Components
             this.enabled = enabled;
             this.gameObject = gameObject;
             this.particleTranslation = particleTranslation;
-
+            this.areaLength = length;
+            this.areaWidth = width;
 
 
             Vector3 pos = world.Translation;
@@ -62,7 +65,7 @@ namespace PlagueEngine.Particles.Components
 
             if (enabled)
             {
-                particleManager.particleEmitters.Add(this);
+                particleManager.AreaparticleEmitters.Add(this);
             }
         }
         /********************************************************************************/
@@ -78,12 +81,11 @@ namespace PlagueEngine.Particles.Components
         {
             if (enabled)
             {
-                particleManager.particleEmitters.Remove(this);
+                particleManager.AreaparticleEmitters.Remove(this);
             }
             base.ReleaseMe();
         }
         /********************************************************************************/
-
 
 
 
@@ -122,6 +124,7 @@ namespace PlagueEngine.Particles.Components
         {
             if (enabled)
             {
+
                 particleSystem.Update(gameTime);
 
                 Vector3 pos = gameObject.World.Translation;
@@ -154,6 +157,12 @@ namespace PlagueEngine.Particles.Components
 
                         Vector3 position = Vector3.Lerp(previousPosition, newPosition, mu);
 
+
+                        Random r = new Random();
+                        float dlength = (float)r.NextDouble() * areaLength - areaLength / 2.0f;
+                        float dwidth = (float)r.NextDouble() * areaWidth - areaWidth / 2.0f;
+                        position.X += dlength;
+                        position.Z += dwidth;
                         particleSystem.AddParticle(position, velocity);
                     }
 
