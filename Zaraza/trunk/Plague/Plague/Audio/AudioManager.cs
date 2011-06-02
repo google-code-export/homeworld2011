@@ -23,11 +23,11 @@ namespace PlagueEngine.Audio
         private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();
         private readonly Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
 
-        private readonly SoundEffectInstance[] _playingSounds;
+        private SoundEffectInstance[] _playingSounds;
         private bool _isFading;
         private bool _enabled = true;
         // Maksymalna ilość dźwięków która będzie odtwarzana jednocześnie.
-        private int MaxSounds = 64;
+        private int _maxSounds = 64;
 
         #endregion
 
@@ -90,15 +90,29 @@ namespace PlagueEngine.Audio
 
         public BackgroundMusicComponent BackgroundMusicComponent { get; set; }
 
-        private AudioManager(Game game) 
+        public int MaxSounds
         {
-            Listener = new AudioListener();
-            _contentManager = game.ContentManager;
+            get { return _maxSounds; }
+            set { 
+                if(_maxSounds!=value)
+                {
+                    var index = 0;
+                    var tempSei = new SoundEffectInstance[value];
+                    foreach (var sei in _playingSounds.Where(sei => sei != null).TakeWhile(sei => index < value))
+                    {
+                        tempSei[index++] = sei;
+                    }
+                    _playingSounds = tempSei;
+                }
+                _maxSounds = value;}
         }
 
-        private AudioManager(Game game, string contentFolder): this(game)
+        private AudioManager(Game game, string contentFolder)
         {
-            ContentFolder = contentFolder + "\\";  
+            ContentFolder = contentFolder + "\\";
+            Listener = new AudioListener();
+            _contentManager = game.ContentManager;
+            _playingSounds = new SoundEffectInstance[_maxSounds];
         }
         public Song LoadSong(string songName)
         {
