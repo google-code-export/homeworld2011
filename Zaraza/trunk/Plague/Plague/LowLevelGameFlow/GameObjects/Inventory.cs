@@ -1207,6 +1207,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         mercenary = mercenariesManager.GetNextMercenary(mercenary);
                         if (mercenary == mercenary2) mercenary = mercenariesManager.GetNextMercenary(mercenary);
                         SetupMercenary();
+                        SendEvent(new SelectedObjectEvent(mercenary, Vector3.Zero), EventsSystem.Priority.High, mercenariesManager);
+                        mercenary2 = null;
                     }
                     /*************************/
                     #endregion
@@ -1218,6 +1220,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         mercenary = mercenariesManager.GetPrevMercenary(mercenary);
                         if (mercenary == mercenary2) mercenary = mercenariesManager.GetPrevMercenary(mercenary);
                         SetupMercenary();
+                        SendEvent(new SelectedObjectEvent(mercenary, Vector3.Zero), EventsSystem.Priority.High, mercenariesManager);
+                        mercenary2 = null;
                     }
                     /*************************/
                     #endregion
@@ -1559,6 +1563,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         if (mercenary == mercenary2) mercenary = mercenariesManager.GetPrevMercenary(mercenary);
                         SetupMercenary();
                     }
+                    SendEvent(new SelectedObjectEvent(mercenary, Vector3.Zero), EventsSystem.Priority.High, mercenariesManager);
+                    mercenary2 = null;
                 }
             }            
         }

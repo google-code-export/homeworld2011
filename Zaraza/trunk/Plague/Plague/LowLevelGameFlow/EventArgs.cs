@@ -15,13 +15,18 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
     /// Empty Events
     /********************************************************************************/
-    class CreateEvent        : EventArgs { };
-    class DestroyEvent       : EventArgs { };
-    class SwitchEvent        : EventArgs { };
-    class GameObjectReleased : EventArgs { };
-    class ExamineEvent       : EventArgs { };    
-    class ActionDoneEvent    : EventArgs { };
-    class StopActionEvent    : EventArgs { };
+    class CreateEvent          : EventArgs { };
+    class DestroyEvent         : EventArgs { };
+    class SwitchEvent          : EventArgs { };
+    class GameObjectReleased   : EventArgs { };
+    class ExamineEvent         : EventArgs { };    
+    class ActionDoneEvent      : EventArgs { };
+    class StopActionEvent      : EventArgs { };
+    
+    class DropItemCommandEvent        : EventArgs { };
+    class ReloadCommandEvent          : EventArgs { };    
+    class SwitchToWeaponCommandEvent  : EventArgs { };
+    class SwitchToSideArmCommandEvent : EventArgs { };
     /********************************************************************************/
 
     
