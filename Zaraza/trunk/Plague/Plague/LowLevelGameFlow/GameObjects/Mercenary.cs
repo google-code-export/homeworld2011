@@ -146,7 +146,96 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
-            this.objectAIController.OnEvent(sender, e);          
+            /// TODO: Wpisałem to w Merca bo w sumie średnio to się ma do zachowań
+
+            /*************************************/
+            /// DropItemCommandEvent
+            /*************************************/
+            if (e.GetType().Equals(typeof(DropItemCommandEvent)))
+            {
+                DropItem();
+                SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
+            }
+            /*************************************/
+            /// SwitchToWeaponCommandEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(SwitchToWeaponCommandEvent)))
+            {
+                if ((CurrentObject == null && Weapon != null))
+                {
+                    Firearm weapon = Weapon;
+                    StoreItem(1);
+                    PlaceItem(weapon, 0);
+                }
+                else if (CurrentObject != null)
+                {
+                    Firearm firearm = CurrentObject as Firearm;
+                    if (firearm != null)
+                    {
+                        if (!firearm.SideArm)
+                        {
+                            Firearm weapon = Weapon;
+                            StoreItem(0);
+                            if (Weapon != null)
+                            {
+                                StoreItem(1);
+                                PlaceItem(weapon, 0);
+                            }
+                            PlaceItem(firearm, 1);
+                        }
+                        else if (SideArm == null && Weapon != null)
+                        {
+                            Firearm weapon = Weapon;
+                            StoreItem(0);
+                            StoreItem(1);
+                            PlaceItem(weapon, 0);
+                            PlaceItem(firearm, 2);
+                        }
+                    }
+                }
+                SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
+            }
+            /*************************************/
+            /// SwitchToSideArmCommandEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(SwitchToSideArmCommandEvent)))
+            {
+                if ((CurrentObject == null && SideArm != null))
+                {
+                    Firearm weapon = SideArm;
+                    StoreItem(2);
+                    PlaceItem(weapon, 0);
+                }
+                else if (CurrentObject != null)
+                {
+                    Firearm firearm = CurrentObject as Firearm;
+                    if (firearm != null)
+                    {
+                        if (firearm.SideArm)
+                        {
+                            Firearm weapon = SideArm;
+                            StoreItem(0);
+                            if (SideArm != null)
+                            {
+                                StoreItem(2);
+                                PlaceItem(weapon, 0);
+                            }
+                            PlaceItem(firearm, 2);
+                        }
+                        else if (Weapon == null && SideArm != null)
+                        {
+                            Firearm weapon = SideArm;
+                            StoreItem(0);
+                            StoreItem(2);
+                            PlaceItem(weapon, 0);
+                            PlaceItem(firearm, 1);
+                        }
+                    }
+                }
+                SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
+            }
+            /*************************************/
+            else this.objectAIController.OnEvent(sender, e);                
         }
         /****************************************************************************/
 
@@ -216,22 +305,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (item != null)
             {
-                item.World = Matrix.Identity;
-                item.World.Translation = World.Translation + 
-                                         Vector3.Normalize(World.Forward) * 2 + 
-                                         Vector3.Normalize(World.Up) * 2;
                 item.Owner = null;
-                item.OwnerBone = -1;            
+                item.OwnerBone = -1;
+
+                item.World = Matrix.Identity;
+                item.World.Translation = World.Translation +
+                                         Vector3.Normalize(World.Forward) * 2 +
+                                         Vector3.Normalize(World.Up) * 2;
             }
             else if (CurrentObject != null)
             {
+                CurrentObject.Owner     = null;
+                CurrentObject.OwnerBone = -1;
+
                 CurrentObject.World = Matrix.Identity;
                 CurrentObject.World.Translation = World.Translation +
-                                         Vector3.Normalize(World.Forward) * 2 +
-                                         Vector3.Normalize(World.Up) * 2;
+                                                  Vector3.Normalize(World.Forward) * 2 +
+                                                  Vector3.Normalize(World.Up) * 2;
 
-                CurrentObject.Owner = null;
-                CurrentObject.OwnerBone = -1;
+                CurrentObject           = null;
             }
         }
         /****************************************************************************/
@@ -410,8 +502,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public string[] GetActions(Mercenary mercenary)
         {
-            if (mercenary == this) return new String[] { "Inventory" };
-            else return new String[] { "Inventory", "Follow", "Exchange Items" };
+            List<String> actions = new List<String>();
+
+            actions.Add("Inventory");
+
+            if (mercenary != null && mercenary != this)
+            { 
+                actions.Add("Follow");
+                actions.Add("Exchange Items");
+            }
+
+            if (CurrentObject == null)
+            {
+                if (Weapon  != null) actions.Add("Switch to Weapon");
+                if (SideArm != null) actions.Add("Switch to Side Arm");
+            }
+            else
+            {
+                Firearm firearm = CurrentObject as Firearm;
+                if(firearm != null)
+                {
+                    if (!firearm.SideArm || ( firearm.SideArm && SideArm == null && Weapon  != null)) actions.Add("Switch to Weapon");
+                    if ( firearm.SideArm || (!firearm.SideArm && Weapon  == null && SideArm != null)) actions.Add("Switch to Side Arm");
+                    
+                    actions.Add("Reload");
+                }
+                actions.Add("Drop Item");
+            }
+
+            return actions.ToArray();
         }
         /****************************************************************************/
 

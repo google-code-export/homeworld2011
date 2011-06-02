@@ -221,10 +221,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     switch (SelectedActionEvent.Action)
                     {
-                        case "Grab"          : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl,currentMercenary); break;
-                        case "Examine"       : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl,currentMercenary); break;
-                        case "Follow"        : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl,currentMercenary); break;
-                        case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, currentMercenary); break;
+                        case "Grab"               : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl,currentMercenary); break;
+                        case "Examine"            : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl,currentMercenary); break;
+                        case "Follow"             : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl,currentMercenary); break;
+                        case "Exchange Items"     : QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, currentMercenary); break;
+                        case "Drop Item"          : QueueEvent(new DropItemCommandEvent(),        !leftControl, currentMercenary); break;
+                        case "Reload"             : QueueEvent(new ReloadCommandEvent(),          !leftControl, currentMercenary); break;
+                        case "Switch to Weapon"   : QueueEvent(new SwitchToWeaponCommandEvent(),  !leftControl, currentMercenary); break;
+                        case "Switch to Side Arm" : QueueEvent(new SwitchToSideArmCommandEvent(), !leftControl, currentMercenary); break;
                         case "Inventory": 
                                         InventoryData data = new InventoryData();
                                         data.MercenariesManager = this.ID;
