@@ -24,9 +24,11 @@ namespace PlagueEngine.Audio
         private readonly Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
 
         private SoundEffectInstance[] _playingSounds;
-        private bool _isFading;
         private bool _enabled = true;
-        // Maksymalna ilość dźwięków która będzie odtwarzana jednocześnie.
+        private bool _isLooped;
+        private bool _isPlaying;
+        private bool _isFading;
+        // Maksymalna ilość dźwięków która będzie odtwarzana jednocześnie standardowo 64.
         private int _maxSounds = 64;
 
         #endregion
@@ -88,7 +90,7 @@ namespace PlagueEngine.Audio
 
         public MusicFadeEffect FadeEffect { get; set; }
 
-        public BackgroundMusicComponent BackgroundMusicComponent { get; set; }
+        internal BackgroundMusicComponent BackgroundMusicComponent { get; set; }
 
         public int MaxSounds
         {
@@ -105,6 +107,16 @@ namespace PlagueEngine.Audio
                     _playingSounds = tempSei;
                 }
                 _maxSounds = value;}
+        }
+
+        public bool IsLooped
+        {
+            get { return MediaPlayer.IsRepeating; }
+        }
+
+        public bool IsPlaying
+        {
+            get { return MediaPlayer.State== MediaState.Playing; }
         }
 
         private AudioManager(Game game, string contentFolder)
@@ -183,7 +195,9 @@ namespace PlagueEngine.Audio
         public void PlaySong(SongCue songCue, bool loop)
         {
             MediaPlayer.Stop();
+            Diagnostics.PushLog("Głośność playera:" + MediaPlayer.Volume + " Ustawiam na " + songCue.Volume);
             MediaPlayer.Volume = songCue.Volume;
+            
             MediaPlayer.IsRepeating = loop;
             MediaPlayer.Play(songCue.Song);
             if (!Enabled)
@@ -193,7 +207,7 @@ namespace PlagueEngine.Audio
         }
 
         /// <summary>
-        /// Pauza piosenki
+        /// Pauzuje piosenke
         /// </summary>
         public void PauseSong()
         {
@@ -265,6 +279,7 @@ namespace PlagueEngine.Audio
         /// <param name="gameTime">Czas jaki upłynał od ostatniej klatki</param>
         public void Update(GameTime gameTime)
         {
+            
             if(BackgroundMusicComponent!=null)
             {
                 BackgroundMusicComponent.Update(gameTime.ElapsedGameTime);

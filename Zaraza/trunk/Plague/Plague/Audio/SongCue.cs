@@ -9,16 +9,15 @@ namespace PlagueEngine.Audio
         public Song Song;
 
 
-        public SongCue(float volume, Song song)
+        public SongCue(Song song, float volume)
         {
-            Volume = MathHelper.Clamp(volume, 1.0f, 0.0f);
+#if DEBUG
+            Diagnostics.PushLog("Nowy SongCue " + song.Name + ", głośność "+ volume);
+#endif
+            Volume = MathHelper.Clamp(volume, 0.0f, 1.0f);
             Song = song;
         }
 
-        public SongCue(Song song)
-        {
-            Volume = 1.0f;
-            Song = song;
-        }
+        public SongCue(Song song):this(song,1.0f){}
     }
 }

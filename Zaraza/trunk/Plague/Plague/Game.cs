@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Audio;
+using PlagueEngine.Audio.Components;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.Resources;
 using PlagueEngine.Rendering;
@@ -31,7 +33,6 @@ namespace PlagueEngine
         internal PhysicsManager            PhysicsManager     { get; private set; }
         internal AudioManager AudioManager { get; private set; }
         internal Level Level { get; private set; }
-        
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
         
         public bool GameStopped { get;  set; }
@@ -64,9 +65,11 @@ namespace PlagueEngine
 #endif
             
             ContentManager = new ContentManager(this, "Content");
+
             AudioManager.SetInstance(this, "Audio");
             AudioManager = AudioManager.GetInstance;
-            AudioManager.SoundVolume = 1f;
+            AudioManager.BackgroundMusicComponent = new BackgroundMusicComponent { AutomaticMode = true };
+
             ParticleManager = new ParticleManager();
 
             InitRenderer();
@@ -114,6 +117,9 @@ namespace PlagueEngine
             Renderer.InitHelpers();
 
             Level.LoadLevel("Level1.lvl");
+
+            //Głośność dla podkładu muzycznego powinna być relatywnie niska 
+            //AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);
             
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
