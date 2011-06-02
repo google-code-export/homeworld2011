@@ -75,7 +75,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// On Storing
         /****************************************************************************/
         public virtual void OnStoring()
-        {         
+        {
+            owner = null;
+            OwnerBone = -1;
+            getWorld = GetMyWorld;            
         }
         /****************************************************************************/
 

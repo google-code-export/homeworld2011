@@ -31,33 +31,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     {
 
         /****************************************************************************/
-        /// Fields => INHERITED
-        /****************************************************************************/                        
-        //private Vector3            target;
-        //private GameObjectInstance objectTarget;
-        
-        //private int    moving = 0;
-
-        //private float rotationSpeed  = 0;
-        //private float movingSpeed    = 0;
-        //private float distance       = 0;
-        //private float anglePrecision = 0;
-
-        //private IEventsReceiver receiver = null;
-        /****************************************************************************/
-
-
-
-        /****************************************************************************/
         /// Slots
         /****************************************************************************/
-        public StorableObject currentObject = null;
+        public StorableObject CurrentObject = null;
 
         public Firearm Weapon   = null;
         public Firearm SideArm  = null;
         public Armor   Armor    = null;
 
-        public String gripBone;
+        public String Grip        { get; private set; }
+        public String SideArmGrip { get; private set; }
+        public String WeaponGrip  { get; private set; }
 
         public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
         /****************************************************************************/
@@ -73,34 +57,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// Properties => INHERITED
-        /****************************************************************************/
-        //public uint      MaxHP         { get; private set; }
-        //public uint      HP            { get; private set; }
-        /****************************************************************************/
         /// Properties
         /****************************************************************************/
         public Rectangle Icon          { get; private set; }
         public Rectangle InventoryIcon { get; private set; }
         public uint      TinySlots     { get; private set; }
         public uint      Slots         { get; private set; }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Components => INHERITED
-        /****************************************************************************/
-        //public SkinnedMeshComponent mesh;
-        //public CapsuleBodyComponent body;
-        //public SoundEffectComponent SoundEffectComponent;
-        //public SkinnedMeshComponent Mesh { get { return this.mesh; } private set { this.mesh = value; } }
-        //public CapsuleBodyComponent Body { get { return this.body; } private set { this.body = value; } }
-        //public PhysicsController    Controller { get; private set; }
-
-
-        private EventsSnifferComponent sniffer = new EventsSnifferComponent();
-        List<GameObjectInstance> barrels = new List<GameObjectInstance>();
-        KeyboardListenerComponent keyboard;
         /****************************************************************************/
 
 
@@ -116,6 +78,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float distance,
                          float angle,
                          String gripBone,
+                         String sideArmBone,
+                         String weaponBone,
                          uint maxHP,
                          uint HP,
                          Rectangle icon,
@@ -123,18 +87,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          uint tinySlots,
                          uint slots,
                          Dictionary<StorableObject, ItemPosition> items,
-                         StorableObject currentObject)
+                         StorableObject currentObject,
+                         Firearm weapon,
+                         Firearm sideArm)
         {
             this.objectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle);
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
-            SoundEffectComponent.CreateNewSoundFromFolder("Mercenary", 0.2f, 0, 0);
-            this.gripBone       = gripBone;
-            this.InventoryIcon  = inventoryIcon;
-            this.TinySlots      = tinySlots;
-            this.Slots          = slots;
-            this.currentObject  = currentObject;
+            SoundEffectComponent.CreateNewSoundFromFolder("Mercenary", 0.2f, 0, 0);            
+            InventoryIcon  = inventoryIcon;
+            TinySlots      = tinySlots;
+            Slots          = slots;
+            CurrentObject  = currentObject;
+            Weapon         = weapon;
+            SideArm        = sideArm;
+
+            Grip        = gripBone;
+            SideArmGrip = sideArmBone;
+            WeaponGrip  = weaponBone;
 
             Items = items;
 
@@ -152,43 +123,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             Mesh.StartClip("Idle");
             
-            RequiresUpdate = true;
-                        
-            sniffer.SetOnSniffedEvent(OnSniffedEvent);
-            sniffer.SubscribeEvents(typeof(CreateEvent),
-                                    typeof(DestroyEvent));
-            keyboard = new KeyboardListenerComponent(this, true);
-            keyboard.SubscibeKeys(OnKey, Keys.T);
-
+            RequiresUpdate = true;                       
         }
         /****************************************************************************/
 
-
-        private void OnKey(Keys key, ExtendedKeyState state)
-        {
-            /*if (key == Keys.T && state.WasPressed())
-            {
-                
-                GameObjectInstance closesEnemy= AI.FindClosestVisible(barrels, this,this.World.Backward, 45, 150);
-                if(closesEnemy!=null)
-                Diagnostics.PushLog("CLOSEST ENEMY: " + closesEnemy.ID.ToString());
-            }*/
-        }
-        private void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
-        {
-
-            /*************************************/
-            /// CreateEvent
-            /*************************************/
-            if (e.GetType().Equals(typeof(CreateEvent)) && sender.GetType().Equals(typeof(CylindricalBodyMesh)))
-            {
-                barrels.Add(sender as CylindricalBodyMesh);
-            }
-            if (e.GetType().Equals(typeof(DestroyEvent)) && sender.GetType().Equals(typeof(CylindricalBodyMesh)))
-            {
-                barrels.Remove(sender as CylindricalBodyMesh);
-            }
-        }
 
         /****************************************************************************/
         /// Get World
@@ -228,9 +166,45 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void PickItem(StorableObject item)
         {
-            currentObject  = item;
+            CurrentObject  = item;
             item.Owner     = this;
-            item.OwnerBone = Mesh.BoneMap[gripBone];
+            item.OwnerBone = Mesh.BoneMap[Grip];
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Place Item
+        /****************************************************************************/
+        public void PlaceItem(StorableObject item, uint slot)
+        {
+            switch (slot)
+            { 
+                /***************/
+                /// Current
+                /***************/
+                case 0: 
+                    CurrentObject  = item;
+                    item.Owner     = this;
+                    item.OwnerBone = Mesh.BoneMap[Grip];
+                    break;
+                /***************/
+                /// Weapon                
+                /***************/
+                case 1:
+                    Weapon         = item as Firearm;
+                    item.Owner     = this;
+                    item.OwnerBone = Mesh.BoneMap[WeaponGrip];
+                    break;
+                /***************/
+                /// Side Arm                
+                /***************/
+                case 2:                                         
+                    SideArm        = item as Firearm;
+                    item.Owner     = this;
+                    item.OwnerBone = Mesh.BoneMap[SideArmGrip];
+                    break;
+            }
         }
         /****************************************************************************/
 
@@ -242,15 +216,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (item != null)
             {
-                item.World.Translation += Vector3.Normalize(World.Forward) * 2;
+                item.World = Matrix.Identity;
+                item.World.Translation = World.Translation + 
+                                         Vector3.Normalize(World.Forward) * 2 + 
+                                         Vector3.Normalize(World.Up) * 2;
                 item.Owner = null;
                 item.OwnerBone = -1;            
             }
-            else if (currentObject != null)
+            else if (CurrentObject != null)
             {
-                currentObject.World.Translation += Vector3.Normalize(World.Forward) * 2;
-                currentObject.Owner = null;
-                currentObject.OwnerBone = -1;
+                CurrentObject.World = Matrix.Identity;
+                CurrentObject.World.Translation = World.Translation +
+                                         Vector3.Normalize(World.Forward) * 2 +
+                                         Vector3.Normalize(World.Up) * 2;
+
+                CurrentObject.Owner = null;
+                CurrentObject.OwnerBone = -1;
             }
         }
         /****************************************************************************/
@@ -259,12 +240,31 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Store Item
         /****************************************************************************/
-        public void StoreCurrentItem()
+        public void StoreItem(uint slot)
         {
-            if (currentObject != null)
-            {
-                currentObject.OnStoring();
-                currentObject = null;
+            switch (slot)
+            { 
+                case 0:
+                    if (CurrentObject != null)
+                    {
+                        CurrentObject.OnStoring();
+                        CurrentObject = null;
+                    }
+                    break;
+                case 1:
+                    if (Weapon != null)
+                    {
+                        Weapon.OnStoring();
+                        Weapon = null;
+                    }
+                    break;
+                case 2:
+                    if (SideArm != null)
+                    {
+                        SideArm.OnStoring();
+                        SideArm = null;
+                    }
+                    break;     
             }
         }
         /****************************************************************************/
@@ -357,14 +357,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinPitch        = Body.Pitch;
             data.SkinRoll         = Body.Roll;
             data.SkinYaw          = Body.Yaw;
-
-
+            
             data.Radius = Body.Radius;
             data.Length = Body.Length;
 
-
             data.MarkerPosition = markerLocalPosition;
-            data.GripBone       = gripBone;
+            data.Grip           = Grip;
+            data.SideArmGrip    = SideArmGrip;
+            data.WeaponGrip     = WeaponGrip;
 
             data.HP            = HP;
             data.MaxHP         = MaxHP;
@@ -377,9 +377,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.RotationSpeed      = (objectAIController as MercenaryController).RotationSpeed;
             data.DistancePrecision  = (objectAIController as MercenaryController).Distance;
             data.AnglePrecision     = (objectAIController as MercenaryController).AnglePrecision;
-            
 
-            data.CurrentItem = currentObject == null ? 0 : currentObject.ID;
+
+            data.CurrentItem = CurrentObject == null ? 0 : CurrentObject.ID;
+            data.SideArm     = SideArm       == null ? 0 : SideArm.ID;
+            data.Weapon      = Weapon        == null ? 0 : Weapon.ID;
+
             data.Items = new List<int[]>();
 
             foreach (KeyValuePair<StorableObject, ItemPosition> item in Items)
@@ -499,8 +502,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Movement")]
         public float AnglePrecision     { get; set; }
 
-        [CategoryAttribute("Grip Bone")]
-        public String GripBone { get; set; }
+        [CategoryAttribute("Grips")]
+        public String Grip        { get; set; }
+        [CategoryAttribute("Grips")]
+        public String SideArmGrip { get; set; }
+        [CategoryAttribute("Grips")]
+        public String WeaponGrip  { get; set; }
 
         [CategoryAttribute("HP")]
         public uint MaxHP { get;  set; }
@@ -520,9 +527,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public List<int[]> Items { get; set; }
         [CategoryAttribute("Inventory")]
         public int CurrentItem { get; set; }
+        [CategoryAttribute("Inventory")]
+        public int Weapon { get; set; }
+        [CategoryAttribute("Inventory")]
+        public int SideArm { get; set; }
     }
     /********************************************************************************/
-
     
 }
 /************************************************************************************/

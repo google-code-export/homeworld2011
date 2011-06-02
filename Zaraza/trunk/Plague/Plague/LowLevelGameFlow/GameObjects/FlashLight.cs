@@ -141,6 +141,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             body.DisableBody();
             mesh.Enabled  = false;
             light.Enabled = false;
+
+            base.OnStoring();
         }
         /****************************************************************************/
 
