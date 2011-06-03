@@ -110,7 +110,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	
 	if(SSAOEnabled)
 	{ 
-		output *= saturate(SSAO * 1.5f);
+		output *= SSAO;
 	}
     
 	if(FogEnabled)

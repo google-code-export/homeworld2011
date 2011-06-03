@@ -32,7 +32,6 @@ float2 RotateSpeed;
 float2 StartSize;
 float2 EndSize;
 
-
 // Particle texture and sampler.
 texture Texture;
 
@@ -85,7 +84,7 @@ struct VertexShaderOutput
 // Vertex shader helper for computing the position of a particle.
 float4 ComputeParticlePosition(float3 position, float3 velocity,
                                float age, float normalizedAge)
-{
+{	
     float startVelocity = length(velocity);
 
     // Work out how fast the particle should be moving at the end of its life,
@@ -108,7 +107,7 @@ float4 ComputeParticlePosition(float3 position, float3 velocity,
     position += Gravity * age * normalizedAge;
     
     // Apply the camera view and projection transforms.
-    return mul(mul(float4(position, 1), View), Projection);
+    return float4(position,1);//mul(mul(float4(position, 1), View), Projection);
 }
 
 
@@ -183,8 +182,11 @@ VertexShaderOutput ParticleVertexShader(VertexShaderInput input)
     float size = ComputeParticleSize(input.Random.y, normalizedAge);
     float2x2 rotation = ComputeParticleRotation(input.Random.w, age);
 
-    output.Position.xy += mul(input.Corner, rotation) * size * ViewportScale;
+    output.Position.xz += mul(input.Corner, rotation) * size * ViewportScale;	
 	
+	output.Position = mul(mul(output.Position, View), Projection);
+
+
 	output.ScreenPosition = output.Position;		
 	
 

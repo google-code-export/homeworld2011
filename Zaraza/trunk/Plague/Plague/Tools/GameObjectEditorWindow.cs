@@ -182,6 +182,9 @@ namespace PlagueEngine.Tools
             FreeCamera.editor = this;
             setUpCameraButton();
             LoadIconsInfo();
+
+            SSAOSampleRadius.Value = (decimal)renderer.sampleRadius;
+            numericUpDown1.Value = (decimal)renderer.distanceScale;
         }
         /********************************************************************************/
 
@@ -1786,6 +1789,16 @@ namespace PlagueEngine.Tools
         {
             fillInfoInLabel();
 
+        }
+
+        private void SSAOSampleRadius_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.sampleRadius = (float)SSAOSampleRadius.Value;
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.distanceScale = (float)numericUpDown1.Value;
         }
 
 
