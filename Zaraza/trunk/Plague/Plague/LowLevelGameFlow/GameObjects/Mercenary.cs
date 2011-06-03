@@ -310,7 +310,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 item.World = Matrix.Identity;
                 item.World.Translation = World.Translation +
-                                         Vector3.Normalize(World.Forward) * 2 +
+                                         Vector3.Normalize(World.Forward) * 3 +
                                          Vector3.Normalize(World.Up) * 2;
             }
             else if (CurrentObject != null)
@@ -320,7 +320,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 CurrentObject.World = Matrix.Identity;
                 CurrentObject.World.Translation = World.Translation +
-                                                  Vector3.Normalize(World.Forward) * 2 +
+                                                  Vector3.Normalize(World.Forward) * 3 +
                                                   Vector3.Normalize(World.Up) * 2;
 
                 CurrentObject           = null;
@@ -381,7 +381,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             pos2.Y *= screenHeight;
             pos2.Y -= marker.Texture.Height / 2;
 
-            spriteBatch.Draw(marker.Texture, pos2, Color.White);            
+            spriteBatch.Draw(marker.Texture, pos2, Color.White);           
         }
         /****************************************************************************/
 
@@ -507,27 +507,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             actions.Add("Inventory");
 
             if (mercenary != null && mercenary != this)
-            { 
+            {
                 actions.Add("Follow");
                 actions.Add("Exchange Items");
             }
-
-            if (CurrentObject == null)
-            {
-                if (Weapon  != null) actions.Add("Switch to Weapon");
-                if (SideArm != null) actions.Add("Switch to Side Arm");
-            }
             else
             {
-                Firearm firearm = CurrentObject as Firearm;
-                if(firearm != null)
+                if (CurrentObject == null)
                 {
-                    if (!firearm.SideArm || ( firearm.SideArm && SideArm == null && Weapon  != null)) actions.Add("Switch to Weapon");
-                    if ( firearm.SideArm || (!firearm.SideArm && Weapon  == null && SideArm != null)) actions.Add("Switch to Side Arm");
-                    
-                    actions.Add("Reload");
+                    if (Weapon != null) actions.Add("Switch to Weapon");
+                    if (SideArm != null) actions.Add("Switch to Side Arm");
                 }
-                actions.Add("Drop Item");
+                else
+                {
+                    Firearm firearm = CurrentObject as Firearm;
+                    if (firearm != null)
+                    {
+                        if (!firearm.SideArm || (firearm.SideArm && SideArm == null && Weapon != null)) actions.Add("Switch to Weapon");
+                        if (firearm.SideArm || (!firearm.SideArm && Weapon == null && SideArm != null)) actions.Add("Switch to Side Arm");
+
+                        actions.Add("Reload");
+                    }
+                    actions.Add("Drop Item");
+                }
             }
 
             return actions.ToArray();

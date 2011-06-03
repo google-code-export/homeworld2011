@@ -55,40 +55,13 @@ namespace PlagueEngine.Physics.Components
             this.radius = radius;
             Sphere sphere = new Sphere(Vector3.Zero, radius);
             Skin.AddPrimitive(sphere, material);
-            Vector3 com = SetMass();
 
-            Vector3 translation = world.Translation;
+            Skin.ApplyLocalTransform(new Transform(-SetMass(), Matrix.Identity));
 
-            Matrix dummyWorld = world;
-            dummyWorld.M41 = 0;
-            dummyWorld.M42 = 0;
-            dummyWorld.M43 = 0;
+            world = SkinLocalMatrix * world;
+            MoveTo(world);
 
-            Vector3 t = Vector3.Transform(skinTranslation, dummyWorld);
-            dummyWorld.Translation = translation + t;
-            
-
-            Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
-            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
-            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
-            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
-
-            quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Right, MathHelper.ToRadians(pitch));
-            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
-            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
-            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
-
-            quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Up, MathHelper.ToRadians(roll));
-            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
-            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
-            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
-            //dummyWorld.Translation += skinTranslation;
-            MoveTo(dummyWorld);
-            Skin.ApplyLocalTransform(new Transform(-com, Matrix.Identity));
-            Enable();
-
-
-            
+            if (enabled) Enable();                        
     }
         /****************************************************************************/
 

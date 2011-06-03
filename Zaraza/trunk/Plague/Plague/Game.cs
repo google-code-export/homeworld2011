@@ -59,7 +59,7 @@ namespace PlagueEngine
             Diagnostics.Game                = this;
             Diagnostics.ShowDiagnostics     = true;
             Diagnostics.ForceGCOnUpdate     = false;
-            Diagnostics.LimitUpdateTimeStep = true;
+            Diagnostics.LimitUpdateTimeStep = false;
             Diagnostics.ShowLogWindow       = true;
             Diagnostics.OpenLogFile("log");
 #endif

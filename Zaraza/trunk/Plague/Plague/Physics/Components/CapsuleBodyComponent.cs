@@ -52,7 +52,7 @@ namespace PlagueEngine.Physics.Components
                             float yaw,
                             float pitch,
                             float roll)
-            : base(enabled,gameObject, mass, immovable, material, skinTranslation, yaw, pitch, roll)
+            : base(enabled, gameObject, mass, immovable, material, skinTranslation,yaw, pitch, roll)
         {
 
             this.radius = radius;
@@ -61,8 +61,6 @@ namespace PlagueEngine.Physics.Components
             Capsule middle = new Capsule(Vector3.Zero, Matrix.Identity, radius, length - 2.0f * radius);
 
             Skin.AddPrimitive(middle, material);
-
-
             Skin.ApplyLocalTransform(new Transform(-SetMass(), Matrix.Identity));
 
             /***************************************/
@@ -79,42 +77,10 @@ namespace PlagueEngine.Physics.Components
             Body.SetBodyInertia(Ixx, Iyy, Izz);
             /***************************************/
 
+            //world = Matrix.CreateTranslation(skinTranslation) * world;
+            MoveTo(world);
 
-            Vector3 translation = world.Translation;
-
-            Matrix dummyWorld = world;
-            dummyWorld.M41 = 0;
-            dummyWorld.M42 = 0;
-            dummyWorld.M43 = 0;
-
-            Vector3 t = Vector3.Transform(skinTranslation, dummyWorld);
-            dummyWorld.Translation = translation + t;
-
-
-
-
-
-            Quaternion quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Forward, MathHelper.ToRadians(yaw));
-            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
-            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
-            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
-
-            quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Right, MathHelper.ToRadians(pitch));
-            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
-            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
-            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
-
-            quaternion = Quaternion.CreateFromAxisAngle(dummyWorld.Up, MathHelper.ToRadians(roll));
-            dummyWorld.Forward = Vector3.Transform(dummyWorld.Forward, quaternion);
-            dummyWorld.Right = Vector3.Transform(dummyWorld.Right, quaternion);
-            dummyWorld.Up = Vector3.Transform(dummyWorld.Up, quaternion);
-
-            //dummyWorld.Translation += skinTranslation;
-
-            MoveTo(dummyWorld);
-            Enable();
-
-
+            if (enabled) Enable();
         }
         /****************************************************************************/
 

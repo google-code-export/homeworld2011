@@ -18,7 +18,7 @@ namespace PlagueEngine.Physics
     /****************************************************************************/
     class PhysicsController : Controller
     {
-
+        
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
@@ -35,9 +35,7 @@ namespace PlagueEngine.Physics
         private ConstraintVelocity constraintVelocity = new ConstraintVelocity();
         
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// Constructor
@@ -48,12 +46,10 @@ namespace PlagueEngine.Physics
             body = (BodyExtended)rigidBodyComponent.Body;
             physicsManager.controllers.Add(this);
             EnableController();
-            body.Immovable = true;
+            body.Immovable = true;            
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// RealeseMe
@@ -68,56 +64,43 @@ namespace PlagueEngine.Physics
 
         public void MoveUp(float dt)
         {
-            if (!body.OrientationSetuped) body.SetUpOrientationForController();
             body.Controllable = true;
             body.Immovable = false;
-            body.DesiredVelocity = Vector3.Up * dt;
-            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
+            body.DesiredVelocity = Vector3.Up * dt;            
         }
 
         public void MoveDown(float dt)
-        {
-            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+        {            
             body.Controllable = true;
             body.Immovable = false;
-            body.DesiredVelocity = Vector3.Down * dt;
-            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
+            body.DesiredVelocity = Vector3.Down * dt;         
         }
         public void MoveLeft(float dt)
-        {
-            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+        {            
             body.Controllable = true;
             body.Immovable = false;
-            body.DesiredVelocity = Vector3.Left * dt;
-            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
+            body.DesiredVelocity = Vector3.Left * dt;         
         }
 
         public void MoveRight(float dt)
-        {
-            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+        {            
             body.Controllable = true;
             body.Immovable = false;
-            body.DesiredVelocity = Vector3.Right * dt;
-            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
+            body.DesiredVelocity = Vector3.Right * dt;         
         }
 
         public void MoveBackward(float dt)
-        {
-            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+        {            
             body.Controllable = true;
             body.Immovable = false;
-            body.DesiredVelocity = Vector3.Backward * dt;
-            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
+            body.DesiredVelocity = Vector3.Backward * dt;            
         }
 
         public void MoveForward(float dt)
-        {
-            if (!body.OrientationSetuped) body.SetUpOrientationForController();
+        {            
             body.Immovable = false;
             body.Controllable = true;
-            body.DesiredVelocity = Vector3.Forward * dt;
-            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
-           
+            body.DesiredVelocity = Vector3.Forward * dt;            
         }
           
 
@@ -125,9 +108,7 @@ namespace PlagueEngine.Physics
         {
             body.DesiredVelocity = new Vector3(0,0,0);
             
-            //body.Controllable = false;
-
-            body.TransformDesiredVelocity(rigidBodyComponent.Yaw, rigidBodyComponent.Pitch, rigidBodyComponent.Roll);
+            //body.Controllable = false;            
             body.Immovable = true;
         }
 
@@ -182,12 +163,7 @@ namespace PlagueEngine.Physics
             
         }
         /****************************************************************************/
-
-
-
-
-
-
+        
 
         /****************************************************************************/
         /// Disable Veolicty
@@ -200,8 +176,6 @@ namespace PlagueEngine.Physics
 
         }
         /****************************************************************************/
-
-
 
 
         /****************************************************************************/
@@ -228,9 +202,7 @@ namespace PlagueEngine.Physics
 
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// DisableMoveToPoint
@@ -242,9 +214,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
-
+        
         /****************************************************************************/
         /// SetWorldForce
         /****************************************************************************/
@@ -254,9 +224,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
-
+        
         /****************************************************************************/
         /// DisableWorldForce
         /****************************************************************************/
@@ -265,9 +233,7 @@ namespace PlagueEngine.Physics
             this.worldForce = Vector3.Zero;
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// SetWorldTorque
@@ -277,10 +243,7 @@ namespace PlagueEngine.Physics
             this.worldTorque = torque;
         }
         /****************************************************************************/
-
-
-
-
+        
 
         /****************************************************************************/
         /// DisableWorldTorque
@@ -290,9 +253,7 @@ namespace PlagueEngine.Physics
             this.worldTorque = Vector3.Zero;
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// SetLocalForce
@@ -302,9 +263,7 @@ namespace PlagueEngine.Physics
             this.localForce = force;
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// DisableLocalForce
@@ -314,9 +273,7 @@ namespace PlagueEngine.Physics
             this.localForce = Vector3.Zero;
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// SetLocalTorque
@@ -326,8 +283,7 @@ namespace PlagueEngine.Physics
             this.localTorque = torque;
         }
         /****************************************************************************/
-
-
+        
 
         /****************************************************************************/
         /// DisableLocalTorque
@@ -338,10 +294,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
-
-
+        
         /****************************************************************************/
         /// UpdateController
         /****************************************************************************/
@@ -374,19 +327,11 @@ namespace PlagueEngine.Physics
                     constraintPoint.Destroy();
                 }
             }
-
-
-
         }
         /****************************************************************************/
-
-
-
-
+        
     }
     /****************************************************************************/
-
-
-
+    
 }
 /****************************************************************************/

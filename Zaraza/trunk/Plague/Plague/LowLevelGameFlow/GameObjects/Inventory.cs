@@ -10,7 +10,7 @@ using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Input;
-
+using PlagueEngine.EventsSystem;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -116,6 +116,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         
         private Vector2 ExitInv2ButtonPos    = new Vector2(805, 0);
         private Vector2 CurrItemIconPos2     = new Vector2(542, 40);
+        private Vector2 WeaponIconPos2       = new Vector2(615, 40);
+        private Vector2 SideArmIconPos2      = new Vector2(690, 40);
         private Vector2 ScrollUp2ButtonPos   = new Vector2(424, 223);
         private Vector2 ScrollDown2ButtonPos = new Vector2(424, 561);
         private Vector2 Scroll2ButtonBasePos = new Vector2(424, 237);
@@ -296,6 +298,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 // Current Item
                 currenItem = mercenary2.CurrentObject;
                 if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, Color.White);
+                // Weapon
+                weapon = mercenary2.Weapon;
+                if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, weapon.Icon, Color.White);
+                // Side Arm
+                weapon = mercenary2.SideArm;
+                if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos2, weapon.Icon, Color.White);
                 // Scroll
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUp2ButtonPos, (scrollUp2 ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDown2ButtonPos, (scrollDown2 ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
@@ -510,6 +518,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             pickedFromMerc2 = false;
                         }
                     }
+                    else if (mercenary2 != null &&
+                             mousePos.X > WeaponIconPos2.X &&
+                             mousePos.X < WeaponIconPos2.X + 50 &&
+                             mousePos.Y > WeaponIconPos2.Y &&
+                             mousePos.Y < WeaponIconPos2.Y + 50)
+                    {
+                        pickedItem = mercenary2.Weapon;
+                        if (pickedItem != null)
+                        {
+                            pickedItemSlot = Slot.Weapon;
+                            mercenary2.StoreItem(1);
+                            mouse.CursorVisible = false;
+                            newPickedItemOrientation = 1;
+                            oldPickedItemOrientation = 1;
+                            pickedFromMerc2 = true;
+                        }
+                    }
                     /*************************/
                     #endregion
                     /*************************/                    
@@ -529,6 +554,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             newPickedItemOrientation = 1;
                             oldPickedItemOrientation = 1;
                             pickedFromMerc2 = false;
+                        }
+                    }
+                    else if (mercenary2 != null &&
+                             mousePos.X > SideArmIconPos2.X &&
+                             mousePos.X < SideArmIconPos2.X + 50 &&
+                             mousePos.Y > SideArmIconPos2.Y &&
+                             mousePos.Y < SideArmIconPos2.Y + 50)
+                    {
+                        pickedItem = mercenary2.SideArm;
+                        if (pickedItem != null)
+                        {
+                            pickedItemSlot = Slot.SideArm;
+                            mercenary2.StoreItem(2);
+                            mouse.CursorVisible = false;
+                            newPickedItemOrientation = 1;
+                            oldPickedItemOrientation = 1;
+                            pickedFromMerc2 = true;
                         }
                     }
                     /*************************/
@@ -940,9 +982,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         #region On Weapon
                         /*************************/
                         else if (mousePos.X > WeaponIconPos.X &&
-                            mousePos.X < WeaponIconPos.X + 50 &&
-                            mousePos.Y > WeaponIconPos.Y &&
-                            mousePos.Y < WeaponIconPos.Y + 50)
+                                 mousePos.X < WeaponIconPos.X + 50 &&
+                                 mousePos.Y > WeaponIconPos.Y &&
+                                 mousePos.Y < WeaponIconPos.Y + 50)
                         {
                             if (mercenary.Weapon == null)
                             {
@@ -964,6 +1006,41 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                         else
                                         {
                                             mercenary.PlaceItem(pickedItem, 1);
+                                            pickedItem = null;
+                                            mouse.CursorVisible = true;
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            PutBackPickedItem();
+                        }
+                        else if (mercenary2 != null &&
+                                 mousePos.X > WeaponIconPos2.X &&
+                                 mousePos.X < WeaponIconPos2.X + 50 &&
+                                 mousePos.Y > WeaponIconPos2.Y &&
+                                 mousePos.Y < WeaponIconPos2.Y + 50)
+                        {
+                            if (mercenary2.Weapon == null)
+                            {
+                                Firearm weapon = pickedItem as Firearm;
+                                if (weapon != null)
+                                {
+                                    if (!weapon.SideArm)
+                                    {
+                                        if (!pickedFromMerc2)
+                                        {
+                                            if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
+                                            {
+                                                mercenary2.PlaceItem(pickedItem, 1);
+                                                pickedItem = null;
+                                                mouse.CursorVisible = true;
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            mercenary2.PlaceItem(pickedItem, 1);
                                             pickedItem = null;
                                             mouse.CursorVisible = true;
                                             return;
@@ -1003,6 +1080,41 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                         else
                                         {
                                             mercenary.PlaceItem(pickedItem, 2);
+                                            pickedItem = null;
+                                            mouse.CursorVisible = true;
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            PutBackPickedItem();
+                        }
+                        else if (mercenary2 != null &&
+                                 mousePos.X > SideArmIconPos2.X &&
+                                 mousePos.X < SideArmIconPos2.X + 50 &&
+                                 mousePos.Y > SideArmIconPos2.Y &&
+                                 mousePos.Y < SideArmIconPos2.Y + 50)
+                        {
+                            if (mercenary2.SideArm == null)
+                            {
+                                Firearm weapon = pickedItem as Firearm;
+                                if (weapon != null)
+                                {
+                                    if (weapon.SideArm)
+                                    {
+                                        if (!pickedFromMerc2)
+                                        {
+                                            if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
+                                            {
+                                                mercenary2.PlaceItem(pickedItem, 2);
+                                                pickedItem = null;
+                                                mouse.CursorVisible = true;
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            mercenary2.PlaceItem(pickedItem, 2);
                                             pickedItem = null;
                                             mouse.CursorVisible = true;
                                             return;

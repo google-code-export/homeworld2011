@@ -41,7 +41,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private FrontEndComponent         frontEnd = null;
 
         private GameObjectInstance targetGameObject = null;
-        private Mercenary          currentMercenary = null;        
+        private Mercenary          currentMercenary = null;
+        private Inventory          inventory        = null;
 
         private int screenWidthOver2 = 0;
         private int mouseX           = 0;
@@ -230,9 +231,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         case "Switch to Weapon"   : QueueEvent(new SwitchToWeaponCommandEvent(),  !leftControl, currentMercenary); break;
                         case "Switch to Side Arm" : QueueEvent(new SwitchToSideArmCommandEvent(), !leftControl, currentMercenary); break;
                         case "Inventory": 
-                                        InventoryData data = new InventoryData();
+                                        InventoryData data      = new InventoryData();
                                         data.MercenariesManager = this.ID;
-                                        data.Mercenary = targetGameObject.ID;
+                                        data.Mercenary          = targetGameObject.ID;
+                                        if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
                                         SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
                                         break;                                                                                                                                                
                     }
@@ -246,9 +248,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         case "Follow"        : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
                         case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, SelectedMercenaries.ElementAt(0)); break;
                         case "Inventory":
-                                        InventoryData data = new InventoryData();
+                                        InventoryData data      = new InventoryData();
                                         data.MercenariesManager = this.ID;
-                                        data.Mercenary = targetGameObject.ID;
+                                        data.Mercenary          = targetGameObject.ID;
+                                        if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
                                         SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
                                         break;
 
@@ -275,9 +278,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 data.MercenariesManager = this.ID;
                 data.Mercenary  = ExchangeItemsEvent.mercenary1.ID;
                 data.Mercenary2 = ExchangeItemsEvent.mercenary2.ID;
+                if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);          
                 SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
             }
-
+            /*************************************/
+            /// ObjectCreatedEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(ObjectCreatedEvent)))
+            {
+                ObjectCreatedEvent ObjectCreatedEvent = e as ObjectCreatedEvent;
+                
+                if (ObjectCreatedEvent.GameObject.GetType().Equals(typeof(Inventory)))
+                {
+                    inventory = ObjectCreatedEvent.GameObject as Inventory;
+                }
+            }
         }
         /****************************************************************************/
 
@@ -299,16 +314,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*************************************/
             /// DestroyEvent
             /*************************************/
-            else if (e.GetType().Equals(typeof(DestroyEvent)) && sender.GetType().Equals(typeof(Mercenary)))
+            else if (e.GetType().Equals(typeof(DestroyEvent)))
             {
-                SelectedMercenaries.Remove(sender as Mercenary);
-                if (SelectedMercenaries.Count == 0)
+                if (sender.GetType().Equals(typeof(Mercenary)))
                 {
-                    SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
-                    commandMode = false;
+                    SelectedMercenaries.Remove(sender as Mercenary);
+                    if (SelectedMercenaries.Count == 0)
+                    {
+                        SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                        commandMode = false;
+                    }
+                    Mercenaries.Remove(sender as Mercenary);
+                    iconsOffset = (66 * Mercenaries.Count) / 2;
                 }
-                Mercenaries.Remove(sender as Mercenary);
-                iconsOffset = (66 * Mercenaries.Count) / 2;
+                else if (sender.GetType().Equals(typeof(Inventory)))
+                {
+                    inventory = null;
+                }
             }
             /*************************************/
 
@@ -389,7 +411,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     InventoryData data = new InventoryData();
                     data.MercenariesManager = this.ID;
                     data.Mercenary = SelectedMercenaries.ElementAt(0).ID;
-
+                    if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
                     SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
                 }
             }
@@ -546,7 +568,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             InventoryData data = new InventoryData();
                             data.MercenariesManager = this.ID;
                             data.Mercenary = Mercenaries.ElementAt(mouseOnMerc).Key.ID;
-
+                            if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
                             SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
                         }                    
                     }
@@ -802,6 +824,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else if (e.GetType().Equals(typeof(ExchangeItemsCommandEvent)))
             {
                 return new Rectangle(80, 384, 16, 16);
+            }
+            else if (e.GetType().Equals(typeof(ReloadCommandEvent)))
+            {
+                return new Rectangle(96, 384, 16, 16);
+            }
+            else if (e.GetType().Equals(typeof(DropItemCommandEvent)))
+            {
+                return new Rectangle(112, 384, 16, 16);
+            }
+            else if (e.GetType().Equals(typeof(SwitchToWeaponCommandEvent)))
+            {
+                return new Rectangle(128, 384, 16, 16);
+            }
+            else if (e.GetType().Equals(typeof(SwitchToSideArmCommandEvent)))
+            {
+                return new Rectangle(144, 384, 16, 16);
             }
             else return new Rectangle();
         }

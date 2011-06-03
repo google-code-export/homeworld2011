@@ -60,6 +60,9 @@ namespace PlagueEngine.Physics
         private List<int> gameObjectsToNotColide    = new List<int>();
 
         public bool dontCollide { get; set; }
+
+        protected Matrix InvertedSkinLocalMatrix;
+        protected Matrix SkinLocalMatrix;
         /****************************************************************************/
 
 
@@ -79,6 +82,16 @@ namespace PlagueEngine.Physics
             skin.ExternalData = gameObject;
             this.material = material;
             this.translation = translation;
+
+            SkinOrientation = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
+            
+            body.SkinOrientation = SkinOrientation;
+            SkinInvertedOrientation = Matrix.Invert(SkinOrientation);
+
+            SkinLocalMatrix = Matrix.CreateTranslation(SkinTranslation) * SkinOrientation;
+            
+            InvertedSkinLocalMatrix = Matrix.Invert(SkinLocalMatrix);
+
             body.Immovable = immovable;
             this.yaw = yaw;
             this.pitch = pitch;
@@ -232,8 +245,7 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
-
-
+        
 
         /****************************************************************************/
         /// EnableBody
@@ -242,18 +254,15 @@ namespace PlagueEngine.Physics
         {
             if (!isEnabled)
             {
-                UpdateRotation();
                 PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(this.skin);
                 this.body.EnableBody();
-                this.MoveTo(gameObject.World);
+                this.MoveTo(gameObject.World);                
                 physicsManager.rigidBodies.Add(this.gameObject.ID, this);
                 isEnabled = true;
             }
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// Subscribe Start Collision Event
@@ -274,8 +283,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
+        
         /****************************************************************************/
         /// Cancel Subscribe Start Collision Event
         /****************************************************************************/
@@ -287,8 +295,7 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
-
-
+        
 
         /****************************************************************************/
         /// Cancel Subscribe Start Collision Event
@@ -301,9 +308,7 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// CollideWithGameObjects
@@ -326,9 +331,7 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// DontCollideWithGameObjects
@@ -338,8 +341,7 @@ namespace PlagueEngine.Physics
             this.gameObjectsToNotColide.AddRange(gameObjects);
         }
         /****************************************************************************/
-
-
+        
 
         /****************************************************************************/
         /// CancelNoCollisionWithGameObjects
@@ -352,8 +354,7 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
-
-
+        
 
         /****************************************************************************/
         /// Subscribe Collision Event
@@ -364,9 +365,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
-
+        
         /****************************************************************************/
         /// Cancel Subscribe Collision Event
         /****************************************************************************/
@@ -378,12 +377,9 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
+        
 
-
-
-
-
-
+        /****************************************************************************/
         /// Subscribe Lost Collision Event
         /****************************************************************************/
         public void SubscribeLostCollisionEvent(params int[] gameObjects)
@@ -391,9 +387,7 @@ namespace PlagueEngine.Physics
             this.subscribedGameObjectLostCollisionsEvents.AddRange(gameObjects);
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// Cancel Subscribe Lost Collision Event
@@ -406,10 +400,7 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
-
-
-
-
+        
 
         /****************************************************************************/
         /// CollideWithGameObjectsType
@@ -432,9 +423,7 @@ namespace PlagueEngine.Physics
             }
         }
         /****************************************************************************/
-
-
-
+        
 
         /****************************************************************************/
         /// DontCollideWithGameObjectsType
@@ -445,8 +434,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
+        
         /****************************************************************************/
         /// CancelNoCollisionWithGameObjectsType
         /****************************************************************************/
@@ -459,8 +447,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
+        
         /****************************************************************************/
         /// Subscribe Collision Event
         /****************************************************************************/
@@ -470,9 +457,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
-
+        
         /****************************************************************************/
         /// Cancel Subscribe Collision Event
         /****************************************************************************/
@@ -495,9 +480,7 @@ namespace PlagueEngine.Physics
         }
         /****************************************************************************/
 
-
-
-
+        
         /****************************************************************************/
         /// Cancel Subscribe Lost Collision Event
         /****************************************************************************/
@@ -511,63 +494,17 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
 
 
-        private void UpdateRotation()
-        {
-
-            Vector3 t = Vector3.Transform(translation, gameObject.World);
-
-
-            gameObject.World.Translation = t;
-
-            Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(roll));
-            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
-
-            quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Right, MathHelper.ToRadians(pitch));
-            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
-
-            quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Forward, MathHelper.ToRadians(yaw));
-            gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-            gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-            gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
-
-
-        }
-
-
-
         /****************************************************************************/
         /// Update
         /****************************************************************************/
         public void Update()
         {
-            if (isEnabled)
+            if (isEnabled && !Immovable)
             {
-                gameObject.World = body.Orientation;
+                gameObject.World             =  body.Orientation;
+                gameObject.World.Translation =  body.Position;
                 
-
-                Quaternion quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Up, MathHelper.ToRadians(-roll));
-                gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-                gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-                gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
-
-                quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Right, MathHelper.ToRadians(-pitch));
-                gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-                gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-                gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
-
-                quaternion = Quaternion.CreateFromAxisAngle(gameObject.World.Forward, MathHelper.ToRadians(-yaw));
-                gameObject.World.Forward = Vector3.Transform(gameObject.World.Forward, quaternion);
-                gameObject.World.Right = Vector3.Transform(gameObject.World.Right, quaternion);
-                gameObject.World.Up = Vector3.Transform(gameObject.World.Up, quaternion);
-
-                Vector3 t = Vector3.Transform(translation, gameObject.World);
-
-
-                gameObject.World.Translation = body.Position - t;
+                gameObject.World = InvertedSkinLocalMatrix * gameObject.World;                
             }
             SendCollisionEvents();
         }
@@ -648,6 +585,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void MoveTo(Matrix matrix)
         {
+            matrix = SkinLocalMatrix * matrix;
             Matrix tmp = matrix;
             tmp.Translation = Vector3.Zero;
             body.MoveTo(matrix.Translation, tmp);
@@ -682,9 +620,11 @@ namespace PlagueEngine.Physics
         public Body Body { get { return this.body; } }
         public CollisionSkin Skin { get { return this.skin; } }
         public Vector3 SkinTranslation { get { return this.translation; } }
-        public float Yaw { get { return this.yaw; } }
-        public float Pitch { get { return this.pitch; } }
-        public float Roll { get { return this.roll; } }
+        public float Yaw { get { return MathHelper.ToDegrees(yaw); } }
+        public float Pitch { get { return MathHelper.ToDegrees(pitch); } }
+        public float Roll { get { return MathHelper.ToDegrees(roll); } }
+        public Matrix SkinOrientation { get; private set; }
+        public Matrix SkinInvertedOrientation { get; private set; }
         /****************************************************************************/
 
 
@@ -706,58 +646,40 @@ namespace PlagueEngine.Physics
         }
         public bool Controllable;
         public Vector3 DesiredVelocity;
-        public Matrix DesiredOrientation;
-        public bool OrientationSetuped = false;
+        public Matrix DesiredOrientation;        
 
-
-        public void TransformDesiredVelocity(float yaw,float pitch,float roll)
-        {
-           DesiredVelocity= Vector3.Transform(DesiredVelocity, Matrix.CreateFromYawPitchRoll(yaw, pitch, roll));
-        }
+        public Matrix SkinOrientation;
 
         public void SetUpOrientationForController()
         {
             DesiredOrientation = this.Orientation;
-            OrientationSetuped = true;
         }
-
-
         
         public override void AddExternalForces(float dt)
         {
             ClearForces();
 
-
             if (Controllable)
             {
-                this.AllowFreezing = false;
-                this.EnableBody();
-
-
+                AllowFreezing = false;
+                EnableBody();
+                
                 AngularVelocity = Vector3.Zero;
 
-                this.Orientation = DesiredOrientation;
+                Orientation = DesiredOrientation;
 
+                DesiredVelocity = Vector3.Transform(DesiredVelocity, SkinOrientation);
+                DesiredVelocity = Vector3.Transform(DesiredVelocity, Orientation);                
 
-                DesiredVelocity = Vector3.Transform(DesiredVelocity, this.Orientation);
-                Vector3 deltaVel = DesiredVelocity - Velocity;
+                Vector3 deltaVel = DesiredVelocity - Velocity;                
 
+                deltaVel.Y = 0;                
 
-                deltaVel.Y = 0.0f;
-                //deltaVel.Y = 0.0f;
-                deltaVel *= 10.0f;
-
-
-                float forceFactor = 90.0f;
-                AddWorldForce(deltaVel * Mass * dt * forceFactor);
-                //AddBodyForce(DesiredVelocity*3 * Mass * dt * forceFactor);
-                
-
+                AddWorldForce((deltaVel * Mass) / dt);                                
             }
       
             AddGravityToExternalForce();
         }
     }
-
 }
 /****************************************************************************/

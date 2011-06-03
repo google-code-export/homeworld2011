@@ -539,7 +539,7 @@ namespace PlagueEngine.EventsSystem
             if (receiverInstanceSubscription > 0) CancelReceiversSubsciption();
             if (receiverTypeSubscription     > 0) CancelReceiverTypesSubscription();
             if (senderInstanceSubscription   > 0) CancelSenderSubscription();
-            if (senderTypeSubscription       > 0) CancelSenderSubscription();
+            if (senderTypeSubscription       > 0) CancelSenderTypesSubscription();
             if (eventSubscription            > 0) CancelEventSubscription();
         }
         /****************************************************************************/
