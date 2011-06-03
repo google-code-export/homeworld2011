@@ -66,7 +66,18 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            CapsuleBodyComponent result = new CapsuleBodyComponent( enabled,gameObject, mass, radius, length, material, immovable, world, skinTranslation, skinYaw, skinPitch, skinRoll);
+            CapsuleBodyComponent result = new CapsuleBodyComponent(enabled,
+                                                                    gameObject,
+                                                                    mass,
+                                                                    radius,
+                                                                    length,
+                                                                    material,
+                                                                    immovable,
+                                                                    world,
+                                                                    skinTranslation,
+                                                                    MathHelper.ToRadians(skinYaw), 
+                                                                    MathHelper.ToRadians(skinPitch), 
+                                                                    MathHelper.ToRadians(skinRoll));
             return result;
         }
         /****************************************************************************/
@@ -96,7 +107,7 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            SquareBodyComponent result = new SquareBodyComponent( enabled,gameObject, mass, length, height, width, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
+            SquareBodyComponent result = new SquareBodyComponent(enabled, gameObject, mass, length, height, width, material, immovable, world, skinTranslation, MathHelper.ToRadians(skinYaw), MathHelper.ToRadians(skinPitch), MathHelper.ToRadians(skinRoll));
             return result;
         }
         /****************************************************************************/
@@ -124,7 +135,9 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            SphericalBodyComponent result = new SphericalBodyComponent( enabled,gameObject, mass, radius, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
+            SphericalBodyComponent result = new SphericalBodyComponent(enabled, gameObject, mass, radius, material, immovable, world, skinTranslation, MathHelper.ToRadians(skinYaw),
+                                                                    MathHelper.ToRadians(skinPitch),
+                                                                    MathHelper.ToRadians(skinRoll));
             return result;
         }
         /****************************************************************************/
@@ -293,7 +306,9 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            CylindricalBodyComponent result = new CylindricalBodyComponent( enabled,gameObject, mass, radius, length, material, immovable, world,skinTranslation,skinYaw,skinPitch,skinRoll);
+            CylindricalBodyComponent result = new CylindricalBodyComponent(enabled, gameObject, mass, radius, length, material, immovable, world, skinTranslation, MathHelper.ToRadians(skinYaw),
+                                                                    MathHelper.ToRadians(skinPitch),
+                                                                    MathHelper.ToRadians(skinRoll));
             return result;
         }
             /********************************************************************************/
@@ -319,7 +334,9 @@ namespace PlagueEngine.Physics
         {
             MaterialProperties material = new MaterialProperties(elasticity, staticRoughness, dynamicRoughness);
 
-            CylindricalBodyComponent2 result = new CylindricalBodyComponent2( enabled,gameObject, mass, radius, length, material, immovable, world, skinTranslation, skinYaw, skinPitch, skinRoll);
+            CylindricalBodyComponent2 result = new CylindricalBodyComponent2(enabled, gameObject, mass, radius, length, material, immovable, world, skinTranslation, MathHelper.ToRadians(skinYaw),
+                                                                    MathHelper.ToRadians(skinPitch),
+                                                                    MathHelper.ToRadians(skinRoll));
             return result;
         }
         /********************************************************************************/

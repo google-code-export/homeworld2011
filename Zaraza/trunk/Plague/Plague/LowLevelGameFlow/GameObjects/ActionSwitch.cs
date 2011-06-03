@@ -117,9 +117,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                              GetRect(actions[i]));
 
                 if (!String.IsNullOrEmpty(actions[i])) actionsCount++;
-            }
-
-            SendEvent(new ChangeSpeedEvent(0.5f), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+            }            
         }
         /****************************************************************************/
 
@@ -134,8 +132,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 SendEvent(new SelectedActionEvent(actions[selectedAction].Name), EventsSystem.Priority.Normal, feedback);
                 SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                 mouse.Modal    = false;
-                keyboard.Modal = false;
-                SendEvent(new ChangeSpeedEvent(2), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+                keyboard.Modal = false;                
             }
         }
         /****************************************************************************/
@@ -164,8 +161,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                 mouse.Modal    = false;
-                keyboard.Modal = false;
-                SendEvent(new ChangeSpeedEvent(2), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+                keyboard.Modal = false;                
             }
         }
         /****************************************************************************/

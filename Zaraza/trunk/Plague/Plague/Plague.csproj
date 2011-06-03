@@ -240,7 +240,6 @@
     <Compile Include="Particles\ParticleSettings.cs" />
     <Compile Include="Particles\ParticleSystem.cs" />
     <Compile Include="Particles\ParticleVertex.cs" />
-    <Compile Include="Pathfinder\Pathfinder.cs" />
     <Compile Include="Physics\CollisionSkinComponent.cs" />
     <Compile Include="Physics\Components\CapsuleBodyComponent.cs" />
     <Compile Include="Physics\Components\CylindricalBodyComponent2.cs" />

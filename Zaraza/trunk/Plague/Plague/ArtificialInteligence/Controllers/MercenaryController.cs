@@ -60,7 +60,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
 
-                        controlledObject.Controller.MoveForward(MovingSpeed * (float)deltaTime.TotalSeconds);
+                        controlledObject.Controller.MoveForward(MovingSpeed);
 
                         if (controlledObject.Mesh.CurrentClip != "Run")
                         {
