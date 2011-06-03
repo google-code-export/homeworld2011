@@ -132,7 +132,7 @@ namespace PlagueEngine.Rendering
         private RenderTarget2D ssao           = null;
         private RenderTarget2D ssaoDepth      = null;
         private RenderTarget2D ssaoBlur       = null;
-        public  bool           ssaoEnabled    = true;
+        public  bool           ssaoEnabled    = false;
         /**********************/
 
 
