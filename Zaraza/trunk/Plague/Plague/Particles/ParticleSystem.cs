@@ -266,7 +266,7 @@ namespace PlagueEngine.Particles
             {
                 graphics.BlendState = settings.BlendState;
                 graphics.DepthStencilState = DepthStencilState.None;
-                graphics.RasterizerState = RasterizerState.CullClockwise;
+                graphics.RasterizerState = RasterizerState.CullNone;
 
                 effectViewportScaleParameter.SetValue(new Vector2(0.5f / graphics.Viewport.AspectRatio, -0.5f));
 
