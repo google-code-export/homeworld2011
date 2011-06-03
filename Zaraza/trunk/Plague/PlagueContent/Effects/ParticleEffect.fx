@@ -182,6 +182,41 @@ VertexShaderOutput ParticleVertexShader(VertexShaderInput input)
     float size = ComputeParticleSize(input.Random.y, normalizedAge);
     float2x2 rotation = ComputeParticleRotation(input.Random.w, age);
 
+	output.Position = mul(mul(output.Position, View), Projection);
+
+    output.Position.xy += mul(input.Corner, rotation) * size * ViewportScale;	
+	
+
+	output.ScreenPosition = output.Position;		
+	
+
+    output.Color = ComputeParticleColor(output.Position, input.Random.z, normalizedAge);
+    output.TextureCoordinate = (input.Corner + 1) / 2;
+    
+    return output;
+}
+
+// Custom vertex shader animates particles entirely on the GPU.
+VertexShaderOutput ParticleVertexShader2(VertexShaderInput input)
+{
+    VertexShaderOutput output;
+    
+    // Compute the age of the particle.
+    float age = CurrentTime - input.Time;
+    
+    // Apply a random factor to make different particles age at different rates.
+    age *= 1 + input.Random.x * DurationRandomness;
+    
+    // Normalize the age into the range zero to one.
+    float normalizedAge = saturate(age / Duration);
+
+    // Compute the particle position, size, color, and rotation.
+    output.Position = ComputeParticlePosition(input.Position, input.Velocity,
+                                              age, normalizedAge);
+
+    float size = ComputeParticleSize(input.Random.y, normalizedAge);
+    float2x2 rotation = ComputeParticleRotation(input.Random.w, age);
+
     output.Position.xz += mul(input.Corner, rotation) * size * ViewportScale;	
 	
 	output.Position = mul(mul(output.Position, View), Projection);
@@ -195,7 +230,6 @@ VertexShaderOutput ParticleVertexShader(VertexShaderInput input)
     
     return output;
 }
-
 
 // Pixel shader for drawing particles.
 float4 ParticlePixelShader(VertexShaderOutput input) : COLOR0
@@ -222,6 +256,15 @@ technique Particles
     pass P0
     {
         VertexShader = compile vs_2_0 ParticleVertexShader();
+        PixelShader = compile ps_2_0 ParticlePixelShader();
+    }
+}
+
+technique ParticlesFacedUp
+{
+	pass P0
+    {
+        VertexShader = compile vs_2_0 ParticleVertexShader2();
         PixelShader = compile ps_2_0 ParticlePixelShader();
     }
 }
