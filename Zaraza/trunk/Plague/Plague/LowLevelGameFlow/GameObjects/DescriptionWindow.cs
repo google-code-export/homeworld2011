@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using PlagueEngine.GUI.Components;
 
-/************************************************************************************/
-/// PlagueEngine.LowLevelGameFlow.GameObjects
-/************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
@@ -20,9 +13,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private WindowComponent window = null;
-        private ButtonComponent button = null;
-        private LabelComponent  label  = null;
+        private WindowComponent _window;
+        private ButtonComponent _button;
+        private LabelComponent  _label;
         /****************************************************************************/
 
 
@@ -31,10 +24,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(WindowComponent window,ButtonComponent button,LabelComponent label)
         {
-            this.window = window;
-            this.button = button;
-            this.label  = label;
-
+            _window = window;
+            _button = button;
+            _label  = label;
+  
             button.setDelegate(OnButtonClick);
             window.AddControl(button.Control);
             window.AddControl(label.Control);
@@ -47,12 +40,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            label.ReleaseMe();
-            label = null;
-            button.ReleaseMe();
-            button = null;
-            window.ReleaseMe();
-            window = null;
+            _label.ReleaseMe();
+            _label = null;
+            _button.ReleaseMe();
+            _button = null;
+            _window.ReleaseMe();
+            _window = null;
         }
         /****************************************************************************/
 
@@ -62,8 +55,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void OnButtonClick(object sender, EventArgs e)
         {
-            window.Control.Close();
-            SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+            _window.Control.Close();
+            SendEvent(new DestroyObjectEvent(ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
         }
         /****************************************************************************/
 
@@ -82,10 +75,33 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Type = typeof(DescriptionWindow);
         }
 
-        public String Title  { get; set; }
-        public String Text   { get; set; }
-        public int    Width  { get; set; }
-        public int    Height { get; set; }
+        private string _title;
+        public String Title
+        {
+            get { return _title; }
+            set { _title = string.IsNullOrEmpty(value) ? "" : value; }
+        }
+
+        private string _text;
+        public String Text
+        {
+            get { return _text; }
+            set { _text = string.IsNullOrEmpty(value) ? "" : value; }
+        }
+
+        private int _width;
+        public int    Width
+        {
+            get { return _width; }
+            set { _width = value < 100 ? 100 : value; }
+        }
+
+        private int _height;
+        public int    Height
+        {
+            get { return _height; }
+            set { _height = value < 100 ? 100 : value; }
+        }
     }
     /********************************************************************************/
 
