@@ -17,7 +17,7 @@ namespace PlagueEngine.Physics
     /// PhysicsController
     /****************************************************************************/
     class PhysicsController : Controller
-    {
+    {        
         
         /****************************************************************************/
         /// Fields
@@ -46,7 +46,9 @@ namespace PlagueEngine.Physics
             body = (BodyExtended)rigidBodyComponent.Body;
             physicsManager.controllers.Add(this);
             EnableController();
-            body.Immovable = true;            
+            body.Immovable = true;             
+            RotationConstraint rotationConstraint = new RotationConstraint();
+            rotationConstraint.Init(body);
         }
         /****************************************************************************/
         
@@ -64,34 +66,34 @@ namespace PlagueEngine.Physics
 
         public void MoveUp(float dt)
         {
-            body.Controllable = true;
+            //body.Controllable = true;
             body.Immovable = false;
             body.DesiredVelocity = Vector3.Up * dt;            
         }
 
         public void MoveDown(float dt)
         {            
-            body.Controllable = true;
+            //body.Controllable = true;
             body.Immovable = false;
             body.DesiredVelocity = Vector3.Down * dt;         
         }
         public void MoveLeft(float dt)
         {            
-            body.Controllable = true;
+            //body.Controllable = true;
             body.Immovable = false;
             body.DesiredVelocity = Vector3.Left * dt;         
         }
 
         public void MoveRight(float dt)
         {            
-            body.Controllable = true;
+            //body.Controllable = true;
             body.Immovable = false;
             body.DesiredVelocity = Vector3.Right * dt;         
         }
 
         public void MoveBackward(float dt)
         {            
-            body.Controllable = true;
+            //body.Controllable = true;
             body.Immovable = false;
             body.DesiredVelocity = Vector3.Backward * dt;            
         }
@@ -99,7 +101,7 @@ namespace PlagueEngine.Physics
         public void MoveForward(float dt)
         {            
             body.Immovable = false;
-            body.Controllable = true;
+            //body.Controllable = true;
             body.DesiredVelocity = Vector3.Forward * dt;            
         }
           
@@ -107,7 +109,7 @@ namespace PlagueEngine.Physics
         public void StopMoving()
         {
             body.DesiredVelocity = new Vector3(0,0,0);
-            body.Controllable = false;            
+            //body.Controllable = false;            
             body.Immovable = true;
         }
 
@@ -331,6 +333,38 @@ namespace PlagueEngine.Physics
         
     }
     /****************************************************************************/
+
+
+    class RotationConstraint : Constraint
+    {
+
+        private Body Body = null;
+
+        public void Init(Body body)
+        {
+            Body = body;
+            Satisfied = false;
+            body.AddConstraint(this);
+            EnableConstraint();
+        }
+
+        public override bool Apply(float dt)
+        {
+            Body.AngularVelocity *= Vector3.Up;
+            return true;
+        }
+
+        public override void Destroy()
+        {            
+            Body = null;
+            DisableConstraint();            
+        }
+
+        public override void PreApply(float dt)
+        {
+               
+        }
+    }
     
 }
 /****************************************************************************/

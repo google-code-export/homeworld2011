@@ -646,8 +646,7 @@ namespace PlagueEngine.Physics
         }
         public bool Controllable;
         public Vector3 DesiredVelocity;
-        public Matrix DesiredOrientation;        
-
+        public Matrix DesiredOrientation;
         public Matrix SkinOrientation;
 
         public void SetUpOrientationForController()
@@ -658,13 +657,11 @@ namespace PlagueEngine.Physics
         public override void AddExternalForces(float dt)
         {
             ClearForces();
-
+   
             if (Controllable)
             {
                 AllowFreezing = false;
-                EnableBody();
-                
-                AngularVelocity = Vector3.Zero;
+                EnableBody();               
               
                 Orientation = DesiredOrientation;
 
@@ -677,7 +674,7 @@ namespace PlagueEngine.Physics
 
                 AddWorldForce((deltaVel * Mass) / dt);                                
             }
-      
+
             AddGravityToExternalForce();
         }
     }
