@@ -127,13 +127,12 @@ namespace PlagueEngine.Rendering
         private Effect         ssaoEffect     = null;
         private Effect         ssaoBlurEffect = null;
         private Texture2D      ditherTexture  = null;
-        private float          sampleRadius   = 0.62f;
-        private float          distanceScale  = 304.5f;
+        public  float          sampleRadius   = 0.00005f;
+        public  float          distanceScale  = 1000.0f;
         private RenderTarget2D ssao           = null;
         private RenderTarget2D ssaoDepth      = null;
         private RenderTarget2D ssaoBlur       = null;
-        private float          ssaoBias       = 7.79f;
-        public  bool           ssaoEnabled    = false;
+        public  bool           ssaoEnabled    = true;
         /**********************/
 
 
@@ -585,14 +584,9 @@ namespace PlagueEngine.Rendering
             ssaoEffect.Parameters["SampleRadius"].SetValue(sampleRadius);
             ssaoEffect.Parameters["DistanceScale"].SetValue(distanceScale);
             ssaoEffect.Parameters["CornerFrustrum"].SetValue(cornerFrustum);
-            ssaoEffect.Parameters["SSAOBias"].SetValue(ssaoBias);
 
-            ssaoEffect.Techniques[0].Passes[1].Apply();
+            ssaoEffect.Techniques[0].Passes[0].Apply();
             fullScreenQuad.JustDraw();
-
-            //Device.SetRenderTarget(ssaoBlur);
-            //ssaoBlurEffect.Techniques[0].Passes[0].Apply();
-            //fullScreenQuad.JustDraw();
 
             Device.SetRenderTarget(ssao);
             ssaoBlurEffect.Parameters["Texture"].SetValue(ssaoBlur);

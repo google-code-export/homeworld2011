@@ -665,7 +665,7 @@ namespace PlagueEngine.Physics
                 EnableBody();
                 
                 AngularVelocity = Vector3.Zero;
-
+              
                 Orientation = DesiredOrientation;
 
                 DesiredVelocity = Vector3.Transform(DesiredVelocity, SkinOrientation);

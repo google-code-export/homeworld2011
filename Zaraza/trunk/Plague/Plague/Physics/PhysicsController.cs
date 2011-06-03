@@ -107,8 +107,7 @@ namespace PlagueEngine.Physics
         public void StopMoving()
         {
             body.DesiredVelocity = new Vector3(0,0,0);
-            
-            //body.Controllable = false;            
+            body.Controllable = false;            
             body.Immovable = true;
         }
 

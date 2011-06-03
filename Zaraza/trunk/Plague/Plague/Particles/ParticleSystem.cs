@@ -249,7 +249,7 @@ namespace PlagueEngine.Particles
         public void Draw(GameTime gameTime)
         {
             if (texture == null) return;
-
+            
             effectViewParameter.SetValue(renderer.CurrentCamera.View);
             effectProjectionParameter.SetValue(renderer.CurrentCamera.Projection);
        
@@ -266,6 +266,7 @@ namespace PlagueEngine.Particles
             {
                 graphics.BlendState = settings.BlendState;
                 graphics.DepthStencilState = DepthStencilState.None;
+                graphics.RasterizerState = RasterizerState.CullClockwise;
 
                 effectViewportScaleParameter.SetValue(new Vector2(0.5f / graphics.Viewport.AspectRatio, -0.5f));
 
@@ -300,6 +301,7 @@ namespace PlagueEngine.Particles
                 }
 
                 graphics.DepthStencilState = DepthStencilState.Default;
+                graphics.RasterizerState = RasterizerState.CullCounterClockwise;
             }
 
             drawCounter++;
