@@ -43,14 +43,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Rectangle                slotsIcon,
                          String                   description,
                          int                      descriptionWindowWidth,
-                         int                      descriptionWindowHeight)
+                         int                      descriptionWindowHeight,
+                         Particles.Components.ParticleEmitterComponent emitter)
         {
             this.mesh   = mesh;
             this.body   = body;
             this.light1 = light1;
             this.light2 = light2;
 
-            Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight);
+            Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight, emitter);
         }
         /****************************************************************************/
 
@@ -102,6 +103,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             light1 = null;
             light2.ReleaseMe();
             light2 = null;
+
+            base.ReleaseComponents();
         }
         /****************************************************************************/
 
@@ -150,6 +153,36 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             light2.Enabled = false;
 
             base.OnStoring();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Dropping
+        /****************************************************************************/
+        public override void OnDropping()
+        {
+            body.EnableBody();
+            mesh.Enabled = true;
+            light1.Enabled = true;
+            light2.Enabled = true;
+
+            base.OnDropping();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Picking
+        /****************************************************************************/
+        public override void OnPicking()
+        {
+            mesh.Enabled = true;
+            body.DisableBody();
+            light1.Enabled = false;
+            light2.Enabled = false;
+
+            base.OnPicking();
         }
         /****************************************************************************/
 

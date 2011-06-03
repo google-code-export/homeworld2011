@@ -258,6 +258,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             CurrentObject  = item;
             item.Owner     = this;
             item.OwnerBone = Mesh.BoneMap[Grip];
+            item.OnPicking();
         }
         /****************************************************************************/
 
@@ -305,23 +306,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (item != null)
             {
-                item.Owner = null;
-                item.OwnerBone = -1;
 
                 item.World = Matrix.Identity;
                 item.World.Translation = World.Translation +
-                                         Vector3.Normalize(World.Forward) * 3 +
+                                         Vector3.Normalize(World.Backward) * 2 +
                                          Vector3.Normalize(World.Up) * 2;
+
+                item.OnDropping();                
+
             }
             else if (CurrentObject != null)
             {
-                CurrentObject.Owner     = null;
-                CurrentObject.OwnerBone = -1;
 
                 CurrentObject.World = Matrix.Identity;
                 CurrentObject.World.Translation = World.Translation +
-                                                  Vector3.Normalize(World.Forward) * 3 +
+                                                  Vector3.Normalize(World.Backward) * 2 +
                                                   Vector3.Normalize(World.Up) * 2;
+                CurrentObject.OnDropping();
 
                 CurrentObject           = null;
             }
