@@ -1,4 +1,4 @@
- using System;
+﻿ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Audio;
@@ -33,6 +33,7 @@ namespace PlagueEngine
         internal PhysicsManager            PhysicsManager     { get; private set; }
         internal AudioManager AudioManager { get; private set; }
         internal Level Level { get; private set; }
+        internal Pathfinder.Pathfinder pf;
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
         
         public bool GameStopped { get;  set; }
@@ -98,6 +99,7 @@ namespace PlagueEngine
 
             RendererClock = TimeControl.CreateClock();
             PhysicsClock  = TimeControl.CreateClock();
+            
         }
         /****************************************************************************/
 
@@ -126,12 +128,14 @@ namespace PlagueEngine
 #endif
 
             InitGUI();
+            pf = new Pathfinder.Pathfinder(PhysicsManager,Renderer);
+            //pf.Generate();
             Input.Enabled = true;
             base.Initialize();              
             
-            #if DEBUG
+#if DEBUG
             Diagnostics.PushLog("Initialization complete");
-            #endif
+ #endif
         }
         /****************************************************************************/
 
@@ -238,6 +242,7 @@ namespace PlagueEngine
             Renderer.Draw(RendererClock.DeltaTime,gameTime);
             GUI.Draw(gameTime);
             Input.Draw();
+            //pf.Draw(Renderer.CurrentCamera.View,Renderer.CurrentCamera.ViewProjection);
             base.Draw(gameTime);
         }
         /****************************************************************************/
