@@ -1,4 +1,4 @@
-﻿using System;
+ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Audio;
@@ -126,7 +126,7 @@ namespace PlagueEngine
 #endif
 
             InitGUI();
-            
+            Input.Enabled = true;
             base.Initialize();              
             
             #if DEBUG
