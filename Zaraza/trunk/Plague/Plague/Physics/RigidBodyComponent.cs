@@ -1,24 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Microsoft.Xna.Framework;
 using JigLibX.Geometry;
 using JigLibX.Collision;
 using JigLibX.Physics;
-using JigLibX.Math;
 using PlagueEngine.LowLevelGameFlow;
 
-
-
-/****************************************************************************/
-/// Constructor
-/****************************************************************************/
 namespace PlagueEngine.Physics
 {
-
-
 
     /****************************************************************************/
     /// Constructor
@@ -95,11 +84,10 @@ namespace PlagueEngine.Physics
             body.Immovable = immovable;
             this.yaw = yaw;
             this.pitch = pitch;
-            this.roll = roll;
-            //this.enabled = enabled;            
-            skin.callbackFn += new CollisionCallbackFn(HandleCollisionDetection);
+            this.roll = roll;         
+            skin.callbackFn += HandleCollisionDetection;
             dontCollide=false;
-            this.isEnabled = enabled;
+            isEnabled = enabled;
             if (!isEnabled)
             {
                 DisableBody();
@@ -117,7 +105,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         private bool HandleCollisionDetection(CollisionSkin owner, CollisionSkin collidee)
         {
-            if (!((GameObjectInstance)(collidee.ExternalData) == null))
+            if (collidee.ExternalData != null)
             {
                
                 if (subscribedGameObjectTypesCollisionsEvents.Count != 0)
@@ -130,10 +118,10 @@ namespace PlagueEngine.Physics
                     {
                         if (!gameObjectsCollisionInFrame.ContainsKey((GameObjectInstance)(collidee.ExternalData)))
                         {
-                            this.GameObject.SendEvent(
+                            GameObject.SendEvent(
                                 new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
                                 EventsSystem.Priority.Normal,
-                                this.GameObject);
+                                GameObject);
 
                             
                         }
@@ -145,10 +133,10 @@ namespace PlagueEngine.Physics
                     if (subscribedGameObjectTypesCollisionsEvents.Contains(collidee.ExternalData.GetType()))
                     {
 
-                        this.GameObject.SendEvent(
+                        GameObject.SendEvent(
                             new CollisionEvent((GameObjectInstance)(collidee.ExternalData)),
                             EventsSystem.Priority.Normal,
-                            this.GameObject);
+                            GameObject);
 
                         
                     }
@@ -197,15 +185,10 @@ namespace PlagueEngine.Physics
             {
                 foreach (GameObjectInstance go in gameObjectsCollisionInPrevFrame.Keys)
                 {
-                    if (!gameObjectsCollisionInFrame.ContainsKey(go))
+                    if (gameObjectsCollisionInFrame.ContainsKey(go)) continue;
+                    if (subscribedGameObjectLostCollisionsEvents.Contains(go.ID) || subscribedGameObjectTypesLostCollisionsEvents.Contains(go.GetType()))
                     {
-                        if (subscribedGameObjectLostCollisionsEvents.Contains(go.ID) || subscribedGameObjectTypesLostCollisionsEvents.Contains(go.GetType()))
-                        {
-                            this.GameObject.SendEvent(
-                            new LostCollisionEvent(go),
-                            EventsSystem.Priority.Normal,
-                            this.GameObject);
-                        }
+                        GameObject.SendEvent(new LostCollisionEvent(go),EventsSystem.Priority.Normal,GameObject);
                     }
                 }
             }
@@ -214,15 +197,10 @@ namespace PlagueEngine.Physics
             {
                 foreach (GameObjectInstance go in gameObjectsCollisionInFrame.Keys)
                 {
-                    if (!gameObjectsCollisionInPrevFrame.ContainsKey(go))
+                    if (gameObjectsCollisionInPrevFrame.ContainsKey(go)) continue;
+                    if (subsribedGameObjectStartCollisionEvents.Contains(go.ID) || subscribedGameObjectTypesStartCollisionEvents.Contains(go.GetType()))
                     {
-                        if (subsribedGameObjectStartCollisionEvents.Contains(go.ID) || subscribedGameObjectTypesStartCollisionEvents.Contains(go.GetType()))
-                        {
-                            this.GameObject.SendEvent(
-                            new StartCollisionEvent(go),
-                            EventsSystem.Priority.Normal,
-                            this.GameObject);
-                        }
+                        GameObject.SendEvent(new StartCollisionEvent(go),EventsSystem.Priority.Normal,GameObject);
                     }
                 }
             }
@@ -236,13 +214,11 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void DisableBody()
         {
-            if (isEnabled)
-            {
-                this.body.DisableBody();
-                PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(this.skin);
-                physicsManager.rigidBodies.Remove(this.gameObject.ID);
-                isEnabled = false;
-            }
+            if (!isEnabled) return;
+            body.DisableBody();
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(skin);
+            physicsManager.rigidBodies.Remove(gameObject.ID);
+            isEnabled = false;
         }
         /****************************************************************************/
         
@@ -252,14 +228,12 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void EnableBody()
         {
-            if (!isEnabled)
-            {
-                PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(this.skin);
-                this.body.EnableBody();
-                this.MoveTo(gameObject.World);                
-                physicsManager.rigidBodies.Add(this.gameObject.ID, this);
-                isEnabled = true;
-            }
+            if (isEnabled) return;
+            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.AddCollisionSkin(skin);
+            body.EnableBody();
+            MoveTo(gameObject.World);                
+            physicsManager.rigidBodies.Add(gameObject.ID, this);
+            isEnabled = true;
         }
         /****************************************************************************/
         
@@ -269,7 +243,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SubscribeStartCollisionEvent(params Type[] gameObjectTypes)
         {
-            this.subscribedGameObjectTypesStartCollisionEvents.AddRange(gameObjectTypes);
+            subscribedGameObjectTypesStartCollisionEvents.AddRange(gameObjectTypes);
         }
         /****************************************************************************/
 
@@ -279,7 +253,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SubscribeStartCollisionEvent(params int[] gameObjects)
         {
-            this.subsribedGameObjectStartCollisionEvents.AddRange(gameObjects);
+            subsribedGameObjectStartCollisionEvents.AddRange(gameObjects);
         }
         /****************************************************************************/
 
@@ -291,7 +265,7 @@ namespace PlagueEngine.Physics
         {
             foreach (Type gameObjectType in gameObjectTypes)
             {
-                this.subscribedGameObjectTypesStartCollisionEvents.Remove(gameObjectType);
+                subscribedGameObjectTypesStartCollisionEvents.Remove(gameObjectType);
             }
         }
         /****************************************************************************/
@@ -304,7 +278,7 @@ namespace PlagueEngine.Physics
         {
             foreach (int gameObject in gameObjects)
             {
-                this.subsribedGameObjectStartCollisionEvents.Remove(gameObject);
+                subsribedGameObjectStartCollisionEvents.Remove(gameObject);
             }
         }
         /****************************************************************************/
@@ -315,7 +289,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void CollideWithGameObjects(params int[] gameObjects)
         {
-            this.gameObjectsToColide.AddRange(gameObjects);
+            gameObjectsToColide.AddRange(gameObjects);
         }
         /****************************************************************************/
 
@@ -327,7 +301,7 @@ namespace PlagueEngine.Physics
         {
             foreach (int gameObject in gameObjects)
             {
-                this.gameObjectsToColide.Remove(gameObject);
+                gameObjectsToColide.Remove(gameObject);
             }
         }
         /****************************************************************************/
@@ -338,7 +312,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void DontCollideWithGameObjects(params int[] gameObjects)
         {
-            this.gameObjectsToNotColide.AddRange(gameObjects);
+            gameObjectsToNotColide.AddRange(gameObjects);
         }
         /****************************************************************************/
         
@@ -350,7 +324,7 @@ namespace PlagueEngine.Physics
         {
             foreach (int gameObject in gameObjects)
             {
-                this.gameObjectsToNotColide.Remove(gameObject);
+                gameObjectsToNotColide.Remove(gameObject);
             }
         }
         /****************************************************************************/
@@ -361,7 +335,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SubscribeCollisionEvent(params int[] gameObjects)
         {
-            this.subsribedGameObjectCollisionsEvents.AddRange(gameObjects);
+            subsribedGameObjectCollisionsEvents.AddRange(gameObjects);
         }
         /****************************************************************************/
 
@@ -373,7 +347,7 @@ namespace PlagueEngine.Physics
         {
             foreach (int gameObject in gameObjects)
             {
-                this.subsribedGameObjectCollisionsEvents.Remove(gameObject);
+                subsribedGameObjectCollisionsEvents.Remove(gameObject);
             }
         }
         /****************************************************************************/
@@ -384,7 +358,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SubscribeLostCollisionEvent(params int[] gameObjects)
         {
-            this.subscribedGameObjectLostCollisionsEvents.AddRange(gameObjects);
+            subscribedGameObjectLostCollisionsEvents.AddRange(gameObjects);
         }
         /****************************************************************************/
         
@@ -396,7 +370,7 @@ namespace PlagueEngine.Physics
         {
             foreach (int gameObject in gameObjects)
             {
-                this.subscribedGameObjectLostCollisionsEvents.Remove(gameObject);
+                subscribedGameObjectLostCollisionsEvents.Remove(gameObject);
             }
         }
         /****************************************************************************/
@@ -407,7 +381,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void CollideWithGameObjectsType(params Type[] gameObjectTypes)
         {
-            this.gameObjectsTypeToColide.AddRange(gameObjectTypes);
+            gameObjectsTypeToColide.AddRange(gameObjectTypes);
         }
         /****************************************************************************/
 
@@ -419,7 +393,7 @@ namespace PlagueEngine.Physics
         {
             foreach (Type gameObjectType in gameObjectTypes)
             {
-                this.subscribedGameObjectTypesCollisionsEvents.Remove(gameObjectType);
+                subscribedGameObjectTypesCollisionsEvents.Remove(gameObjectType);
             }
         }
         /****************************************************************************/
@@ -430,7 +404,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void DontCollideWithGameObjectsType(params Type[] gameObjectTypes)
         {
-            this.gameObjectsTypeToNotColide.AddRange(gameObjectTypes);
+            gameObjectsTypeToNotColide.AddRange(gameObjectTypes);
         }
         /****************************************************************************/
 
@@ -442,7 +416,7 @@ namespace PlagueEngine.Physics
         {
             foreach (Type gameObjectType in gameObjectTypes)
             {
-                this.gameObjectsTypeToNotColide.Remove(gameObjectType);
+                gameObjectsTypeToNotColide.Remove(gameObjectType);
             }
         }
         /****************************************************************************/
@@ -453,7 +427,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SubscribeCollisionEvent(params Type[] gameObjectTypes)
         {
-            this.subscribedGameObjectTypesCollisionsEvents.AddRange(gameObjectTypes);
+            subscribedGameObjectTypesCollisionsEvents.AddRange(gameObjectTypes);
         }
         /****************************************************************************/
 
@@ -465,7 +439,7 @@ namespace PlagueEngine.Physics
         {
             foreach (Type gameObjectType in gameObjectTypes)
             {
-                this.subscribedGameObjectTypesCollisionsEvents.Remove(gameObjectType);
+                subscribedGameObjectTypesCollisionsEvents.Remove(gameObjectType);
             }
         }
         /****************************************************************************/
@@ -476,7 +450,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         public void SubscribeLostCollisionEvent(params Type[] gameObjectTypes)
         {
-            this.subscribedGameObjectTypesLostCollisionsEvents.AddRange(gameObjectTypes);
+            subscribedGameObjectTypesLostCollisionsEvents.AddRange(gameObjectTypes);
         }
         /****************************************************************************/
 
@@ -488,7 +462,7 @@ namespace PlagueEngine.Physics
         {
             foreach (Type gameObjectType in gameObjectTypes)
             {
-                this.subscribedGameObjectTypesLostCollisionsEvents.Remove(gameObjectType);
+                subscribedGameObjectTypesLostCollisionsEvents.Remove(gameObjectType);
             }
         }
         /****************************************************************************/
@@ -517,9 +491,7 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         protected Vector3 SetMass()
         {
-            PrimitiveProperties primitiveProperties = new PrimitiveProperties(
-                                    PrimitiveProperties.MassDistributionEnum.Solid,
-                                    PrimitiveProperties.MassTypeEnum.Mass, mass);
+            var primitiveProperties = new PrimitiveProperties( PrimitiveProperties.MassDistributionEnum.Solid,PrimitiveProperties.MassTypeEnum.Mass, mass);
 
             float junk;
             Vector3 centerOfMass;
@@ -571,7 +543,7 @@ namespace PlagueEngine.Physics
         {
             body.DisableBody();
             PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.RemoveCollisionSkin(skin);
-            if(gameObject!=null)physicsManager.rigidBodies.Remove(this.gameObject.ID);
+            if(gameObject!=null)physicsManager.rigidBodies.Remove(gameObject.ID);
             base.ReleaseMe();
         }
         /****************************************************************************/
@@ -617,9 +589,9 @@ namespace PlagueEngine.Physics
         public float DynamicRoughness { get { return material.DynamicRoughness; } }
         public float Mass { get { return mass; } }
 
-        public Body Body { get { return this.body; } }
-        public CollisionSkin Skin { get { return this.skin; } }
-        public Vector3 SkinTranslation { get { return this.translation; } }
+        public Body Body { get { return body; } }
+        public CollisionSkin Skin { get { return skin; } }
+        public Vector3 SkinTranslation { get { return translation; } }
         public float Yaw { get { return MathHelper.ToDegrees(yaw); } }
         public float Pitch { get { return MathHelper.ToDegrees(pitch); } }
         public float Roll { get { return MathHelper.ToDegrees(roll); } }
@@ -637,10 +609,9 @@ namespace PlagueEngine.Physics
     {
 
         public BodyExtended()
-            : base()
         {
             DesiredVelocity = Vector3.Zero;
-            DesiredOrientation = this.Orientation;
+            DesiredOrientation = Orientation;
             Controllable = false;
            
         }
@@ -651,7 +622,7 @@ namespace PlagueEngine.Physics
 
         public void SetUpOrientationForController()
         {
-            DesiredOrientation = this.Orientation;
+            DesiredOrientation = Orientation;
         }
         
         public override void AddExternalForces(float dt)

@@ -34,11 +34,22 @@ namespace PlagueEngine.Audio.Components
         /// </summary>
         public Dictionary<string, Dictionary<string, SongCue>> Songs { get; private set; }
 
+        /// <summary>
+        /// Załaduje wszystkie podkłady muzyczne z danego folderu i przypisze je do bierzącej domyslnej grupy.
+        /// </summary>
+        /// <param name="folderName">Nazwa folderu</param>
+        /// <param name="volume">Głośność jaka zostanie przypisana do załadowanych podkładów muzycznych</param>
         public void LoadFolder(string folderName, float volume)
         {
             LoadFolder(folderName, volume, DefaultGroupName);
         }
 
+        /// <summary>
+        /// Załaduje wszystkie podkłady muzyczne z danego folderu.
+        /// </summary>
+        /// <param name="folderName">Nazwa folderu</param>
+        /// <param name="volume">Głośność jaka zostanie przypisana do załadowanych podkładów muzycznych</param>
+        ///<param name="groupName">Nazwa grupy do której mają być przypisane wszytkie podkłady muzyczne</param>
         public void LoadFolder(string folderName, float volume, string groupName)
         {
             var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
@@ -54,7 +65,43 @@ namespace PlagueEngine.Audio.Components
                 Diagnostics.PushLog("W folderze " + folderName + " nie ma plików .xba");
 #endif
         }
-
+        /// <summary>
+        /// Załaduje wszystkie podkłady muzyczne z danego folderu oraz z jego podfolderów do podnaje głębokości.
+        /// </summary>
+        /// <param name="folderName">Nazwa folderu początkowego.</param>
+        /// <param name="volume">Głośność jaka zostanie przypisana do załadowanych podkładów muzycznych</param>
+        /// <param name="maxDepth">Głębokość jaką maksymalnie może osiągnąć algorytm
+        /// Glębokość o wartości 0 spowoduje jedynie przeszukanie podanego folderu</param>
+        /// <param name="groupName">Nazwa grupy do której mają być przypisane podkłady muzyczne z pierwszego katalogu.
+        /// pozostałe dźwięki zostaną przypisane po nazwach folderów</param>
+        public void LoadFolderTree(string folderName, float volume, int maxDepth, string groupName)
+        {
+            if (maxDepth < 0) return;
+            var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
+            if (!dir.Exists) return;
+            var dirFiles = dir.GetDirectories();
+            var xbnFiles = dir.GetFiles("*.xnb");
+            foreach (var directoryInfo in dirFiles)
+            {
+                LoadFolderTree(folderName + "\\" + directoryInfo.Name, volume, maxDepth - 1);
+            }
+            foreach (var songName in xbnFiles.Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
+            {
+                LoadSong(songName, folderName + "\\" + songName, groupName, volume);
+            }
+#if DEBUG
+            if (xbnFiles.Length == 0)
+                Diagnostics.PushLog("W folderze " + folderName + " nie ma plików .xba");
+#endif
+        }
+        /// <summary>
+        /// Załaduje wszystkie podkłady muzyczne z danego folderu oraz z jego podfolderów do podnaje głębokości. 
+        /// Dźwięku są przypisywane do grup według nazw katalogów w jakich się znajdują.
+        /// </summary>
+        /// <param name="folderName">Nazwa folderu początkowego.</param>
+        /// <param name="volume">Głośność jaka zostanie przypisana do załadowanych podkładów muzycznych</param>
+        /// <param name="maxDepth">Głębokość jaką maksymalnie może osiągnąć algorytm
+        /// Glębokość o wartości 0 spowoduje jedynie przeszukanie podanego folderu</param>
         public void LoadFolderTree(string folderName, float volume, int maxDepth)
         {
             if (maxDepth < 0) return;
@@ -68,7 +115,7 @@ namespace PlagueEngine.Audio.Components
             }
             foreach (var songName in xbnFiles.Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
             {
-                LoadSong(songName, folderName + "\\" + songName, DefaultGroupName, volume);
+                LoadSong(songName, folderName + "\\" + songName, dir.Name, volume);
             }
 #if DEBUG
             if (xbnFiles.Length == 0)
@@ -174,7 +221,7 @@ namespace PlagueEngine.Audio.Components
                 int songId;
                 do
                 {
-                    songId = _random.Next(0, Songs[CurrentGroup].Values.Count - 1);
+                    songId = _random.Next(Songs[CurrentGroup].Values.Count - 1);
                 } while (Equals(_lastSongCue, Songs[CurrentGroup].Values.ElementAt(songId)));
 
                 _lastSongCue = Songs[CurrentGroup].Values.ElementAt(songId);
