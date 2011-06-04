@@ -7,6 +7,7 @@ using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.Physics;
 using Microsoft.Xna.Framework;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 namespace PlagueEngine.ArtificialInteligence.Controllers
 {
@@ -19,16 +20,27 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
             MovingSpeed     = movingSpeed;
             Distance        = distance;
             AnglePrecision  = angle;
+            animationBinding = new Dictionary<Action, string>();
+            animationBinding.Add(Action.IDLE, "Idle");
+            animationBinding.Add(Action.MOVE, "Run");
+            animationBinding.Add(Action.ATTACK, "Run");
+
+            ai.registerController(this);
+            
         }
 
         protected override void useAttack()
         {
             Mercenary unit = controlledObject as Mercenary;
-            if(typeof(Firearm).Equals(unit.CurrentObject) )
+            if (typeof(Firearm).Equals(unit.CurrentObject))
             {
                 Firearm weapon = unit.CurrentObject as Firearm;
                 //TODO: dorobić wybór między basic a additionalAttack
-                this.attack = weapon.basicAttack;
+                this.attack = weapon.attacks[0];
+            }
+            else
+            {
+                this.attack = new Attack((float)(0.0), (float)(1.0), 2,3,30);
             }
             base.useAttack();
         }
@@ -46,7 +58,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                         objectTarget = null;
                         action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                         return;
                     }
                     {
@@ -63,9 +75,9 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
 
-                        if (controlledObject.Mesh.CurrentClip != "Run")
+                        if (controlledObject.Mesh.CurrentClip != animationBinding[Action.MOVE])
                         {
-                            controlledObject.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(animationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
                         }
                     }
                     #endregion

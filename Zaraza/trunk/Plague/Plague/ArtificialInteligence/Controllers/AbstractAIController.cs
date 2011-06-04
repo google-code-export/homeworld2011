@@ -25,7 +25,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
         /****************************************************************************/
         protected Vector3 target;
         protected GameObjectInstance objectTarget;
-        protected GameObjectInstance attackTarget;
+        public    GameObjectInstance attackTarget { get; protected set; }
 
         protected Action action = Action.IDLE;
         protected Attack attack;
@@ -35,8 +35,12 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
         public float Distance       { get; protected set; }
         public float AnglePrecision { get; protected set; }
 
+        public float SightDistance  { get; protected set; }
+
         protected IEventsReceiver receiver = null;
         protected Timer cooldownTimer;
+
+        protected Dictionary<Action, String> animationBinding;
         /****************************************************************************/
 
         /****************************************************************************/
@@ -59,6 +63,10 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
         public AbstractAIController(AbstractLivingBeing being)
         {
+            this.SightDistance = (float)100.0;
+            this.attackTarget = null;
+            //TODO: zrobić poprawne ustawianie ataków.
+            this.attack = new Attack((float)(0.0), (float)(1.0), 2, 3, 30);
             this.controlledObject = being;
             PlagueEngine.TimeControlSystem.Timer.CallbackDelegate2 cd2 = new PlagueEngine.TimeControlSystem.Timer.CallbackDelegate2(useAttack);
             this.cooldownTimer = new Timer(new TimeSpan(), 1, cd2);
@@ -135,6 +143,15 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                 controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                 #endregion
             }
+            else if (e.GetType().Equals(typeof(EnemyNoticed)))
+            {
+                #region Enemy noticed - attack or engage
+                //TODO: czy tu aby nie cos jeszcze?
+                EnemyNoticed evt = e as EnemyNoticed;
+                attackTarget = evt.ClosestNoticedEnemy;
+                action = Action.ENGAGE;
+                #endregion
+            }
             else if (e.GetType().Equals(typeof(EnemyKilled)))
             {
                 #region Stop Attacking Killed Enemy
@@ -168,7 +185,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                     {
                         action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                     }
                     else
@@ -186,9 +203,9 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
 
-                        if (controlledObject.Mesh.CurrentClip != "Run")
+                        if (controlledObject.Mesh.CurrentClip != animationBinding[Action.MOVE])
                         {
-                            controlledObject.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(animationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
                         }
                     }
                     #endregion
@@ -205,70 +222,85 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                         return;
                         #endregion
                     }
-                    else if (Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Z),
-                                             new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) < 4)
+                    else
                     {
-                        controlledObject.Controller.StopMoving();
-                        if (controlledObject.Mesh.CurrentClip != "Idle")
+                        double currDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Z),
+                                             new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z));  
+                        if (currDistance < 4)
                         {
-                            controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                            #region Stop Chasing
+                            controlledObject.Controller.StopMoving();
+                            if (controlledObject.Mesh.CurrentClip != animationBinding[Action.IDLE])
+                            {
+                                controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                            }
+                            return;
+                            #endregion
                         }
-                        return;
-                    }
-                    else if (controlledObject.Mesh.CurrentClip == "Idle" && Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Z), new Vector2(objectTarget.World.Translation.X, objectTarget.World.Translation.Z)) > 8)
-                    {
-                        Vector3 direction = controlledObject.World.Translation - objectTarget.World.Translation;
-                        Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                        Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
-
-                        float det = v1.X * v2.Y - v1.Y * v2.X;
-                        float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                        if (det < 0) angle = -angle;
-
-                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
-
-                        controlledObject.Controller.MoveForward(MovingSpeed);
-
-                        if (controlledObject.Mesh.CurrentClip != "Run")
+                        else if (controlledObject.Mesh.CurrentClip == animationBinding[Action.IDLE] && currDistance > 8)
                         {
-                            controlledObject.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
+                            #region Resume Chase
+                            Vector3 direction = controlledObject.World.Translation - objectTarget.World.Translation;
+                            Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                            Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+
+                            float det = v1.X * v2.Y - v1.Y * v2.X;
+                            float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+
+                            if (det < 0) angle = -angle;
+
+                            if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
+
+                            controlledObject.Controller.MoveForward(MovingSpeed);
+
+                            if (controlledObject.Mesh.CurrentClip != animationBinding[Action.MOVE])
+                            {
+                                controlledObject.Mesh.BlendTo(animationBinding[Action.MOVE], TimeSpan.FromSeconds(0.3f));
+                            }
+                            #endregion
                         }
-                    }
-                    else if (controlledObject.Mesh.CurrentClip != "Idle")
-                    {
-                        Vector3 direction = controlledObject.World.Translation - objectTarget.World.Translation;
-                        Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                        Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
-
-                        float det = v1.X * v2.Y - v1.Y * v2.X;
-                        float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                        if (det < 0) angle = -angle;
-
-                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
-
-                        controlledObject.Controller.MoveForward(MovingSpeed);
-
-                        if (controlledObject.Mesh.CurrentClip != "Run")
+                        else if (controlledObject.Mesh.CurrentClip != animationBinding[Action.IDLE])
                         {
-                            controlledObject.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.3f));
+                            Vector3 direction = controlledObject.World.Translation - objectTarget.World.Translation;
+                            Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                            Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+
+                            float det = v1.X * v2.Y - v1.Y * v2.X;
+                            float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+
+                            if (det < 0) angle = -angle;
+
+                            if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
+
+                            controlledObject.Controller.MoveForward(MovingSpeed);
+
+                            if (controlledObject.Mesh.CurrentClip != animationBinding[Action.MOVE])
+                            {
+                                controlledObject.Mesh.BlendTo(animationBinding[Action.MOVE], TimeSpan.FromSeconds(0.3f));
+                            }
                         }
                     }
 #endregion
                     return;
                 case Action.ENGAGE:
                     #region Engage to Enemy
-                    currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Y),
-                                                               new Vector2(attackTarget.World.Forward.X, attackTarget.World.Forward.Y));
-                    if (currentDistance < attack.maxAttackDistance && currentDistance > attack.minAttackDistance)
+                    currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Y),
+                                                               new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Y));
+                    if (currentDistance < attack.maxAttackDistance)
                     {
                         action = Action.ATTACK_IDLE;
                         controlledObject.SendEvent(new TakeDamage(4.5, this.controlledObject), Priority.Normal, this.attackTarget);
-                        if (controlledObject.Mesh.CurrentClip != "Attack")
+                        if (controlledObject.Mesh.CurrentClip != animationBinding[Action.ATTACK])
                         {
-                            controlledObject.Mesh.BlendTo("Attack", TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(animationBinding[Action.ATTACK], TimeSpan.FromSeconds(0.5f));
                         }
+                    }
+                    else if (currentDistance > this.SightDistance)
+                    {
+                        this.attackTarget = null;
+                        this.action = Action.IDLE;
+                        controlledObject.Controller.StopMoving();
+                        this.controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                     }
                     else
                     {
@@ -285,9 +317,9 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
 
-                        if (controlledObject.Mesh.CurrentClip != "Run")
+                        if (controlledObject.Mesh.CurrentClip != animationBinding[Action.MOVE])
                         {
-                            controlledObject.Mesh.BlendTo("Run", TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(animationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
                         }
                     }
                     #endregion
@@ -302,6 +334,11 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                             this.cooldownTimer.Reset(attack.cooldown, 1);
                             controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject), Priority.Normal, this.attackTarget);
                             action = Action.ATTACK_IDLE;
+                            ///TODO: Czy jak już raz zblendowałem do Ataku, to mi nie wystarczy zapętlająca się animacja...?
+                            /*if (controlledObject.Mesh.CurrentClip != animationBinding[Action.ATTACK])
+                            {
+                                controlledObject.Mesh.BlendTo(animationBinding[Action.ATTACK], TimeSpan.FromSeconds(0.5f));
+                            }*/
                         }
                         else
                         {

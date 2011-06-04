@@ -395,7 +395,7 @@ namespace PlagueEngine.LowLevelGameFlow
         public Type     Type            = null;
         public Matrix   World           = Matrix.Identity;
 
-        [CategoryAttribute("Name")]
+            [CategoryAttribute("Name")]
         public String Name { get; set; }
 
         [CategoryAttribute("Definition")]
