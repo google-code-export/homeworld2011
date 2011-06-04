@@ -169,125 +169,156 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {            
             localPosition = new Vector2((screenWidth/2) - 420,100);
+            
+            Vector2 pickedItemOffset = Vector2.Zero;
+            if (pickedItem != null)
+            {
+                pickedItemOffset.X = (pickedItem.SlotsIcon.Width  / 2) - 32;
+                pickedItemOffset.Y = (pickedItem.SlotsIcon.Height / 2) - 32;
+            }
 
             /***********************/
             #region Draw Main Inventory
             /***********************/
-            // Background
-            spriteBatch.Draw(frontEnd.Texture, localPosition, new Rectangle(0, 0, 420, 620), Color.White);
-            // Merc Head
-            spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(328, 5), mercenary.InventoryIcon, Color.White);
-            // Merc Name
-            spriteBatch.DrawString(mercenaryName, mercenary.Name, localPosition + mercenaryNamePos, Color.WhiteSmoke);
-            // Switch Merc Button
-            spriteBatch.Draw(frontEnd.Texture, localPosition + NextMercButtonPos, (nextMerc ? new Rectangle(1290, 14, 15, 14) : new Rectangle(1290, 0, 15, 14)), Color.White);
-            spriteBatch.Draw(frontEnd.Texture, localPosition + PrevMercButtonPos, (prevMerc ? new Rectangle(1275, 14, 15, 14) : new Rectangle(1275, 0, 15, 14)), Color.White);
-            // Exit Inventory Button
-            spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInvButtonPos, (exitInv ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
-            // Current Item
-            StorableObject currenItem = mercenary.CurrentObject;
-            if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.Icon, Color.White);
-            // Weapon
-            Firearm weapon = mercenary.Weapon;
-            if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, weapon.Icon, Color.White);
-            // Side Arm
-            weapon = mercenary.SideArm;
-            if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos, weapon.Icon, Color.White);                        
-            // Scroll
-            spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUpButtonPos,   (scrollUp   ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
-            spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDownButtonPos, (scrollDown ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
-            spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollButtonBasePos + new Vector2(0, scrollStep * scrollCurrentOffset), (scroll ? new Rectangle(1335, 14, 15, 14) : new Rectangle(1335, 0, 15, 14)), Color.White);            
-            // Slots
-            for (int y = 0; y < Items.GetLength(1) && y < 15; ++y)
-            {
-                for (int x = 0; x < Items.GetLength(0); ++x)
+                /***********************/
+                #region Background
+                /***********************/
+                spriteBatch.Draw(frontEnd.Texture, localPosition, new Rectangle(0, 0, 420, 620), Color.White);
+                // Merc Head
+                spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(328, 5), mercenary.InventoryIcon, Color.White);
+                // Merc Name
+                spriteBatch.DrawString(mercenaryName, mercenary.Name, localPosition + mercenaryNamePos, Color.WhiteSmoke);
+                // Switch Merc Button
+                spriteBatch.Draw(frontEnd.Texture, localPosition + NextMercButtonPos, (nextMerc ? new Rectangle(1290, 14, 15, 14) : new Rectangle(1290, 0, 15, 14)), Color.White);
+                spriteBatch.Draw(frontEnd.Texture, localPosition + PrevMercButtonPos, (prevMerc ? new Rectangle(1275, 14, 15, 14) : new Rectangle(1275, 0, 15, 14)), Color.White);
+                // Exit Inventory Button
+                spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInvButtonPos, (exitInv ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
+                // Scroll
+                if (scrollMaxOffset > 0)
                 {
-                    if (!Items[x, y + scrollCurrentOffset].Blank)
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUpButtonPos, (scrollUp ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDownButtonPos, (scrollDown ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollButtonBasePos + new Vector2(0, scrollStep * scrollCurrentOffset), (scroll ? new Rectangle(1335, 14, 15, 14) : new Rectangle(1335, 0, 15, 14)), Color.White);
+                }
+                /***********************/
+                #endregion
+                /***********************/
+                #region Items
+                /***********************/
+                // Slots
+                for (int y = 0; y < Items.GetLength(1) && y < 15; ++y)
+                {
+                    for (int x = 0; x < Items.GetLength(0); ++x)
                     {
-                        if(Items[x, y + scrollCurrentOffset].Blocked)
+                        if (!Items[x, y + scrollCurrentOffset].Blank)
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1324, 81, 32, 32), Color.White);
+                            if (Items[x, y + scrollCurrentOffset].Blocked)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1324, 81, 32, 32), Color.White);
+                            }
+                            else if (Items[x, y + scrollCurrentOffset].Hover)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1356, 81, 32, 32), Color.White);
+                            }
+                            else if (Items[x, y + scrollCurrentOffset].Tiny)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1292, 81, 32, 32), Color.White);
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1260, 81, 32, 32), Color.White);
+                            }
+
+                            Items[x, y + scrollCurrentOffset].Hover = false;
+                            Items[x, y + scrollCurrentOffset].Blocked = false;
                         }
-                        else if(Items[x, y + scrollCurrentOffset].Hover)
+                    }
+                }
+                spriteBatch.Draw(frontEnd.Texture, 
+                                 localPosition + SlotsStartPos + new Vector2(144, 0), 
+                                 new Rectangle( 1260, 
+                                                177 + 32 * scrollCurrentOffset, 
+                                                64, 
+                                                64 - (scrollCurrentOffset > 2 ? 64 : 32 * scrollCurrentOffset)), 
+                                 Color.White);
+
+                int tinySlotsOffset = (int)Math.Round(mercenary.TinySlots / 11.0f);
+
+                spriteBatch.Draw(frontEnd.Texture, 
+                                 localPosition + SlotsStartPos + new Vector2(112, (tinySlotsOffset * 32) - (32 * scrollCurrentOffset)), 
+                                 new Rectangle( 1260, 
+                                                241 + (32 * (scrollCurrentOffset - tinySlotsOffset > 0 ? scrollCurrentOffset - tinySlotsOffset : 0)), 
+                                                128,
+                                                180 - (scrollCurrentOffset > 6 ? 180 : (32 * (scrollCurrentOffset - tinySlotsOffset > 0 ? scrollCurrentOffset - tinySlotsOffset : 0)))), 
+                                 Color.White);                    
+                // Items in inventory
+                foreach (KeyValuePair<StorableObject, ItemPosition> pair in mercenary.Items)
+                {
+                    Rectangle rect = pair.Key.SlotsIcon;
+                    int itemSlot = pair.Value.Slot;
+                    int height = (pair.Value.Orientation < 0 ? rect.Width / 32 : rect.Height / 32);
+                    int y = itemSlot / 11;
+                    int diff = scrollCurrentOffset - y;
+                    int diff2 = y + height - (scrollCurrentOffset + 15);
+
+                    if (diff > 0)
+                    {
+                        if (pair.Value.Orientation < 0)
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1356, 81, 32, 32), Color.White);
-                        }
-                        else if (Items[x, y + scrollCurrentOffset].Tiny)
-                        {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1292, 81, 32, 32), Color.White);
+                            rect.X += 32 * diff;
+                            rect.Width -= 32 * diff;
                         }
                         else
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1260, 81, 32, 32), Color.White);
+                            rect.Y += 32 * diff;
+                            rect.Height -= 32 * diff;
                         }
-
-                        Items[x, y + scrollCurrentOffset].Hover   = false;
-                        Items[x, y + scrollCurrentOffset].Blocked = false;
-                    }
-                }
-            }
-            // Items in inventory
-            foreach (KeyValuePair<StorableObject, ItemPosition> pair in mercenary.Items)
-            {
-                Rectangle rect = pair.Key.SlotsIcon;
-                int itemSlot = pair.Value.Slot;
-                int height = (pair.Value.Orientation < 0 ? rect.Width / 32 : rect.Height / 32);
-                int y = itemSlot / 11;
-                int diff = scrollCurrentOffset - y;
-                int diff2 = y + height - (scrollCurrentOffset + 15);
-
-                if (diff > 0)
-                {
-                    if (pair.Value.Orientation < 0)
-                    {
-                        rect.X += 32 * diff;
-                        rect.Width -= 32 * diff;
                     }
                     else
                     {
-                        rect.Y += 32 * diff;
-                        rect.Height -= 32 * diff;
+                        diff = 0;
                     }
-                }
-                else
-                {
-                    diff = 0;
-                }
 
-                if (diff2 > 0)
-                {
-                    if (pair.Value.Orientation < 0)
+                    if (diff2 > 0)
                     {
-                        rect.Width -= 32 * diff2;
+                        if (pair.Value.Orientation < 0)
+                        {
+                            rect.Width -= 32 * diff2;
+                        }
+                        else
+                        {
+                            rect.Height -= 32 * diff2;
+                        }
                     }
-                    else
-                    {
-                        rect.Height -= 32 * diff2;
-                    }
-                }
 
-                if (y > scrollCurrentOffset - height && y < scrollCurrentOffset + 15)
-                {
-                    if (pair.Value.Orientation > 0)
+                    if (y > scrollCurrentOffset - height && y < scrollCurrentOffset + 15)
                     {
-                        spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)), rect, Color.White);
+                        if (pair.Value.Orientation > 0)
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)), rect, Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                        }
                     }
-                    else
-                    {
-                        spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
-                    }
-                }
-            }
+                }            
+                /***********************/
+                #endregion
+                /***********************/                       
             /***********************/
             #endregion
             /***********************/
-                                    
+                             
+       
             /***********************/
             #region Draw Second Inventory
             /***********************/
             if (mercenary2 != null)
             {
-                // Background
+                /***********************/
+                #region Background
+                /***********************/
                 spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(420, 0), new Rectangle(420, 0, 420, 620), Color.White);
                 // Merc Head
                 spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(461, 5), mercenary2.InventoryIcon, Color.White);
@@ -295,19 +326,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 spriteBatch.DrawString(mercenaryName, mercenary2.Name, localPosition + mercenary2NamePos, Color.WhiteSmoke);
                 // Exit Inventory Button
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInv2ButtonPos, (exitInv2 ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
-                // Current Item
-                currenItem = mercenary2.CurrentObject;
-                if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, Color.White);
-                // Weapon
-                weapon = mercenary2.Weapon;
-                if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, weapon.Icon, Color.White);
-                // Side Arm
-                weapon = mercenary2.SideArm;
-                if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos2, weapon.Icon, Color.White);
                 // Scroll
-                spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUp2ButtonPos, (scrollUp2 ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
-                spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDown2ButtonPos, (scrollDown2 ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
-                spriteBatch.Draw(frontEnd.Texture, localPosition + Scroll2ButtonBasePos + new Vector2(0, scrollStep2 * scrollCurrentOffset2), (scroll2 ? new Rectangle(1335, 14, 15, 14) : new Rectangle(1335, 0, 15, 14)), Color.White);
+                if (scrollMaxOffset2 > 0)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollUp2ButtonPos, (scrollUp2 ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDown2ButtonPos, (scrollDown2 ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + Scroll2ButtonBasePos + new Vector2(0, scrollStep2 * scrollCurrentOffset2), (scroll2 ? new Rectangle(1335, 14, 15, 14) : new Rectangle(1335, 0, 15, 14)), Color.White);
+                }
+                /***********************/
+                #endregion
+                /***********************/                
+                #region Items
+                /***********************/
                 // Slots
                 for (int y = 0; y < Items2.GetLength(1) && y < 15; ++y)
                 {
@@ -337,6 +367,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
                     }
                 }
+                spriteBatch.Draw(frontEnd.Texture,
+                                 localPosition + SlotsStartPos2 + new Vector2(144, 0),
+                                 new Rectangle(1260,
+                                                177 + 32 * scrollCurrentOffset2,
+                                                64,
+                                                64 - (scrollCurrentOffset2 > 2 ? 64 : 32 * scrollCurrentOffset2)),
+                                 Color.White);
+
+                tinySlotsOffset = (int)Math.Round(mercenary2.TinySlots / 11.0f);
+
+                spriteBatch.Draw(frontEnd.Texture,
+                                 localPosition + SlotsStartPos2 + new Vector2(112, (tinySlotsOffset * 32) - (32 * scrollCurrentOffset2)),
+                                 new Rectangle(1260,
+                                                241 + (32 * (scrollCurrentOffset2 - tinySlotsOffset > 0 ? scrollCurrentOffset2 - tinySlotsOffset : 0)),
+                                                128,
+                                                180 - (scrollCurrentOffset2 > 6 ? 180 : (32 * (scrollCurrentOffset2 - tinySlotsOffset > 0 ? scrollCurrentOffset2 - tinySlotsOffset : 0)))),
+                                 Color.White);        
                 // Items in inventory
                 foreach (KeyValuePair<StorableObject, ItemPosition> pair in mercenary2.Items)
                 {
@@ -389,10 +436,188 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
                     }
                 }
+                /***********************/
+                #endregion
+                /***********************/
             }
             /***********************/
             #endregion
             /***********************/
+
+
+            /***********************/
+            #region Draw Slots
+            /***********************/
+            StorableObject currenItem = null;
+            Firearm weapon = null;
+                /***********************/
+                #region Slots Background
+                /***********************/        
+                if (pickedItem != null)
+                {
+                    if(mousePos.X > CurrItemIconPos.X - pickedItemOffset.X      &&
+                       mousePos.X < CurrItemIconPos.X - pickedItemOffset.X + 50 &&
+                       mousePos.Y > CurrItemIconPos.Y - pickedItemOffset.Y      &&
+                       mousePos.Y < CurrItemIconPos.Y - pickedItemOffset.Y + 50)
+                    {
+                        currenItem = mercenary.CurrentObject;    
+
+                        if (currenItem != null)
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, new Rectangle(1450, 0, 50, 50), Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, new Rectangle(1400, 0, 50, 50), Color.White);
+                        }
+                    }
+                    else if (mousePos.X > WeaponIconPos.X - pickedItemOffset.X      &&
+                             mousePos.X < WeaponIconPos.X - pickedItemOffset.X + 50 &&
+                             mousePos.Y > WeaponIconPos.Y - pickedItemOffset.Y      &&
+                             mousePos.Y < WeaponIconPos.Y - pickedItemOffset.Y + 50)
+                    {
+                        weapon = mercenary.Weapon;
+                        Firearm pickedFirearm = pickedItem as Firearm;
+                        if(pickedFirearm != null)
+                        {
+                            if (weapon != null || pickedFirearm.SideArm)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, new Rectangle(1450, 0, 50, 50), Color.White);
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, new Rectangle(1400, 0, 50, 50), Color.White);
+                            }
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, new Rectangle(1450, 0, 50, 50), Color.White);
+                        }
+                    }
+                    else if (mousePos.X > SideArmIconPos.X - pickedItemOffset.X &&
+                             mousePos.X < SideArmIconPos.X - pickedItemOffset.X + 50 &&
+                             mousePos.Y > SideArmIconPos.Y - pickedItemOffset.Y &&
+                             mousePos.Y < SideArmIconPos.Y - pickedItemOffset.Y + 50)
+                    {
+                        weapon = mercenary.SideArm;
+                        Firearm pickedFirearm = pickedItem as Firearm;
+                        if (pickedFirearm != null)
+                        {
+                            if (weapon != null || !pickedFirearm.SideArm)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos, new Rectangle(1450, 0, 50, 50), Color.White);
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos, new Rectangle(1400, 0, 50, 50), Color.White);
+                            }
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos, new Rectangle(1450, 0, 50, 50), Color.White);
+                        }
+                    }
+
+                    if (mercenary2 != null)
+                    {
+                        if (mousePos.X > CurrItemIconPos2.X - pickedItemOffset.X &&
+                            mousePos.X < CurrItemIconPos2.X - pickedItemOffset.X + 50 &&
+                            mousePos.Y > CurrItemIconPos2.Y - pickedItemOffset.Y &&
+                            mousePos.Y < CurrItemIconPos2.Y - pickedItemOffset.Y + 50)
+                        {
+                            currenItem = mercenary2.CurrentObject;
+
+                            if (currenItem != null)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, new Rectangle(1450, 0, 50, 50), Color.White);
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, new Rectangle(1400, 0, 50, 50), Color.White);
+                            }
+                        }
+                        else if (mousePos.X > WeaponIconPos2.X - pickedItemOffset.X &&
+                                 mousePos.X < WeaponIconPos2.X - pickedItemOffset.X + 50 &&
+                                 mousePos.Y > WeaponIconPos2.Y - pickedItemOffset.Y &&
+                                 mousePos.Y < WeaponIconPos2.Y - pickedItemOffset.Y + 50)
+                        {
+                            weapon = mercenary2.Weapon;
+                            Firearm pickedFirearm = pickedItem as Firearm;
+                            if (pickedFirearm != null)
+                            {
+                                if (weapon != null || pickedFirearm.SideArm)
+                                {
+                                    spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, new Rectangle(1450, 0, 50, 50), Color.White);
+                                }
+                                else
+                                {
+                                    spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, new Rectangle(1400, 0, 50, 50), Color.White);
+                                }
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, new Rectangle(1450, 0, 50, 50), Color.White);
+                            }
+                        }
+                        else if (mousePos.X > SideArmIconPos2.X - pickedItemOffset.X &&
+                                 mousePos.X < SideArmIconPos2.X - pickedItemOffset.X + 50 &&
+                                 mousePos.Y > SideArmIconPos2.Y - pickedItemOffset.Y &&
+                                 mousePos.Y < SideArmIconPos2.Y - pickedItemOffset.Y + 50)
+                        {
+                            weapon = mercenary2.SideArm;
+                            Firearm pickedFirearm = pickedItem as Firearm;
+                            if (pickedFirearm != null)
+                            {
+                                if (weapon != null || !pickedFirearm.SideArm)
+                                {
+                                    spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos2, new Rectangle(1450, 0, 50, 50), Color.White);
+                                }
+                                else
+                                {
+                                    spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos2, new Rectangle(1400, 0, 50, 50), Color.White);
+                                }
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos2, new Rectangle(1450, 0, 50, 50), Color.White);
+                            }
+                        }
+                    }
+                }
+                /***********************/
+                #endregion
+                /***********************/                
+                #region Slots Content
+                /***********************/
+                // Current Item            
+                currenItem = mercenary.CurrentObject;            
+                if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.Icon, Color.White);
+                // Weapon
+                weapon = mercenary.Weapon;
+                if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, weapon.Icon, Color.White);
+                // Side Arm
+                weapon = mercenary.SideArm;
+                if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos, weapon.Icon, Color.White);
+
+                if (mercenary2 != null)
+                {
+                    // Current Item
+                    currenItem = mercenary2.CurrentObject;
+                    if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, Color.White);
+                    // Weapon
+                    weapon = mercenary2.Weapon;
+                    if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, weapon.Icon, Color.White);
+                    // Side Arm
+                    weapon = mercenary2.SideArm;
+                    if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos2, weapon.Icon, Color.White);
+                }
+                /***********************/
+                #endregion
+                /***********************/                
+            /***********************/
+            #endregion
+            /***********************/                      
+
             
             /***********************/
             #region Draw Picked Item
@@ -424,6 +649,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /***********************/
             #endregion
             /***********************/
+
+
         }
         /****************************************************************************/
 
