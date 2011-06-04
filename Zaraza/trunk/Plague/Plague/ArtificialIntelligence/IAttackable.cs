@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PlagueEngine.ArtificialInteligence.Controllers
+namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     interface IAttackable
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 
-namespace PlagueEngine.ArtificialInteligence.Controllers
+namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     interface IAIController
     {

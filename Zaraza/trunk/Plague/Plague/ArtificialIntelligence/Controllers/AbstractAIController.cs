@@ -8,11 +8,10 @@ using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.Audio.Components;
 using PlagueEngine.Physics;
-using PlagueEngine.ArtificialIntelligence.Controllers;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.ArtificialIntelligence;
 
-namespace PlagueEngine.ArtificialInteligence.Controllers
+namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     public enum Action { IDLE, MOVE, TO_IDLE, PICK, EXAMINE, FOLLOW, ATTACK_IDLE, ENGAGE, EXCHANGE, ATTACK, ACTIVATE };
     abstract class AbstractAIController : IAIController, IAttackable, IEventsReceiver
@@ -114,7 +113,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                     if (this.attackTarget == null)
                     {
                         this.attackTarget = evt.attacker;
-                        action = PlagueEngine.ArtificialInteligence.Controllers.Action.ENGAGE;
+                        action = PlagueEngine.ArtificialIntelligence.Controllers.Action.ENGAGE;
                     }
                 }
                 

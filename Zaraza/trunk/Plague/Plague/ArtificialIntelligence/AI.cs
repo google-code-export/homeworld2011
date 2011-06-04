@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PlagueEngine.ArtificialIntelligence.Controllers;
-using PlagueEngine.ArtificialInteligence.Controllers;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.ArtificialIntelligence;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 
-namespace PlagueEngine.ArtificialInteligence
+namespace PlagueEngine.ArtificialIntelligence
 {
     class AI : IEventsReceiver
     {

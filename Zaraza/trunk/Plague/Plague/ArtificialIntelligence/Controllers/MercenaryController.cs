@@ -9,7 +9,7 @@ using PlagueEngine.Physics;
 using Microsoft.Xna.Framework;
 using PlagueEngine.ArtificialIntelligence.Controllers;
 
-namespace PlagueEngine.ArtificialInteligence.Controllers
+namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     class MercenaryController : AbstractAIController
     {        
