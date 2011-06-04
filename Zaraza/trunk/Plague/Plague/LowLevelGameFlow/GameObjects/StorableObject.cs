@@ -119,11 +119,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {            
             base.GetData(data);
 
-            data.Icon                    = Icon;
-            data.SlotsIcon               = SlotsIcon;
-            data.Description             = Description;
-            data.DescriptionWindowWidth  = DescriptionWindowWidth;
-            data.DescriptionWindowHeight = DescriptionWindowHeight;
+            data.Icon                       = Icon;
+            data.SlotsIcon                  = SlotsIcon;
+            data.Description                = Description;
+            data.DescriptionWindowWidth     = DescriptionWindowWidth;
+            data.DescriptionWindowHeight    = DescriptionWindowHeight;
 
             data.Duration                   = emitter.particleSystem.settings.DurationInSeconds;
             data.DurationRandomnes          = emitter.particleSystem.settings.DurationRandomness;
