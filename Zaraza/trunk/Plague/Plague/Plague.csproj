@@ -196,9 +196,11 @@
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\AbstractLivingBeing.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActionSwitch.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\ActivableObject.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Armor.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BuildingWithRoof.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Bulldozer.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Clip.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Compass.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />

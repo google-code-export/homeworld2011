@@ -22,7 +22,7 @@ namespace PlagueEngine.LowLevelGameFlow
     class ExamineEvent         : EventArgs { };    
     class ActionDoneEvent      : EventArgs { };
     class StopActionEvent      : EventArgs { };
-    
+
     class DropItemCommandEvent        : EventArgs { };
     class ReloadCommandEvent          : EventArgs { };    
     class SwitchToWeaponCommandEvent  : EventArgs { };
@@ -425,4 +425,51 @@ namespace PlagueEngine.LowLevelGameFlow
         }
     }
     /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// ActivateObjectEvent
+    /********************************************************************************/
+    class ActivateObjectEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+        public ActivateObjectEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject= gameObject;
+        }
+
+        public override string ToString()
+        {
+            return "Activate :" + gameObject.ID.ToString();
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// ObjectActivatedEvent
+    /********************************************************************************/
+    class ObjectActivatedEvent : EventArgs
+    {
+        public GameObjectInstance gameObject;
+
+        public ObjectActivatedEvent(GameObjectInstance gameObject)
+        {
+            this.gameObject = gameObject;
+        }
+        public ObjectActivatedEvent()
+        {
+        }
+
+        public override string ToString()
+        {
+            if (gameObject != null)
+            {
+                return "Activated :" + gameObject.ID.ToString();
+            }
+            return null;
+        }
+    }
+    /********************************************************************************/
+
 }

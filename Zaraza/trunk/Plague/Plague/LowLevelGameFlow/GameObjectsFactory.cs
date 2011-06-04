@@ -386,6 +386,51 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
+        /****************************************************************************/
+        /// CreateBulldozer
+        /****************************************************************************/
+        public bool CreateBulldozer(Bulldozer result, BulldozerData data)
+        {
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
+                                                                       InstancingMode,
+                                                                       data.EnabledMesh,
+                                                                       false),
+
+                        physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                            data.Mass,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll),
+                                                                            
+                                                                            data.ActivationRecievers,
+                                                                            data.keyId,
+                                                                            data.Description,
+                                                                            data.DescriptionWindowWidth,
+                                                                            data.DescriptionWindowHeight,
+                                                                            data.ForceForward,
+                                                                            data.MoveDuration);
+
+            return true;
+        }
+        /****************************************************************************/
+
+
 
 
 

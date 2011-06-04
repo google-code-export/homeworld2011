@@ -39,6 +39,7 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                 case Action.EXCHANGE:
                 case Action.EXAMINE:
                 case Action.PICK:
+                case Action.ACTIVATE:
                     #region PickOrExamine
                     if (objectTarget.IsDisposed() || objectTarget.Owner != null)
                     {
@@ -164,6 +165,19 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                         
                         #endregion
                     }
+                    else if (action == Action.ACTIVATE)
+                    {
+                        #region ACTIVATE Action
+                        controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
+                        action = Action.IDLE;
+                        controlledObject.Controller.StopMoving();
+                        controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        controlledObject.SendEvent(new ObjectActivatedEvent(), Priority.Normal, objectTarget);
+                        controlledObject.SendEvent(new ActionDoneEvent(), Priority.Normal, receiver);
+                        objectTarget = null;
+
+                        #endregion
+                    }
                 }
                 #endregion
             }
@@ -177,6 +191,19 @@ namespace PlagueEngine.ArtificialInteligence.Controllers
                 objectTarget = ExamineObjectCommandEvent.gameObject;
                 action = Action.EXAMINE;
                 controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
+                #endregion
+            }
+            else if (e.GetType().Equals(typeof(ActivateObjectEvent)))
+            {
+                #region Activate Object Event
+                ActivateObjectEvent activateEvent = e as ActivateObjectEvent;
+                receiver = sender as IEventsReceiver;
+
+
+                objectTarget = activateEvent.gameObject;
+                action = Action.ACTIVATE;
+                controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
+
                 #endregion
             }
             else
