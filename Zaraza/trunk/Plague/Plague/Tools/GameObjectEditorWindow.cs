@@ -485,6 +485,13 @@ namespace PlagueEngine.Tools
             SquareSkin.dataClassType = typeof(SquareSkinData);
             gameObjectClassNames.Add(SquareSkin);
 
+            gameObjectsClassName Bulldozer = new gameObjectsClassName();
+            Bulldozer.className = "Bulldozer";
+            Bulldozer.ClassType = typeof(Bulldozer);
+            Bulldozer.dataClassType = typeof(BulldozerData);
+            gameObjectClassNames.Add(Bulldozer);
+
+            
             
 
         }
@@ -1304,6 +1311,12 @@ namespace PlagueEngine.Tools
                     propertyGrid1.Refresh();
                 }
             }
+
+
+
+
+
+
         }
 
         private void buttonCommitMeshTransforms_Click(object sender, EventArgs e)

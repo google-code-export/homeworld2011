@@ -223,6 +223,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     switch (SelectedActionEvent.Action)
                     {
                         case "Grab"               : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl,currentMercenary); break;
+                        case "Activate"           : QueueEvent(new ActivateObjectEvent (targetGameObject), !leftControl, currentMercenary); break;
                         case "Examine"            : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl,currentMercenary); break;
                         case "Follow"             : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl,currentMercenary); break;
                         case "Exchange Items"     : QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, currentMercenary); break;
@@ -244,6 +245,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     switch (SelectedActionEvent.Action)
                     {
                         case "Grab"          : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
+                        case "Activate"      : QueueEvent(new ActivateObjectEvent(targetGameObject), !leftControl, SelectedMercenaries.ToArray()); break;
                         case "Examine"       : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
                         case "Follow"        : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
                         case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, SelectedMercenaries.ElementAt(0)); break;
@@ -810,6 +812,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 return new Rectangle(16, 384, 16, 16);
             }
             else if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
+            {
+                return new Rectangle(32, 384, 16, 16);
+            }
+            else if (e.GetType().Equals(typeof(ActivateObjectEvent)))
             {
                 return new Rectangle(32, 384, 16, 16);
             }
