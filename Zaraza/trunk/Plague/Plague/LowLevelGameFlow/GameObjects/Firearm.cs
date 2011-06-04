@@ -28,7 +28,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public MeshComponent                mesh = null;
         public SquareBodyComponent          body = null;
-        public AreaParticleEmitterComponent particle;
         public Attack basicAttack;
         public Attack additionalAttack;
         /****************************************************************************/
@@ -80,14 +79,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 World *= Matrix.CreateRotationY(MathHelper.ToRadians(-90));
                 if (mesh != null) mesh.Enabled = true;
                 if (body != null) body.DisableBody();
-                if (particle != null) particle.enabled = false;
             }
             else
             {
                 if (getWorld != null) World = GetWorld();
                 if (body     != null) body.EnableBody();
                 if (mesh     != null) mesh.Enabled = true;
-                if (particle != null) particle.enabled = true;
             }
         }
         /****************************************************************************/
