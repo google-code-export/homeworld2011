@@ -60,10 +60,10 @@ namespace PlagueEngine.Particles.Components
             previousPosition = pos+t;
             newPosition = pos + t;
 
-            if (enabled)
-            {
+            //if (enabled)
+            //{
                 particleManager.particleEmitters.Add(this);
-            }
+            //}
         }
         /********************************************************************************/
 
@@ -97,10 +97,10 @@ namespace PlagueEngine.Particles.Components
         /********************************************************************************/
         public void ReleaseMe()
         {
-            if (enabled)
-            {
+            //if (enabled)
+            //{
                 particleManager.particleEmitters.Remove(this);
-            }
+            //}
             base.ReleaseMe();
         }
         /********************************************************************************/

@@ -120,6 +120,7 @@ namespace PlagueEngine.Physics
         public void DisableControl()
         {
             body.Controllable = false;
+            StopMoving();
         }
 
         public void EnableControl()

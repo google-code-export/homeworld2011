@@ -62,7 +62,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
 
             controller.DisableControl();
-            body.Immovable = false;
+            //body.Immovable = false;
             TimeControl.ReleaseFrameCounter(timerID);
         }
 

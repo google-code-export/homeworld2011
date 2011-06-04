@@ -179,8 +179,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             mesh.Enabled = true;
             body.DisableBody();
-            light1.Enabled = false;
-            light2.Enabled = false;
+            light1.Enabled = true;
+            light2.Enabled = true;
 
             base.OnPicking();
         }
