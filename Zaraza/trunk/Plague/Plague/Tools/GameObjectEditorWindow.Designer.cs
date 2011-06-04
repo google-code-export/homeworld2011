@@ -440,7 +440,6 @@
             this.tabPage4.Controls.Add(this.groupBox2);
             this.tabPage4.Controls.Add(this.groupBox1);
             this.tabPage4.Controls.Add(this.button3);
-            this.tabPage4.Controls.Add(this.inputEnable);
             this.tabPage4.Controls.Add(this.checkBox1);
             this.tabPage4.Controls.Add(this.checkBoxGamePaused);
             this.tabPage4.Controls.Add(this.checkBoxShowCollisionSkin);
@@ -592,7 +591,7 @@
             // inputEnable
             // 
             this.inputEnable.AutoSize = true;
-            this.inputEnable.Location = new System.Drawing.Point(202, 89);
+            this.inputEnable.Location = new System.Drawing.Point(3, 3);
             this.inputEnable.Name = "inputEnable";
             this.inputEnable.Size = new System.Drawing.Size(80, 17);
             this.inputEnable.TabIndex = 9;
@@ -665,17 +664,17 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
+            this.splitContainer1.Panel2.Controls.Add(this.inputEnable);
             this.splitContainer1.Size = new System.Drawing.Size(624, 493);
             this.splitContainer1.SplitterDistance = 410;
             this.splitContainer1.TabIndex = 4;
             // 
             // treeView1
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.HideSelection = false;
-            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Location = new System.Drawing.Point(0, 22);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(210, 493);
+            this.treeView1.Size = new System.Drawing.Size(210, 470);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -712,6 +711,7 @@
             this.panel6.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);

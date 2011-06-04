@@ -1339,17 +1339,14 @@ namespace PlagueEngine.Tools
 
 
         private void GameObjectEditorWindow_Activated(object sender, EventArgs e)
-        {
-            inputEnable.Checked = input.Enabled;
+        { 
             input.Enabled = false;
+            inputEnable.Checked = input.Enabled;
         }
 
         private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
         {
-            if (releaseInput)
-            {
-                input.Enabled = true;
-            }
+           
         }
 
         private void checkBoxGamePaused_CheckedChanged(object sender, EventArgs e)
