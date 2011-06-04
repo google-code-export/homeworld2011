@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Audio;
@@ -11,6 +11,7 @@ using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Tools;
 using PlagueEngine.Physics;
 using PlagueEngine.Particles;
+using PlagueEngine.ArtificialInteligence;
 
 namespace PlagueEngine
 {
@@ -20,10 +21,10 @@ namespace PlagueEngine
     /********************************************************************************/
     public class Game : Microsoft.Xna.Framework.Game
     {
-
         /****************************************************************************/
         public   String                    Title              { get; set; }
         internal Renderer                  Renderer           { get; private set; }
+        internal AI                        AI                 { get; private set; }
         internal GUI.GUI                   GUI                { get; private set; }
         internal ContentManager            ContentManager     { get; set; }
         internal EventsHistorian           EventsHistorian    { get; private set; }
@@ -31,9 +32,10 @@ namespace PlagueEngine
         internal Input.Input               Input              { get; private set; }
         internal GameObjectsFactory        GameObjectsFactory { get; private set; }
         internal PhysicsManager            PhysicsManager     { get; private set; }
-        internal AudioManager AudioManager { get; private set; }
-        internal Level Level { get; private set; }
-        internal Pathfinder.Pathfinder pf;
+        internal AudioManager              AudioManager       { get; private set; }
+        internal Level                     Level              { get; private set; }
+        
+       // internal Pathfinder.Pathfinder pf;
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
         
         public bool GameStopped { get;  set; }
@@ -45,6 +47,7 @@ namespace PlagueEngine
         GameObjectEditorWindow _gameObjectEditor;
 #endif
         /****************************************************************************/
+
 
         /****************************************************************************/
         /// Constructor
@@ -79,6 +82,8 @@ namespace PlagueEngine
 
             GUI = new GUI.GUI(Services, Input.ComponentsFactory.CreateMouseListenerComponent(null, true));
 
+            AI = new AI();
+
             ParticleManager.CreateFactory(ContentManager, Renderer);
 
             PhysicsManager = new PhysicsManager(ContentManager);
@@ -99,7 +104,6 @@ namespace PlagueEngine
 
             RendererClock = TimeControl.CreateClock();
             PhysicsClock  = TimeControl.CreateClock();
-            
         }
         /****************************************************************************/
 
@@ -128,14 +132,14 @@ namespace PlagueEngine
 #endif
 
             InitGUI();
-            pf = new Pathfinder.Pathfinder(PhysicsManager,Renderer);
-            //pf.Generate();
             Input.Enabled = true;
+            //pf = new Pathfinder.Pathfinder(PhysicsManager,Renderer);
+            //pf.Generate();
             base.Initialize();              
             
-#if DEBUG
+            #if DEBUG
             Diagnostics.PushLog("Initialization complete");
- #endif
+            #endif
         }
         /****************************************************************************/
 
@@ -167,9 +171,7 @@ namespace PlagueEngine
             
         }
         /****************************************************************************/
-
-
-
+      
 
         /****************************************************************************/
         /// Unload Content
@@ -187,9 +189,6 @@ namespace PlagueEngine
 #endif
         }
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         /// Update
@@ -222,13 +221,14 @@ namespace PlagueEngine
             }
 
             ParticleManager.Update(gameTime);
-            
+
+            AI.Update();
+
             Level.Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
         }
         /****************************************************************************/
-
 
         /****************************************************************************/
         /// Draw
@@ -261,6 +261,7 @@ namespace PlagueEngine
 #endif
         }
         /****************************************************************************/
+
 
         /****************************************************************************/
         /// Init Renderer
