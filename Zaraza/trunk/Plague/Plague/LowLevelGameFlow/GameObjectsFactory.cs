@@ -791,7 +791,13 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.Translation,
                                                                           data.SkinYaw,
                                                                           data.SkinPitch,
-                                                                          data.SkinRoll));
+                                                                          data.SkinRoll),
+                        
+                        data.RotationSpeed,
+                        data.MovingSpeed,
+                        data.DistancePrecision,
+                        data.AnglePrecision
+                        );
 
             return true;
         }
@@ -1269,16 +1275,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.SkinYaw,
                                                                           data.SkinPitch,
                                                                           data.SkinRoll),
-                        new Attack(data.BAMinimumDistance,
-                                   data.BAMaximumDistance,
-                                   data.BAMinimumDamage,
-                                   data.BAMaximumDamage,
-                                   data.BACooldownTicks),
-                        new Attack(data.AAMinimumDistance,
-                                   data.AAMaximumDistance,
-                                   data.AAMinimumDamage,
-                                   data.AAMaximumDamage,
-                                   data.AACooldownTicks),
+                      data.Attacks,
                       data.Icon,
                       data.SlotsIcon,
                       data.Description,

@@ -13,6 +13,8 @@ using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Input;
+using PlagueEngine.ArtificialIntelligence.Controllers;
+using PlagueEngine.Audio.Components;
 
 
 /************************************************************************************/
@@ -24,17 +26,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Creature
     /********************************************************************************/
-    class Creature : GameObjectInstance
+    class Creature : AbstractLivingBeing
     {
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public SkinnedMeshComponent mesh = null;
-        KeyboardListenerComponent keyboard = null;
-        public CapsuleBodyComponent body = null;
-        PhysicsController controller = null;
-
+        
         int isMoving = 0;
         /****************************************************************************/
 
@@ -42,17 +40,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(SkinnedMeshComponent mesh,KeyboardListenerComponent keyboard,CapsuleBodyComponent body)
+        public void Init(SkinnedMeshComponent mesh,
+                         KeyboardListenerComponent keyboard,
+                         CapsuleBodyComponent body,
+                         float rotationSpeed,
+                         float movingSpeed,
+                         float distance,
+                         float angle)
         {
             this.mesh = mesh;
-            this.keyboard      = keyboard;
-            this.body          = body;
+            this.SoundEffectComponent = new SoundEffectComponent();
+            this.body = body;
 
-            keyboard.SubscibeKeys(OnKey, Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D8, Keys.D9, Keys.Y, Keys.H, Keys.G, Keys.J, Keys.P);
+            
             mesh.SubscribeAnimationsEnd("Attack");
-            controller = new PhysicsController(body);
-            controller.EnableControl();
+            Controller = new PhysicsController(body);
+            Controller.EnableControl();
             mesh.StartClip("Idle");
+            this.objectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle);
+            this.RequiresUpdate = true;
         }
         /****************************************************************************/
 
@@ -62,7 +68,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
-            if (key == Keys.Y)
+            /*if (key == Keys.Y)
             {
                 if(state.WasPressed())
                 {
@@ -155,10 +161,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         mesh.Reset();
                         break;
                 }
-            }
+            }*/
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Update
+        /****************************************************************************/
+        public override void Update(TimeSpan deltaTime)
+        {
+            this.objectAIController.Update(deltaTime);
+        }
 
         /****************************************************************************/
         /// On Event
@@ -168,6 +182,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (e.GetType().Equals(typeof(Rendering.AnimationEndEvent)))
             {
                 mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3));
+            }
+            else
+            {
+                this.objectAIController.OnEvent(sender, e);
             }
         }
         /****************************************************************************/
@@ -193,7 +211,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             mesh.ReleaseMe();
             body.ReleaseMe();
-            keyboard.ReleaseMe();
+            //keyboard.ReleaseMe();
         }
         /****************************************************************************/
 
@@ -239,6 +257,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Radius = body.Radius;
             data.Length = body.Length;
             data.EnabledPhysics = body.Enabled;
+
+            data.MovingSpeed = (objectAIController as MobController).MovingSpeed;
+            data.RotationSpeed = (objectAIController as MobController).RotationSpeed;
+            data.DistancePrecision = (objectAIController as MobController).Distance;
+            data.AnglePrecision = (objectAIController as MobController).AnglePrecision;
 
             return data;
         }
@@ -321,6 +344,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
+
+        [CategoryAttribute("Movement")]
+        public float RotationSpeed { get; set; }
+        [CategoryAttribute("Movement")]
+        public float MovingSpeed { get; set; }
+        [CategoryAttribute("Movement")]
+        public float DistancePrecision { get; set; }
+        [CategoryAttribute("Movement")]
+        public float AnglePrecision { get; set; }
     }
     /********************************************************************************/
 

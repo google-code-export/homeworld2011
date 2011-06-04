@@ -7,7 +7,7 @@ using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 using PlagueEngine.ArtificialInteligence.Controllers;
-using System;
+
 
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
@@ -25,36 +25,42 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             MovingSpeed     = movingSpeed;
             Distance        = distance;
             AnglePrecision  = angle;
+            animationBinding = new Dictionary<Action, string>();
+            animationBinding.Add(Action.IDLE, "Idle");
+            animationBinding.Add(Action.MOVE, "Run");
+            animationBinding.Add(Action.ATTACK, "Attack01");
+            ai.registerController(this);
         }
 
 
 
-        override public void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        override public void OnEvent(EventsSystem.EventsSender sender, System.EventArgs e)
         {
-            if (e.GetType().Equals(typeof(TakeDamage)))
+            /*if (e.GetType().Equals(typeof(TakeDamage)))
             {
                
                 return;
             }
-            else if (e.GetType().Equals(typeof(EnemyNoticed)))
+            else */
+            /*if (e.GetType().Equals(typeof(EnemyNoticed)))
             {
                 #region Engage
                 EnemyNoticed evt = e as EnemyNoticed;
-                action = PlagueEngine.ArtificialInteligence.Controllers.Action.ENGAGE;
+                action = Action.ENGAGE;
                 this.attackTarget = evt.ClosestNoticedEnemy;
                 #endregion
                 return;
             }
             else
-            {
+            {*/
                 base.OnEvent(sender, e);
-            }
+            //}
             return;
         }
 
 
 
-        public override void Update(TimeSpan deltaTime)
+        public override void Update(System.TimeSpan deltaTime)
         {
             switch (action)
             {
@@ -68,21 +74,21 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         /****************************************************************************/
         /// ACTIONS HANDLING
         /****************************************************************************/
-        protected void Attack()
+        /*protected void Attack()
         {
             //TakeDamage dmg = new TakeDamage(attack.minInflictedDamage, this.controlledObject);
             //controlledObject.SendEvent(dmg, EventsSystem.Priority.Normal, this.attackTarget);
             this.useAttack();
             action = PlagueEngine.ArtificialInteligence.Controllers.Action.ATTACK_IDLE;
             cooldownTimer.Reset(attack.cooldown, 1);
-        }
+        }*/
 
 
         /****************************************************************************/
         /// EVENTS HANDLING
         /****************************************************************************/
 
-        private void engageEvent(EventArgs e)
+        private void engageEvent(System.EventArgs e)
         {
 
         }

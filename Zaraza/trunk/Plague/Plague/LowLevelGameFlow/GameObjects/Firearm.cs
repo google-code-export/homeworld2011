@@ -29,8 +29,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public MeshComponent                mesh = null;
         public SquareBodyComponent          body = null;
-        public Attack basicAttack;
-        public Attack additionalAttack;
+        public List<Attack>                 attacks = null;
+        //public Attack basicAttack;
+        //public Attack additionalAttack;
         /****************************************************************************/
 
 
@@ -46,8 +47,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(MeshComponent       mesh,
                          SquareBodyComponent body,
-                         Attack basicAttack,
-                         Attack additionalAttack,
+                         List<Attack> attacks,
+                         //Attack basicAttack,
+                         //Attack additionalAttack,
                          Rectangle icon,
                          Rectangle slotsIcon,
                          String description,
@@ -57,10 +59,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          ParticleEmitterComponent particle)
         {
             this.mesh = mesh;
-            this.body = body;            
+            this.body = body;
 
-            this.basicAttack = basicAttack;
-            this.additionalAttack = additionalAttack;
+            this.attacks = attacks;
+            //this.basicAttack = basicAttack;
+            //this.additionalAttack = additionalAttack;
             
             SideArm = sideArm;
 
@@ -110,17 +113,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
-            data.AACooldownTicks   = additionalAttack.cooldown.Ticks;
-            data.AAMaximumDamage   = additionalAttack.maxInflictedDamage;
-            data.AAMaximumDistance = additionalAttack.maxAttackDistance;
-            data.AAMinimumDamage   = additionalAttack.minInflictedDamage;
-            data.AAMinimumDistance = additionalAttack.minAttackDistance;
+            //data.AACooldownTicks   = additionalAttack.cooldown.Ticks;
+            //data.AAMaximumDamage   = additionalAttack.maxInflictedDamage;
+            //data.AAMaximumDistance = additionalAttack.maxAttackDistance;
+            //data.AAMinimumDamage   = additionalAttack.minInflictedDamage;
+            //data.AAMinimumDistance = additionalAttack.minAttackDistance;
 
-            data.BACooldownTicks   = basicAttack.cooldown.Ticks;
-            data.BAMaximumDamage   = basicAttack.maxInflictedDamage;
-            data.BAMaximumDistance = basicAttack.maxAttackDistance;
-            data.BAMinimumDamage   = basicAttack.minInflictedDamage;
-            data.BAMinimumDistance = basicAttack.minAttackDistance;
+            //data.BACooldownTicks   = basicAttack.cooldown.Ticks;
+            //data.BAMaximumDamage   = basicAttack.maxInflictedDamage;
+            //data.BAMaximumDistance = basicAttack.maxAttackDistance;
+            //data.BAMinimumDamage   = basicAttack.minInflictedDamage;
+            //data.BAMinimumDistance = basicAttack.minAttackDistance;
+
+            data.Attacks = this.attacks;
 
             data.Mass             = body.Mass;
             data.Elasticity       = body.Elasticity;
@@ -272,28 +277,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Physics")]
         public bool EnabledPhysics { get; set; }
 
-        [CategoryAttribute("Basic Attack")]
-        public float BAMinimumDistance { get; set; }
-        [CategoryAttribute("Basic Attack")]
-        public float BAMaximumDistance { get; set; }
-        [CategoryAttribute("Basic Attack")]
-        public long BACooldownTicks { get; set; }
-        [CategoryAttribute("Basic Attack")]
-        public int BAMaximumDamage { get; set; }
-        [CategoryAttribute("Basic Attack")]
-        public int BAMinimumDamage { get; set; }
+        //[CategoryAttribute("Basic Attack")]
+        //public float BAMinimumDistance { get; set; }
+        //[CategoryAttribute("Basic Attack")]
+        //public float BAMaximumDistance { get; set; }
+        //[CategoryAttribute("Basic Attack")]
+        //public long BACooldownTicks { get; set; }
+        //[CategoryAttribute("Basic Attack")]
+        //public int BAMaximumDamage { get; set; }
+        //[CategoryAttribute("Basic Attack")]
+        //public int BAMinimumDamage { get; set; }
 
-        [CategoryAttribute("Additional Attack")]
-        public float AAMinimumDistance { get; set; }
-        [CategoryAttribute("Additional Attack")]
-        public float AAMaximumDistance { get; set; }
-        [CategoryAttribute("Additional Attack")]
-        public long AACooldownTicks { get; set; }
-        [CategoryAttribute("Additional Attack")]
-        public int AAMaximumDamage { get; set; }
-        [CategoryAttribute("Additional Attack")]
-        public int AAMinimumDamage { get; set; }
+        //[CategoryAttribute("Additional Attack")]
+        //public float AAMinimumDistance { get; set; }
+        //[CategoryAttribute("Additional Attack")]
+        //public float AAMaximumDistance { get; set; }
+        //[CategoryAttribute("Additional Attack")]
+        //public long AACooldownTicks { get; set; }
+        //[CategoryAttribute("Additional Attack")]
+        //public int AAMaximumDamage { get; set; }
+        //[CategoryAttribute("Additional Attack")]
+        //public int AAMinimumDamage { get; set; }
 
+        [CategoryAttribute("Possible Attacks")]
+        public List<Attack> Attacks { get; set; }
 
         [CategoryAttribute("Collision Skin")]
         public float Lenght { get; set; }

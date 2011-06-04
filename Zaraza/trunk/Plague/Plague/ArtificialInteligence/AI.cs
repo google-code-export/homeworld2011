@@ -72,19 +72,39 @@ namespace PlagueEngine.ArtificialInteligence
         }
 
         public void Update()
-        {
+         {
             if (counter % 2 == 0)
             {
                 foreach(MobController contr in BadGuys)
                 {
-                    PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
-                    
+                    if (contr.attackTarget == null)
+                    {
+                        AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
+                        if(found != null)
+                        {
+                            Diagnostics.PushLog("=========================MOB SEES!=========================");
+                            EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
+                            found.controlledObject.SendEvent(evt, Priority.Normal, contr.controlledObject);
+                        }
+                    }
                 }
                 counter = 1;
             }
             else
             {
-                
+                foreach (MercenaryController contr in GoodGuys)
+                {
+                    if (contr.attackTarget == null)
+                    {
+                        AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(BadGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
+                        if (found != null)
+                        {
+                            Diagnostics.PushLog("=========================MERC SEES!=========================");
+                            EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
+                            found.controlledObject.SendEvent(evt, Priority.Normal, contr.controlledObject);
+                        }
+                    }
+                }
                 counter = 0;
             }
 
