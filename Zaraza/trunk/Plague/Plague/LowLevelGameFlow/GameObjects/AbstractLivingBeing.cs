@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PlagueEngine.ArtificialInteligence.Controllers;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;

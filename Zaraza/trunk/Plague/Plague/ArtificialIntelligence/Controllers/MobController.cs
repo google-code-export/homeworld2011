@@ -6,7 +6,7 @@ using PlagueEngine.Physics;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
-using PlagueEngine.ArtificialInteligence.Controllers;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 
 namespace PlagueEngine.ArtificialIntelligence.Controllers

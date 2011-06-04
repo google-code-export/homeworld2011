@@ -14,7 +14,7 @@ using PlagueEngine.Physics.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
-using PlagueEngine.ArtificialInteligence.Controllers;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 
 using PlagueEngine.AItest;

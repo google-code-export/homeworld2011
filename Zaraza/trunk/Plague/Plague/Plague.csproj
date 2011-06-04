@@ -143,14 +143,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArtificialInteligence\AI.cs" />
-    <Compile Include="ArtificialInteligence\Attack.cs" />
-    <Compile Include="ArtificialInteligence\Controllers\AbstractAIController.cs" />
-    <Compile Include="ArtificialInteligence\Controllers\IAIController.cs" />
-    <Compile Include="ArtificialInteligence\IAttackable.cs" />
-    <Compile Include="ArtificialInteligence\Controllers\MercenaryController.cs" />
-    <Compile Include="ArtificialInteligence\Controllers\MobController.cs" />
-    <Compile Include="ArtificialInteligence\EventArgs.cs" />
+    <Compile Include="ArtificialIntelligence\AI.cs" />
+    <Compile Include="ArtificialIntelligence\Attack.cs" />
+    <Compile Include="ArtificialIntelligence\Controllers\AbstractAIController.cs" />
+    <Compile Include="ArtificialIntelligence\Controllers\IAIController.cs" />
+    <Compile Include="ArtificialIntelligence\IAttackable.cs" />
+    <Compile Include="ArtificialIntelligence\Controllers\MercenaryController.cs" />
+    <Compile Include="ArtificialIntelligence\Controllers\MobController.cs" />
+    <Compile Include="ArtificialIntelligence\EventArgs.cs" />
     <Compile Include="AItest\AI.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\Components\BackgroundMusicComponent.cs" />

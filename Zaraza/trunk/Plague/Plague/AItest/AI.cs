@@ -9,7 +9,7 @@ using PlagueEngine.LowLevelGameFlow;
 using JigLibX.Geometry;
 using JigLibX.Collision;
 using JigLibX.Physics;
-using PlagueEngine.ArtificialInteligence.Controllers;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 

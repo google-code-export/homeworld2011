@@ -11,7 +11,7 @@ using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Tools;
 using PlagueEngine.Physics;
 using PlagueEngine.Particles;
-using PlagueEngine.ArtificialInteligence;
+using PlagueEngine.ArtificialIntelligence;
 
 namespace PlagueEngine
 {
