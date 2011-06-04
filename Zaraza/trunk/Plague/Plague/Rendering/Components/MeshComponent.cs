@@ -64,8 +64,7 @@ namespace PlagueEngine.Rendering.Components
                 PrecomputedBoundingBox = BoundingBox.CreateFromPoints(corners);
             }
 
-            _bbCorners = Model.BoundingBox.GetCorners();
-            
+            _bbCorners = Model.BoundingBox.GetCorners();                        
             renderer.batchedMeshes.AddMeshComponent(instancingMode, technique, this);
             renderer.meshes.Add(this);        
         }        

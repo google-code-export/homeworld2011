@@ -1396,37 +1396,44 @@
       <Importer>XImporter</Importer>
       <Processor>PlagueEngineSkinnedModelProcessor</Processor>
       <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
-      <ProcessorParameters_AnimationClip1>Lying</ProcessorParameters_AnimationClip1>
       <ProcessorParameters_AnimationClip1End>26</ProcessorParameters_AnimationClip1End>
       <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
-      <ProcessorParameters_AnimationClip2>WakeUp</ProcessorParameters_AnimationClip2>
       <ProcessorParameters_AnimationClip1Start>25</ProcessorParameters_AnimationClip1Start>
       <ProcessorParameters_AnimationClip2Start>25</ProcessorParameters_AnimationClip2Start>
       <ProcessorParameters_AnimationClip2End>60</ProcessorParameters_AnimationClip2End>
-      <ProcessorParameters_AnimationClip3>Stand-Up</ProcessorParameters_AnimationClip3>
       <ProcessorParameters_AnimationClip3Start>61</ProcessorParameters_AnimationClip3Start>
       <ProcessorParameters_AnimationClip3End>90</ProcessorParameters_AnimationClip3End>
-      <ProcessorParameters_AnimationClip4>Run</ProcessorParameters_AnimationClip4>
       <ProcessorParameters_AnimationClip4Start>91</ProcessorParameters_AnimationClip4Start>
       <ProcessorParameters_AnimationClip4End>110</ProcessorParameters_AnimationClip4End>
-      <ProcessorParameters_AnimationClip5>Crawling</ProcessorParameters_AnimationClip5>
       <ProcessorParameters_AnimationClip4Loop>True</ProcessorParameters_AnimationClip4Loop>
       <ProcessorParameters_AnimationClip5Start>111</ProcessorParameters_AnimationClip5Start>
       <ProcessorParameters_AnimationClip5End>160</ProcessorParameters_AnimationClip5End>
       <ProcessorParameters_AnimationClip5Loop>True</ProcessorParameters_AnimationClip5Loop>
-      <ProcessorParameters_AnimationClip6>Attack01</ProcessorParameters_AnimationClip6>
       <ProcessorParameters_AnimationClip6Start>161</ProcessorParameters_AnimationClip6Start>
       <ProcessorParameters_AnimationClip6End>180</ProcessorParameters_AnimationClip6End>
-      <ProcessorParameters_AnimationClip7>Attack02</ProcessorParameters_AnimationClip7>
       <ProcessorParameters_AnimationClip7Start>181</ProcessorParameters_AnimationClip7Start>
       <ProcessorParameters_AnimationClip7End>210</ProcessorParameters_AnimationClip7End>
-      <ProcessorParameters_AnimationClip8>Attack03</ProcessorParameters_AnimationClip8>
       <ProcessorParameters_AnimationClip8Start>211</ProcessorParameters_AnimationClip8Start>
       <ProcessorParameters_AnimationClip8End>241</ProcessorParameters_AnimationClip8End>
-      <ProcessorParameters_AnimationClip9>Idle</ProcessorParameters_AnimationClip9>
       <ProcessorParameters_AnimationClip9Start>242</ProcessorParameters_AnimationClip9Start>
       <ProcessorParameters_AnimationClip9End>362</ProcessorParameters_AnimationClip9End>
       <ProcessorParameters_AnimationClip9Loop>True</ProcessorParameters_AnimationClip9Loop>
+      <ProcessorParameters_AnimationClip1>Idle</ProcessorParameters_AnimationClip1>
+      <ProcessorParameters_AnimationClip1Duration>3.6</ProcessorParameters_AnimationClip1Duration>
+      <ProcessorParameters_AnimationClip10>WakeUp</ProcessorParameters_AnimationClip10>
+      <ProcessorParameters_AnimationClip10Duration>1.5</ProcessorParameters_AnimationClip10Duration>
+      <ProcessorParameters_AnimationClip11>Run</ProcessorParameters_AnimationClip11>
+      <ProcessorParameters_AnimationClip11Duration>0.57</ProcessorParameters_AnimationClip11Duration>
+      <ProcessorParameters_AnimationClip12>Crawl</ProcessorParameters_AnimationClip12>
+      <ProcessorParameters_AnimationClip12Duration>1.8</ProcessorParameters_AnimationClip12Duration>
+      <ProcessorParameters_AnimationClip13>Attack01</ProcessorParameters_AnimationClip13>
+      <ProcessorParameters_AnimationClip13Duration>0.54</ProcessorParameters_AnimationClip13Duration>
+      <ProcessorParameters_AnimationClip14>Attack02</ProcessorParameters_AnimationClip14>
+      <ProcessorParameters_AnimationClip15>Attack03</ProcessorParameters_AnimationClip15>
+      <ProcessorParameters_AnimationClip16>StandUp</ProcessorParameters_AnimationClip16>
+      <ProcessorParameters_AnimationClip14Duration>0.87</ProcessorParameters_AnimationClip14Duration>
+      <ProcessorParameters_AnimationClip15Duration>1</ProcessorParameters_AnimationClip15Duration>
+      <ProcessorParameters_AnimationClip16Duration>0.87</ProcessorParameters_AnimationClip16Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -1637,6 +1644,19 @@
       <Name>Sting - Roxanne</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Enemies\FleshCreature.X">
+      <Name>FleshCreature</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+      <ProcessorParameters_AnimationClip1>Idle</ProcessorParameters_AnimationClip1>
+      <ProcessorParameters_AnimationClip1Duration>1</ProcessorParameters_AnimationClip1Duration>
+      <ProcessorParameters_AnimationClip10>Attack</ProcessorParameters_AnimationClip10>
+      <ProcessorParameters_AnimationClip10Duration>1.16</ProcessorParameters_AnimationClip10Duration>
+      <ProcessorParameters_AnimationClip11>Walk</ProcessorParameters_AnimationClip11>
+      <ProcessorParameters_AnimationClip11Duration>1.1</ProcessorParameters_AnimationClip11Duration>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

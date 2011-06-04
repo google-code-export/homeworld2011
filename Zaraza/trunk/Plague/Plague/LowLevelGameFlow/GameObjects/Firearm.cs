@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
+using PlagueEngine.Physics;
 using PlagueEngine.ArtificialIntelligence.Controllers;
 
 using PlagueEngine.Particles.Components;
@@ -62,6 +63,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.additionalAttack = additionalAttack;
             
             SideArm = sideArm;
+
+            if (!body.Immovable)
+            {
+                body.SubscribeCollisionEvent(typeof(Terrain));
+            }
 
             Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight, particle);
         }
@@ -137,6 +143,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+        
+        /****************************************************************************/
+        /// On Event
+        /****************************************************************************/
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {
+            if(e.GetType().Equals(typeof(CollisionEvent)))
+            {
+                CollisionEvent CollisionEvent = e as CollisionEvent;
+                if (CollisionEvent.gameObject.GetType().Equals(typeof(Terrain)))
+                {
+                    body.Immovable = true;
+                    body.CancelCollisionWithGameObjectsType(typeof(Terrain));
+                }
+            }
+            else
+            {
+                base.OnEvent(sender, e);
+            }
+        }
+        /****************************************************************************/
+
 
         /****************************************************************************/
         /// Release Components
@@ -180,7 +208,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             body.EnableBody();
             mesh.Enabled = true;
-
+            
+            body.Immovable = false;
+            body.SubscribeCollisionEvent(typeof(Terrain));
+            
             base.OnDropping();
         }
         /****************************************************************************/
