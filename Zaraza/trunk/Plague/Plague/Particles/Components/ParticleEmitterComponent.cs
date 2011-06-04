@@ -68,7 +68,28 @@ namespace PlagueEngine.Particles.Components
         /********************************************************************************/
 
 
+        /********************************************************************************/
+        /// EnableEmitter
+        /********************************************************************************/
+        public void EnableEmitter()
+        {
 
+            previousPosition = this.gameObject.World.Translation;
+            enabled = true;
+            
+        }
+        /********************************************************************************/
+
+
+
+        /********************************************************************************/
+        /// EnableEmitter
+        /********************************************************************************/
+        public void DisableEmitter()
+        {
+            enabled = false;
+        }
+        /********************************************************************************/
 
 
         /********************************************************************************/
@@ -120,48 +141,50 @@ namespace PlagueEngine.Particles.Components
         /********************************************************************************/
         public void Update(GameTime gameTime)
         {
-            if (enabled)
-            {
-                particleSystem.Update(gameTime);
 
-                Vector3 pos = gameObject.World.Translation;
-                Matrix world = gameObject.World;
-                world.M41 = 0;
-                world.M42 = 0;
-                world.M43 = 0;
-                Vector3 t = Vector3.Transform(particleTranslation, world);
-                newPosition = pos + t;
+                    particleSystem.Update(gameTime);
 
-                if (gameTime == null)
-                    throw new ArgumentNullException("gameTime");
-
-                float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (elapsedTime > 0)
-                {
-                    Vector3 velocity = (newPosition - previousPosition) / elapsedTime;
-
-                    float timeToSpend = timeLeftOver + elapsedTime;
-
-                    float currentTime = -timeLeftOver;
-
-                    while (timeToSpend > timeBetweenParticles)
+                    Vector3 pos = gameObject.World.Translation;
+                    Matrix world = gameObject.World;
+                    world.M41 = 0;
+                    world.M42 = 0;
+                    world.M43 = 0;
+                    Vector3 t = Vector3.Transform(particleTranslation, world);
+                    newPosition = pos + t;
+                    if (enabled)
                     {
-                        currentTime += timeBetweenParticles;
-                        timeToSpend -= timeBetweenParticles;
+                        if (gameTime == null)
+                            throw new ArgumentNullException("gameTime");
 
-                        float mu = currentTime / elapsedTime;
+                        float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                        Vector3 position = Vector3.Lerp(previousPosition, newPosition, mu);
+                        if (elapsedTime > 0)
+                        {
+                            Vector3 velocity = (newPosition - previousPosition) / elapsedTime;
 
-                        particleSystem.AddParticle(position, velocity);
+                            float timeToSpend = timeLeftOver + elapsedTime;
+
+                            float currentTime = -timeLeftOver;
+
+                            while (timeToSpend > timeBetweenParticles)
+                            {
+                                currentTime += timeBetweenParticles;
+                                timeToSpend -= timeBetweenParticles;
+
+                                float mu = currentTime / elapsedTime;
+
+                                Vector3 position = Vector3.Lerp(previousPosition, newPosition, mu);
+
+                                particleSystem.AddParticle(position, velocity);
+                            }
+
+
+                            timeLeftOver = timeToSpend;
+                        }
                     }
-
-                    timeLeftOver = timeToSpend;
-                }
-
-                previousPosition = newPosition;
-            }
+                    previousPosition = newPosition;
+                
+            
         }
         /********************************************************************************/
 

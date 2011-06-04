@@ -70,6 +70,26 @@ namespace PlagueEngine.Particles.Components
         }
         /********************************************************************************/
 
+        /********************************************************************************/
+        /// EnableEmitter
+        /********************************************************************************/
+        public void EnableEmitter()
+        {
+            enabled = true;
+            previousPosition = this.gameObject.World.Translation;
+        }
+        /********************************************************************************/
+
+
+
+        /********************************************************************************/
+        /// EnableEmitter
+        /********************************************************************************/
+        public void DisableEmitter()
+        {
+            enabled = false;
+        }
+        /********************************************************************************/
 
 
 
@@ -122,8 +142,7 @@ namespace PlagueEngine.Particles.Components
         /********************************************************************************/
         public void Update(GameTime gameTime)
         {
-            if (enabled)
-            {
+
 
                 particleSystem.Update(gameTime);
 
@@ -135,42 +154,45 @@ namespace PlagueEngine.Particles.Components
                 Vector3 t = Vector3.Transform(particleTranslation, world);
                 newPosition = pos + t;
 
-                if (gameTime == null)
-                    throw new ArgumentNullException("gameTime");
-
-                float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (elapsedTime > 0)
+                if (enabled)
                 {
-                    Vector3 velocity = (newPosition - previousPosition) / elapsedTime;
+                    if (gameTime == null)
+                        throw new ArgumentNullException("gameTime");
 
-                    float timeToSpend = timeLeftOver + elapsedTime;
+                    float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                    float currentTime = -timeLeftOver;
-
-                    while (timeToSpend > timeBetweenParticles)
+                    if (elapsedTime > 0)
                     {
-                        currentTime += timeBetweenParticles;
-                        timeToSpend -= timeBetweenParticles;
+                        Vector3 velocity = (newPosition - previousPosition) / elapsedTime;
 
-                        float mu = currentTime / elapsedTime;
+                        float timeToSpend = timeLeftOver + elapsedTime;
 
-                        Vector3 position = Vector3.Lerp(previousPosition, newPosition, mu);
+                        float currentTime = -timeLeftOver;
+
+                        while (timeToSpend > timeBetweenParticles)
+                        {
+                            currentTime += timeBetweenParticles;
+                            timeToSpend -= timeBetweenParticles;
+
+                            float mu = currentTime / elapsedTime;
+
+                            Vector3 position = Vector3.Lerp(previousPosition, newPosition, mu);
 
 
-                        Random r = new Random();
-                        float dlength = (float)r.NextDouble() * areaLength - areaLength / 2.0f;
-                        float dwidth = (float)r.NextDouble() * areaWidth - areaWidth / 2.0f;
-                        position.X += dlength;
-                        position.Z += dwidth;
-                        particleSystem.AddParticle(position, velocity);
+                            Random r = new Random();
+                            float dlength = (float)r.NextDouble() * areaLength - areaLength / 2.0f;
+                            float dwidth = (float)r.NextDouble() * areaWidth - areaWidth / 2.0f;
+                            position.X += dlength;
+                            position.Z += dwidth;
+                            particleSystem.AddParticle(position, velocity);
+                        }
+
+                        timeLeftOver = timeToSpend;
                     }
-
-                    timeLeftOver = timeToSpend;
                 }
 
                 previousPosition = newPosition;
-            }
+           
         }
         /********************************************************************************/
 

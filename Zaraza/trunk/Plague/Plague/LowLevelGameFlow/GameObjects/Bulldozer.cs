@@ -28,7 +28,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         uint timerID = 0;
         float forceForward = 0;
         float moveDuration = 0;
-
+        
         bool used = false;
         /****************************************************************************/
 
@@ -99,7 +99,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override string[] GetActions(Mercenary mercenary)
         {
-            if (keyId != -1)
+            if (keyId != -1 && !used)
             {
                 foreach (StorableObject item in mercenary.Items.Keys)
                 {

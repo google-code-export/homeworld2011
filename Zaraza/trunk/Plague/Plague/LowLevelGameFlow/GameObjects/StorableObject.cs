@@ -84,7 +84,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             owner = null;
             OwnerBone = -1;
             getWorld = GetMyWorld;
-            if(emitter != null) emitter.enabled = false;
+            if (emitter != null) emitter.DisableEmitter();
         }
         /****************************************************************************/
 
@@ -94,7 +94,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public virtual void OnPicking()
         {
-            if (emitter != null) emitter.enabled = false;
+            if (emitter != null) emitter.DisableEmitter();
         }
         /****************************************************************************/
 
@@ -107,7 +107,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             owner = null;
             OwnerBone = -1;
             getWorld = GetMyWorld;
-            if (emitter != null) emitter.enabled = true;
+            if (emitter != null) emitter.EnableEmitter();
         }
         /****************************************************************************/
 
