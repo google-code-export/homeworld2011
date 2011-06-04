@@ -121,8 +121,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Controller = new PhysicsController(Body);
             Controller.EnableControl();
 
-            Mesh.StartClip("Idle");
-            
+            //mesh.Stop();
+
             RequiresUpdate = true;                       
         }
         /****************************************************************************/
