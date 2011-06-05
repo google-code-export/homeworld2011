@@ -11,6 +11,7 @@ using PlagueEngine.EventsSystem;
 using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Rendering.Components;
+using PlagueEngine.ArtificialIntelligence;
 
 
 /************************************************************************************/
@@ -222,6 +223,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     switch (SelectedActionEvent.Action)
                     {
+                        case "Attack"             : QueueEvent(new AttackOrderEvent(targetGameObject as AbstractLivingBeing), !leftControl, currentMercenary); break; 
                         case "Grab"               : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl,currentMercenary); break;
                         case "Activate"           : QueueEvent(new ActivateObjectEvent (targetGameObject), !leftControl, currentMercenary); break;
                         case "Examine"            : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl,currentMercenary); break;
@@ -244,6 +246,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     switch (SelectedActionEvent.Action)
                     {
+                        case "Attack": QueueEvent(new AttackOrderEvent(targetGameObject as AbstractLivingBeing), !leftControl, SelectedMercenaries.ToArray()); break; 
                         case "Grab"          : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
                         case "Activate"      : QueueEvent(new ActivateObjectEvent(targetGameObject), !leftControl, SelectedMercenaries.ToArray()); break;
                         case "Examine"       : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;

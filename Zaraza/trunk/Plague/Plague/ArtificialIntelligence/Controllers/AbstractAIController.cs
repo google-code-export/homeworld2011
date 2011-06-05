@@ -10,6 +10,7 @@ using PlagueEngine.Audio.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.ArtificialIntelligence;
+using PlagueEngine.Rendering;
 
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
@@ -65,7 +66,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.SightDistance = (float)100.0;
             this.attackTarget = null;
             //TODO: zrobić poprawne ustawianie ataków.
-            this.attack = new Attack((float)(0.0), (float)(2.5), 2, 2, 30);
+            this.attack = new Attack((float)(0.0), (float)(3.0), 10, 10, 30);
             this.controlledObject = being;
             this.cooldownTimer = new Timer(new TimeSpan(), 1, useAttack);
         }
@@ -159,11 +160,42 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 EnemyKilled evt = e as EnemyKilled;
                 if (evt.DeadEnemy.Equals(attackTarget))
                 {
-                    this.cooldownTimer.Reset(TimeSpan.Zero, 0);
+                    controlledObject.Mesh.CancelAnimationsEndSubscription(animationBinding[Action.ATTACK]);
                     attackTarget = null;
                     this.action = Action.IDLE;
                     controlledObject.Controller.StopMoving();
                     controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                }
+                #endregion
+            }
+            else if (e.GetType().Equals(typeof(AnimationEndEvent)))
+            {
+                #region Attack or Chase or Idle
+               if (action == Action.ATTACK_IDLE)
+                {
+                    if (this.attackTarget != null)
+                    {
+                        double currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Y),
+                                                           new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Y));
+                        if (currentDistance < attack.maxAttackDistance)
+                        {
+                            action = Action.ATTACK;
+                        }
+                        else
+                        {
+                            this.controlledObject.Mesh.CancelAnimationsEndSubscription(animationBinding[Action.ATTACK]);
+                            action = Action.ENGAGE;
+                        }
+                    }
+                    else
+                    {
+                        this.controlledObject.Mesh.CancelAnimationsEndSubscription(animationBinding[Action.ATTACK]);
+                        action = Action.IDLE;
+                    }
+                }
+                else
+                {
+                    this.controlledObject.Mesh.CancelAnimationsEndSubscription(animationBinding[Action.ATTACK]);
                 }
                 #endregion
             }
@@ -290,7 +322,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     #region Engage to Enemy
                     currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Y),
                                                                new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Y));
-                    if (currentDistance < attack.maxAttackDistance - 0.5)
+                    if (currentDistance < attack.maxAttackDistance - 1)
                     {
                         action = Action.ATTACK;
                         controlledObject.Controller.StopMoving();
@@ -327,33 +359,28 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 case Action.ATTACK:
                     #region Attack Enemy
                     {
-                        
-                        
-                        currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Y),
-                                                           new Vector2(attackTarget.World.Forward.X, attackTarget.World.Forward.Y));
-                        if (currentDistance < attack.maxAttackDistance && currentDistance > attack.minAttackDistance)
+                        currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Y),
+                                                           new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Y));
+                        if (currentDistance < attack.maxAttackDistance)
                         {
-                            controlledObject.Mesh.BlendTo(animationBinding[Action.ATTACK], TimeSpan.FromSeconds(0.5f));
-                            this.cooldownTimer.Reset(attack.cooldown, 1);                        
+                            //if (controlledObject.Mesh.CurrentClip != animationBinding[Action.ATTACK])
+                            //{
+                            //    controlledObject.Mesh.BlendTo(animationBinding[Action.ATTACK], TimeSpan.FromSeconds(0.5f));
+                            //}
+                            //else
+                            //{
+                                controlledObject.Mesh.StartClip(animationBinding[Action.ATTACK]);
+                            //}
+                            //controlledObject.Mesh.PlayClip();
+                            controlledObject.Mesh.SubscribeAnimationsEnd(animationBinding[Action.ATTACK]);
+                            //this.cooldownTimer.Reset(attack.cooldown, 1);                        
                             controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject), Priority.Normal, this.attackTarget);
                             action = Action.ATTACK_IDLE;
                         }
                         else
                         {
                             action = Action.ENGAGE;
-                            //controlledObject.Mesh.BlendTo(animationBinding[Action.ENGAGE], TimeSpan.FromSeconds(0.5f));
                         }
-                    }
-                    #endregion
-                    return;
-                case Action.ATTACK_IDLE:
-                    #region Attack Idle
-                    currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Y),
-                                                       new Vector2(attackTarget.World.Forward.X, attackTarget.World.Forward.Y));
-                    if (currentDistance > attack.maxAttackDistance)
-                    {
-                        this.cooldownTimer.Reset(TimeSpan.Zero, 0);
-                        action = Action.ENGAGE;
                     }
                     #endregion
                     return;

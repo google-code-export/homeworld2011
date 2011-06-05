@@ -20,6 +20,19 @@ namespace PlagueEngine.ArtificialIntelligence
         }
     }
 
+    /* Event rozkazu ataku */
+    class AttackOrderEvent : EventArgs
+    {
+        public AbstractLivingBeing EnemyToAttack;
+        public AttackOrderEvent(AbstractLivingBeing EnemyToAttack)
+        {
+            this.EnemyToAttack = EnemyToAttack;
+        }
+        public override string ToString()
+        {
+            return "ATTACKING ENEMY: " + EnemyToAttack.ToString();
+        }
+    }
 
     /* Te argsy lecą, jak wróg zostanie ubity */
     class EnemyKilled : EventArgs
