@@ -181,7 +181,53 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                     if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Passable)
                     {
-                        QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position),!leftControl, SelectedMercenaries.ToArray());
+                        //finezja :D!
+
+                        if (SelectedMercenaries.Count == 1)
+                        {
+                            QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), !leftControl, SelectedMercenaries.ToArray());
+                        }
+                        else
+                        {
+                            //calculate center
+                            Vector3 center = Vector3.Zero;
+                            foreach (Mercenary merc in SelectedMercenaries)
+                            {
+                                center += merc.World.Translation;
+                            }
+                            center /= SelectedMercenaries.Count;
+
+                            //check if moving to center or to point
+                            bool toCenter = false;
+                            foreach (Mercenary merc in SelectedMercenaries)
+                            {
+                                double distToCenter = Vector3.Distance(merc.World.Translation, center);
+                                double distToTarget = Vector3.Distance(merc.World.Translation, commandOnObjectEvent.position);
+                                if (distToCenter > distToTarget)
+                                {
+                                    toCenter = true;
+                                    break;
+                                }
+                            }
+
+                            if (toCenter)
+                            {
+                                foreach (Mercenary merc in SelectedMercenaries)
+                                {
+                                    Vector3 target = commandOnObjectEvent.position + Vector3.Normalize(merc.World.Translation - center);
+                                    QueueEvent(new MoveToPointCommandEvent(target), !leftControl, merc);
+                                }
+                            }
+                            else
+                            {
+                                foreach (Mercenary merc in SelectedMercenaries)
+                                {
+                                    Vector3 target = (merc.World.Translation - center) + commandOnObjectEvent.position;
+                                    QueueEvent(new MoveToPointCommandEvent(target), !leftControl, merc);
+                                }
+                            }
+                        }
+                        //QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), !leftControl, SelectedMercenaries.ToArray());
                     }
                     else if (commandOnObjectEvent.gameObject.Status != GameObjectStatus.Nothing)
                     {
