@@ -30,7 +30,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             animationBinding = new Dictionary<Action, string>();
             animationBinding.Add(Action.IDLE, "Idle");
             animationBinding.Add(Action.MOVE, "Run");
-            animationBinding.Add(Action.ATTACK, "Attack01");
+            animationBinding.Add(Action.ATTACK, "Attack03");
             ai.registerController(this);
         }
 
