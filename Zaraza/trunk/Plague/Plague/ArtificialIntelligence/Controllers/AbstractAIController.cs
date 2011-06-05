@@ -58,12 +58,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         protected bool isDisposed = false;
         
-        public AbstractAIController(AbstractLivingBeing being)
+        public AbstractAIController(AbstractLivingBeing being, uint MaxHP, uint HP)
         {
+            this.HP = HP;
+            this.MaxHP = MaxHP;
             this.SightDistance = (float)100.0;
             this.attackTarget = null;
             //TODO: zrobić poprawne ustawianie ataków.
-            this.attack = new Attack((float)(0.0), (float)(1.0), 2, 3, 30);
+            this.attack = new Attack((float)(0.0), (float)(1.0), 2, 2, 30000);
             this.controlledObject = being;
             PlagueEngine.TimeControlSystem.Timer.CallbackDelegate2 cd2 = new PlagueEngine.TimeControlSystem.Timer.CallbackDelegate2(useAttack);
             this.cooldownTimer = new Timer(new TimeSpan(), 1, cd2);

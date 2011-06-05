@@ -92,7 +92,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Firearm weapon,
                          Firearm sideArm)
         {
-            this.ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle);
+            this.ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle, maxHP, HP);
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
@@ -110,8 +110,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             Items = items;
 
-            this.HP = HP;
-            MaxHP = maxHP;
             Icon = icon;
 
             this.marker = frontEndComponent;
@@ -473,8 +471,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SideArmGrip    = SideArmGrip;
             data.WeaponGrip     = WeaponGrip;
 
-            data.HP            = HP;
-            data.MaxHP         = MaxHP;
+            data.HP            = (ObjectAIController).HP;
+            data.MaxHP         = (ObjectAIController).MaxHP;
             data.Icon          = Icon;
             data.InventoryIcon = InventoryIcon;
 

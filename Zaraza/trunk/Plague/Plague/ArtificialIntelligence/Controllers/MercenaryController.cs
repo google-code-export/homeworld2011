@@ -20,7 +20,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public uint Slots { get; protected set; }
         
 
-        public MercenaryController(AbstractLivingBeing lb, float rotationSpeed, float movingSpeed, float distance, float angle):base(lb)
+        public MercenaryController(AbstractLivingBeing lb, float rotationSpeed, float movingSpeed, float distance, float angle, uint MaxHP, uint HP):base(lb, MaxHP, HP)
         {
             RotationSpeed   = rotationSpeed;
             MovingSpeed     = movingSpeed;

@@ -57,7 +57,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Controller = new PhysicsController(body);
             Controller.EnableControl();
             mesh.StartClip("Idle");
-            this.ObjectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle);
+            //TODO: Fix HP => get from data
+            this.ObjectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle, 100, 90);
             this.RequiresUpdate = true;
         }
         /****************************************************************************/
