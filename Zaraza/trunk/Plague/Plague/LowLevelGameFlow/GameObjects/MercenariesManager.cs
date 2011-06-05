@@ -682,7 +682,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
 
                 spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), pair.Key.Icon, Color.White);
-                spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(64, 0, 64, 64), GetColor(pair.Key.HP, pair.Key.MaxHP));
+                spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(64, 0, 64, 64), GetColor(pair.Key.ObjectAIController.HP, pair.Key.ObjectAIController.MaxHP));
 
 
                 int j = 0;

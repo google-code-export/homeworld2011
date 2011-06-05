@@ -18,8 +18,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public MobController(AbstractLivingBeing person, float rotationSpeed,
                          float movingSpeed,
                          float distance,
-                         float angle)
-            : base(person)
+                         float angle,
+                         uint MaxHP,
+                         uint HP)
+            : base(person, MaxHP, HP)
         {
             RotationSpeed   = rotationSpeed;
             MovingSpeed     = movingSpeed;
