@@ -78,18 +78,16 @@ namespace PlagueEngine.ArtificialIntelligence
          {
             if (counter % 2 == 0)
             {
-                foreach(MobController contr in BadGuys)
+                foreach (MobController contr in BadGuys)
                 {
-                    if (contr.attackTarget == null)
+                    AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
+                    if (found != null && found.controlledObject != contr.attackTarget)
                     {
-                        AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
-                        if(found != null)
-                        {
-                            Diagnostics.PushLog("=========================MOB SEES!=========================");
-                            EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
-                            found.controlledObject.SendEvent(evt, Priority.Normal, contr.controlledObject);
-                        }
+                        Diagnostics.PushLog("=========================MOB SEES!=========================");
+                        EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
+                        found.controlledObject.SendEvent(evt, Priority.Normal, contr.controlledObject);
                     }
+
                 }
                 counter = 1;
             }
@@ -97,16 +95,14 @@ namespace PlagueEngine.ArtificialIntelligence
             {
                 foreach (MercenaryController contr in GoodGuys)
                 {
-                    if (contr.attackTarget == null)
+                    AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(BadGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
+                    if (found != null && found.controlledObject != contr.attackTarget)
                     {
-                        AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(BadGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
-                        if (found != null)
-                        {
-                            Diagnostics.PushLog("=========================MERC SEES!=========================");
-                            EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
-                            found.controlledObject.SendEvent(evt, Priority.Normal, contr.controlledObject);
-                        }
+                        Diagnostics.PushLog("=========================MERC SEES!=========================");
+                        EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
+                        found.controlledObject.SendEvent(evt, Priority.Normal, contr.controlledObject);
                     }
+
                 }
                 counter = 0;
             }
