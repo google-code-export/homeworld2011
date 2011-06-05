@@ -142,6 +142,8 @@ namespace PlagueEngine.Tools
         Texture2D sunLightIcon;
         Texture2D spotLightIcon;
         Texture2D pointLightIcon;
+        Texture2D particleEmitterIcon;
+        Texture2D AreaparticleEmitterIcon;
         Texture2D moveIcon;
         Texture2D rotateIcon;
         public bool moveObject = true;
@@ -491,8 +493,18 @@ namespace PlagueEngine.Tools
             Bulldozer.dataClassType = typeof(BulldozerData);
             gameObjectClassNames.Add(Bulldozer);
 
-            
-            
+
+            gameObjectsClassName ParticleEmitter = new gameObjectsClassName();
+            ParticleEmitter.className = "ParticleEmitter";
+            ParticleEmitter.ClassType = typeof(ParticleEmitter);
+            ParticleEmitter.dataClassType = typeof(ParticleEmitterData);
+            gameObjectClassNames.Add(ParticleEmitter);
+
+            gameObjectsClassName AreaParticleEmitter = new gameObjectsClassName();
+            AreaParticleEmitter.className = "AreaParticleEmitter";
+            AreaParticleEmitter.ClassType = typeof(AreaParticleEmitter);
+            AreaParticleEmitter.dataClassType = typeof(AreaParticleEmitterData);
+            gameObjectClassNames.Add(AreaParticleEmitter);
 
         }
         /********************************************************************************/
@@ -1346,7 +1358,8 @@ namespace PlagueEngine.Tools
 
         private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
         {
-           
+            //input.Enabled = true;
+            //inputEnable.Checked = input.Enabled;
         }
 
         private void checkBoxGamePaused_CheckedChanged(object sender, EventArgs e)
@@ -1697,6 +1710,18 @@ namespace PlagueEngine.Tools
                             textureHeight = pointLightIcon.Height;
                             texture = pointLightIcon;
                         }
+                        else if (gameobject.GetType().Name.Equals("ParticleEmitter"))
+                        {
+                            textureWidth = particleEmitterIcon.Width;
+                            textureHeight = particleEmitterIcon.Height;
+                            texture = particleEmitterIcon;
+                        }
+                        else if (gameobject.GetType().Name.Equals("AreaParticleEmitter"))
+                        {
+                            textureWidth = AreaparticleEmitterIcon.Width;
+                            textureHeight = AreaparticleEmitterIcon.Height;
+                            texture = AreaparticleEmitterIcon;
+                        }
 
                         position = Vector4.Transform(Vector3.Transform(Vector3.Zero, gameobject.World), ViewProjection);
 
@@ -1751,7 +1776,14 @@ namespace PlagueEngine.Tools
                 {
                     icons.Add(gameobject);
                 }
-
+                else if (gameobject.GetType().Name.Equals("ParticleEmitter"))
+                {
+                    icons.Add(gameobject);
+                }
+                else if (gameobject.GetType().Name.Equals("AreaParticleEmitter"))
+                {
+                    icons.Add(gameobject);
+                }
             }
         }
 
@@ -1765,6 +1797,8 @@ namespace PlagueEngine.Tools
                 sunLightIcon = contentManager.LoadTexture2D("sunLightIcon");
                 spotLightIcon = contentManager.LoadTexture2D("spotLightIcon");
                 pointLightIcon = contentManager.LoadTexture2D("pointLightIcon");
+                particleEmitterIcon = contentManager.LoadTexture2D("particleEmitterIcon");
+                AreaparticleEmitterIcon = contentManager.LoadTexture2D("AreparticleEmitterIcon");
                 moveIcon = contentManager.LoadTexture2D("moveIcon");
                 rotateIcon = contentManager.LoadTexture2D("rotateIcon");
             }
@@ -1810,6 +1844,7 @@ namespace PlagueEngine.Tools
         {
             renderer.distanceScale = (float)numericUpDown1.Value;
         }
+
 
 
 
