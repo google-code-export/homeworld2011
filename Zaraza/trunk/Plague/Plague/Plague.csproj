@@ -197,6 +197,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\AbstractLivingBeing.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActionSwitch.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActivableObject.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\AreaParticleEmitter.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Armor.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BuildingWithRoof.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\MercenariesManager.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Mercenary.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Panel.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\ParticleEmitter.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\PointLight.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalBodyMesh.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SphericalSkinMesh.cs" />

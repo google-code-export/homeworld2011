@@ -72,11 +72,11 @@
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
-            this.inputEnable = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBoxGamePaused = new System.Windows.Forms.CheckBox();
             this.checkBoxShowCollisionSkin = new System.Windows.Forms.CheckBox();
             this.buttonCommitMeshTransforms = new System.Windows.Forms.Button();
+            this.inputEnable = new System.Windows.Forms.CheckBox();
             this.panel6 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -588,17 +588,6 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // inputEnable
-            // 
-            this.inputEnable.AutoSize = true;
-            this.inputEnable.Location = new System.Drawing.Point(3, 3);
-            this.inputEnable.Name = "inputEnable";
-            this.inputEnable.Size = new System.Drawing.Size(80, 17);
-            this.inputEnable.TabIndex = 9;
-            this.inputEnable.Text = "Game input";
-            this.inputEnable.UseVisualStyleBackColor = true;
-            this.inputEnable.CheckedChanged += new System.EventHandler(this.inputEnable_CheckedChanged);
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -641,6 +630,17 @@
             this.buttonCommitMeshTransforms.Text = "Commit Mesh Transforms";
             this.buttonCommitMeshTransforms.UseVisualStyleBackColor = true;
             this.buttonCommitMeshTransforms.Click += new System.EventHandler(this.buttonCommitMeshTransforms_Click);
+            // 
+            // inputEnable
+            // 
+            this.inputEnable.AutoSize = true;
+            this.inputEnable.Location = new System.Drawing.Point(3, 3);
+            this.inputEnable.Name = "inputEnable";
+            this.inputEnable.Size = new System.Drawing.Size(80, 17);
+            this.inputEnable.TabIndex = 9;
+            this.inputEnable.Text = "Game input";
+            this.inputEnable.UseVisualStyleBackColor = true;
+            this.inputEnable.CheckedChanged += new System.EventHandler(this.inputEnable_CheckedChanged);
             // 
             // panel6
             // 

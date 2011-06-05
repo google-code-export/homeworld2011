@@ -1313,6 +1313,101 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+
+
+
+
+
+
+
+
+        /****************************************************************************/
+        /// CreateParticleEmitter
+        /****************************************************************************/
+        public bool CreateParticleEmitter(ParticleEmitter result, ParticleEmitterData data)
+        {
+
+
+            result.Init(particleFactory.CreateParticleEmitterComponent(result,
+                                                                      data.BlendState,
+                                                                      data.Duration,
+                                                                      data.DurationRandomnes,
+                                                                      data.EmitterVelocitySensitivity,
+                                                                      data.VelocityEnd,
+                                                                      data.Gravity,
+                                                                      data.ColorMax,
+                                                                      data.EndSizeMax,
+                                                                      data.VelocityHorizontalMax,
+                                                                      data.ParticlesMax,
+                                                                      data.RotateSpeedMax,
+                                                                      data.StartSizeMax,
+                                                                      data.VelocityVerticalMax,
+                                                                      data.ColorMin,
+                                                                      data.EndSizeMin,
+                                                                      data.VelocityHorizontalMin,
+                                                                      data.RotateSpeedMin,
+                                                                      data.StartSizeMin,
+                                                                      data.VelocityVerticalMin,
+                                                                      data.ParticleTexture,
+                                                                      data.ParticlesPerSecond,
+                                                                      data.EmitterTranslation,
+                                                                      data.World,
+                                                                      data.ParticlesEnabled));
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
+
+
+
+
+        /****************************************************************************/
+        /// CreateAreaParticleEmitter
+        /****************************************************************************/
+        public bool CreateAreaParticleEmitter(AreaParticleEmitter result, AreaParticleEmitterData data)
+        {
+
+
+            result.Init(particleFactory.CreateAreaParticleEmitterComponent(result,
+                                                                      data.BlendState,
+                                                                      data.Duration,
+                                                                      data.DurationRandomnes,
+                                                                      data.EmitterVelocitySensitivity,
+                                                                      data.VelocityEnd,
+                                                                      data.Gravity,
+                                                                      data.ColorMax,
+                                                                      data.EndSizeMax,
+                                                                      data.VelocityHorizontalMax,
+                                                                      data.ParticlesMax,
+                                                                      data.RotateSpeedMax,
+                                                                      data.StartSizeMax,
+                                                                      data.VelocityVerticalMax,
+                                                                      data.ColorMin,
+                                                                      data.EndSizeMin,
+                                                                      data.VelocityHorizontalMin,
+                                                                      data.RotateSpeedMin,
+                                                                      data.StartSizeMin,
+                                                                      data.VelocityVerticalMin,
+                                                                      data.ParticleTexture,
+                                                                      data.ParticlesPerSecond,
+                                                                      data.EmitterTranslation,
+                                                                      data.World,
+                                                                      data.AreaSpawnWidth,
+                                                                      data.AreaSpawnLength,
+                                                                      data.ParticlesEnabled));
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
+
+
         
         /****************************************************************************/
         /// CreateActionSwitch
