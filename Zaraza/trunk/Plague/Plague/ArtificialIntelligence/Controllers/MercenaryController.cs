@@ -66,6 +66,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         objectTarget = null;
                         action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
+                        controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
                         controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                         return;
                     }
@@ -82,7 +83,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
-
+                        
                         if (controlledObject.Mesh.CurrentClip != animationBinding[Action.MOVE])
                         {
                             controlledObject.Mesh.BlendTo(animationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
@@ -227,6 +228,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                 #endregion
             }
+            else if (e.GetType().Equals(typeof (AttackOrderEvent)))
+            {
+                #region Attack Order Event
+                AttackOrderEvent evt = e as AttackOrderEvent;
+                action = Action.ENGAGE;
+                this.attackTarget = evt.EnemyToAttack;
+                #endregion 
+            }
             else
             {
                 base.OnEvent(sender, e);
@@ -236,7 +245,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         {
             (controlledObject as Mercenary).IsDisposed = true;   
             base.Dispose();
-            
         }
     
     }

@@ -26,7 +26,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Creature
     /********************************************************************************/
-    class Creature : AbstractLivingBeing
+    class Creature : AbstractLivingBeing, IActiveGameObject
     {
 
         /****************************************************************************/
@@ -180,14 +180,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
-            if (e.GetType().Equals(typeof(Rendering.AnimationEndEvent)))
-            {
-                mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3));
-            }
-            else
-            {
-                this.ObjectAIController.OnEvent(sender, e);
-            }
+            this.ObjectAIController.OnEvent(sender, e);
         }
         /****************************************************************************/
 
@@ -268,6 +261,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        public string[] GetActions()
+        {
+            List<String> actions = new List<String>();
+
+            actions.Add("Attack");
+
+            return actions.ToArray();
+        }
+
+        public string[] GetActions(Mercenary mercenary)
+        {
+            List<String> actions = new List<String>();
+
+            actions.Add("Attack");
+
+            return actions.ToArray();
+        }
     }
     /********************************************************************************/
 
