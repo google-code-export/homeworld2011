@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
 using PlagueEngine.EventsSystem;
-using PlagueEngine.HighLevelGameFlow;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.ArtificialIntelligence;
 
-
-/************************************************************************************/
-/// PlagueEngine.LowLevelGameFlow.GameObjects
-/************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
@@ -29,27 +23,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields        
         /****************************************************************************/        
-        private List<Mercenary> SelectedMercenaries = null;
-        private bool            commandMode         = false;
-        private bool            leftControl         = false;
-        private bool            leftAlt             = false;
-        private bool            useGUI              = false;
-        private bool            mouseOnActions      = false;
+        private List<Mercenary> _selectedMercenaries;
+        private bool            _commandMode;
+        private bool            _leftControl;
+        private bool            _leftAlt;
+        private bool            _useGUI;
+        private bool            _mouseOnActions;
 
-        private EventsSnifferComponent    sniffer  = new EventsSnifferComponent();
-        private KeyboardListenerComponent keyboard = null;
-        private MouseListenerComponent    mouse    = null;
-        private FrontEndComponent         frontEnd = null;
+        private readonly EventsSnifferComponent    _sniffer  = new EventsSnifferComponent();
+        private KeyboardListenerComponent _keyboard;
+        private MouseListenerComponent    _mouse;
+        private FrontEndComponent         _frontEnd;
 
-        private GameObjectInstance targetGameObject = null;
-        private Mercenary          currentMercenary = null;
-        private Inventory          inventory        = null;
+        private GameObjectInstance _targetGameObject;
+        private Mercenary          _currentMercenary;
+        private Inventory          _inventory;
 
-        private int screenWidthOver2 = 0;
-        private int mouseX           = 0;
-        private int mouseOnMerc      = 0;
+        private int _screenWidthOver2;
+        private int _mouseX;
+        private int _mouseOnMerc;
 
-        private int iconsOffset      = 0;
+        private int _iconsOffset;
         /****************************************************************************/
 
 
@@ -69,16 +63,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          MouseListenerComponent    mouse,
                          FrontEndComponent         frontEnd)
         {
-            SelectedMercenaries = new List<Mercenary>();
+            _selectedMercenaries = new List<Mercenary>();
             LinkedCamera        = linkedCamera;
-            this.keyboard       = keyboard;
-            this.mouse          = mouse;
+            _keyboard       = keyboard;
+            _mouse          = mouse;
 
-            this.frontEnd = frontEnd;
+            _frontEnd = frontEnd;
             frontEnd.Draw = OnDraw;
 
-            sniffer.SetOnSniffedEvent(OnSniffedEvent);
-            sniffer.SubscribeEvents(typeof(CreateEvent),
+            _sniffer.SetOnSniffedEvent(OnSniffedEvent);
+            _sniffer.SubscribeEvents(typeof(CreateEvent),
                                     typeof(DestroyEvent));
 
             keyboard.SubscibeKeys(OnKey,  Keys.Tab,Keys.LeftControl, Keys.LeftAlt,Keys.OemTilde,
@@ -95,253 +89,231 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+        private void AddToSelection(Mercenary m)
+        {
+            if (m == null) return;
+            if(!_selectedMercenaries.Contains(m))
+            {
+                _selectedMercenaries.Add(m);
+            }
+            _commandMode = true;
+            m.Marker = true;
+            SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
+        }
 
+        private void RemoveFromSelection(Mercenary m)
+        {
+            if (m == null) return;
+            _selectedMercenaries.Remove(m);
+            m.Marker = false;
+            if (_selectedMercenaries.Count != 0) return;
+            SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+            _commandMode = false;
+        }
+
+        private void ClearSelection()
+        {
+            foreach (var merc in _selectedMercenaries)
+            {
+                merc.Marker = false;
+            }
+            _selectedMercenaries.Clear();
+        }
         /****************************************************************************/
         /// On Event
         /****************************************************************************/
         public override void OnEvent(EventsSender sender, EventArgs e)
         {
-            /*************************************/
-            /// SelectedObjectEvent
-            /*************************************/
-            if (e.GetType().Equals(typeof(SelectedObjectEvent)))
+            if (sender == null) return;
+            var argsType = e.GetType();
+            if (argsType.Equals(typeof(SelectedObjectEvent)))
             {
-                SelectedObjectEvent selectedObjectEvent = e as SelectedObjectEvent;
-
-                if (selectedObjectEvent.gameObject == null)
-                {
-                    foreach (Mercenary merc in SelectedMercenaries) merc.Marker = false;
-                    SelectedMercenaries.Clear();
-                    SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
-                    commandMode = false;
-                    return;
-                }
-
-                Mercenary m = selectedObjectEvent.gameObject as Mercenary;
-
-                if (m != null)
-                {
-                    foreach (Mercenary merc in SelectedMercenaries) merc.Marker = false;
-                    SelectedMercenaries.Clear();
-
-                    SelectedMercenaries.Add(m);
-                    m.Marker = true;
-
-                    SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
-                    commandMode = true;
-                }
+                var selectedObjectEvent = e as SelectedObjectEvent;
+                if (selectedObjectEvent == null) return;
+                ClearSelection();
+                AddToSelection(selectedObjectEvent.gameObject as Mercenary);
             }
-            /*************************************/
-            /// AddToSelectionEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(AddToSelectionEvent)))
+            else if (argsType.Equals(typeof(AddToSelectionEvent)))
             {
-                AddToSelectionEvent addToSelectionEvent = e as AddToSelectionEvent;
-
-                Mercenary m = addToSelectionEvent.gameObject as Mercenary;
-
-                if (m != null)
-                {
-                    SelectedMercenaries.Add(m);
-                    m.Marker = true;
-
-                    SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
-                    commandMode = true;
-                }
+                var addToSelectionEvent = e as AddToSelectionEvent;
+                if (addToSelectionEvent == null) return;
+                AddToSelection(addToSelectionEvent.gameObject as Mercenary);
             }
-            /*************************************/
-            /// RemoveFromSelectionEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(RemoveFromSelectionEvent)))
+            else if (argsType.Equals(typeof(RemoveFromSelectionEvent)))
             {
-                RemoveFromSelectionEvent removeFromSelectionEvent = e as RemoveFromSelectionEvent;
-
-                Mercenary m = removeFromSelectionEvent.gameObject as Mercenary;
-
-                if (m != null)
-                {
-                    SelectedMercenaries.Remove(m);
-                    m.Marker = false;
-
-                    if (SelectedMercenaries.Count == 0)
-                    {
-                        SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
-                        commandMode = false;
-                    }
-                }
+                var removeFromSelectionEvent = e as RemoveFromSelectionEvent;
+                if (removeFromSelectionEvent == null) return;
+                RemoveFromSelection(removeFromSelectionEvent.gameObject as Mercenary);
             }
-            /*************************************/
-            /// CommandOnObjectEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(CommandOnObjectEvent)))
+            else if (argsType.Equals(typeof(CommandOnObjectEvent)))
             {
-                if (commandMode)
+                if (_commandMode)
                 {
-                    CommandOnObjectEvent commandOnObjectEvent = e as CommandOnObjectEvent;
+                    var commandOnObjectEvent = e as CommandOnObjectEvent;
+                    if (commandOnObjectEvent == null) return;
 
                     if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Passable)
                     {
                         //finezja :D!
-
-                        if (SelectedMercenaries.Count == 1)
+                        if (_selectedMercenaries.Count == 1)
                         {
-                            QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), !leftControl, SelectedMercenaries.ToArray());
+                            QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
                         }
                         else
                         {
                             //calculate center
-                            Vector3 center = Vector3.Zero;
-                            foreach (Mercenary merc in SelectedMercenaries)
+                            var center = Vector3.Zero;
+                            foreach (var merc in _selectedMercenaries)
                             {
                                 center += merc.World.Translation;
                             }
-                            center /= SelectedMercenaries.Count;
-
+                            center /= _selectedMercenaries.Count;
                             //check if moving to center or to point
-                            bool toCenter = false;
-                            foreach (Mercenary merc in SelectedMercenaries)
+                            var toCenter = false;
+                            foreach (var merc in _selectedMercenaries)
                             {
                                 double distToCenter = Vector3.Distance(merc.World.Translation, center);
                                 double distToTarget = Vector3.Distance(merc.World.Translation, commandOnObjectEvent.position);
-                                if (distToCenter > distToTarget)
-                                {
-                                    toCenter = true;
-                                    break;
-                                }
+                                if (distToCenter <= distToTarget) continue;
+                                toCenter = true;
+                                break;
                             }
-
                             if (toCenter)
                             {
-                                foreach (Mercenary merc in SelectedMercenaries)
+                                foreach (var merc in _selectedMercenaries)
                                 {
-                                    Vector3 target = commandOnObjectEvent.position + Vector3.Normalize(merc.World.Translation - center);
-                                    QueueEvent(new MoveToPointCommandEvent(target), !leftControl, merc);
+                                    var target = commandOnObjectEvent.position + Vector3.Normalize(merc.World.Translation - center);
+                                    QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
                                 }
                             }
                             else
                             {
-                                foreach (Mercenary merc in SelectedMercenaries)
+                                foreach (var merc in _selectedMercenaries)
                                 {
-                                    Vector3 target = (merc.World.Translation - center) + commandOnObjectEvent.position;
-                                    QueueEvent(new MoveToPointCommandEvent(target), !leftControl, merc);
+                                    var target = (merc.World.Translation - center) + commandOnObjectEvent.position;
+                                    QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
                                 }
                             }
                         }
-                        //QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), !leftControl, SelectedMercenaries.ToArray());
                     }
                     else if (commandOnObjectEvent.gameObject.Status != GameObjectStatus.Nothing)
                     {
-                        IActiveGameObject activeGameObject = commandOnObjectEvent.gameObject as IActiveGameObject;
+                        var activeGameObject = commandOnObjectEvent.gameObject as IActiveGameObject;
                         if (activeGameObject != null)
                         {
-                            ActionSwitchData data = new ActionSwitchData();
-                            data.Feedback = this.ID;
-                            data.ObjectName = commandOnObjectEvent.gameObject.Name;
+                            var data = new ActionSwitchData
+                                           {
+                                               Feedback = ID,
+                                               ObjectName = commandOnObjectEvent.gameObject.Name
+                                           };
 
-                            if (SelectedMercenaries.Count == 1)
+                            if (_selectedMercenaries.Count == 1)
                             {
-                                currentMercenary = SelectedMercenaries.ElementAt(0);
-                                data.Actions = activeGameObject.GetActions(currentMercenary);
+                                _currentMercenary = _selectedMercenaries.ElementAt(0);
+                                data.Actions = activeGameObject.GetActions(_currentMercenary);
                             }
                             else
                             {
                                 data.Actions = activeGameObject.GetActions();
-                                currentMercenary = null;
+                                _currentMercenary = null;
                             }
                             
                             data.Position = commandOnObjectEvent.position;
 
                             SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
                             
-                            targetGameObject = commandOnObjectEvent.gameObject;
+                            _targetGameObject = commandOnObjectEvent.gameObject;
                         }
-                    }                                        
-                }                               
-            }
-            /*************************************/
-            /// SelectedActionEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(SelectedActionEvent)))
-            {
-                SelectedActionEvent SelectedActionEvent = e as SelectedActionEvent;
-
-                if (currentMercenary != null)
-                {
-                    switch (SelectedActionEvent.Action)
-                    {
-                        case "Attack"             : QueueEvent(new AttackOrderEvent(targetGameObject as AbstractLivingBeing), !leftControl, currentMercenary); break; 
-                        case "Grab"               : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl,currentMercenary); break;
-                        case "Activate"           : QueueEvent(new ActivateObjectEvent (targetGameObject), !leftControl, currentMercenary); break;
-                        case "Examine"            : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl,currentMercenary); break;
-                        case "Follow"             : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl,currentMercenary); break;
-                        case "Exchange Items"     : QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, currentMercenary); break;
-                        case "Drop Item"          : QueueEvent(new DropItemCommandEvent(),        !leftControl, currentMercenary); break;
-                        case "Reload"             : QueueEvent(new ReloadCommandEvent(),          !leftControl, currentMercenary); break;
-                        case "Switch to Weapon"   : QueueEvent(new SwitchToWeaponCommandEvent(),  !leftControl, currentMercenary); break;
-                        case "Switch to Side Arm" : QueueEvent(new SwitchToSideArmCommandEvent(), !leftControl, currentMercenary); break;
-                        case "Inventory": 
-                                        InventoryData data      = new InventoryData();
-                                        data.MercenariesManager = this.ID;
-                                        data.Mercenary          = targetGameObject.ID;
-                                        if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
-                                        SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
-                                        break;                                                                                                                                                
                     }
+                }
+            }
+            else if (argsType.Equals(typeof(SelectedActionEvent)))
+            {
+                var selectedActionEvent = e as SelectedActionEvent;
+                if (selectedActionEvent == null) return;
+
+                if (_currentMercenary != null)
+                {
+                        switch (selectedActionEvent.Action)
+                        {
+                            case "Attack"             : QueueEvent(new AttackOrderEvent(_targetGameObject as AbstractLivingBeing), !_leftControl, _currentMercenary); break; 
+                            case "Grab"               : QueueEvent(new GrabObjectCommandEvent   (_targetGameObject),!_leftControl,_currentMercenary); break;
+                            case "Activate"           : QueueEvent(new ActivateObjectEvent (_targetGameObject), !_leftControl, _currentMercenary); break;
+                            case "Examine"            : QueueEvent(new ExamineObjectCommandEvent(_targetGameObject),!_leftControl,_currentMercenary); break;
+                            case "Follow"             : QueueEvent(new FollowObjectCommandEvent (_targetGameObject),!_leftControl,_currentMercenary); break;
+                            case "Exchange Items"     : QueueEvent(new ExchangeItemsCommandEvent(_targetGameObject as Mercenary), !_leftControl, _currentMercenary); break;
+                            case "Drop Item"          : QueueEvent(new DropItemCommandEvent(),        !_leftControl, _currentMercenary); break;
+                            case "Reload"             : QueueEvent(new ReloadCommandEvent(),          !_leftControl, _currentMercenary); break;
+                            case "Switch to Weapon"   : QueueEvent(new SwitchToWeaponCommandEvent(),  !_leftControl, _currentMercenary); break;
+                            case "Switch to Side Arm" : QueueEvent(new SwitchToSideArmCommandEvent(), !_leftControl, _currentMercenary); break;
+                            case "Inventory": 
+                                var data      = new InventoryData
+                                                    {
+                                                        MercenariesManager = ID,
+                                                        Mercenary = _targetGameObject.ID
+                                                    };
+                                if (_inventory != null) SendEvent(new DestroyObjectEvent(_inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
+                                SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                                break;                                                                                                                                                
+                        }
                 }
                 else
                 {
-                    switch (SelectedActionEvent.Action)
+                    switch (selectedActionEvent.Action)
                     {
-                        case "Attack": QueueEvent(new AttackOrderEvent(targetGameObject as AbstractLivingBeing), !leftControl, SelectedMercenaries.ToArray()); break; 
-                        case "Grab"          : QueueEvent(new GrabObjectCommandEvent   (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
-                        case "Activate"      : QueueEvent(new ActivateObjectEvent(targetGameObject), !leftControl, SelectedMercenaries.ToArray()); break;
-                        case "Examine"       : QueueEvent(new ExamineObjectCommandEvent(targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
-                        case "Follow"        : QueueEvent(new FollowObjectCommandEvent (targetGameObject),!leftControl, SelectedMercenaries.ToArray()); break;
-                        case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(targetGameObject as Mercenary), !leftControl, SelectedMercenaries.ElementAt(0)); break;
+                        case "Attack": QueueEvent(new AttackOrderEvent(_targetGameObject as AbstractLivingBeing), !_leftControl, _selectedMercenaries.ToArray()); break; 
+                        case "Grab"          : QueueEvent(new GrabObjectCommandEvent   (_targetGameObject),!_leftControl, _selectedMercenaries.ToArray()); break;
+                        case "Activate"      : QueueEvent(new ActivateObjectEvent(_targetGameObject), !_leftControl, _selectedMercenaries.ToArray()); break;
+                        case "Examine"       : QueueEvent(new ExamineObjectCommandEvent(_targetGameObject),!_leftControl, _selectedMercenaries.ToArray()); break;
+                        case "Follow"        : QueueEvent(new FollowObjectCommandEvent (_targetGameObject),!_leftControl, _selectedMercenaries.ToArray()); break;
+                        case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(_targetGameObject as Mercenary), !_leftControl, _selectedMercenaries.ElementAt(0)); break;
                         case "Inventory":
-                                        InventoryData data      = new InventoryData();
-                                        data.MercenariesManager = this.ID;
-                                        data.Mercenary          = targetGameObject.ID;
-                                        if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
+                                        var data      = new InventoryData
+                                                                      {
+                                                                          MercenariesManager = ID,
+                                                                          Mercenary = _targetGameObject.ID
+                                                                      };
+                            if (_inventory != null) SendEvent(new DestroyObjectEvent(_inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
                                         SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
                                         break;
 
                     }                
                 }
             }
-            /*************************************/
-            /// ActionDoneEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(ActionDoneEvent)))
+            else if (argsType.Equals(typeof(ActionDoneEvent)))
             {
-                List<EventArgs> Actions = Mercenaries[sender as Mercenary];
-                Actions.RemoveAt(0);
-                if (Actions.Count != 0) SendEvent(Actions.ElementAt(0), Priority.Normal, sender as Mercenary);
+                var m = sender as Mercenary;
+                if(m != null)
+                {
+                    if (Mercenaries.ContainsKey(m))
+                    {
+                        var actions = Mercenaries[m];
+                        actions.RemoveAt(0);
+                        if (actions.Count != 0) SendEvent(actions.ElementAt(0), Priority.Normal, sender as Mercenary);
+                    } 
+                }
+                
             }
-            /*************************************/
-            /// ExchangeItemsEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(ExchangeItemsEvent)))
+            else if (argsType.Equals(typeof(ExchangeItemsEvent)))
             {
-                ExchangeItemsEvent ExchangeItemsEvent = e as ExchangeItemsEvent;
-
-                InventoryData data = new InventoryData();
-                data.MercenariesManager = this.ID;
-                data.Mercenary  = ExchangeItemsEvent.mercenary1.ID;
-                data.Mercenary2 = ExchangeItemsEvent.mercenary2.ID;
-                if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);          
+                var exchangeItemsEvent = e as ExchangeItemsEvent;
+                if (exchangeItemsEvent == null) return;
+                var data = new InventoryData
+                                         {
+                                             MercenariesManager = ID,
+                                             Mercenary = exchangeItemsEvent.mercenary1.ID,
+                                             Mercenary2 = exchangeItemsEvent.mercenary2.ID
+                                         };
+                if (_inventory != null) SendEvent(new DestroyObjectEvent(_inventory.ID), Priority.High, GlobalGameObjects.GameController);          
                 SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
             }
-            /*************************************/
-            /// ObjectCreatedEvent
-            /*************************************/
-            else if (e.GetType().Equals(typeof(ObjectCreatedEvent)))
+            else if (argsType.Equals(typeof(ObjectCreatedEvent)))
             {
-                ObjectCreatedEvent ObjectCreatedEvent = e as ObjectCreatedEvent;
-                
-                if (ObjectCreatedEvent.GameObject.GetType().Equals(typeof(Inventory)))
+                var objectCreatedEvent = e as ObjectCreatedEvent;
+                if (objectCreatedEvent == null) return;
+                if (objectCreatedEvent.GameObject.GetType().Equals(typeof(Inventory)))
                 {
-                    inventory = ObjectCreatedEvent.GameObject as Inventory;
+                    _inventory = objectCreatedEvent.GameObject as Inventory;
                 }
             }
         }
@@ -353,34 +325,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
         {
-            
-            /*************************************/
-            /// CreateEvent
-            /*************************************/
             if (e.GetType().Equals(typeof(CreateEvent)) && sender.GetType().Equals(typeof(Mercenary)))
             {
-                Mercenaries.Add(sender as Mercenary, new List<EventArgs>());
-                iconsOffset = (66 * Mercenaries.Count) / 2;
+                 var m = sender as Mercenary;
+                 if (m != null)
+                 {
+                     Mercenaries.Add(m, new List<EventArgs>());
+                     _iconsOffset = (66*Mercenaries.Count)/2;
+                 }
             }
-            /*************************************/
-            /// DestroyEvent
-            /*************************************/
             else if (e.GetType().Equals(typeof(DestroyEvent)))
             {
                 if (sender.GetType().Equals(typeof(Mercenary)))
                 {
-                    SelectedMercenaries.Remove(sender as Mercenary);
-                    if (SelectedMercenaries.Count == 0)
+                    var m = sender as Mercenary;
+                    if (m != null)
                     {
-                        SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
-                        commandMode = false;
+                        _selectedMercenaries.Remove(m);
+                        if (_selectedMercenaries.Count == 0)
+                        {
+                            SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                            _commandMode = false;
+                        }
+                        Mercenaries.Remove(m);
+                        _iconsOffset = (66*Mercenaries.Count)/2;
                     }
-                    Mercenaries.Remove(sender as Mercenary);
-                    iconsOffset = (66 * Mercenaries.Count) / 2;
                 }
                 else if (sender.GetType().Equals(typeof(Inventory)))
                 {
-                    inventory = null;
+                    _inventory = null;
                 }
             }
             /*************************************/
@@ -394,32 +367,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void OnKey(Keys key, ExtendedKeyState state)
         {
-
-            /************************************************************************/
-            /// Tab
-            /************************************************************************/
             if (key == Keys.Tab && state.WasPressed())
             {
                 if (Mercenaries.Count == 0) return;
 
                 SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
-                commandMode = true;
+                _commandMode = true;
 
-                if (SelectedMercenaries.Count == 0)
+                if (_selectedMercenaries.Count == 0)
                 {
                     Mercenaries.ElementAt(0).Key.Marker = true;
-                    SelectedMercenaries.Add(Mercenaries.ElementAt(0).Key);
+                    _selectedMercenaries.Add(Mercenaries.ElementAt(0).Key);
                 }
                 else
                 {
                     if (Mercenaries.Count == 1) return;
                     
-                    int i = GetMercenaryIndex(SelectedMercenaries.ElementAt(0));
+                    var i = GetMercenaryIndex(_selectedMercenaries.ElementAt(0));
 
-                    foreach (Mercenary m in SelectedMercenaries) m.Marker = false;
-                    SelectedMercenaries.Clear();
+                    ClearSelection();
 
-                    if (leftControl)
+                    if (_leftControl)
                     {
                         if (i == 0) i = Mercenaries.Count -1;
                         else --i;
@@ -431,43 +399,45 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
 
                     Mercenaries.ElementAt(i).Key.Marker = true;
-                    SelectedMercenaries.Add(Mercenaries.ElementAt(i).Key);
+                    _selectedMercenaries.Add(Mercenaries.ElementAt(i).Key);
                 }
             }
             /************************************************************************/
-            /// Left Control
+            // Left Control
             /************************************************************************/
-            else if (key == Keys.LeftControl) leftControl = state.IsDown();
+            else if (key == Keys.LeftControl) _leftControl = state.IsDown();
             /************************************************************************/
-            /// Left Alt
+            // Left Alt
             /************************************************************************/
-            else if (key == Keys.LeftAlt) leftAlt = state.IsDown();
+            else if (key == Keys.LeftAlt) _leftAlt = state.IsDown();
             /************************************************************************/
-            /// Tilde
+            // Tilde
             /************************************************************************/
             else if (key == Keys.OemTilde && state.WasPressed())
             {
-                if(SelectedMercenaries.Count == 1)
+                if(_selectedMercenaries.Count == 1)
                 {
-                    SendEvent(new MoveToObjectCommandEvent(SelectedMercenaries.ElementAt(0)), Priority.High, LinkedCamera);
+                    SendEvent(new MoveToObjectCommandEvent(_selectedMercenaries.ElementAt(0)), Priority.High, LinkedCamera);
                 }
             }
             /************************************************************************/
-            /// E
+            // E
             /************************************************************************/
             else if (key == Keys.E && state.WasPressed())
             {
-                if (SelectedMercenaries.Count == 1)
+                if (_selectedMercenaries.Count == 1)
                 {
-                    InventoryData data = new InventoryData();
-                    data.MercenariesManager = this.ID;
-                    data.Mercenary = SelectedMercenaries.ElementAt(0).ID;
-                    if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
+                    var data = new InventoryData
+                                             {
+                                                 MercenariesManager = ID,
+                                                 Mercenary = _selectedMercenaries.ElementAt(0).ID
+                                             };
+                    if (_inventory != null) SendEvent(new DestroyObjectEvent(_inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
                     SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
                 }
             }
             /************************************************************************/
-            /// 1,2,3,4,5,6,7,8,9,0
+            // 1,2,3,4,5,6,7,8,9,0
             /************************************************************************/
             else if (state.WasPressed())
             {
@@ -498,24 +468,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (mouseMovementState.Position.Y > 5 && mouseMovementState.Position.Y < 85)
                 { 
-                    if (mouseMovementState.Position.X > (screenWidthOver2 - iconsOffset) &&
-                        mouseMovementState.Position.X < (screenWidthOver2 + iconsOffset))
+                    if (mouseMovementState.Position.X > (_screenWidthOver2 - _iconsOffset) &&
+                        mouseMovementState.Position.X < (_screenWidthOver2 + _iconsOffset))
                     {
-                        useGUI = true;
+                        _useGUI = true;
                         
-                        if (mouseMovementState.Position.Y > 69) mouseOnActions = true;
-                        else mouseOnActions = false;
+                        _mouseOnActions = mouseMovementState.Position.Y > 69;
 
-                        mouseX = (int)mouseMovementState.Position.X - (screenWidthOver2 - iconsOffset);
+                        _mouseX = (int)mouseMovementState.Position.X - (_screenWidthOver2 - _iconsOffset);
 
                         LinkedCamera.mouseListenerComponent.Active = false;
                         
-                        mouse.SetCursor("Default");
+                        _mouse.SetCursor("Default");
                         return;
                     }                    
                 }                
             }
-            useGUI = false;
+            _useGUI = false;
             LinkedCamera.mouseListenerComponent.Active = true;
         }
         /****************************************************************************/
@@ -526,121 +495,99 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState)
         {
-            if (useGUI)
+            if (!_useGUI) return;
+            if (!mouseKeyState.WasPressed()) return;
+            _mouseOnMerc = _mouseX / 66;
+            /*********************************/
+            // Left Click
+            /*********************************/
+            switch (mouseKeyAction)
             {
-                if(mouseKeyState.WasPressed())
-                {
-                    mouseOnMerc = mouseX / 66;
-                    /*********************************/
-                    /// Left Click
-                    /*********************************/
-                    if (mouseKeyAction == MouseKeyAction.LeftClick)
-                    {                 
-                        if(mouseOnActions)
-                        {
-                            int x = mouseX % 66;
-                            x /= 16;
-                            if (x == 0)
-                            {
-                                Mercenary merc = Mercenaries.Keys.ElementAt(mouseOnMerc);
-                                if (Mercenaries[merc].Count == 1)
-                                {
-                                    Mercenaries[merc].RemoveAt(0);
-                                    SendEvent(new StopActionEvent(), Priority.High, merc);
-                                }
-                                else if(Mercenaries[merc].Count > 1)
-                                {
-                                    Mercenaries[merc].RemoveAt(0);
-                                    SendEvent(new StopActionEvent(), Priority.High, merc);
-                                    SendEvent(Mercenaries[merc].ElementAt(0), Priority.Normal, merc);                                    
-                                }
-                            }
-                            else if (x < 4)
-                            {
-                                Mercenary merc = Mercenaries.Keys.ElementAt(mouseOnMerc);
-                                if (Mercenaries[merc].Count > x)
-                                {
-                                    Mercenaries[merc].RemoveAt(x);                                    
-                                }                            
-                            }
-                        }
-                        else if (leftControl)
-                        {
-                            if (!SelectedMercenaries.Contains(Mercenaries.ElementAt(mouseOnMerc).Key))
-                            {
-                                SelectedMercenaries.Add(Mercenaries.ElementAt(mouseOnMerc).Key);
-                                Mercenaries.ElementAt(mouseOnMerc).Key.Marker = true;
-                                SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
-                                commandMode = true;
-                            }
-                        }
-                        else if (leftAlt)
-                        {
-                            if (SelectedMercenaries.Contains(Mercenaries.ElementAt(mouseOnMerc).Key))
-                            {
-                                SelectedMercenaries.Remove(Mercenaries.ElementAt(mouseOnMerc).Key);
-                                Mercenaries.ElementAt(mouseOnMerc).Key.Marker = false;
-
-                                if (SelectedMercenaries.Count == 0)
-                                {
-                                    SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
-                                    commandMode = false;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (Mercenary m in SelectedMercenaries) m.Marker = false;
-                            SelectedMercenaries.Clear();
-
-                            SelectedMercenaries.Add(Mercenaries.ElementAt(mouseOnMerc).Key);
-                            Mercenaries.ElementAt(mouseOnMerc).Key.Marker = true;
-                            SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
-                            commandMode = true;
-                        }                                        
-                    }
-                    /*********************************/                        
-                    /// Middle Click
-                    /*********************************/                        
-                    else if (mouseKeyAction == MouseKeyAction.MiddleClick)
+                case MouseKeyAction.LeftClick:
+                    if(_mouseOnActions)
                     {
-                        if (!mouseOnActions)
+                        var x = _mouseX % 66;
+                        x /= 16;
+                        if (x == 0)
                         {
-                            SendEvent(new MoveToObjectCommandEvent(Mercenaries.ElementAt(mouseOnMerc).Key), Priority.High, LinkedCamera);
+                            var merc = Mercenaries.Keys.ElementAt(_mouseOnMerc);
+                            if (Mercenaries[merc].Count == 1)
+                            {
+                                Mercenaries[merc].RemoveAt(0);
+                                SendEvent(new StopActionEvent(), Priority.High, merc);
+                            }
+                            else if(Mercenaries[merc].Count > 1)
+                            {
+                                Mercenaries[merc].RemoveAt(0);
+                                SendEvent(new StopActionEvent(), Priority.High, merc);
+                                SendEvent(Mercenaries[merc].ElementAt(0), Priority.Normal, merc);                                    
+                            }
+                        }
+                        else if (x < 4)
+                        {
+                            var merc = Mercenaries.Keys.ElementAt(_mouseOnMerc);
+                            if (Mercenaries[merc].Count > x)
+                            {
+                                Mercenaries[merc].RemoveAt(x);                                    
+                            }                            
                         }
                     }
-                    /*********************************/                        
-                    /// Right Click
-                    /*********************************/
-                    else if (mouseKeyAction == MouseKeyAction.RightClick)
+                    else if (_leftControl)
                     {
-                        if (!mouseOnActions)
+                        if (!_selectedMercenaries.Contains(Mercenaries.ElementAt(_mouseOnMerc).Key))
                         {
-                            InventoryData data = new InventoryData();
-                            data.MercenariesManager = this.ID;
-                            data.Mercenary = Mercenaries.ElementAt(mouseOnMerc).Key.ID;
-                            if (inventory != null) SendEvent(new DestroyObjectEvent(inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
-                            SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
-                        }                    
+                            AddToSelection(Mercenaries.ElementAt(_mouseOnMerc).Key);
+                        }
                     }
-                    /*********************************/                        
-                }
+                    else if (_leftAlt)
+                    {
+                        if (_selectedMercenaries.Contains(Mercenaries.ElementAt(_mouseOnMerc).Key))
+                        {
+                            RemoveFromSelection(Mercenaries.ElementAt(_mouseOnMerc).Key);
+                        }
+                    }
+                    else
+                    {
+                        ClearSelection();
+                        AddToSelection(Mercenaries.ElementAt(_mouseOnMerc).Key);
+                    }
+                    break;
+                case MouseKeyAction.MiddleClick:
+                    if (!_mouseOnActions)
+                    {
+                        SendEvent(new MoveToObjectCommandEvent(Mercenaries.ElementAt(_mouseOnMerc).Key), Priority.High, LinkedCamera);
+                    }
+                    break;
+                case MouseKeyAction.RightClick:
+                    if (!_mouseOnActions)
+                    {
+                        var data = new InventoryData
+                                       {
+                                           MercenariesManager = ID,
+                                           Mercenary = Mercenaries.ElementAt(_mouseOnMerc).Key.ID
+                                       };
+                        if (_inventory != null) SendEvent(new DestroyObjectEvent(_inventory.ID), Priority.High, GlobalGameObjects.GameController);                                        
+                        SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                    }
+                    break;
             }
+            /*********************************/
         }
+
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Get Mercenary From Icon
         /****************************************************************************/
-        public Mercenary GetMercenaryFromIcon(int mouseX, int mouseY)
+        public Mercenary GetMercenaryFromIcon(int mousex, int mousey)
         {
-            if (mouseY > 5 && mouseY < 69)
+            if (mousey > 5 && mousey < 69)
             {
-                if (mouseX > (screenWidthOver2 - iconsOffset) &&
-                    mouseX < (screenWidthOver2 + iconsOffset))
+                if (mousex > (_screenWidthOver2 - _iconsOffset) &&
+                    mousex < (_screenWidthOver2 + _iconsOffset))
                 {
-                    int merc = (mouseX - (screenWidthOver2 - iconsOffset)) / 66;
+                    var merc = (mousex - (_screenWidthOver2 - _iconsOffset)) / 66;
                     return Mercenaries.Keys.ElementAt(merc);
                 }
             }
@@ -655,41 +602,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void ProcessMercenary(int i)
         {
-            if (Mercenaries.Count > i)
+            if (Mercenaries.Count <= i) return;
+            if (_leftAlt)
             {
-                if (leftAlt)
-                {
-                    Mercenary m = Mercenaries.ElementAt(i).Key;
-                    m.Marker = false;
-                    if (SelectedMercenaries.Contains(m)) SelectedMercenaries.Remove(m);
+                var m = Mercenaries.ElementAt(i).Key;
+                m.Marker = false;
+                if (_selectedMercenaries.Contains(m)) _selectedMercenaries.Remove(m);
                     
-                    if (SelectedMercenaries.Count == 0)
-                    {
-                        SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
-                        commandMode = false;
-                    }
+                if (_selectedMercenaries.Count == 0)
+                {
+                    SendEvent(new ExSwitchEvent("UseCommands", false), Priority.Normal, LinkedCamera);
+                    _commandMode = false;
                 }
-                else if (!leftControl && !leftAlt)
-                {
-                    foreach (Mercenary m1 in SelectedMercenaries) m1.Marker = false;
-                    SelectedMercenaries.Clear();
-
-                    Mercenary m = Mercenaries.ElementAt(i).Key;
-                    m.Marker = true;
-                    if (!SelectedMercenaries.Contains(m)) SelectedMercenaries.Add(m);
-                    SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
-                    commandMode = true;
-                }                
-                else
-                {
-                    Mercenary m = Mercenaries.ElementAt(i).Key;
-                    m.Marker = true;
-                    if (!SelectedMercenaries.Contains(m)) SelectedMercenaries.Add(m);
-                    SendEvent(new ExSwitchEvent("UseCommands", true), Priority.Normal, LinkedCamera);
-                    commandMode = true;
-                }                
+            }
+            else if (!_leftControl && !_leftAlt)
+            {
+                ClearSelection();
+                AddToSelection(Mercenaries.ElementAt(i).Key);
+            }                
+            else
+            {
+                AddToSelection(Mercenaries.ElementAt(i).Key);
             }
         }
+
         /****************************************************************************/
 
 
@@ -698,7 +634,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            MercenariesManagerData data = new MercenariesManagerData();
+            var data = new MercenariesManagerData();
             GetData(data);
 
             if(LinkedCamera != null)
@@ -713,32 +649,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// On Draw
         /****************************************************************************/
-        private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
+        private void OnDraw(SpriteBatch spriteBatch, ref Matrix viewProjection, int screenWidth, int screenHeight)
         {
-            int i = 0;            
-            screenWidthOver2 = screenWidth/2;
-            float offset = screenWidthOver2;
+            var i = 0;            
+            _screenWidthOver2 = screenWidth/2;
+            float offset = _screenWidthOver2;
             offset -= (66 * Mercenaries.Count)/2.0f;
-            foreach (KeyValuePair<Mercenary,List<EventArgs>> pair in Mercenaries)
+            foreach (var pair in Mercenaries)
             {
-                if (SelectedMercenaries.Contains(pair.Key))
+                spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i), 5), _selectedMercenaries.Contains(pair.Key) ? new Rectangle(196, 0, 64, 64) : new Rectangle(0, 0, 64, 64), Color.White);
+                spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i), 5), pair.Key.Icon, Color.White);
+                spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(64, 0, 64, 64), GetColor(pair.Key.ObjectAIController.HP, pair.Key.ObjectAIController.MaxHP));
+                var j = 0;
+                foreach (var e in pair.Value)
                 {
-                    spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(196, 0, 64, 64), Color.White);
-                }
-                else
-                {
-                    spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(0, 0, 64, 64), Color.White);
-                }
-
-                spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), pair.Key.Icon, Color.White);
-                spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(64, 0, 64, 64), GetColor(pair.Key.ObjectAIController.HP, pair.Key.ObjectAIController.MaxHP));
-
-
-                int j = 0;
-                foreach (EventArgs e in pair.Value)
-                {
-                    spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i) + (16*j), 69), new Rectangle(0, 384, 16, 16), Color.White);
-                    spriteBatch.Draw(frontEnd.Texture, new Vector2(offset + (66 * i) + (16 * j), 69), GetActionRect(e), Color.White);
+                    spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i) + (16*j), 69), new Rectangle(0, 384, 16, 16), Color.White);
+                    spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i) + (16 * j), 69), GetActionRect(e), Color.White);
                     j++;
                 }
 
@@ -747,23 +673,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }   
         /****************************************************************************/
 
-
         /****************************************************************************/
         /// Get Color
         /****************************************************************************/
-        private Color GetColor(uint HP, uint MaxHP)
+        private static Color GetColor(uint hp, uint maxHp)
         {
-            float green = 0;
-            float red   = 0;
-
-            if (HP > MaxHP / 2)
+            float green, red;
+            if (hp > maxHp / 2)
             {
                 green = 1;
-                red   = 1.0f - ((float)HP - MaxHP/2) / ((float)MaxHP/2);
+                red = 1.0f - (hp - (float)maxHp / 2) / ((float)maxHp / 2);
             }
             else
             {
-                green = ((float)HP) / ((float)MaxHP/2);
+                green = hp / ((float)maxHp / 2);
                 red   = 1;
             }
 
@@ -771,14 +694,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
-
         /****************************************************************************/
         /// GetMercenaryIndex
         /****************************************************************************/
         public int GetMercenaryIndex(Mercenary mercenary)
         { 
-            int i = -1;
-            foreach(Mercenary merc in Mercenaries.Keys)
+            var i = -1;
+            foreach(var merc in Mercenaries.Keys)
             {
                 ++i;
                 if (merc == mercenary) return i;
@@ -787,13 +709,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
-
         /****************************************************************************/
         /// Get Next Mercenary
         /****************************************************************************/
         public Mercenary GetNextMercenary(Mercenary mercenary)
         {
-            int i = GetMercenaryIndex(mercenary);
+            var i = GetMercenaryIndex(mercenary);
             
             if (i == Mercenaries.Count -1) i = 0;
             else                           ++i;
@@ -801,7 +722,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             return Mercenaries.ElementAt(i).Key;
         }
         /****************************************************************************/
-
 
         /****************************************************************************/
         /// Get Prev Mercenary
@@ -816,106 +736,103 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             return Mercenaries.ElementAt(i).Key;
         }
         /****************************************************************************/
-
-
         /****************************************************************************/
         /// QueueEvent
         /****************************************************************************/
         private void QueueEvent(EventArgs e,bool clear, params Mercenary[] mercenaries)
         {
-            List<EventArgs> Actions;
+            List<EventArgs> actions;
 
-            foreach (Mercenary mercenary in mercenaries)
+            foreach (var mercenary in mercenaries)
             {
-                Actions = Mercenaries[mercenary];
+                actions = Mercenaries[mercenary];
 
-                if (Actions.Count != 0 && clear)
+                if (actions.Count != 0 && clear)
                 {
                     SendEvent(new StopActionEvent(), Priority.High, mercenary);
-                    Actions.Clear();
+                    actions.Clear();
 
-                    Actions.Add(e);
+                    actions.Add(e);
                     SendEvent(e, Priority.Normal, mercenary);
                 }
-                else if (Actions.Count != 0)
+                else if (actions.Count != 0)
                 {
-                    if (Actions.Count < 4) Actions.Add(e);
+                    if (actions.Count < 4) actions.Add(e);
                 }
                 else
                 {
-                    Actions.Add(e);
+                    actions.Add(e);
                     SendEvent(e, Priority.Normal, mercenary);
                 }
             }
         }
         /****************************************************************************/
-
 
         /****************************************************************************/
         /// GetActionRect
         /****************************************************************************/
-        private Rectangle GetActionRect(EventArgs e)
+        private static Rectangle GetActionRect(EventArgs e)
         {
-            if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
+            var argsType = e.GetType();
+            if (argsType.Equals(typeof(MoveToPointCommandEvent)))
             {
                 return new Rectangle(16, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
+            if (argsType.Equals(typeof(GrabObjectCommandEvent)))
             {
                 return new Rectangle(32, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(ActivateObjectEvent)))
+            if (argsType.Equals(typeof(ActivateObjectEvent)))
             {
                 return new Rectangle(32, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(ExamineObjectCommandEvent)))
+            if (argsType.Equals(typeof(ExamineObjectCommandEvent)))
             {
                 return new Rectangle(48, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(FollowObjectCommandEvent)))
+            if (argsType.Equals(typeof(FollowObjectCommandEvent)))
             {
                 return new Rectangle(64, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(ExchangeItemsCommandEvent)))
+            if (argsType.Equals(typeof(ExchangeItemsCommandEvent)))
             {
                 return new Rectangle(80, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(ReloadCommandEvent)))
+            if (argsType.Equals(typeof(ReloadCommandEvent)))
             {
                 return new Rectangle(96, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(DropItemCommandEvent)))
+            if (argsType.Equals(typeof(DropItemCommandEvent)))
             {
                 return new Rectangle(112, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(SwitchToWeaponCommandEvent)))
+            if (argsType.Equals(typeof(SwitchToWeaponCommandEvent)))
             {
                 return new Rectangle(128, 384, 16, 16);
             }
-            else if (e.GetType().Equals(typeof(SwitchToSideArmCommandEvent)))
+            if (argsType.Equals(typeof(SwitchToSideArmCommandEvent)))
             {
                 return new Rectangle(144, 384, 16, 16);
             }
-            else return new Rectangle();
+            return new Rectangle();
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Release Components
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            sniffer.ReleaseMe();
-            keyboard.ReleaseMe();
-            mouse.ReleaseMe();
-            frontEnd.ReleaseMe();
+            _sniffer.ReleaseMe();
+            _keyboard.ReleaseMe();
+            _mouse.ReleaseMe();
+            _frontEnd.ReleaseMe();
         }
         /****************************************************************************/
 
     }
     /********************************************************************************/
-
 
     /********************************************************************************/
     /// MercenariesManager Data
