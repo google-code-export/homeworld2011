@@ -57,7 +57,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Controller = new PhysicsController(body);
             Controller.EnableControl();
             mesh.StartClip("Idle");
-            this.objectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle);
+            this.ObjectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle);
             this.RequiresUpdate = true;
         }
         /****************************************************************************/
@@ -171,7 +171,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
         {
-            this.objectAIController.Update(deltaTime);
+            this.ObjectAIController.Update(deltaTime);
         }
 
         /****************************************************************************/
@@ -185,7 +185,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             else
             {
-                this.objectAIController.OnEvent(sender, e);
+                this.ObjectAIController.OnEvent(sender, e);
             }
         }
         /****************************************************************************/
@@ -258,10 +258,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Length = body.Length;
             data.EnabledPhysics = body.Enabled;
 
-            data.MovingSpeed = (objectAIController as MobController).MovingSpeed;
-            data.RotationSpeed = (objectAIController as MobController).RotationSpeed;
-            data.DistancePrecision = (objectAIController as MobController).Distance;
-            data.AnglePrecision = (objectAIController as MobController).AnglePrecision;
+            data.MovingSpeed = (ObjectAIController as MobController).MovingSpeed;
+            data.RotationSpeed = (ObjectAIController as MobController).RotationSpeed;
+            data.DistancePrecision = (ObjectAIController as MobController).Distance;
+            data.AnglePrecision = (ObjectAIController as MobController).AnglePrecision;
 
             return data;
         }

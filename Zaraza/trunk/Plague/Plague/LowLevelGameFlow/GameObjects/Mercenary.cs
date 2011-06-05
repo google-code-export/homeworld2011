@@ -63,6 +63,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Rectangle InventoryIcon { get; private set; }
         public uint      TinySlots     { get; private set; }
         public uint      Slots         { get; private set; }
+        public bool      IsDisposed    { get; set;         }
         /****************************************************************************/
 
 
@@ -91,7 +92,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Firearm weapon,
                          Firearm sideArm)
         {
-            this.objectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle);
+            this.ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle);
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
@@ -123,7 +124,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             //mesh.Stop();
 
-            RequiresUpdate = true;                       
+            RequiresUpdate = true;
+            IsDisposed = false;           
         }
         /****************************************************************************/
 
@@ -133,6 +135,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         protected override Matrix GetMyWorld(int bone)
         {
+            if (IsDisposed)
+            {
+                return Matrix.Identity;
+            }
             if (bone == -1)
                 return World;
             else
@@ -146,6 +152,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
+            if (IsDisposed)
+            {
+                return;
+            }
+            
             /// TODO: Wpisałem to w Merca bo w sumie średnio to się ma do zachowań
 
             /*************************************/
@@ -235,7 +246,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             /*************************************/
-            else this.objectAIController.OnEvent(sender, e);                
+            else this.ObjectAIController.OnEvent(sender, e);                
         }
         /****************************************************************************/
 
@@ -245,7 +256,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
         {
-            this.objectAIController.Update(deltaTime);
+            this.ObjectAIController.Update(deltaTime);
         }
         /****************************************************************************/
 
@@ -368,6 +379,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void MarkerDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
+            if (IsDisposed) return;
             if (!Marker) return;
             Vector4 position;
             Vector2 pos2;
@@ -409,6 +421,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 marker.ReleaseMe();
                 marker = null;
             }
+
+            
         }
         /****************************************************************************/
 
@@ -466,10 +480,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.TinySlots          = TinySlots;
             data.Slots              = Slots;
-            data.MovingSpeed        = (objectAIController as MercenaryController).MovingSpeed;
-            data.RotationSpeed      = (objectAIController as MercenaryController).RotationSpeed;
-            data.DistancePrecision  = (objectAIController as MercenaryController).Distance;
-            data.AnglePrecision     = (objectAIController as MercenaryController).AnglePrecision;
+            data.MovingSpeed        = (ObjectAIController as MercenaryController).MovingSpeed;
+            data.RotationSpeed      = (ObjectAIController as MercenaryController).RotationSpeed;
+            data.DistancePrecision  = (ObjectAIController as MercenaryController).Distance;
+            data.AnglePrecision     = (ObjectAIController as MercenaryController).AnglePrecision;
 
 
             data.CurrentItem = CurrentObject == null ? 0 : CurrentObject.ID;
