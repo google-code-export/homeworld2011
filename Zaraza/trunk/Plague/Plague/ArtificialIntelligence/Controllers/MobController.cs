@@ -30,6 +30,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             animationBinding = new Dictionary<Action, string>();
             animationBinding.Add(Action.IDLE, "Idle");
             animationBinding.Add(Action.MOVE, "Run");
+            animationBinding.Add(Action.ENGAGE, "Run");
             animationBinding.Add(Action.ATTACK, "Attack03");
             ai.registerController(this);
         }
@@ -38,26 +39,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         override public void OnEvent(EventsSystem.EventsSender sender, System.EventArgs e)
         {
-            /*if (e.GetType().Equals(typeof(TakeDamage)))
-            {
-               
-                return;
-            }
-            else */
-            /*if (e.GetType().Equals(typeof(EnemyNoticed)))
-            {
-                #region Engage
-                EnemyNoticed evt = e as EnemyNoticed;
-                action = Action.ENGAGE;
-                this.attackTarget = evt.ClosestNoticedEnemy;
-                #endregion
-                return;
-            }
-            else
-            {*/
-                base.OnEvent(sender, e);
-            //}
-            return;
+           base.OnEvent(sender, e);
         }
 
 
@@ -71,35 +53,5 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     return;
             }
         }
-
-
-        /****************************************************************************/
-        /// ACTIONS HANDLING
-        /****************************************************************************/
-        /*protected void Attack()
-        {
-            //TakeDamage dmg = new TakeDamage(attack.minInflictedDamage, this.controlledObject);
-            //controlledObject.SendEvent(dmg, EventsSystem.Priority.Normal, this.attackTarget);
-            this.useAttack();
-            action = PlagueEngine.ArtificialInteligence.Controllers.Action.ATTACK_IDLE;
-            cooldownTimer.Reset(attack.cooldown, 1);
-        }*/
-
-
-        /****************************************************************************/
-        /// EVENTS HANDLING
-        /****************************************************************************/
-
-        private void engageEvent(System.EventArgs e)
-        {
-
-        }
-
-
-
-        /*****************************************************************************************/
     }
-
-
-
 }

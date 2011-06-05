@@ -65,10 +65,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.SightDistance = (float)100.0;
             this.attackTarget = null;
             //TODO: zrobić poprawne ustawianie ataków.
-            this.attack = new Attack((float)(0.0), (float)(2.5), 2, 2, 30000);
+            this.attack = new Attack((float)(0.0), (float)(2.5), 2, 2, 30);
             this.controlledObject = being;
-            PlagueEngine.TimeControlSystem.Timer.CallbackDelegate2 cd2 = new PlagueEngine.TimeControlSystem.Timer.CallbackDelegate2(useAttack);
-            this.cooldownTimer = new Timer(new TimeSpan(), 1, cd2);
+            this.cooldownTimer = new Timer(new TimeSpan(), 1, useAttack);
         }
 
         protected virtual void useAttack()
@@ -164,7 +163,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     attackTarget = null;
                     this.action = Action.IDLE;
                     controlledObject.Controller.StopMoving();
-                    controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                    controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                 }
                 #endregion
             }
@@ -291,15 +290,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     #region Engage to Enemy
                     currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Y),
                                                                new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Y));
-                    if (currentDistance < attack.maxAttackDistance)
+                    if (currentDistance < attack.maxAttackDistance - 0.5)
                     {
-                        action = Action.ATTACK_IDLE;
-                        controlledObject.SendEvent(new TakeDamage(4.5, this.controlledObject), Priority.Normal, this.attackTarget);
+                        action = Action.ATTACK;
                         controlledObject.Controller.StopMoving();
-                        if (controlledObject.Mesh.CurrentClip != animationBinding[Action.ATTACK])
-                        {
-                            controlledObject.Mesh.BlendTo(animationBinding[Action.ATTACK], TimeSpan.FromSeconds(0.5f));
-                        }
                     }
                     else if (currentDistance > this.SightDistance)
                     {
@@ -334,22 +328,20 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     #region Attack Enemy
                     {
                         
+                        
                         currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Y),
                                                            new Vector2(attackTarget.World.Forward.X, attackTarget.World.Forward.Y));
                         if (currentDistance < attack.maxAttackDistance && currentDistance > attack.minAttackDistance)
                         {
-                            this.cooldownTimer.Reset(attack.cooldown, 1);
+                            controlledObject.Mesh.BlendTo(animationBinding[Action.ATTACK], TimeSpan.FromSeconds(0.5f));
+                            this.cooldownTimer.Reset(attack.cooldown, 1);                        
                             controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject), Priority.Normal, this.attackTarget);
                             action = Action.ATTACK_IDLE;
-                            ///TODO: Czy jak już raz zblendowałem do Ataku, to mi nie wystarczy zapętlająca się animacja...?
-                            /*if (controlledObject.Mesh.CurrentClip != animationBinding[Action.ATTACK])
-                            {
-                                controlledObject.Mesh.BlendTo(animationBinding[Action.ATTACK], TimeSpan.FromSeconds(0.5f));
-                            }*/
                         }
                         else
                         {
                             action = Action.ENGAGE;
+                            //controlledObject.Mesh.BlendTo(animationBinding[Action.ENGAGE], TimeSpan.FromSeconds(0.5f));
                         }
                     }
                     #endregion
