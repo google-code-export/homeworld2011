@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
-
+using PlagueEngine.Audio.Components;
 using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
@@ -18,24 +15,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     {
 
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
-        public MeshComponent mesh = null;
-        public SquareBodyComponent body = null;
-        private PhysicsController controller=null;
+        public MeshComponent mesh;
+        public SquareBodyComponent body;
+        private PhysicsController _controller;
+        private SoundEffectComponent _soundEffectComponent;
+        private int _keyId = -1;
+        private uint _timerId;
+        private float _forceForward;
+        private float _moveDuration;
 
-        private int keyId = -1;
-        uint timerID = 0;
-        float forceForward = 0;
-        float moveDuration = 0;
-        
-        bool used = false;
+        private bool _used;
         /****************************************************************************/
 
 
 
         /****************************************************************************/
-        /// Init
+        // Init
         /****************************************************************************/
         public void Init(MeshComponent mesh,
                          SquareBodyComponent body,
@@ -47,12 +44,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             this.mesh = mesh;
             this.body = body;
-            this.keyId = keyID;
-            //controller = new PhysicsController(body);
-            //controller.DisableControl();
-            this.forceForward = forceForward;
-            this.moveDuration = moveDuration;
-            base.Init(activationRecievers,description,descriptionWindowWidth,descriptionWindowHeight);
+            _keyId = keyID;
+            _soundEffectComponent =  new SoundEffectComponent();
+            _soundEffectComponent.LoadFolder("Bulldozer", 0.5f, 0, 0);
+            _forceForward = forceForward;
+            _moveDuration = moveDuration;
+            Init(activationRecievers,description,descriptionWindowWidth,descriptionWindowHeight);
             
         }
         /****************************************************************************/
@@ -60,17 +57,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private void StopMoving()
         {
-
-            controller.DisableControl();
-            //body.Immovable = false;
-            TimeControl.ReleaseFrameCounter(timerID);
+            _controller.DisableControl();
+            _soundEffectComponent.StopAllSounds();
+            TimeControl.ReleaseFrameCounter(_timerId);
         }
-
 
         private void Move()
         {
-
-            controller.MoveBackward(forceForward);
+            
+            _controller.MoveBackward(_forceForward);
         }
 
         /****************************************************************************/
@@ -78,40 +73,43 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         protected override void OnActivation()
         {
-            if (!used)
+            if (_used) return;
+            if (_controller == null)
             {
-                if (controller == null)
-                {
-                    controller = new PhysicsController(body);
-                    controller.EnableControl();
-                }
-                timerID = TimeControl.CreateFrameCounter(1, -1, Move);
-                TimeControl.CreateTimer(TimeSpan.FromSeconds(moveDuration), 1, StopMoving);
-                used = true;
+                _controller = new PhysicsController(body);
+                _controller.EnableControl();
             }
+            _soundEffectComponent.PlaySound("Bulldozer", "startRun");
+            _timerId = TimeControl.CreateFrameCounter(1, -1, Move);
+            TimeControl.CreateTimer(TimeSpan.FromSeconds(_moveDuration+3), 1, StopMoving);
+            _used = true;
+            
         }
         /****************************************************************************/
-
-
+        public override void Update(TimeSpan deltaTime)
+        {
+            _soundEffectComponent.SetPosiotion(World.Translation);
+            base.Update(deltaTime);
+        }
 
         /****************************************************************************/
         /// GetActions
         /****************************************************************************/
         public override string[] GetActions(Mercenary mercenary)
         {
-            if (keyId != -1 && !used)
+            if (_keyId != -1 && !_used)
             {
                 foreach (StorableObject item in mercenary.Items.Keys)
                 {
-                    if (item.ID == keyId)
+                    if (item.ID == _keyId)
                     {
 
-                        return new String[] {"Examine", "Activate" };
+                        return new[] {"Examine", "Activate" };
                     }
                 }
             }
 
-            return new String[] { "Examine"};
+            return new[] { "Examine"};
         }
         /****************************************************************************/
 
@@ -121,11 +119,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            if (controller != null)
+            if (_controller != null)
             {
-                controller.DisableControl();
-                controller.DisableController();
-                controller.RealeseMe();
+                _controller.DisableControl();
+                _controller.DisableController();
+                _controller.RealeseMe();
             }
 
             if (body != null)
@@ -139,10 +137,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 body.ReleaseMe();
                 body = null;
             }
-
-            
-
-
         }
         /****************************************************************************/
 
@@ -153,7 +147,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            BulldozerData data = new BulldozerData();
+            var data = new BulldozerData();
             GetData(data);
             data.Model = mesh.Model.Name;
             data.Diffuse = (mesh.Textures.Diffuse == null ? String.Empty : mesh.Textures.Diffuse.Name);
@@ -180,10 +174,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.EnabledMesh = mesh.Enabled;
 
 
-            data.ActivationRecievers = this.activationRecievers;
-            data.keyId = keyId;
-            data.ForceForward = forceForward;
-            data.MoveDuration = moveDuration;
+            data.ActivationRecievers = activationRecievers;
+            data.keyId = _keyId;
+            data.ForceForward = _forceForward;
+            data.MoveDuration = _moveDuration;
 
             return data;
         }
