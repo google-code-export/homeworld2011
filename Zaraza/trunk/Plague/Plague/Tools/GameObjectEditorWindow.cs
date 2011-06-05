@@ -1354,6 +1354,7 @@ namespace PlagueEngine.Tools
         { 
             input.Enabled = false;
             inputEnable.Checked = input.Enabled;
+            game.IsMouseVisible = true;
         }
 
         private void GameObjectEditorWindow_Deactivate(object sender, EventArgs e)
@@ -1395,8 +1396,8 @@ namespace PlagueEngine.Tools
         private void inputEnable_CheckedChanged(object sender, EventArgs e)
         {
             input.Enabled = inputEnable.Checked;
+            game.IsMouseVisible = !input.Enabled;
         }
-
 
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
