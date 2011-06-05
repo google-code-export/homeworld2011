@@ -288,7 +288,7 @@ namespace PlagueEngine.Audio
             {
                 for (var i = 0; i < _playingSounds.Length; ++i)
                 {
-                    if (_playingSounds[i] == null || (_playingSounds[i].State != SoundState.Stopped && !_playingSounds[i].IsDisposed)) continue;
+                    if (_playingSounds[i] == null || (!_playingSounds[i].IsDisposed && _playingSounds[i].State != SoundState.Stopped)) continue;
                     _playingSounds[i].Dispose();
                     _playingSounds[i] = null;
                 }
