@@ -12,7 +12,13 @@ using PlagueEngine.ArtificialIntelligence.Controllers;
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     class MercenaryController : AbstractAIController
-    {        
+    {
+
+        public Rectangle Icon { get; protected set; }
+        public Rectangle InventoryIcon { get; protected set; }
+        public uint TinySlots { get; protected set; }
+        public uint Slots { get; protected set; }
+        
 
         public MercenaryController(AbstractLivingBeing lb, float rotationSpeed, float movingSpeed, float distance, float angle):base(lb)
         {
@@ -31,6 +37,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         protected override void useAttack()
         {
+            if (isDisposed) return;
             Mercenary unit = controlledObject as Mercenary;
             if (typeof(Firearm).Equals(unit.CurrentObject))
             {
@@ -46,6 +53,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         }
         public override void Update(TimeSpan deltaTime)
         {
+            if (isDisposed) return;
             switch (action)
             {
                 case Action.EXCHANGE:
@@ -90,6 +98,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
+            if (isDisposed) return;
             if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
             {
                 #region GrabEvent
@@ -223,5 +232,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 base.OnEvent(sender, e);
             }
         }
+        public override void Dispose()
+        {
+            (controlledObject as Mercenary).IsDisposed = true;   
+            base.Dispose();
+            
+        }
+    
     }
+
+    
 }

@@ -54,12 +54,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         /****************************************************************************/
         public uint MaxHP              { get; protected set; }
         public uint HP                 { get; protected set; }
-        public Rectangle Icon          { get; protected set; }
-        public Rectangle InventoryIcon { get; protected set; }
-        public uint TinySlots          { get; protected set; }
-        public uint Slots              { get; protected set; }
         /****************************************************************************/
 
+        protected bool isDisposed = false;
+        
         public AbstractAIController(AbstractLivingBeing being)
         {
             this.SightDistance = (float)100.0;
@@ -73,6 +71,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         protected virtual void useAttack()
         {
+            if (isDisposed) return;
             action = Action.ATTACK;
             //TakeDamage dmg = new TakeDamage(attack.minInflictedDamage, this.controlledObject);
             //this.controlledObject.SendEvent(dmg, Priority.Normal, this.attackTarget);
@@ -87,6 +86,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         /****************************************************************************/
         public virtual void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
+            if (isDisposed) return;
             if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
             {
                 #region MoveToPoint
@@ -105,7 +105,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 if (HP <= evt.amount)
                 {
                     EnemyKilled args = new EnemyKilled(this.controlledObject);
-                    this.controlledObject.SendEvent(args, Priority.Normal, this.receiver);
+                    this.controlledObject.SendEvent(args, Priority.Normal, AbstractAIController.ai);
+                    this.Dispose();
                 }
                 else
                 {
@@ -160,6 +161,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     this.cooldownTimer.Reset(TimeSpan.Zero, 0);
                     attackTarget = null;
                     this.action = Action.IDLE;
+                    controlledObject.Controller.StopMoving();
+                    controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                 }
                 #endregion
             }
@@ -169,6 +172,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         public virtual void Update(TimeSpan deltaTime)
         {
+            if (isDisposed) return;
             controlledObject.SoundEffectComponent.SetPosiotion(controlledObject.World.Translation);
             double currentDistance;
             
@@ -363,19 +367,22 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             
         }
 
-
         public bool IsDisposed()
         {
-            return false;
-            //TODO: is Disposed?
+            return isDisposed;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             this.objectTarget = null;
             this.receiver = null;
-            //TODO: Dispose
-            
+            this.attack = null;
+            this.attackTarget = null;
+            this.animationBinding = null;
+            this.cooldownTimer = null;
+            this.objectTarget = null;
+            this.controlledObject.SendEvent(new DestroyObjectEvent(this.controlledObject.ID),Priority.Normal, GlobalGameObjects.GameController);
+            this.isDisposed = true;
         }
     }
 }

@@ -47,13 +47,16 @@ namespace PlagueEngine.ArtificialIntelligence
                 EnemyKilled evt = e as EnemyKilled;
                 if(evt.DeadEnemy.GetType().Equals(typeof (Mercenary)))
                 {
-                    evt.DeadEnemy.SendEvent(evt, Priority.Normal, BadGuys.ToArray());
-                    GoodGuys.Remove(evt.DeadEnemy.ObjectAIController as MercenaryController);
+                    if(GoodGuys.Contains(evt.DeadEnemy.ObjectAIController))
+                    {
+                        GoodGuys.Remove(evt.DeadEnemy.ObjectAIController);
+                        evt.DeadEnemy.SendEvent(evt, Priority.Normal, BadGuys.ToArray());
+                    }
                 }
                 else
                 {
+                    BadGuys.Remove(evt.DeadEnemy.ObjectAIController);
                     evt.DeadEnemy.SendEvent(evt, Priority.Normal, GoodGuys.ToArray());
-                    BadGuys.Remove(evt.DeadEnemy.ObjectAIController as MobController);
                 }
             }
         }
