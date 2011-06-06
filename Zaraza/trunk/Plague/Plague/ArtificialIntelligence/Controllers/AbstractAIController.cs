@@ -92,7 +92,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
             {
                 #region MoveToPoint
-                controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
+                if (!controlledObject.SoundEffectComponent.IsPlaying()){
+                    controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
+                }
                 MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
 
                 receiver = sender as IEventsReceiver;

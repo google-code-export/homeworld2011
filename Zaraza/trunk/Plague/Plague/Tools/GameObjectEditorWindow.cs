@@ -1522,7 +1522,7 @@ namespace PlagueEngine.Tools
             }
             else
             {
-                if (linkedCamera != null && renderer.CurrentCamera != null && renderer.CurrentCamera.Equals(linkedCamera.cameraComponent))
+                if (linkedCamera != null && renderer.CurrentCamera != null && renderer.CurrentCamera.Equals(linkedCamera.CameraComponent))
                 {
                     button3.Text = "Switch to freeCamera";
                     cameraType = typeof(LinkedCamera);
@@ -1565,8 +1565,8 @@ namespace PlagueEngine.Tools
             cameraType = typeof(FreeCamera);
             freeCamera.keyboardListenerComponent.Active = true;
             freeCamera.mouseListenerComponent.Active = true;
-            linkedCamera.keyboardListenerComponent.Active = false;
-            linkedCamera.mouseListenerComponent.Active = false;
+            linkedCamera.KeyboardListenerComponent.Active = false;
+            linkedCamera.MouseListenerComponent.Active = false;
             //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
 
         }
@@ -1612,11 +1612,11 @@ namespace PlagueEngine.Tools
 
             }
 
-            renderer.CurrentCamera = linkedCamera.cameraComponent;
+            renderer.CurrentCamera = linkedCamera.CameraComponent;
             cameraType = typeof(LinkedCamera);
 
-            linkedCamera.keyboardListenerComponent.Active = true;
-            linkedCamera.mouseListenerComponent.Active = true;
+            linkedCamera.KeyboardListenerComponent.Active = true;
+            linkedCamera.MouseListenerComponent.Active = true;
             freeCamera.keyboardListenerComponent.Active = false;
             freeCamera.mouseListenerComponent.Active = false;
 
@@ -1629,7 +1629,7 @@ namespace PlagueEngine.Tools
             }
             mercManager = (MercenariesManager)level.GameObjects[id];
 
-            linkedCamera.mercenariesManager = mercManager;
+            linkedCamera.MercenariesManager = mercManager;
             if (mercManager != null)
             {
                 mercManager.LinkedCamera = linkedCamera;

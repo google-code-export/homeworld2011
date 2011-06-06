@@ -504,7 +504,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         _mouseX = (int)mouseMovementState.Position.X - (_screenWidthOver2 - _iconsOffset);
 
-                        LinkedCamera.mouseListenerComponent.Active = false;
+                        LinkedCamera.MouseListenerComponent.Active = false;
 
                         _mouse.SetCursor("Default");
                         return;
@@ -512,7 +512,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
             }
             _useGUI = false;
-            LinkedCamera.mouseListenerComponent.Active = true;
+            LinkedCamera.MouseListenerComponent.Active = true;
         }
         /****************************************************************************/
 
