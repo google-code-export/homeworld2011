@@ -410,10 +410,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                 }
                 spriteBatch.Draw(frontEnd.Texture,
-                                 localPosition + SlotsStartPos2 + new Vector2(144, 0),
+                                 localPosition + SlotsStartPos2 + new Vector2(103, 0),
                                  new Rectangle(1260,
                                                 177 + 32 * scrollCurrentOffset2,
-                                                64,
+                                                146,
                                                 64 - (scrollCurrentOffset2 > 2 ? 64 : 32 * scrollCurrentOffset2)),
                                  Color.White);
 
