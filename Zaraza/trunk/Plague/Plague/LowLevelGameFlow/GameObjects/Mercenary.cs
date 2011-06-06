@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Audio.Components;
-using PlagueEngine.LowLevelGameFlow;
-using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
-using PlagueEngine.Input.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.ArtificialIntelligence.Controllers;
 
 
-using PlagueEngine.AItest;
 /************************************************************************************/
-/// PlagueEngine.LowLevelGameFlow.GameObjects
+// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -31,48 +24,48 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     {
 
         /****************************************************************************/
-        /// Slots
+        // Slots
         /****************************************************************************/
-        public StorableObject CurrentObject = null;
+        public StorableObject CurrentObject;
 
-        public Firearm Weapon   = null;
-        public Firearm SideArm  = null;
-        public Armor   Armor    = null;
+        public Firearm Weapon;
+        public Firearm SideArm;
+        public Armor Armor;
 
-        public String Grip        { get; private set; }
+        public String Grip { get; private set; }
         public String SideArmGrip { get; private set; }
-        public String WeaponGrip  { get; private set; }
+        public String WeaponGrip { get; private set; }
 
         public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Marker
+        // Marker
         /****************************************************************************/
-        public bool                 Marker { get; set; }
-        private FrontEndComponent   marker = null;
-        private Vector3             markerLocalPosition;        
+        public bool Marker { get; set; }
+        private FrontEndComponent _marker;
+        private Vector3 _markerLocalPosition;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Properties
+        // Properties
         /****************************************************************************/
-        public Rectangle Icon          { get; private set; }
+        public Rectangle Icon { get; private set; }
         public Rectangle InventoryIcon { get; private set; }
-        public uint      TinySlots     { get; private set; }
-        public uint      Slots         { get; private set; }
-        public bool      IsDisposed    { get; set;         }
+        public uint TinySlots { get; private set; }
+        public uint Slots { get; private set; }
+        public new bool IsDisposed { get; set; } //Zmienna nadpisuje istenejace metode.
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Initialization
+        // Initialization
         /****************************************************************************/
-        public void Init(SkinnedMeshComponent mesh, 
+        public void Init(SkinnedMeshComponent mesh,
                          CapsuleBodyComponent body,
-                         FrontEndComponent    frontEndComponent,
+                         FrontEndComponent frontEndComponent,
                          Vector3 markerPosition,
                          float rotationSpeed,
                          float movingSpeed,
@@ -92,42 +85,42 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Firearm weapon,
                          Firearm sideArm)
         {
-            this.ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle, maxHP, HP);
+            ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle, maxHP, HP);
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
-            SoundEffectComponent.LoadFolderTree("Mercenary", 0.4f, 0, 0,2);            
-            InventoryIcon  = inventoryIcon;
-            TinySlots      = tinySlots;
-            Slots          = slots;
-            CurrentObject  = currentObject;
-            Weapon         = weapon;
-            SideArm        = sideArm;
+            SoundEffectComponent.LoadFolderTree("Mercenary", 0.4f, 0, 0, 2);
+            InventoryIcon = inventoryIcon;
+            TinySlots = tinySlots;
+            Slots = slots;
+            CurrentObject = currentObject;
+            Weapon = weapon;
+            SideArm = sideArm;
 
-            Grip        = gripBone;
+            Grip = gripBone;
             SideArmGrip = sideArmBone;
-            WeaponGrip  = weaponBone;
+            WeaponGrip = weaponBone;
 
             Items = items;
 
             Icon = icon;
 
-            this.marker = frontEndComponent;
-            markerLocalPosition = markerPosition;
-            marker.Draw = MarkerDraw;
+            _marker = frontEndComponent;
+            _markerLocalPosition = markerPosition;
+            _marker.Draw = MarkerDraw;
             Marker = false;
-            
+
             Controller = new PhysicsController(Body);
             Controller.EnableControl();
 
             RequiresUpdate = true;
-            IsDisposed = false;           
+            IsDisposed = false;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Get World
+        // Get World
         /****************************************************************************/
         protected override Matrix GetMyWorld(int bone)
         {
@@ -135,28 +128,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 return Matrix.Identity;
             }
-            if (bone == -1)
-                return World;
-            else
-                return Mesh.WorldTransforms[bone];
+            return bone == -1 ? World : Mesh.WorldTransforms[bone];
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// On Event
+        // On Event
         /****************************************************************************/
-        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        public override void OnEvent(EventsSender sender, EventArgs e)
         {
             if (IsDisposed)
             {
                 return;
             }
-            
-            /// TODO: Wpisałem to w Merca bo w sumie średnio to się ma do zachowań
-
+            // TODO: Wpisałem to w Merca bo w sumie średnio to się ma do zachowań
             /*************************************/
-            /// DropItemCommandEvent
+            // DropItemCommandEvent
             /*************************************/
             if (e.GetType().Equals(typeof(DropItemCommandEvent)))
             {
@@ -164,24 +152,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             /*************************************/
-            /// SwitchToWeaponCommandEvent
+            // SwitchToWeaponCommandEvent
             /*************************************/
             else if (e.GetType().Equals(typeof(SwitchToWeaponCommandEvent)))
             {
                 if ((CurrentObject == null && Weapon != null))
                 {
-                    Firearm weapon = Weapon;
+                    var weapon = Weapon;
                     StoreItem(1);
                     PlaceItem(weapon, 0);
                 }
                 else if (CurrentObject != null)
                 {
-                    Firearm firearm = CurrentObject as Firearm;
+                    var firearm = CurrentObject as Firearm;
                     if (firearm != null)
                     {
                         if (!firearm.SideArm)
                         {
-                            Firearm weapon = Weapon;
+                            var weapon = Weapon;
                             StoreItem(0);
                             if (Weapon != null)
                             {
@@ -192,7 +180,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
                         else if (SideArm == null && Weapon != null)
                         {
-                            Firearm weapon = Weapon;
+                            var weapon = Weapon;
                             StoreItem(0);
                             StoreItem(1);
                             PlaceItem(weapon, 0);
@@ -203,24 +191,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             /*************************************/
-            /// SwitchToSideArmCommandEvent
+            // SwitchToSideArmCommandEvent
             /*************************************/
             else if (e.GetType().Equals(typeof(SwitchToSideArmCommandEvent)))
             {
                 if ((CurrentObject == null && SideArm != null))
                 {
-                    Firearm weapon = SideArm;
+                    var weapon = SideArm;
                     StoreItem(2);
                     PlaceItem(weapon, 0);
                 }
                 else if (CurrentObject != null)
                 {
-                    Firearm firearm = CurrentObject as Firearm;
+                    var firearm = CurrentObject as Firearm;
                     if (firearm != null)
                     {
                         if (firearm.SideArm)
                         {
-                            Firearm weapon = SideArm;
+                            var weapon = SideArm;
                             StoreItem(0);
                             if (SideArm != null)
                             {
@@ -231,7 +219,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
                         else if (Weapon == null && SideArm != null)
                         {
-                            Firearm weapon = SideArm;
+                            var weapon = SideArm;
                             StoreItem(0);
                             StoreItem(2);
                             PlaceItem(weapon, 0);
@@ -242,30 +230,40 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             /*************************************/
-            else this.ObjectAIController.OnEvent(sender, e);                
+            else ObjectAIController.OnEvent(sender, e);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Update
+        // Update
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
         {
-            this.ObjectAIController.Update(deltaTime);
+            ObjectAIController.Update(deltaTime);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Pick Item
+        // Pick Item
         /****************************************************************************/
         public void PickItem(StorableObject item)
         {
-            CurrentObject  = item;
-            item.Owner     = this;
-            item.OwnerBone = Mesh.BoneMap[Grip];
-            item.OnPicking();
+            if (Grip != null && Mesh.BoneMap.ContainsKey(Grip))
+            {
+                CurrentObject = item;
+                item.Owner = this;
+                item.OwnerBone = Mesh.BoneMap[Grip];
+                item.OnPicking();
+            }
+#if DEBUG
+            else
+            {
+                Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu Grip. Nie można podnosić przedmiotów.");
+            }
+#endif
+
         }
         /****************************************************************************/
 
@@ -276,30 +274,57 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void PlaceItem(StorableObject item, uint slot)
         {
             switch (slot)
-            { 
+            {
                 /***************/
-                /// Current
+                // Current
                 /***************/
-                case 0: 
-                    CurrentObject  = item;
-                    item.Owner     = this;
-                    item.OwnerBone = Mesh.BoneMap[Grip];
+                case 0:
+                    if (Grip != null && Mesh.BoneMap.ContainsKey(Grip))
+                    {
+                        CurrentObject = item;
+                        item.Owner = this;
+                        item.OwnerBone = Mesh.BoneMap[Grip];
+                    }
+#if DEBUG
+                    else
+                    {
+                        Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu Grip. Nie można przypisać przedmiotów.");
+                    }
+#endif
                     break;
                 /***************/
-                /// Weapon                
+                // Weapon                
                 /***************/
                 case 1:
-                    Weapon         = item as Firearm;
-                    item.Owner     = this;
-                    item.OwnerBone = Mesh.BoneMap[WeaponGrip];
+                    if (WeaponGrip != null && Mesh.BoneMap.ContainsKey(WeaponGrip))
+                    {
+                        Weapon = item as Firearm;
+                        item.Owner = this;
+                        item.OwnerBone = Mesh.BoneMap[WeaponGrip];
+                    }
+#if DEBUG
+                    else
+                    {
+                        Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu WeaponGrip. Nie można przypisać przedmiotów.");
+                    }
+#endif
                     break;
                 /***************/
-                /// Side Arm                
+                // Side Arm                
                 /***************/
-                case 2:                                         
-                    SideArm        = item as Firearm;
-                    item.Owner     = this;
-                    item.OwnerBone = Mesh.BoneMap[SideArmGrip];
+                case 2:
+                    if (SideArmGrip != null && Mesh.BoneMap.ContainsKey(SideArmGrip))
+                    {
+                        SideArm = item as Firearm;
+                        item.Owner = this;
+                        item.OwnerBone = Mesh.BoneMap[SideArmGrip];
+                    }
+#if DEBUG
+                    else
+                    {
+                        Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu SideArmGrip. Nie można przypisać przedmiotów.");
+                    }
+#endif
                     break;
             }
         }
@@ -319,7 +344,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                          Vector3.Normalize(World.Backward) * 2 +
                                          Vector3.Normalize(World.Up) * 2;
 
-                item.OnDropping();                
+                item.OnDropping();
 
             }
             else if (CurrentObject != null)
@@ -331,7 +356,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                   Vector3.Normalize(World.Up) * 2;
                 CurrentObject.OnDropping();
 
-                CurrentObject           = null;
+                CurrentObject = null;
             }
         }
         /****************************************************************************/
@@ -343,7 +368,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void StoreItem(uint slot)
         {
             switch (slot)
-            { 
+            {
                 case 0:
                     if (CurrentObject != null)
                     {
@@ -364,39 +389,38 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         SideArm.OnStoring();
                         SideArm = null;
                     }
-                    break;     
+                    break;
             }
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// MarkerDraw
+        // MarkerDraw
         /****************************************************************************/
-        public void MarkerDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
+        public void MarkerDraw(SpriteBatch spriteBatch, ref Matrix viewProjection, int screenWidth, int screenHeight)
         {
             if (IsDisposed) return;
             if (!Marker) return;
-            Vector4 position;
             Vector2 pos2;
 
-            position = Vector4.Transform(Vector3.Transform(markerLocalPosition,World), ViewProjection);
+            var position = Vector4.Transform(Vector3.Transform(_markerLocalPosition, World), viewProjection);
 
             pos2.X = MathHelper.Clamp(0.5f * ((position.X / Math.Abs(position.W)) + 1.0f), 0.01f, 0.99f);
             pos2.X *= screenWidth;
-            pos2.X -= marker.Texture.Width / 2;
+            pos2.X -= _marker.Texture.Width / 2;
 
             pos2.Y = MathHelper.Clamp(1.0f - (0.5f * ((position.Y / Math.Abs(position.W)) + 1.0f)), 0.01f, 0.99f);
             pos2.Y *= screenHeight;
-            pos2.Y -= marker.Texture.Height / 2;
+            pos2.Y -= _marker.Texture.Height / 2;
 
-            spriteBatch.Draw(marker.Texture, pos2, Color.White);           
+            spriteBatch.Draw(_marker.Texture, pos2, Color.White);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Release Components
+        // Release Components
         /****************************************************************************/
         public override void ReleaseComponents()
         {
@@ -412,85 +436,84 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 Body = null;
             }
 
-            if (marker != null)
+            if (_marker != null)
             {
-                marker.ReleaseMe();
-                marker = null;
+                _marker.ReleaseMe();
+                _marker = null;
             }
 
-            
+
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Get Data
+        // Get Data
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            MercenaryData data = new MercenaryData();
+            var data = new MercenaryData();
             GetData(data);
 
             data.Model = Mesh.Model.Name;
 
-            data.Diffuse  = (Mesh.Textures.Diffuse  == null ? String.Empty : Mesh.Textures.Diffuse.Name );
+            data.Diffuse = (Mesh.Textures.Diffuse == null ? String.Empty : Mesh.Textures.Diffuse.Name);
             data.Specular = (Mesh.Textures.Specular == null ? String.Empty : Mesh.Textures.Specular.Name);
-            data.Normals  = (Mesh.Textures.Normals  == null ? String.Empty : Mesh.Textures.Normals.Name );
+            data.Normals = (Mesh.Textures.Normals == null ? String.Empty : Mesh.Textures.Normals.Name);
 
-            data.TimeRatio       = Mesh.TimeRatio;
-            data.CurrentClip     = (Mesh.currentAnimation.Clip == null ? String.Empty : Mesh.currentAnimation.Clip.Name);
-            data.CurrentTime     = Mesh.currentAnimation.ClipTime.TotalSeconds;
+            data.TimeRatio = Mesh.TimeRatio;
+            data.CurrentClip = (Mesh.currentAnimation.Clip == null ? String.Empty : Mesh.currentAnimation.Clip.Name);
+            data.CurrentTime = Mesh.currentAnimation.ClipTime.TotalSeconds;
             data.CurrentKeyframe = Mesh.currentAnimation.Keyframe;
-            data.Pause           = Mesh.Pause;
+            data.Pause = Mesh.Pause;
 
-            data.Blend          = Mesh.Blend;
-            data.BlendDuration  = Mesh.BlendDuration.TotalSeconds;
-            data.BlendTime      = Mesh.BlendTime.TotalSeconds;
-            data.BlendClip      = (Mesh.blendAnimation.Clip == null ? String.Empty : Mesh.blendAnimation.Clip.Name);
-            data.BlendClipTime  = Mesh.blendAnimation.ClipTime.TotalSeconds;
-            data.BlendKeyframe  = Mesh.blendAnimation.Keyframe;
+            data.Blend = Mesh.Blend;
+            data.BlendDuration = Mesh.BlendDuration.TotalSeconds;
+            data.BlendTime = Mesh.BlendTime.TotalSeconds;
+            data.BlendClip = (Mesh.blendAnimation.Clip == null ? String.Empty : Mesh.blendAnimation.Clip.Name);
+            data.BlendClipTime = Mesh.blendAnimation.ClipTime.TotalSeconds;
+            data.BlendKeyframe = Mesh.blendAnimation.Keyframe;
 
-            data.Immovable        = Body.Immovable;
-            //data.IsEnabled        = Body.IsEnabled;
-            data.Elasticity       = Body.Elasticity;
-            data.StaticRoughness  = Body.StaticRoughness;
+            data.Immovable = Body.Immovable;
+            data.Elasticity = Body.Elasticity;
+            data.StaticRoughness = Body.StaticRoughness;
             data.DynamicRoughness = Body.DynamicRoughness;
-            data.Mass             = Body.Mass;
-            data.Translation      = Body.SkinTranslation;
-            data.SkinPitch        = Body.Pitch;
-            data.SkinRoll         = Body.Roll;
-            data.SkinYaw          = Body.Yaw;
-            
+            data.Mass = Body.Mass;
+            data.Translation = Body.SkinTranslation;
+            data.SkinPitch = Body.Pitch;
+            data.SkinRoll = Body.Roll;
+            data.SkinYaw = Body.Yaw;
+
             data.Radius = Body.Radius;
             data.Length = Body.Length;
 
-            data.MarkerPosition = markerLocalPosition;
-            data.Grip           = Grip;
-            data.SideArmGrip    = SideArmGrip;
-            data.WeaponGrip     = WeaponGrip;
+            data.MarkerPosition = _markerLocalPosition;
+            data.Grip = Grip;
+            data.SideArmGrip = SideArmGrip;
+            data.WeaponGrip = WeaponGrip;
 
-            data.HP            = (ObjectAIController).HP;
-            data.MaxHP         = (ObjectAIController).MaxHP;
-            data.Icon          = Icon;
+            data.HP = (ObjectAIController).HP;
+            data.MaxHP = (ObjectAIController).MaxHP;
+            data.Icon = Icon;
             data.InventoryIcon = InventoryIcon;
 
-            data.TinySlots          = TinySlots;
-            data.Slots              = Slots;
-            data.MovingSpeed        = (ObjectAIController as MercenaryController).MovingSpeed;
-            data.RotationSpeed      = (ObjectAIController as MercenaryController).RotationSpeed;
-            data.DistancePrecision  = (ObjectAIController as MercenaryController).Distance;
-            data.AnglePrecision     = (ObjectAIController as MercenaryController).AnglePrecision;
+            data.TinySlots = TinySlots;
+            data.Slots = Slots;
+            data.MovingSpeed = ObjectAIController.MovingSpeed;
+            data.RotationSpeed = ObjectAIController.RotationSpeed;
+            data.DistancePrecision = ObjectAIController.Distance;
+            data.AnglePrecision = ObjectAIController.AnglePrecision;
 
 
             data.CurrentItem = CurrentObject == null ? 0 : CurrentObject.ID;
-            data.SideArm     = SideArm       == null ? 0 : SideArm.ID;
-            data.Weapon      = Weapon        == null ? 0 : Weapon.ID;
+            data.SideArm = SideArm == null ? 0 : SideArm.ID;
+            data.Weapon = Weapon == null ? 0 : Weapon.ID;
 
             data.Items = new List<int[]>();
 
-            foreach (KeyValuePair<StorableObject, ItemPosition> item in Items)
+            foreach (var item in Items)
             {
-                data.Items.Add(new int[] { (item.Key as GameObjectInstance).ID, item.Value.Slot, item.Value.Orientation });
+                data.Items.Add(new[] { item.Key.ID, item.Value.Slot, item.Value.Orientation });
             }
             data.EnabledPhysics = body.Enabled;
             return data;
@@ -503,7 +526,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public String[] GetActions()
         {
-            return new String[] { "Inventory", "Follow" , "Exchange Items" };
+            return new[] { "Inventory", "Follow", "Exchange Items" };
         }
         /****************************************************************************/
 
@@ -513,9 +536,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public string[] GetActions(Mercenary mercenary)
         {
-            List<String> actions = new List<String>();
-
-            actions.Add("Inventory");
+            var actions = new List<String> { "Inventory" };
 
             if (mercenary != null && mercenary != this)
             {
@@ -531,7 +552,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 else
                 {
-                    Firearm firearm = CurrentObject as Firearm;
+                    var firearm = CurrentObject as Firearm;
                     if (firearm != null)
                     {
                         if (!firearm.SideArm || (firearm.SideArm && SideArm == null && Weapon != null)) actions.Add("Switch to Weapon");
@@ -626,28 +647,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public Vector3 MarkerPosition { get; set; }
 
         [CategoryAttribute("Movement")]
-        public float RotationSpeed      { get; set; }
+        public float RotationSpeed { get; set; }
         [CategoryAttribute("Movement")]
-        public float MovingSpeed        { get; set; }
+        public float MovingSpeed { get; set; }
         [CategoryAttribute("Movement")]
-        public float DistancePrecision  { get; set; }
+        public float DistancePrecision { get; set; }
         [CategoryAttribute("Movement")]
-        public float AnglePrecision     { get; set; }
+        public float AnglePrecision { get; set; }
 
         [CategoryAttribute("Grips")]
-        public String Grip        { get; set; }
+        public String Grip { get; set; }
         [CategoryAttribute("Grips")]
         public String SideArmGrip { get; set; }
         [CategoryAttribute("Grips")]
-        public String WeaponGrip  { get; set; }
+        public String WeaponGrip { get; set; }
 
         [CategoryAttribute("HP")]
-        public uint MaxHP { get;  set; }
+        public uint MaxHP { get; set; }
         [CategoryAttribute("HP")]
-        public uint HP { get;  set; }
+        public uint HP { get; set; }
 
         [CategoryAttribute("Icon")]
-        public Rectangle Icon { get;  set; }
+        public Rectangle Icon { get; set; }
         [CategoryAttribute("Icon")]
         public Rectangle InventoryIcon { get; set; }
 
@@ -665,6 +686,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public int SideArm { get; set; }
     }
     /********************************************************************************/
-    
+
 }
 /************************************************************************************/
