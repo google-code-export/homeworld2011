@@ -46,8 +46,8 @@ namespace PlagueEngine.GUI
             
             GUIComponent.gui = this;
             
-            Viewport viewport = graphicsDevice.Viewport;
-            Screen mainScreen = new Screen(viewport.Width, viewport.Height);
+            var viewport = graphicsDevice.Viewport;
+            var mainScreen = new Screen(viewport.Width, viewport.Height);
             Manager.Screen = mainScreen;
 
             // Each screen has a 'desktop' control. This invisible control by default
@@ -93,10 +93,9 @@ namespace PlagueEngine.GUI
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState)
         {
             if (!Updateable) return;
-            if (!mouseKeyState.WasPressed()) return;
-
             if(!Manager.Screen.IsMouseOverGui)
             {
+                if (!mouseKeyState.WasPressed()) return;
                 Manager.Screen.FocusedControl = null;
             }
             else
