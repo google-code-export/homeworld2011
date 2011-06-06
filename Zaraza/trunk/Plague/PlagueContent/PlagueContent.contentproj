@@ -1737,9 +1737,9 @@
       <Importer>XImporter</Importer>
       <Processor>PlagueEngineSkinnedModelProcessor</Processor>
       <ProcessorParameters_AnimationClip1>Open</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1Duration>0.3</ProcessorParameters_AnimationClip1Duration>
+      <ProcessorParameters_AnimationClip1Duration>0.33</ProcessorParameters_AnimationClip1Duration>
       <ProcessorParameters_AnimationClip10>Close</ProcessorParameters_AnimationClip10>
-      <ProcessorParameters_AnimationClip10Duration>0.3</ProcessorParameters_AnimationClip10Duration>
+      <ProcessorParameters_AnimationClip10Duration>0.33</ProcessorParameters_AnimationClip10Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -131,9 +131,17 @@ namespace PlagueEngine.Rendering
                     skinningData.BindPose.CopyTo(BoneTransforms);
                 }
                 else
-                {
+                {                    
+                    IList<Keyframe> keyframesu = Clip.Keyframes;
+                    
+                    for (int i = Keyframe; i < keyframesu.Count; i++)
+                    {
+                        Keyframe keyframe = keyframesu[i];
+                        BoneTransforms[keyframe.Bone] = keyframe.Transform;
+                    }
+
                     Keyframe = 0;
-                    Clip     = null;
+                    Clip = null;
                     ClipTime = TimeSpan.Zero;
                     return;
                 }

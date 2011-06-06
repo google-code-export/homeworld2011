@@ -126,6 +126,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (sender == null) return;
             var argsType = e.GetType();
+
+            /*****************************************/
+            // SelectedObjectEvent 
+            /*****************************************/
             if (argsType.Equals(typeof(SelectedObjectEvent)))
             {
                 var selectedObjectEvent = e as SelectedObjectEvent;
@@ -133,18 +137,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 ClearSelection();
                 AddToSelection(selectedObjectEvent.gameObject as Mercenary);
             }
+            /*****************************************/
+            // AddToSelectionEvent
+            /*****************************************/
             else if (argsType.Equals(typeof(AddToSelectionEvent)))
             {
                 var addToSelectionEvent = e as AddToSelectionEvent;
                 if (addToSelectionEvent == null) return;
                 AddToSelection(addToSelectionEvent.gameObject as Mercenary);
             }
+            /*****************************************/
+            // RemoveFromSelectionEvent
+            /*****************************************/
             else if (argsType.Equals(typeof(RemoveFromSelectionEvent)))
             {
                 var removeFromSelectionEvent = e as RemoveFromSelectionEvent;
                 if (removeFromSelectionEvent == null) return;
                 RemoveFromSelection(removeFromSelectionEvent.gameObject as Mercenary);
             }
+            /*****************************************/
+            // CommandOnObjectEvent
+            /*****************************************/
             else if (argsType.Equals(typeof(CommandOnObjectEvent)))
             {
                 if (_commandMode)
@@ -228,6 +241,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                 }
             }
+            /*****************************************/
+            // SelectedActionEvent
+            /*****************************************/
             else if (argsType.Equals(typeof(SelectedActionEvent)))
             {
                 var selectedActionEvent = e as SelectedActionEvent;
@@ -237,16 +253,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     switch (selectedActionEvent.Action)
                     {
-                        case "Attack": QueueEvent(new AttackOrderEvent(_targetGameObject as AbstractLivingBeing), !_leftControl, _currentMercenary); break;
-                        case "Grab": QueueEvent(new GrabObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
-                        case "Activate": QueueEvent(new ActivateObjectEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
-                        case "Examine": QueueEvent(new ExamineObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
-                        case "Follow": QueueEvent(new FollowObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
-                        case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(_targetGameObject as Mercenary), !_leftControl, _currentMercenary); break;
-                        case "Drop Item": QueueEvent(new DropItemCommandEvent(), !_leftControl, _currentMercenary); break;
-                        case "Reload": QueueEvent(new ReloadCommandEvent(), !_leftControl, _currentMercenary); break;
-                        case "Switch to Weapon": QueueEvent(new SwitchToWeaponCommandEvent(), !_leftControl, _currentMercenary); break;
-                        case "Switch to Side Arm": QueueEvent(new SwitchToSideArmCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Attack":              QueueEvent(new AttackOrderEvent(_targetGameObject as AbstractLivingBeing), !_leftControl, _currentMercenary); break;
+                        case "Grab":                QueueEvent(new GrabObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
+                        case "Open":                QueueEvent(new OpenContainerCommandEvent(_targetGameObject as Container), !_leftControl, _currentMercenary); break;
+                        case "Activate":            QueueEvent(new ActivateObjectEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
+                        case "Examine":             QueueEvent(new ExamineObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
+                        case "Follow":              QueueEvent(new FollowObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
+                        case "Exchange Items":      QueueEvent(new ExchangeItemsCommandEvent(_targetGameObject as Mercenary), !_leftControl, _currentMercenary); break;
+                        case "Drop Item":           QueueEvent(new DropItemCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Reload":              QueueEvent(new ReloadCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Switch to Weapon":    QueueEvent(new SwitchToWeaponCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Switch to Side Arm":  QueueEvent(new SwitchToSideArmCommandEvent(), !_leftControl, _currentMercenary); break;
                         case "Inventory":
                             var data = new InventoryData
                                                 {
@@ -281,6 +298,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                 }
             }
+            /*****************************************/
+            // ActionDoneEvent
+            /*****************************************/
             else if (argsType.Equals(typeof(ActionDoneEvent)))
             {
                 var m = sender as Mercenary;
@@ -295,6 +315,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
 
             }
+            /*****************************************/
+            // ExchangeItemsEvent
+            /*****************************************/
             else if (argsType.Equals(typeof(ExchangeItemsEvent)))
             {
                 var exchangeItemsEvent = e as ExchangeItemsEvent;
@@ -308,6 +331,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (_inventory != null) SendEvent(new DestroyObjectEvent(_inventory.ID), Priority.High, GlobalGameObjects.GameController);
                 SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
             }
+            /*****************************************/
+            // ObjectCreatedEvent
+            /*****************************************/
             else if (argsType.Equals(typeof(ObjectCreatedEvent)))
             {
                 var objectCreatedEvent = e as ObjectCreatedEvent;
@@ -674,6 +700,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
         /****************************************************************************/
         /// Get Color
         /****************************************************************************/
@@ -695,6 +722,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
         /****************************************************************************/
         /// GetMercenaryIndex
         /****************************************************************************/
@@ -710,6 +738,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
         /****************************************************************************/
         /// Get Next Mercenary
         /****************************************************************************/
@@ -724,6 +753,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
         /****************************************************************************/
         /// Get Prev Mercenary
         /****************************************************************************/
@@ -737,6 +767,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             return Mercenaries.ElementAt(i).Key;
         }
         /****************************************************************************/
+
+
         /****************************************************************************/
         /// QueueEvent
         /****************************************************************************/
@@ -779,43 +811,47 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 return new Rectangle(16, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(GrabObjectCommandEvent)))
+            else if (argsType.Equals(typeof(GrabObjectCommandEvent)))
             {
                 return new Rectangle(32, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(ActivateObjectEvent)))
+            else if (argsType.Equals(typeof(OpenContainerCommandEvent)))
             {
                 return new Rectangle(32, 384, 16, 16);
             }
-            if (e.GetType().Equals(typeof(OpenEvent)))
+            else if (argsType.Equals(typeof(ActivateObjectEvent)))
             {
                 return new Rectangle(32, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(ExamineObjectCommandEvent)))
+            else if (e.GetType().Equals(typeof(OpenEvent)))
+            {
+                return new Rectangle(32, 384, 16, 16);
+            }
+            else if (argsType.Equals(typeof(ExamineObjectCommandEvent)))
             {
                 return new Rectangle(48, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(FollowObjectCommandEvent)))
+            else if (argsType.Equals(typeof(FollowObjectCommandEvent)))
             {
                 return new Rectangle(64, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(ExchangeItemsCommandEvent)))
+            else if (argsType.Equals(typeof(ExchangeItemsCommandEvent)))
             {
                 return new Rectangle(80, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(ReloadCommandEvent)))
+            else if (argsType.Equals(typeof(ReloadCommandEvent)))
             {
                 return new Rectangle(96, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(DropItemCommandEvent)))
+            else if (argsType.Equals(typeof(DropItemCommandEvent)))
             {
                 return new Rectangle(112, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(SwitchToWeaponCommandEvent)))
+            else if (argsType.Equals(typeof(SwitchToWeaponCommandEvent)))
             {
                 return new Rectangle(128, 384, 16, 16);
             }
-            if (argsType.Equals(typeof(SwitchToSideArmCommandEvent)))
+            else if (argsType.Equals(typeof(SwitchToSideArmCommandEvent)))
             {
                 return new Rectangle(144, 384, 16, 16);
             }

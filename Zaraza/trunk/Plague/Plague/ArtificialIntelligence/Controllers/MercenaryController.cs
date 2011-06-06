@@ -60,6 +60,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 case Action.EXAMINE:
                 case Action.PICK:
                 case Action.ACTIVATE:
+                case Action.OPEN:
                     #region PickOrExamine
                     if (objectTarget.IsDisposed() || objectTarget.Owner != null)
                     {
@@ -187,6 +188,20 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         
                         #endregion
                     }
+                    else if (action == Action.OPEN)
+                    {
+                        #region OPEN Action
+                        controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
+                        action = Action.IDLE;
+                        controlledObject.Controller.StopMoving();
+                        controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+
+                        controlledObject.SendEvent(new OpenEvent(controlledObject as Mercenary), Priority.Normal, objectTarget);
+                        controlledObject.SendEvent(new ActionDoneEvent(), Priority.Normal, receiver);
+                        objectTarget = null;
+
+                        #endregion
+                    }
                     else if (action == Action.ACTIVATE)
                     {
                         #region ACTIVATE Action
@@ -212,6 +227,18 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                 objectTarget = ExamineObjectCommandEvent.gameObject;
                 action = Action.EXAMINE;
+                controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
+                #endregion
+            }
+            else if (e.GetType().Equals(typeof(OpenContainerCommandEvent)))
+            {
+                #region OpenContainerCommandEvent
+                OpenContainerCommandEvent OpenContainerCommandEvent = e as OpenContainerCommandEvent;
+
+                receiver = sender as IEventsReceiver;
+
+                objectTarget = OpenContainerCommandEvent.container;
+                action = Action.OPEN;
                 controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
                 #endregion
             }

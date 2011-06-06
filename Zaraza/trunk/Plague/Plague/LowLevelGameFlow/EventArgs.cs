@@ -22,7 +22,6 @@ namespace PlagueEngine.LowLevelGameFlow
     class ExamineEvent         : EventArgs { };    
     class ActionDoneEvent      : EventArgs { };
     class StopActionEvent      : EventArgs { };
-    class OpenEvent            : EventArgs { };
     class CloseEvent           : EventArgs { };
 
     class DropItemCommandEvent        : EventArgs { };
@@ -344,6 +343,27 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
     /********************************************************************************/
+    /// OpenContainerCommandEvent
+    /********************************************************************************/
+    class OpenContainerCommandEvent : EventArgs
+    {
+        public Container container;
+
+        public OpenContainerCommandEvent(Container container)
+        {
+            this.container = container;
+        }
+
+        public override string ToString()
+        {
+            if (container != null) return "ID: " + container.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
     /// ExamineObjectCommandEvent
     /********************************************************************************/
     class ExamineObjectCommandEvent : EventArgs
@@ -393,6 +413,27 @@ namespace PlagueEngine.LowLevelGameFlow
         public Mercenary mercenary;
 
         public ExchangeItemsCommandEvent(Mercenary mercenary)
+        {
+            this.mercenary = mercenary;
+        }
+
+        public override string ToString()
+        {
+            if (mercenary != null) return "ID: " + mercenary.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// OpenEvent
+    /********************************************************************************/
+    class OpenEvent : EventArgs
+    {
+        public Mercenary mercenary;
+
+        public OpenEvent(Mercenary mercenary)
         {
             this.mercenary = mercenary;
         }
