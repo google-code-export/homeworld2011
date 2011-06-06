@@ -1513,6 +1513,41 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// CreateContainer
+        /****************************************************************************/
+        public bool CreateContainer(Container result, ContainerData data)
+        {
+            result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
+                                                                              data.Model,
+                                                                              data.Diffuse,
+                                                                              data.Specular,
+                                                                              data.Normals),
+                        physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics,
+                                                                          result,
+                                                                          data.Mass,
+                                                                          data.Lenght,
+                                                                          data.Height,
+                                                                          data.Width,
+                                                                          data.Elasticity,
+                                                                          data.StaticRoughness,
+                                                                          data.DynamicRoughness,
+                                                                          data.Immovable,
+                                                                          data.World,
+                                                                          data.Translation,
+                                                                          data.Yaw,
+                                                                          data.Pitch,
+                                                                          data.Roll),
+                        data.Open,
+                        data.Description,
+                        data.DescriptionWindowWidth,
+                        data.DescriptionWindowHeight);
+
+            return true;
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/    
 

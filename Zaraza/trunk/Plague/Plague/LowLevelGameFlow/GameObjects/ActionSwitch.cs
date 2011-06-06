@@ -267,9 +267,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Rectangle rect = new Rectangle(0, 0, 32, 32);
 
             switch (action)
-            {
+            {                
+                case "Activate"             : 
+                case "Open"                 : 
                 case "Grab"                 : rect.X = 64;  rect.Y =  0; break;
-                case "Activate"             : rect.X = 64;  rect.Y =  0; break;
                 case "Examine"              : rect.X = 96;  rect.Y =  0; break;
                 case "Follow"               : rect.X = 128; rect.Y =  0; break;
                 case "Inventory"            : rect.X = 160; rect.Y =  0; break;
