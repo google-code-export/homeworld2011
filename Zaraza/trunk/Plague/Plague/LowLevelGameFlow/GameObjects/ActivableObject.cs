@@ -14,14 +14,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public int[] activationRecievers = null;
-        public bool activated = false;
+        public int[] activationRecievers;
+        public bool activated;
 
 
         public String Description { get; private set; }
 
-        private int DescriptionWindowWidth = 0;
-        private int DescriptionWindowHeight = 0;
+        private int _descriptionWindowWidth;
+        private int _descriptionWindowHeight;
 
         /****************************************************************************/
 
@@ -34,12 +34,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          int descriptionWindowWidth,
                          int descriptionWindowHeight)
         {
-            this.activationRecievers = activationRecievers;
+            activationRecievers = activationRecievers;
 
             Description = description;
 
-            DescriptionWindowHeight = descriptionWindowHeight;
-            DescriptionWindowWidth = descriptionWindowWidth;
+            _descriptionWindowHeight = descriptionWindowHeight;
+            _descriptionWindowWidth = descriptionWindowWidth;
         }
         /****************************************************************************/
 
@@ -50,7 +50,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public virtual string[] GetActions()
         {
-            return new String[] { "Examine" };
+            return new[] { "Examine" };
         }
         /****************************************************************************/
 
@@ -60,11 +60,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public virtual string[] GetActions(Mercenary mercenary)
         {
-            return new String[] { "Examine", "Activate" };
+            return new[] { "Examine", "Activate" };
         }
         /****************************************************************************/
-
-
 
 
         /****************************************************************************/
@@ -76,12 +74,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (e.GetType().Equals(typeof(ExamineEvent)))
             {
-                DescriptionWindowData data = new DescriptionWindowData();
-
-                data.Title = Name;
-                data.Text = Description;
-                data.Width = DescriptionWindowWidth;
-                data.Height = DescriptionWindowHeight;
+                var data = new DescriptionWindowData
+                               {
+                                   Title = Name,
+                                   Text = Description,
+                                   Width = _descriptionWindowWidth,
+                                   Height = _descriptionWindowHeight
+                               };
 
                 SendEvent(new CreateObjectEvent(data), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
             }
@@ -93,7 +92,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     if (activationRecievers != null)
                     {
-                        this.SendEvent(new ObjectActivatedEvent(this), EventsSystem.Priority.Low, activationRecievers);
+                        SendEvent(new ObjectActivatedEvent(this), EventsSystem.Priority.Low, activationRecievers);
                     }
                     OnActivation();
                     
@@ -133,8 +132,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             base.GetData(data);
 
             data.Description = Description;
-            data.DescriptionWindowWidth = DescriptionWindowWidth;
-            data.DescriptionWindowHeight = DescriptionWindowHeight;
+            data.DescriptionWindowWidth = _descriptionWindowWidth;
+            data.DescriptionWindowHeight = _descriptionWindowHeight;
         }
         /****************************************************************************/
 

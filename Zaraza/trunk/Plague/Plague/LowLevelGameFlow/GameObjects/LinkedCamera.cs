@@ -1,24 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-
-using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.EventsSystem;
-
-using JigLibX.Geometry;
 using JigLibX.Collision;
-using JigLibX.Physics;
 
 /************************************************************************************/
-/// PlagueEngine.LowLevelGameFlow.GameObjects
+// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -32,46 +23,46 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public CameraComponent cameraComponent = null;
-        public KeyboardListenerComponent keyboardListenerComponent = null;
-        public MouseListenerComponent mouseListenerComponent = null;
+        public CameraComponent CameraComponent;
+        public KeyboardListenerComponent KeyboardListenerComponent;
+        public MouseListenerComponent MouseListenerComponent;
 
-        private float movementSpeed = 0;
-        private float rotationSpeed = 0;
-        private float zoomSpeed = 0;
+        private float _movementSpeed;
+        private float _rotationSpeed;
+        private float _zoomSpeed;
 
-        private Vector3 position = Vector3.Zero;
-        private Vector3 target = Vector3.Zero;
+        private Vector3 _position = Vector3.Zero;
+        private Vector3 _target = Vector3.Zero;
 
-        private Clock clock = TimeControl.CreateClock();
+        private readonly Clock _clock = TimeControl.CreateClock();
 
-        private GameObjectInstance tracedObject = null;
-        private Vector3 moveToPosition;
+        private GameObjectInstance _tracedObject;
+        private Vector3 _moveToPosition;
 
-        private int  rotateCamera   = -1;
-        private bool isOnWindow     = false;
-        private bool useCommands    = false;
-        private bool movingToPoint  = false;
-        private bool tracing        = false;
+        private int  _rotateCamera   = -1;
+        private bool _isOnWindow;
+        private bool _useCommands;
+        private bool _movingToPoint;
+        private bool _tracing;
         
-        private bool selectionRect  = false;
-        private Microsoft.Xna.Framework.Rectangle rect;
+        private bool _selectionRect;
+        private Rectangle _rect;
         
-        private bool addToSelection      = false;
-        private bool removeFromSelection = false;
-        private bool zoom                = false;
+        private bool _addToSelection;
+        private bool _removeFromSelection;
+        private bool _zoom;
 
-        private int maxTop, minTop, maxBottom, minBottom, maxLeft, minLeft, maxRight, minRight;
+        private int _maxTop, _minTop, _maxBottom, _minBottom, _maxLeft, _minLeft, _maxRight, _minRight;
 
-        private float mouseX, mouseY;
+        private float _mouseX, _mouseY;
 
 
-        public MercenariesManager mercenariesManager = null;
+        public MercenariesManager MercenariesManager;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Initialization
+        // Initialization
         /****************************************************************************/
         public void Init(CameraComponent cameraComponent,
                          KeyboardListenerComponent keyboardListenerComponent,
@@ -84,43 +75,43 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          GameObjectInstance mercenariesManager,
                          bool current)
         {
-            this.cameraComponent = cameraComponent;
-            this.keyboardListenerComponent = keyboardListenerComponent;
-            this.mouseListenerComponent = mouseListenerComponent;
+            CameraComponent = cameraComponent;
+            KeyboardListenerComponent = keyboardListenerComponent;
+            MouseListenerComponent = mouseListenerComponent;
 
-            this.movementSpeed = movementSpeed;
-            this.rotationSpeed = rotationSpeed;
-            this.zoomSpeed = zoomSpeed;
-            this.position = position;
-            this.target = target;
+            _movementSpeed = movementSpeed;
+            _rotationSpeed = rotationSpeed;
+            _zoomSpeed = zoomSpeed;
+            _position = position;
+            _target = target;
 
-            this.World = Matrix.CreateLookAt(this.position, this.target, Vector3.Up);
+            World = Matrix.CreateLookAt(_position, _target, Vector3.Up);
 
-            this.keyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,
+            KeyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,
                                                                Keys.D, Keys.Q, Keys.E,
                                                                Keys.LeftControl, Keys.LeftAlt);
 
-            this.mouseListenerComponent.SubscribeMouseMove(onMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
-            this.mouseListenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick, MouseKeyAction.RightClick, MouseKeyAction.LeftClick);
+            MouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
+            MouseListenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick, MouseKeyAction.RightClick, MouseKeyAction.LeftClick);
 
-            int screenWidth = cameraComponent.ScreenWidth;
-            int screenHeight = cameraComponent.ScreenHeight;
+            var screenWidth = cameraComponent.ScreenWidth;
+            var screenHeight = cameraComponent.ScreenHeight;
 
          
-                this.mercenariesManager = mercenariesManager as MercenariesManager;
+            MercenariesManager = mercenariesManager as MercenariesManager;
           
-            // TODO: jest na pałę, a powinno być z edytora
-            maxTop = 0;
-            minTop = (int)(screenHeight * 0.025);
+            // TODO: Wartości wpisane ręcznie, a nie podawane z edytora.
+            _maxTop = 0;
+            _minTop = (int)(screenHeight * 0.025);
 
-            maxBottom = screenHeight;
-            minBottom = (int)(screenHeight * 0.975);
+            _maxBottom = screenHeight;
+            _minBottom = (int)(screenHeight * 0.975);
 
-            maxLeft = 0;
-            minLeft = (int)(screenWidth * 0.025);
+            _maxLeft = 0;
+            _minLeft = (int)(screenWidth * 0.025);
 
-            maxRight = screenWidth;
-            minRight = (int)(screenWidth * 0.975);
+            _maxRight = screenWidth;
+            _minRight = (int)(screenWidth * 0.975);
 
             RequiresUpdate = true;
 
@@ -130,153 +121,145 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// StartMoveToPoint
+        // StartMoveToPoint
         /****************************************************************************/
         public void StartMoveToPoint(Vector3 point)
         {
-            moveToPosition = point;
-            movingToPoint = true;
-            stopTracking();
+            _moveToPosition = point;
+            _movingToPoint = true;
+            StopTracking();
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// StopMovingToPoint
+        // StopMovingToPoint
         /****************************************************************************/
         public void StopMovingToPoint()
         {
-            movingToPoint = false;
+            _movingToPoint = false;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// MoveToPoint
+        // MoveToPoint
         /****************************************************************************/
         private void MoveToPoint()
         {
-
-            if (moveToPosition != target)
+            if (_moveToPosition == _target) return;
+            if (Vector3.Distance(_target, _moveToPosition) < 0.01f)
             {
-                if (Vector3.Distance(target, moveToPosition) < 0.01f)
-                {
-                    target = moveToPosition;
-                }
-                else
-                {
-                    Vector3 distanceVec = moveToPosition - target;
-                    target += distanceVec / 50.0f;
-                    position += distanceVec / 50.0f;
-                }
+                _target = _moveToPosition;
+            }
+            else
+            {
+                var distanceVec = _moveToPosition - _target;
+                _target += distanceVec / 50.0f;
+                _position += distanceVec / 50.0f;
             }
         }
+
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// SetTarget
+        // SetTarget
         /****************************************************************************/
-        public void setTarget(GameObjectInstance target)
+        public void SetTarget(GameObjectInstance target)
         {
-            this.tracedObject = target;
+            _tracedObject = target;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Start Tracing
+        // Start Tracing
         /****************************************************************************/
-        public void startTracing()
+        public void StartTracing()
         {
             StopMovingToPoint();
-            tracing = true;
+            _tracing = true;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Stop Tracing 
+        // Stop Tracing 
         /****************************************************************************/
-        public void stopTracking()
+        public void StopTracking()
         {
-            tracing = false;
+            _tracing = false;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// RealeseTarget
+        // RealeseTarget
         /****************************************************************************/
         public void RealeseTarget()
         {
-            tracedObject = null;
+            _tracedObject = null;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Trace Target
+        // Trace Target
         /****************************************************************************/
-        private void traceTarget()
+        private void TraceTarget()
         {
-            Vector3 targetPosition = tracedObject.World.Translation;
+            var targetPosition = _tracedObject.World.Translation;
 
-            if (targetPosition != target)
+            if (targetPosition == _target) return;
+            if (Vector3.Distance(_target, targetPosition) < 0.01f)
             {
-                if (Vector3.Distance(target, targetPosition) < 0.01f)
-                {
-                    target = targetPosition;
-                }
-                else
-                {
-                    Vector3 distanceVec = targetPosition - target;
-                    target += distanceVec / 50.0f;
-                    position += distanceVec / 50.0f;
-                }
+                _target = targetPosition;
             }
-
+            else
+            {
+                var distanceVec = targetPosition - _target;
+                _target += distanceVec / 50.0f;
+                _position += distanceVec / 50.0f;
+            }
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// OnMouseKey
+        // OnMouseKey
         /****************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState)
         {
 
             /****************************/
-            /// Middle Button
+            // Middle Button
             /****************************/
             if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.MiddleClick)
             {
-                if (++rotateCamera == 1)
+                if (++_rotateCamera == 1)
                 {
-                    mouseListenerComponent.LockCursor();
+                    MouseListenerComponent.LockCursor();
                 }
                 else
                 {
-                    if (isOnWindow)
+                    if (_isOnWindow)
                     {
                         CollisionSkin skin;
-                        Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                        var direction = Physics.PhysicsUlitities.DirectionFromMousePosition(CameraComponent.Projection, CameraComponent.View, _mouseX, _mouseY);
                         Vector3 pos, nor;
                         float dist;
-                        bool hit = false;
-
-                        hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
+                        var hit = Physics.PhysicsUlitities.RayTest(CameraComponent.Position, CameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
                         if (skin != null)
                         {
-                            //this.Broadcast(new LowLevelGameFlow.GameObjectClicked((int)((GameObjectInstance)skin.ExternalData).ID));
                             if (skin.ExternalData.GetType().Equals(typeof(Terrain)))
                             {
                                 StartMoveToPoint(pos);
                             }
                             else
                             {
-                                setTarget((GameObjectInstance)skin.ExternalData);
-                                startTracing();
+                                SetTarget((GameObjectInstance)skin.ExternalData);
+                                StartTracing();
                             }
                         }
                     }
@@ -284,87 +267,85 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             else if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.MiddleClick)
             {                
-                //this.Broadcast(new LowLevelGameFlow.GameObjectReleased());
-                if (--rotateCamera == 0) mouseListenerComponent.UnlockCursor();
+                if (--_rotateCamera == 0) MouseListenerComponent.UnlockCursor();
             }
             /****************************/
 
 
             /****************************/
-            /// Left Button
+            // Left Button
             /****************************/
             if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
-                rect.X = (int)mouseX;
-                rect.Y = (int)mouseY;
+                _rect.X = (int)_mouseX;
+                _rect.Y = (int)_mouseY;
 
                 CollisionSkin skin;
-                Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                var direction = Physics.PhysicsUlitities.DirectionFromMousePosition(CameraComponent.Projection, CameraComponent.View, _mouseX, _mouseY);
                 Vector3 pos, nor;
                 float dist;
-                Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
+                Physics.PhysicsUlitities.RayTest(CameraComponent.Position, CameraComponent.Position + direction * CameraComponent.ZFar, out dist, out skin, out pos, out nor);
 
                 GameObjectInstance goi = null;
 
                 if (skin != null)
                 {
-                    if ((skin.ExternalData as GameObjectInstance).Status == GameObjectStatus.Mercenary) goi = skin.ExternalData as GameObjectInstance;
+                    if (((GameObjectInstance) skin.ExternalData).Status == GameObjectStatus.Mercenary) goi = skin.ExternalData as GameObjectInstance;
                 }
 
-                if      (addToSelection)      SendEvent(new AddToSelectionEvent     (goi), Priority.Normal, mercenariesManager);
-                else if (removeFromSelection) SendEvent(new RemoveFromSelectionEvent(goi), Priority.Normal, mercenariesManager);
-                else                          SendEvent(new SelectedObjectEvent(goi, pos), Priority.Normal, mercenariesManager);
+                if      (_addToSelection)      SendEvent(new AddToSelectionEvent     (goi), Priority.Normal, MercenariesManager);
+                else if (_removeFromSelection) SendEvent(new RemoveFromSelectionEvent(goi), Priority.Normal, MercenariesManager);
+                else                          SendEvent(new SelectedObjectEvent(goi, pos), Priority.Normal, MercenariesManager);
             }
             else if (mouseKeyState.IsDown() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
-                rect.Width    = (int)mouseX - rect.X;
-                rect.Height   = (int)mouseY - rect.Y;
-                selectionRect = true;
+                _rect.Width    = (int)_mouseX - _rect.X;
+                _rect.Height   = (int)_mouseY - _rect.Y;
+                _selectionRect = true;
             }
             else if (mouseKeyState.WasReleased() && mouseKeyAction == MouseKeyAction.LeftClick)
             {
-                if (!selectionRect) return;
+                if (!_selectionRect) return;
 
-                if (!(rect.Width == 0) && !(rect.Height == 0))
+                if (_rect.Width != 0 && _rect.Height != 0)
                 {
-                    BoundingFrustum frustrum = cameraComponent.GetFrustumFromRect(rect);
+                    //TODO: zamienić na FastFrustrum
+                    var frustrum = CameraComponent.GetFrustumFromRect(_rect);
 
-                    int i = 0;
-                    foreach (Mercenary mercenary in mercenariesManager.Mercenaries.Keys)
+                    var i = 0;
+                    foreach (var mercenary in MercenariesManager.Mercenaries.Keys)
                     {
-                        if (frustrum.Intersects(mercenary.Mesh.BoundingBox))
-                        {
-                            ++i;
+                        if (!frustrum.Intersects(mercenary.Mesh.BoundingBox)) continue;
+                        ++i;
 
-                            if      (removeFromSelection)      SendEvent(new RemoveFromSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
-                            else if (i == 1 && addToSelection) SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
-                            else if (addToSelection)           SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
-                            else if (i == 1)                   SendEvent(new SelectedObjectEvent(mercenary, mercenary.World.Translation), Priority.Normal, mercenariesManager);
-                            else                               SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, mercenariesManager);
-                        }
+                        if      (_removeFromSelection)      SendEvent(new RemoveFromSelectionEvent(mercenary), Priority.Normal, MercenariesManager);
+                        else if (i == 1 && _addToSelection) SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, MercenariesManager);
+                        else if (_addToSelection)           SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, MercenariesManager);
+                        else if (i == 1)                   SendEvent(new SelectedObjectEvent(mercenary, mercenary.World.Translation), Priority.Normal, MercenariesManager);
+                        else                               SendEvent(new AddToSelectionEvent(mercenary), Priority.Normal, MercenariesManager);
                     }
                 }
-                selectionRect = false;
+                _selectionRect = false;
             }
             /****************************/
 
 
             /****************************/
-            /// Right Button
+            // Right Button
             /****************************/
-            if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.RightClick && useCommands)
+            if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.RightClick && _useCommands)
             {
                 CollisionSkin skin;
-                Vector3 direction = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                var direction = Physics.PhysicsUlitities.DirectionFromMousePosition(CameraComponent.Projection, CameraComponent.View, _mouseX, _mouseY);
                 Vector3 pos, nor;
                 float dist;
-                Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
+                Physics.PhysicsUlitities.RayTest(CameraComponent.Position, CameraComponent.Position + direction * CameraComponent.ZFar, out dist, out skin, out pos, out nor);
 
                 if (skin != null && skin.ExternalData!=null)
                 {
-                    if ((skin.ExternalData as GameObjectInstance).Status != GameObjectStatus.Nothing)
+                    if (((GameObjectInstance) skin.ExternalData).Status != GameObjectStatus.Nothing)
                     {
-                        SendEvent(new CommandOnObjectEvent(skin.ExternalData as GameObjectInstance, pos), Priority.Normal, mercenariesManager);
+                        SendEvent(new CommandOnObjectEvent(skin.ExternalData as GameObjectInstance, pos), Priority.Normal, MercenariesManager);
                     }
                 }
             }
@@ -385,59 +366,52 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             Physics.PhysicsUlitities.RayTest(position, desiredPosition + (desiredPosition - position) * 10, out dist, out skin, out pos, out nor);
 
-            if (skin == null)
-            {
-                
-                return true;
-            }
-            return false;
+            return skin == null;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// On Mouse Move 
+        // On Mouse Move 
         /****************************************************************************/
-        private void onMouseMove(MouseMoveAction mouseMoveAction, ref ExtendedMouseMovementState mouseMoveState)
+        private void OnMouseMove(MouseMoveAction mouseMoveAction, ref ExtendedMouseMovementState mouseMoveState)
         {
-            Vector3 direction = Vector3.Normalize(target - position);
+            var direction = Vector3.Normalize(_target - _position);
 
-            isOnWindow = mouseMoveState.IsOnWindow;
-            mouseX = mouseMoveState.Position.X;
-            mouseY = mouseMoveState.Position.Y;
+            _isOnWindow = mouseMoveState.IsOnWindow;
+            _mouseX = mouseMoveState.Position.X;
+            _mouseY = mouseMoveState.Position.Y;
 
-            Vector3 perpendicular = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
+            var perpendicular = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
 
-            float time = (float)(clock.DeltaTime.TotalMilliseconds);
+            var time = (float)(_clock.DeltaTime.TotalMilliseconds);
 
             switch (mouseMoveAction)
             {
                 case MouseMoveAction.Scroll:
+                    var testPosition = _position + direction * _zoomSpeed  * mouseMoveState.ScrollDifference;
 
-
-                    Vector3 testPosition = position + direction * zoomSpeed  * mouseMoveState.ScrollDifference;
-
-                    float distance = Vector3.Distance(target, testPosition);
-                    if (distance > 3.0f && testPosition.Y > target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
+                    var distance = Vector3.Distance(_target, testPosition);
+                    if (distance > 3.0f && testPosition.Y > _target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
                     {
-                        if (zoom)
+                        if (_zoom)
                         {
-                            Vector3 tmp = position;
-                            tmp.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
+                            var tmp = _position;
+                            tmp.Y += _zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
 
-                            if (CanIMove(position, tmp))
+                            if (CanIMove(_position, tmp))
                             {
-                                position.Y += zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
+                                _position.Y += _zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
                             }
                         }
                         else
                         {
-                            Vector3 tmp = position;
-                            tmp += zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
+                            var tmp = _position;
+                            tmp += _zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
 
-                            if (CanIMove(position, tmp))
+                            if (CanIMove(_position, tmp))
                             {
-                                position += zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(position, target) / 20);
+                                _position += _zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
                             }
                         }
                     }
@@ -447,32 +421,32 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 case MouseMoveAction.Move:
                     {
-                        if (rotateCamera == 1)
+                        if (_rotateCamera == 1)
                         {
-                            Vector3 tmp = position;
-                            tmp -= target;
-                            tmp = Vector3.Transform(tmp, Matrix.CreateRotationY(rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
-                            tmp += target;
+                            var tmp = _position;
+                            tmp -= _target;
+                            tmp = Vector3.Transform(tmp, Matrix.CreateRotationY(_rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
+                            tmp += _target;
 
-                            if (CanIMove(position, tmp))
+                            if (CanIMove(_position, tmp))
                             {
-                                position -= target;
-                                position = Vector3.Transform(position, Matrix.CreateRotationY(rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
-                                position += target;
+                                _position -= _target;
+                                _position = Vector3.Transform(_position, Matrix.CreateRotationY(_rotationSpeed * (mouseMoveState.Position.X - mouseMoveState.OldPosition.X)));
+                                _position += _target;
                             }
                         }
 
                         CollisionSkin skin;
-                        Vector3 direction1 = Physics.PhysicsUlitities.DirectionFromMousePosition(this.cameraComponent.Projection, this.cameraComponent.View, mouseX, mouseY);
+                        var direction1 = Physics.PhysicsUlitities.DirectionFromMousePosition(CameraComponent.Projection, CameraComponent.View, _mouseX, _mouseY);
                         Vector3 pos, nor;
-                        String cursor = "Default";
+                        var cursor = "Default";
                         float dist;
-                        Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction1 * cameraComponent.ZFar, out dist, out skin, out pos, out nor);
+                        Physics.PhysicsUlitities.RayTest(CameraComponent.Position, CameraComponent.Position + direction1 * CameraComponent.ZFar, out dist, out skin, out pos, out nor);
                         if (skin != null)
                         {
                             if (skin.ExternalData != null)
                             {
-                                if (useCommands)
+                                if (_useCommands)
                                 {
 
                                     switch (((GameObjectInstance)skin.ExternalData).Status)
@@ -496,7 +470,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                             }
                         }
-                        mouseListenerComponent.SetCursor(cursor);
+                        MouseListenerComponent.SetCursor(cursor);
                     }
                     break;
             }            
@@ -509,20 +483,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
-            if (key == Keys.LeftControl) addToSelection = state.IsDown();
+            if (key == Keys.LeftControl) _addToSelection = state.IsDown();
 
             if (key == Keys.LeftAlt)
             {
-                removeFromSelection = state.IsDown();
-                zoom = state.IsDown();
+                _removeFromSelection = state.IsDown();
+                _zoom = state.IsDown();
 
                 if (key == Keys.LeftAlt && state.WasPressed())
                 {
-                    if (++rotateCamera == 1) mouseListenerComponent.LockCursor();
+                    if (++_rotateCamera == 1) MouseListenerComponent.LockCursor();
                 }
                 else if (key == Keys.LeftAlt && state.WasReleased())
                 {
-                    if (--rotateCamera == 0) mouseListenerComponent.UnlockCursor();
+                    if (--_rotateCamera == 0) MouseListenerComponent.UnlockCursor();
                 }
             }
 
@@ -530,58 +504,58 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             
             
-            Vector3 direction      = Vector3.Normalize(target - position); direction.Y = 0;                        
-            float   distanceFactor = Vector3.Distance(target, position) / 50;
-            Vector3 perpendicular  = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))); perpendicular.Y = 0;            
-            float   time           = (float)(clock.DeltaTime.TotalMilliseconds);
-            Vector3 offset         = direction * time * movementSpeed * distanceFactor;
+            var direction      = Vector3.Normalize(_target - _position); direction.Y = 0;                        
+            var distanceFactor = Vector3.Distance(_target, _position) / 50;
+            var perpendicular  = Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))); perpendicular.Y = 0;            
+            var time           = (float)(_clock.DeltaTime.TotalMilliseconds);
+            var offset         = direction * time * _movementSpeed * distanceFactor;
 
             switch (key)
             {
                 case Keys.W:
 
-                    if (CanIMove(position, position + offset))
+                    if (CanIMove(_position, _position + offset))
                     {
-                        position += offset;
-                        target   += offset;
-                        stopTracking();
+                        _position += offset;
+                        _target   += offset;
+                        StopTracking();
                         StopMovingToPoint();
                     }
                     break;
 
                 case Keys.S:
 
-                    if (CanIMove(position, position - offset))
+                    if (CanIMove(_position, _position - offset))
                     {
-                        position -= offset;
-                        target   -= offset;
-                        stopTracking();
+                        _position -= offset;
+                        _target   -= offset;
+                        StopTracking();
                         StopMovingToPoint();
                     }
                     break;
 
                 case Keys.A:
 
-                    offset = perpendicular * time * movementSpeed * distanceFactor;
+                    offset = perpendicular * time * _movementSpeed * distanceFactor;
 
-                    if (CanIMove(position, position + offset))
+                    if (CanIMove(_position, _position + offset))
                     {
-                        position += offset;
-                        target   += offset;
-                        stopTracking();
+                        _position += offset;
+                        _target   += offset;
+                        StopTracking();
                         StopMovingToPoint();
                     }
                     break;
 
                 case Keys.D:
 
-                    offset = perpendicular * time * movementSpeed * distanceFactor;
+                    offset = perpendicular * time * _movementSpeed * distanceFactor;
 
-                    if (CanIMove(position, position - offset))
+                    if (CanIMove(_position, _position - offset))
                     {
-                        position -= offset;
-                        target   -= offset;
-                        stopTracking();
+                        _position -= offset;
+                        _target   -= offset;
+                        StopTracking();
                         StopMovingToPoint();
                     }
                     break;
@@ -591,98 +565,83 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// Release Components
+        // Release Components
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            cameraComponent.ReleaseMe();
-            keyboardListenerComponent.ReleaseMe();
-            mouseListenerComponent.ReleaseMe();
+            CameraComponent.ReleaseMe();
+            KeyboardListenerComponent.ReleaseMe();
+            MouseListenerComponent.ReleaseMe();
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Get Data
+        // Get Data
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            LinkedCameraData data = new LinkedCameraData();
+            var data = new LinkedCameraData();
             GetData(data);
 
-            data.MovementSpeed = this.movementSpeed;
-            data.RotationSpeed = this.rotationSpeed;
-            data.ZoomSpeed = this.zoomSpeed;
-            data.FoV =MathHelper.ToDegrees( this.cameraComponent.FoV);
-            data.ZNear = this.cameraComponent.ZNear;
-            data.ZFar = this.cameraComponent.ZFar;
-            data.ActiveKeyListener = this.keyboardListenerComponent.Active;
-            data.ActiveMouseListener = this.mouseListenerComponent.Active;
-            data.position = this.position;
-            data.Target = this.target;
+            data.MovementSpeed = _movementSpeed;
+            data.RotationSpeed = _rotationSpeed;
+            data.ZoomSpeed = _zoomSpeed;
+            data.FoV =MathHelper.ToDegrees( CameraComponent.FoV);
+            data.ZNear = CameraComponent.ZNear;
+            data.ZFar = CameraComponent.ZFar;
+            data.ActiveKeyListener = KeyboardListenerComponent.Active;
+            data.ActiveMouseListener = MouseListenerComponent.Active;
+            data.position = _position;
+            data.Target = _target;
             
-            data.MercenariesManager = this.mercenariesManager.ID;
+            data.MercenariesManager = MercenariesManager.ID;
 
-            if (cameraComponent.Renderer.CurrentCamera != null)
-            {
-                if (this.cameraComponent.Renderer.CurrentCamera.Equals(this.cameraComponent))
-                {
-
-                    data.CurrentCamera = true;
-                }
-                else
-                {
-                    data.CurrentCamera = false;
-                }
-            }
-            else
-            {
-                data.CurrentCamera = false;
-            }
+            data.CurrentCamera = CameraComponent.Renderer.CurrentCamera != null && CameraComponent.Renderer.CurrentCamera.Equals(CameraComponent);
             return data;
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Update
+        // Update
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
         {            
 
-            if (movingToPoint)  MoveToPoint();
-            if (tracing)        traceTarget();
-            if (selectionRect) cameraComponent.Renderer.DrawSelectionRect(rect);
+            if (_movingToPoint)  MoveToPoint();
+            if (_tracing)        TraceTarget();
+            if (_selectionRect) CameraComponent.Renderer.DrawSelectionRect(_rect);
             else
             {
                 /***************************************/
-                /// Check Borders
+                // Check Borders
                 /***************************************/
 
-                if (!(mouseX < minRight && mouseX > minLeft && mouseY < minBottom && mouseY > minTop))
+                if (!(_mouseX < _minRight && _mouseX > _minLeft && _mouseY < _minBottom && _mouseY > _minTop))
                 {
-                    Vector3 direction = Vector3.Normalize(target - position);
-                    float distanceFactor = Vector3.Distance(target, position) / 50;
-                    Vector3 perpendicular = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
+                    var direction = Vector3.Normalize(_target - _position);
+                    var distanceFactor = Vector3.Distance(_target, _position) / 50;
+                    var perpendicular = Vector3.Normalize(Vector3.Transform(direction, Matrix.CreateRotationY(MathHelper.ToRadians(90.0f))));
 
-                    float time = (float)(deltaTime.TotalMilliseconds);
+                    var time = (float)(deltaTime.TotalMilliseconds);
 
                     direction.Y = 0;
                     perpendicular.Y = 0;
 
-                    Vector3 offset = perpendicular * movementSpeed * time * distanceFactor;
+                    var offset = perpendicular * _movementSpeed * time * distanceFactor;
                     /************************/
-                    /// Left Border
+                    // Left Border
                     /************************/
-                    if (mouseX < minLeft && mouseX > maxLeft)
+                    if (_mouseX < _minLeft && _mouseX > _maxLeft)
                     {
-                        if (CanIMove(position, position + offset))
+                        if (CanIMove(_position, _position + offset))
                         {
-                            mouseListenerComponent.SetCursor("Left");
-                            position += offset;
-                            target += offset;
+                            MouseListenerComponent.SetCursor("Left");
+                            _position += offset;
+                            _target += offset;
 
-                            stopTracking();
+                            StopTracking();
                             StopMovingToPoint();
                         }
                     }
@@ -690,36 +649,36 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
                     /************************/
-                    /// Right Border
+                    // Right Border
                     /************************/
-                    if (mouseX > minRight && mouseX < maxRight)
+                    if (_mouseX > _minRight && _mouseX < _maxRight)
                     {
-                        if (CanIMove(position, position - offset))
+                        if (CanIMove(_position, _position - offset))
                         {
-                            mouseListenerComponent.SetCursor("Right");
-                            position -= offset;
-                            target -= offset;
+                            MouseListenerComponent.SetCursor("Right");
+                            _position -= offset;
+                            _target -= offset;
 
-                            stopTracking();
+                            StopTracking();
                             StopMovingToPoint();
                         }
                     }
                     /************************/
 
-                    offset = direction * movementSpeed * time * distanceFactor;
+                    offset = direction * _movementSpeed * time * distanceFactor;
 
                     /************************/
-                    /// Top Border
+                    // Top Border
                     /************************/
-                    if (mouseY < minTop && mouseY > maxTop)
+                    if (_mouseY < _minTop && _mouseY > _maxTop)
                     {
-                        if (CanIMove(position, position + offset))
+                        if (CanIMove(_position, _position + offset))
                         {
-                            mouseListenerComponent.SetCursor("Up");
-                            position += offset;
-                            target += offset;
+                            MouseListenerComponent.SetCursor("Up");
+                            _position += offset;
+                            _target += offset;
 
-                            stopTracking();
+                            StopTracking();
                             StopMovingToPoint();
                         }
                     }
@@ -727,17 +686,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
                     /************************/
-                    /// Bottom Border
+                    // Bottom Border
                     /************************/
-                    if (mouseY > minBottom && mouseY < maxBottom)
+                    if (_mouseY > _minBottom && _mouseY < _maxBottom)
                     {
-                        if (CanIMove(position, position - offset))
+                        if (CanIMove(_position, _position - offset))
                         {
-                            mouseListenerComponent.SetCursor("Down");
-                            position -= offset;
-                            target -= offset;
+                            MouseListenerComponent.SetCursor("Down");
+                            _position -= offset;
+                            _target -= offset;
 
-                            stopTracking();
+                            StopTracking();
                             StopMovingToPoint();
                         }
                     }
@@ -747,7 +706,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 /***************************************/
             }
 
-            cameraComponent.LookAt(position, target, Vector3.Up);
+            CameraComponent.LookAt(_position, _target, Vector3.Up);
         }
         /****************************************************************************/
 
@@ -759,15 +718,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (e.GetType().Equals(typeof(ExSwitchEvent)))
             {
-                switch ((e as ExSwitchEvent).name)
+                switch (((ExSwitchEvent) e).name)
                 {
-                    case "UseCommands": useCommands = (e as ExSwitchEvent).value; break;
+                    case "UseCommands": _useCommands = (e as ExSwitchEvent).value; break;
                 }
             }
             else if (e.GetType().Equals(typeof(MoveToObjectCommandEvent)))
             {
-                setTarget((e as MoveToObjectCommandEvent).gameObject);
-                startTracing();
+                SetTarget(((MoveToObjectCommandEvent) e).gameObject);
+                StartTracing();
             }
         }
         /****************************************************************************/
@@ -782,57 +741,57 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class LinkedCameraData : GameObjectInstanceData
     {
-        public float MovementSpeed = 0;
-        public float RotationSpeed = 0;
-        public float ZoomSpeed = 0;
-        public float FoV = 0;
-        public float ZNear = 0;
-        public float ZFar = 0;
-        public bool ActiveKeyListener = false;
-        public bool ActiveMouseListener = false;
+        public float MovementSpeed;
+        public float RotationSpeed;
+        public float ZoomSpeed;
+        public float FoV;
+        public float ZNear;
+        public float ZFar;
+        public bool ActiveKeyListener;
+        public bool ActiveMouseListener;
         public Vector3 position;
         public Vector3 Target { get; set; }
 
         public float movementSpeed
         {
             
-            set { this.MovementSpeed = value; }
+            set { MovementSpeed = value; }
             get { return MovementSpeed; }
         }
 
         public float rotationSpeed
         {
-            set { this.RotationSpeed = value; }
+            set { RotationSpeed = value; }
             get { return RotationSpeed; }
         }
         public float zoomSpeed
         {
-            set { this.ZoomSpeed = value; }
+            set { ZoomSpeed = value; }
             get { return ZoomSpeed; }
         }
         public float FOV
         {
-            set { this.FoV = value; }
+            set { FoV = value; }
             get { return FoV; }
         }
         public float zNear
         {
-            set { this.ZNear = value; }
+            set { ZNear = value; }
             get { return ZNear; }
         }
         public float zFar
         {
-            set { this.ZFar = value; }
+            set { ZFar = value; }
             get { return ZFar; }
         }
         public bool activeKeyListener
         {
-            set { this.ActiveKeyListener = value; }
+            set { ActiveKeyListener = value; }
             get { return ActiveKeyListener; }
         }
         public bool activeMouseListener
         {
-            set { this.ActiveMouseListener = value; }
+            set { ActiveMouseListener = value; }
             get { return ActiveMouseListener; }
         }
 

@@ -147,6 +147,11 @@ namespace PlagueEngine.Audio.Components
             soundEffectInstance.Dispose();
         }
 
+        public bool IsPlaying()
+        {
+            var index = _playingSounds.Values.Count(soundEffectInstance => soundEffectInstance != null && !soundEffectInstance.IsDisposed);
+            return index > 0;
+        }
         /// <summary>
         /// Zatrzymuje wszystkie obecne dźwięki
         /// </summary>
