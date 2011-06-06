@@ -70,7 +70,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JigLibX">
-      <HintPath>bin\JigLibX.dll</HintPath>
+      <HintPath>.\JigLibX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
@@ -106,22 +106,22 @@
       <HintPath>.\NMock2.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Input">
-      <HintPath>bin\Nuclex.Input.dll</HintPath>
+      <HintPath>.\Nuclex.Input.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Support">
-      <HintPath>bin\Nuclex.Support.dll</HintPath>
+      <HintPath>.\Nuclex.Support.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.Testing.Xna">
-      <HintPath>bin\Nuclex.Testing.Xna.dll</HintPath>
+      <HintPath>.\Nuclex.Testing.Xna.dll</HintPath>
     </Reference>
     <Reference Include="Nuclex.UserInterface">
-      <HintPath>bin\Nuclex.UserInterface.dll</HintPath>
+      <HintPath>.\Nuclex.UserInterface.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>bin\nunit.framework.dll</HintPath>
+      <HintPath>.\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX.DirectInput">
-      <HintPath>..\SlimDX.DirectInput.dll</HintPath>
+      <HintPath>.\SlimDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -204,6 +204,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Bulldozer.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Clip.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Compass.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Container.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DescriptionWindow.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Flashlight.cs" />

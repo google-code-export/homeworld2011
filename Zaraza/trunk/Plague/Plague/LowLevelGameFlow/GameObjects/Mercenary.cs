@@ -120,8 +120,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Controller = new PhysicsController(Body);
             Controller.EnableControl();
 
-            //mesh.Stop();
-
             RequiresUpdate = true;
             IsDisposed = false;           
         }

@@ -86,6 +86,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Vector2 localPosition;
         private Vector2 mousePos;
         private Vector2 realMousePos;
+        /*****************/
+
+
+        /*****************/
+        /// Dump
+        /*****************/        
+        private SlotContent[,]  dumpContent;        
+        private String          dumpTitle               = "Dump";
+        private bool            dump                    = false;
+        private bool            dumpButton              = false;
+        private bool            dumpScrollUp            = false;
+        private bool            dumpScrollDown          = false;
+        private bool            dumpScroll              = false;
+        private float           dumpScrollStep          = 0;
+        private int             dumpScrollMaxOffset     = 0;
+        private int             dumpScrollCurrentOffset = 0;
+        private Dictionary<StorableObject, ItemPosition> dumpItems = new Dictionary<StorableObject, ItemPosition>();
         /*****************/        
 
 
@@ -122,6 +139,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Vector2 ScrollDown2ButtonPos = new Vector2(424, 561);
         private Vector2 Scroll2ButtonBasePos = new Vector2(424, 237);
         private Vector2 SlotsStartPos2       = new Vector2(451, 120);
+
+        private Vector2 DumpButtonPos           = new Vector2(400, 120);
+        private Vector2 DumpSlotsStartPos       = new Vector2(451, 30);
+        private Vector2 DumpScrollUpButtonPos   = new Vector2(425, 50);
+        private Vector2 DumpScrollDownButtonPos = new Vector2(425, 260);
+        private Vector2 DumpScrollButtonBasePos = new Vector2(425, 64);
+
+        private const int    dumpCapacity     = 200;
+        private const String defaultDumpTitle = "Dump";
         /****************************************************************************/
 
 
@@ -145,7 +171,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mouse.Modal    = true;
             keyboard.Modal = true;
 
-            keyboard.SubscibeKeys   (OnKey, Keys.Escape,Keys.Space,Keys.E,Keys.Tab);
+            keyboard.SubscibeKeys   (OnKey, Keys.Escape,Keys.Space,Keys.E,Keys.Tab,Keys.D);
             keyboard.SubscibeKeys   (delegate(Keys key, ExtendedKeyState state) { leftControl = state.IsDown(); }, Keys.LeftControl);
 
             mouse.SubscribeKeys     (OnMouseKey, MouseKeyAction.LeftClick,MouseKeyAction.RightClick);
@@ -200,6 +226,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollDownButtonPos, (scrollDown ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
                     spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollButtonBasePos + new Vector2(0, scrollStep * scrollCurrentOffset), (scroll ? new Rectangle(1335, 14, 15, 14) : new Rectangle(1335, 0, 15, 14)), Color.White);
                 }
+                // Dump Button
+                spriteBatch.Draw(frontEnd.Texture, localPosition + DumpButtonPos, (dumpButton ? new Rectangle(1319, 29, 19, 52) : new Rectangle(1300, 29, 19, 52)), Color.White);
                 /***********************/
                 #endregion
                 /***********************/
@@ -439,6 +467,109 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 /***********************/
                 #endregion
                 /***********************/
+            }
+            /***********************/
+            #endregion
+            /***********************/
+
+
+            /***********************/
+            #region Draw Dump
+            /***********************/
+            if (dump)
+            {
+                // Background
+                spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(420,0), new Rectangle(840, 310, 420, 310), Color.White);
+                // Title
+                spriteBatch.DrawString(frontEnd.GetFont("Arial"), dumpTitle, localPosition + new Vector2(620 - frontEnd.GetFont("Arial").MeasureString(dumpTitle).X/2, 0), Color.WhiteSmoke);
+                // Scroll
+                if (dumpScrollMaxOffset > 0)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + DumpScrollUpButtonPos, (dumpScrollUp ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + DumpScrollDownButtonPos, (dumpScrollDown ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + DumpScrollButtonBasePos + new Vector2(0, dumpScrollStep * dumpScrollCurrentOffset), (dumpScroll ? new Rectangle(1335, 14, 15, 14) : new Rectangle(1335, 0, 15, 14)), Color.White);
+                }
+                // Slots
+                for (int y = 0; y < dumpContent.GetLength(1) && y < 8; ++y)
+                {
+                    for (int x = 0; x < dumpContent.GetLength(0); ++x)
+                    {
+                        if (!dumpContent[x, y + dumpScrollCurrentOffset].Blank)
+                        {
+                            if (dumpContent[x, y + dumpScrollCurrentOffset].Blocked)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1324, 81, 32, 32), Color.White);
+                            }
+                            else if (dumpContent[x, y + dumpScrollCurrentOffset].Hover)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1356, 81, 32, 32), Color.White);
+                            }
+                            else if (dumpContent[x, y + dumpScrollCurrentOffset].Tiny)
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1292, 81, 32, 32), Color.White);
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * x, 32 * y), new Rectangle(1260, 81, 32, 32), Color.White);
+                            }
+
+                            dumpContent[x, y + dumpScrollCurrentOffset].Hover = false;
+                            dumpContent[x, y + dumpScrollCurrentOffset].Blocked = false;
+                        }
+                    }
+                }
+                // Items
+                foreach (KeyValuePair<StorableObject, ItemPosition> pair in dumpItems)
+                {
+                    Rectangle rect = pair.Key.SlotsIcon;
+                    int itemSlot = pair.Value.Slot;
+                    int height = (pair.Value.Orientation < 0 ? rect.Width / 32 : rect.Height / 32);
+                    int y = itemSlot / 11;
+                    int diff = dumpScrollCurrentOffset - y;
+                    int diff2 = y + height - (dumpScrollCurrentOffset + 8);
+
+                    if (diff > 0)
+                    {
+                        if (pair.Value.Orientation < 0)
+                        {
+                            rect.X += 32 * diff;
+                            rect.Width -= 32 * diff;
+                        }
+                        else
+                        {
+                            rect.Y += 32 * diff;
+                            rect.Height -= 32 * diff;
+                        }
+                    }
+                    else
+                    {
+                        diff = 0;
+                    }
+
+                    if (diff2 > 0)
+                    {
+                        if (pair.Value.Orientation < 0)
+                        {
+                            rect.Width -= 32 * diff2;
+                        }
+                        else
+                        {
+                            rect.Height -= 32 * diff2;
+                        }
+                    }
+
+                    if (y > dumpScrollCurrentOffset - height && y < dumpScrollCurrentOffset + 8)
+                    {
+                        if (pair.Value.Orientation > 0)
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset + diff)), rect, Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                        }
+                    }
+                }
             }
             /***********************/
             #endregion
@@ -689,6 +820,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*************************/
                     #endregion
                     /*************************/
+                    #region Dump Scroll Button
+                    /*************************/
+                    else if (mousePos.X > DumpScrollButtonBasePos.X &&
+                             mousePos.X < DumpScrollButtonBasePos.X + 15 &&
+                             mousePos.Y > DumpScrollButtonBasePos.Y +      dumpScrollStep * dumpScrollCurrentOffset &&
+                             mousePos.Y < DumpScrollButtonBasePos.Y + 14 + dumpScrollStep * dumpScrollCurrentOffset)
+                    {
+                        dumpScroll = true;
+                    }
+                    /*************************/
+                    #endregion
+                    /*************************/
                     #region Pick Current Item
                     /*************************/
                     else if (mousePos.X > CurrItemIconPos.X &&
@@ -864,6 +1007,58 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             mouse.CursorVisible = false;
                         }
                     }
+                    else if (dump &&
+                             mousePos.X > DumpSlotsStartPos.X &&
+                             mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
+                             mousePos.Y > DumpSlotsStartPos.Y &&
+                             mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
+                    {
+                        int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
+                        int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
+
+                        if (dumpContent[x, y].Item != null)
+                        {
+                            pickedItem = dumpContent[x, y].Item;
+                            List<int> slotsToClean = CalculateSlots(pickedItem, dumpItems[pickedItem].Slot, dumpItems[pickedItem].Orientation, true);
+                            pickedItemSlots = CalculateSlots(pickedItem, dumpItems[pickedItem].Slot, dumpItems[pickedItem].Orientation, true);
+
+                            oldPickedItemOrientation = dumpItems[pickedItem].Orientation;
+                            newPickedItemOrientation = oldPickedItemOrientation;
+
+                            dumpItems.Remove(pickedItem);
+
+                            foreach (int slot in slotsToClean)
+                            {
+                                dumpContent[slot % 11, slot / 11].Item = null;
+                            }
+
+                            pickedItemSlot = Slot.Dump;
+                            mouse.CursorVisible = false;
+                        }
+                    }
+                    /*************************/
+                    #endregion
+                    /*************************/
+                    #region Dump
+                    /*************************/
+                    else if (mousePos.X > DumpButtonPos.X      &&
+                             mousePos.X < DumpButtonPos.X + 19 &&
+                             mousePos.Y > DumpButtonPos.Y      &&
+                             mousePos.Y < DumpButtonPos.Y + 52)
+                    {
+                        if (!dump)
+                        {
+                            dump = true;
+                            dumpButton = true;
+                            PrepareDump();
+                        }
+                        else
+                        {
+                            dump = false;
+                            dumpButton = false;
+                            CloseDump();
+                        }
+                    }
                     /*************************/
                     #endregion
                     /*************************/
@@ -1032,13 +1227,73 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         /******************************/
                         #endregion
                         /******************************/
+                        #region Dump
+                        /******************************/
+                        else if (dump &&                            
+                                 mousePos.X > DumpSlotsStartPos.X &&
+                                 mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
+                                 mousePos.Y > DumpSlotsStartPos.Y &&
+                                 mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
+                        {
+                            int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
+                            int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
+
+                            int width  = (pickedItem.SlotsIcon.Width / 32) - 1;
+                            int height = (pickedItem.SlotsIcon.Height / 32) - 1;
+
+                            if (newPickedItemOrientation < 0)
+                            {
+                                int tmp = width;
+                                width = height;
+                                height = tmp;
+                            }
+
+                            bool blockAll = false;
+
+                            for (int i = x + width; i >= x; --i)
+                            {
+                                for (int j = y + height; j >= y; --j)
+                                {
+                                    if (i > dumpContent.GetLength(0) - 1) blockAll = true;
+                                    else if (j > dumpContent.GetLength(1) - 1) blockAll = true;
+                                    else if (blockAll)
+                                    {
+                                        dumpContent[i, j].Blocked = true;
+                                    }
+                                    else if (dumpContent[i, j].Blank)
+                                    {
+                                        blockAll = true;
+                                    }
+                                    else if (dumpContent[i, j].Item != null)
+                                    {
+                                        dumpContent[i, j].Blocked = true;
+                                    }
+                                    else
+                                    {
+                                        dumpContent[i, j].Hover = true;
+                                    }
+                                }
+                            }
+
+                            if (y + height - dumpScrollCurrentOffset > 6)
+                            {
+                                if (dumpScrollCurrentOffset != dumpScrollMaxOffset) dumpScrollCurrentOffset++;
+                            }
+                            else if (y - dumpScrollCurrentOffset < 1)
+                            {
+                                if (dumpScrollCurrentOffset != 0) dumpScrollCurrentOffset--;
+                            }
+                        }
+                        /******************************/
+                        #endregion
+                        /******************************/
                     }
                     /******************************/
                     #endregion
                     /******************************/
                     #region Pressed Buttons
                     /******************************/
-                    else if (!scroll && !scroll2)
+                    else if (!scroll && !scroll2 && !dumpScroll)
                     {
                         /*************************/
                         /// Next Merc Button
@@ -1127,6 +1382,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             UncheckButtons();
                             scrollDown2 = true;
+                        }
+                        /*************************/
+                        /// Dump Scroll Up
+                        /*************************/
+                        else if (mousePos.X > DumpScrollUpButtonPos.X &&
+                                 mousePos.X < DumpScrollUpButtonPos.X + 15 &&
+                                 mousePos.Y > DumpScrollUpButtonPos.Y &&
+                                 mousePos.Y < DumpScrollUpButtonPos.Y + 14)
+                        {
+                            UncheckButtons();
+                            dumpScrollUp = true;
+                        }
+                        /*************************/
+                        /// Dump Scroll Down 
+                        /*************************/
+                        else if (mousePos.X > DumpScrollDownButtonPos.X &&
+                                 mousePos.X < DumpScrollDownButtonPos.X + 15 &&
+                                 mousePos.Y > DumpScrollDownButtonPos.Y &&
+                                 mousePos.Y < DumpScrollDownButtonPos.Y + 14)
+                        {
+                            UncheckButtons();
+                            dumpScrollDown = true;
                         }
                         else
                         {
@@ -1357,9 +1634,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         #region Outside Inventory
                         /*************************/
                         else if (realMousePos.X < localPosition.X ||
-                                 realMousePos.Y > localPosition.Y + 620 ||
                                  realMousePos.Y < localPosition.Y ||
-                                 (mercenary2 == null && realMousePos.X > localPosition.X + 420) ||
+                                 realMousePos.Y > localPosition.Y + 620 ||
+                                 (mercenary2 == null && !dump && realMousePos.X > localPosition.X + 420) ||
+                                 (mercenary2 == null && dump  && realMousePos.Y > localPosition.Y + 310 && realMousePos.X > localPosition.X + 420) ||
                                  (mercenary2 != null && realMousePos.X > localPosition.X + 840))
                         {
                             mercenary.DropItem(pickedItem);
@@ -1377,6 +1655,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             mousePos.X -= (pickedItem.SlotsIcon.Width / 2)  - 32;
                             mousePos.Y -= (pickedItem.SlotsIcon.Height / 2) - 32;
 
+                            /*************************/
+                            #region Main
+                            /*************************/
                             if (mousePos.X > SlotsStartPos.X &&
                                 mousePos.X < SlotsStartPos.X + 11 * 32 &&
                                 mousePos.Y > SlotsStartPos.Y &&
@@ -1446,7 +1727,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                     pickedItemSlot = Slot.Empty;
                                     mouse.CursorVisible = true;
                                 }
-                            }
+                            }                          
+                            /*************************/
+                            #endregion
+                            /*************************/
+                            #region Secondary
+                            /*************************/
                             else if (mercenary2 != null &&
                                      mousePos.X > SlotsStartPos2.X &&
                                      mousePos.X < SlotsStartPos2.X + 11 * 32 &&
@@ -1518,6 +1804,70 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                     mouse.CursorVisible = true;
                                 }
                             }
+                            /*************************/
+                            #endregion 
+                            /*************************/
+                            #region Dump
+                            /*************************/
+                            else if (dump &&
+                                     mousePos.X > DumpSlotsStartPos.X &&
+                                     mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
+                                     mousePos.Y > DumpSlotsStartPos.Y &&
+                                     mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
+                            {
+                                int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
+                                int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
+
+                                int width  = (pickedItem.SlotsIcon.Width / 32) - 1;
+                                int height = (pickedItem.SlotsIcon.Height / 32) - 1;
+
+                                if (newPickedItemOrientation < 0)
+                                {
+                                    int tmp = width;
+                                    width = height;
+                                    height = tmp;
+                                }
+
+                                bool block = false;
+
+                                for (int i = x + width; i >= x; --i)
+                                {
+                                    for (int j = y + height; j >= y; --j)
+                                    {
+                                        if (i > dumpContent.GetLength(0) - 1) block = true;
+                                        else if (j > dumpContent.GetLength(1) - 1) block = true;
+                                        else if (dumpContent[i, j].Blank) block = true;
+                                        else if (dumpContent[i, j].Item != null) block = true;
+
+                                        if (block) break;
+                                    }
+                                    if (block) break;
+                                }
+
+                                if (block)
+                                {
+                                    PutBackPickedItem();
+                                }
+                                else
+                                {
+                                    List<int> slots = new List<int>();
+                                    for (int i = x; i < x + width + 1; ++i)
+                                    {
+                                        for (int j = y; j < y + height + 1; ++j)
+                                        {
+                                            dumpContent[i, j].Item = pickedItem;
+                                            slots.Add(i + (j * 11));
+                                        }
+                                    }                                    
+                                    dumpItems.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
+                                    pickedItem    = null;
+                                    pickedItemSlot = Slot.Empty;
+                                    mouse.CursorVisible = true;
+                                }
+                            }
+                            /*************************/
+                            #endregion
+                            /*************************/
                             else
                             {
                                 PutBackPickedItem();
@@ -1543,11 +1893,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*************************/
                     if (nextMerc)
                     {
+                        dump       = false;
+                        dumpButton = false;
+                        CloseDump();
                         mercenary = mercenariesManager.GetNextMercenary(mercenary);
                         if (mercenary == mercenary2) mercenary = mercenariesManager.GetNextMercenary(mercenary);
                         SetupMercenary();
                         SendEvent(new SelectedObjectEvent(mercenary, Vector3.Zero), EventsSystem.Priority.High, mercenariesManager);
-                        mercenary2 = null;
+                        mercenary2 = null;                        
                     }
                     /*************************/
                     #endregion
@@ -1556,6 +1909,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*************************/
                     else if (prevMerc)
                     {
+                        dump       = false;
+                        dumpButton = false;
+                        CloseDump();
                         mercenary = mercenariesManager.GetPrevMercenary(mercenary);
                         if (mercenary == mercenary2) mercenary = mercenariesManager.GetPrevMercenary(mercenary);
                         SetupMercenary();
@@ -1599,6 +1955,33 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     else if (scroll2)
                     {
                         scroll2 = false;
+                    }
+                    /*************************/
+                    #endregion
+                    /*************************/
+                    #region Dump Scroll Down
+                    /*************************/
+                    else if (dumpScrollDown)
+                    {
+                        if (dumpScrollCurrentOffset != dumpScrollMaxOffset) dumpScrollCurrentOffset++;
+                    }
+                    /*************************/
+                    #endregion
+                    /*************************/
+                    #region Dump Scroll Up
+                    /*************************/
+                    else if (dumpScrollUp)
+                    {
+                        if (dumpScrollCurrentOffset != 0) dumpScrollCurrentOffset--;
+                    }
+                    /*************************/
+                    #endregion
+                    /*************************/
+                    #region Dump Scroll
+                    /*************************/
+                    else if (dumpScroll)
+                    {
+                        dumpScroll = false;
                     }
                     /*************************/
                     #endregion
@@ -1770,14 +2153,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void UncheckButtons()
         {
-            nextMerc    = false;
-            prevMerc    = false;
-            exitInv     = false;
-            scrollUp    = false;
-            scrollDown  = false;
-            exitInv2    = false;
-            scrollUp2   = false;
-            scrollDown2 = false;
+            nextMerc        = false;
+            prevMerc        = false;
+            exitInv         = false;
+            scrollUp        = false;
+            scrollDown      = false;
+            exitInv2        = false;
+            scrollUp2       = false;
+            scrollDown2     = false;
+            dumpScrollDown  = false;
+            dumpScrollUp    = false;
         }
         /****************************************************************************/
 
@@ -1803,6 +2188,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     if (scrollCurrentOffset2 < 0) scrollCurrentOffset2 = 0;
                     else if (scrollCurrentOffset2 > scrollMaxOffset2) scrollCurrentOffset2 = scrollMaxOffset2;                
                 }
+                else if (dumpScroll)
+                {
+                    dumpScrollCurrentOffset = (int)((mouseMovementState.Position.Y - localPosition.Y - DumpScrollButtonBasePos.Y) / dumpScrollStep);
+
+                    if (dumpScrollCurrentOffset < 0) dumpScrollCurrentOffset = 0;
+                    else if (dumpScrollCurrentOffset > dumpScrollMaxOffset) dumpScrollCurrentOffset = dumpScrollMaxOffset;                                
+                }
                 else
                 {
                     realMousePos = new Vector2(mouseMovementState.Position.X, mouseMovementState.Position.Y);
@@ -1814,17 +2206,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (mercenary2 == null)
                 {
-                    if (scrollCurrentOffset + (mouseMovementState.ScrollDifference / 120) > scrollMaxOffset)
+                    if (mousePos.X < 420)
                     {
-                        scrollCurrentOffset = scrollMaxOffset;
+                        if (scrollCurrentOffset + (mouseMovementState.ScrollDifference / 120) > scrollMaxOffset)
+                        {
+                            scrollCurrentOffset = scrollMaxOffset;
+                        }
+                        else if (scrollCurrentOffset + (mouseMovementState.ScrollDifference / 120) < 0)
+                        {
+                            scrollCurrentOffset = 0;
+                        }
+                        else
+                        {
+                            scrollCurrentOffset += (int)(mouseMovementState.ScrollDifference / 120);
+                        }
                     }
-                    else if (scrollCurrentOffset + (mouseMovementState.ScrollDifference / 120) < 0)
+                    else if(mousePos.Y < 310)
                     {
-                        scrollCurrentOffset = 0;
-                    }
-                    else
-                    {
-                        scrollCurrentOffset += (int)(mouseMovementState.ScrollDifference / 120);
+                        if (dumpScrollCurrentOffset + (mouseMovementState.ScrollDifference / 120) > dumpScrollMaxOffset)
+                        {
+                            dumpScrollCurrentOffset = dumpScrollMaxOffset;
+                        }
+                        else if (dumpScrollCurrentOffset + (mouseMovementState.ScrollDifference / 120) < 0)
+                        {
+                            dumpScrollCurrentOffset = 0;
+                        }
+                        else
+                        {
+                            dumpScrollCurrentOffset += (int)(mouseMovementState.ScrollDifference / 120);
+                        }                        
                     }
                 }
                 else
@@ -1877,6 +2287,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                     mouse.Modal    = false;
                     keyboard.Modal = false;
+                    CloseDump();
                 }
                 else if(key == Keys.Space)
                 {
@@ -1884,12 +2295,32 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 else if (key == Keys.E)
                 {
+                    CloseDump();
                     SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                     mouse.Modal = false;
                     keyboard.Modal = false;
                 }
+                else if (key == Keys.D)
+                {
+                    if (dump)
+                    {
+                        dump = false;
+                        dumpButton = false;
+                        CloseDump();
+                    }
+                    else
+                    {
+                        dump = true;
+                        dumpButton = true;
+                        PrepareDump();               
+                    }
+                }
                 else if (key == Keys.Tab)
                 {
+                    dump       = false;
+                    dumpButton = false;
+                    CloseDump();
+
                     if (!leftControl)
                     {
                         mercenary = mercenariesManager.GetNextMercenary(mercenary);
@@ -1935,7 +2366,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             SideArm,
             Armor,
             Inventory,
-            Empty
+            Empty,
+            Dump
         }
         /****************************************************************************/
 
@@ -2006,6 +2438,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     pickedItem = null;
                     mouse.CursorVisible = true;
                     break;
+
+                case Slot.Dump:
+                    foreach (int slot in pickedItemSlots) dumpContent[slot % 11, slot / 11].Item = pickedItem;
+                    dumpItems.Add(pickedItem, new ItemPosition(pickedItemSlots.ElementAt(0), oldPickedItemOrientation));                                        
+                    
+                    pickedItem = null;
+                    mouse.CursorVisible = true;
+                    break;
             }
         }
         /****************************************************************************/
@@ -2039,6 +2479,57 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
 
             return slots;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Prepare Dump
+        /****************************************************************************/
+        private void PrepareDump(int slots = dumpCapacity, string title = defaultDumpTitle)
+        {
+            dumpTitle = defaultDumpTitle;
+            int height = ((slots % 11) > 0 ? 1 : 1) + slots / 11;
+            dumpContent = new SlotContent[11, height];
+            dumpItems = new Dictionary<StorableObject, ItemPosition>();
+
+            int w = 0;
+            for (int i = 0; i < dumpContent.GetLength(1); i++)
+            {
+                for (int j = 0; j < dumpContent.GetLength(0); j++)
+                {
+                    if (w > slots) dumpContent[j, i].Blank = true;
+                    w++;
+                }
+            }
+
+            if (height > 8)
+            {
+                dumpScrollMaxOffset     = height - 8;
+                dumpScrollStep          = 182.0f / (float)dumpScrollMaxOffset;
+                dumpScrollCurrentOffset = 0;
+            }
+            else
+            {
+                dumpScrollMaxOffset     = 0;
+                dumpScrollStep          = 0;
+                dumpScrollCurrentOffset = 0;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Close Dump
+        /****************************************************************************/
+        private void CloseDump()
+        {
+            foreach (KeyValuePair<StorableObject, ItemPosition> items in dumpItems)
+            {
+                mercenary.DropItem(items.Key);
+            }
+            dumpItems.Clear();
+            dumpContent = null;
         }
         /****************************************************************************/
 
