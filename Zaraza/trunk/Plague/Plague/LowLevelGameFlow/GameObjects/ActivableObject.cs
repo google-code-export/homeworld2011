@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Drawing.Design;
 using System.ComponentModel;
-
+using System.ComponentModel.Design;
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
@@ -156,7 +154,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Type = typeof(ActivableObject);
         }
 
-
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         [CategoryAttribute("Description")]
         public String Description { get; set; }
         [CategoryAttribute("Description")]
