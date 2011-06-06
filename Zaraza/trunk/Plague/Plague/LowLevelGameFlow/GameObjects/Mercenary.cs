@@ -243,8 +243,67 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             ObjectAIController.Update(deltaTime);
         }
         /****************************************************************************/
-
-
+        /// <summary>
+        /// Sprawdzamy czy posiada obiekt danego typu.
+        /// Przeszukuje ręce, schowek, wszystko.
+        /// </summary>
+        /// <param name="itemType">Typ poszukiwanego obiektu</param>
+        /// <returns>
+        ///   <c>true</c> jeżeli posiada obiekt danego typu; inaczej, <c>false</c>.
+        /// </returns>
+        public bool HasItemType(Type itemType)
+        {
+            if (CurrentObject != null && CurrentObject.GetType().Assembly.Equals(itemType))
+            {
+                return true;
+            }
+            if (Weapon != null && Weapon.GetType().Assembly.Equals(itemType))
+            {
+                return true;
+            }
+            if (SideArm != null && SideArm.GetType().Assembly.Equals(itemType))
+            {
+                return true;
+            }
+            foreach (var item in Items.Keys)
+            {
+                if (item.GetType().Assembly.Equals(itemType))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// Sprawdzamy czy posiada obiekt o podanym Id.
+        /// </summary>
+        /// <param name="itemId">ID poszukiwanego obiektu</param>
+        /// <returns>
+        ///   <c>true</c> jeżli posiadny obiekt ma takie ID; inaczej, <c>false</c>.
+        /// </returns>
+        public bool HasItem(int itemId)
+        {
+            if (CurrentObject != null && CurrentObject.ID == itemId)
+            {
+                return true;
+            }
+            if (Weapon != null && Weapon.ID == itemId)
+            {
+                return true;
+            }
+            if (SideArm != null && SideArm.ID == itemId)
+            {
+                return true;
+            }
+            foreach (var item in Items.Keys)
+            {
+                if (item.ID == itemId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         /****************************************************************************/
         // Pick Item
         /****************************************************************************/

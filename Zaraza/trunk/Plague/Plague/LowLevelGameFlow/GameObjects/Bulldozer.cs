@@ -99,17 +99,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (_keyId != -1 && !_used)
             {
-                foreach (StorableObject item in mercenary.Items.Keys)
+                if (mercenary.HasItem(_keyId))
                 {
-                    if (item.ID == _keyId)
-                    {
-
-                        return new[] {"Examine", "Activate" };
-                    }
+                    return new[] { "Examine", "Activate" };
                 }
             }
-
-            return new[] { "Examine"};
+            return new[] { "Examine" };
         }
         /****************************************************************************/
 
