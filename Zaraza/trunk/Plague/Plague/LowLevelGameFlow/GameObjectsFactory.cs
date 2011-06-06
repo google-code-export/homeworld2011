@@ -1469,22 +1469,18 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateInventory(Inventory result, InventoryData data)
         {
-            Mercenary          merc        = (Mercenary)GetObject(data.Mercenary);
-            Mercenary          merc2       = (data.Mercenary2 == 0 ? null : (Mercenary)GetObject(data.Mercenary2));
-            MercenariesManager mercManager = (MercenariesManager)GetObject(data.MercenariesManager);
-
-            if (merc == null || mercManager == null)
-            {
-                PushToWaitingRoom(result, data);
-                return false;
-            }
+            Mercenary          merc        = (data.Mercenary          == 0 ? null : (Mercenary)         GetObject(data.Mercenary));
+            Mercenary          merc2       = (data.Mercenary2         == 0 ? null : (Mercenary)         GetObject(data.Mercenary2));
+            MercenariesManager mercManager = (data.MercenariesManager == 0 ? null : (MercenariesManager)GetObject(data.MercenariesManager));
+            Container          container   = (data.Container          == 0 ? null : (Container)         GetObject(data.Container));
 
             result.Init(renderingComponentsFactory.CreateFrontEndComponent(result, "InventorySet"),
                         inputComponentsFactory.CreateKeyboardListenerComponent(result, true),
                         inputComponentsFactory.CreateMouseListenerComponent(result, true),
                         merc,
                         merc2,
-                        mercManager);
+                        mercManager,
+                        container);
 
             return true;
         }
@@ -1519,6 +1515,26 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateContainer(Container result, ContainerData data)
         {
+
+            Dictionary<StorableObject, ItemPosition> Items = new Dictionary<StorableObject, ItemPosition>();
+
+            if (data.Items != null)
+            {
+
+                foreach (int[] itemData in data.Items)
+                {
+                    StorableObject storable = GetObject(itemData[0]) as StorableObject;
+
+                    if (storable == null)
+                    {
+                        PushToWaitingRoom(result, data);
+                        return false;
+                    }
+
+                    Items.Add(storable, new ItemPosition(itemData[1], itemData[2]));
+                }
+            }
+
             result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
                                                                               data.Model,
                                                                               data.Diffuse,
@@ -1539,10 +1555,11 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.Yaw,
                                                                           data.Pitch,
                                                                           data.Roll),
-                        data.Open,
                         data.Description,
                         data.DescriptionWindowWidth,
-                        data.DescriptionWindowHeight);
+                        data.DescriptionWindowHeight,
+                        data.Slots,
+                        Items);
 
             return true;
         }

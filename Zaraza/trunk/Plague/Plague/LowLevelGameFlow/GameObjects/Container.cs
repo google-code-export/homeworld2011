@@ -24,14 +24,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         protected SkinnedMeshComponent mesh = null;
-        protected SquareBodyComponent  body = null;      
+        protected SquareBodyComponent  body = null;
+
         private bool open = false;
-        public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
 
-        public String Description { get; private set; }
-
-        private int DescriptionWindowWidth = 0;
+        private int DescriptionWindowWidth  = 0;
         private int DescriptionWindowHeight = 0;
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Properties
+        /****************************************************************************/
+        public uint Slots { get; private set; }
+        public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
+        public String Description { get; private set; }
         /****************************************************************************/
 
 
@@ -40,19 +47,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(SkinnedMeshComponent mesh, 
                          SquareBodyComponent body, 
-                         bool open, 
                          String description,
                          int descriptionWindowWidth,
-                         int descriptionWindowHeight)
+                         int descriptionWindowHeight,
+                         uint slots,
+                         Dictionary<StorableObject, ItemPosition> items)
         {
             this.mesh = mesh;
             this.body = body;
-            this.open = open;
-
+            
             Description = description;
             Status = GameObjectStatus.Pickable;
 
             mesh.Stop();
+
+            Slots = slots;
+            Items = items;
 
             DescriptionWindowHeight = descriptionWindowHeight;
             DescriptionWindowWidth = descriptionWindowWidth;
@@ -65,7 +75,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public string[] GetActions()
         {
-            return null;
+            return new string[0];
         }
         /****************************************************************************/
 
@@ -75,7 +85,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public string[] GetActions(Mercenary mercenary)
         {
-            return new string[]  { "Open", "Examine" };
+            if (open)
+            {
+                return new string[] { "Examine" };
+            }
+            else
+            {
+                return new string[] { "Open", "Examine" };
+            }
         }
         /****************************************************************************/
 
@@ -93,17 +110,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 data.Text = Description;
                 data.Width = DescriptionWindowWidth;
                 data.Height = DescriptionWindowHeight;
-
-                //mesh.StartClip("Open");
                 SendEvent(new CreateObjectEvent(data), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
             }
-            else if (e.GetType().Equals(typeof(OpenEvent)))
-            {
+            else if (e.GetType().Equals(typeof(OpenEvent)) && !open)
+            {                
+                OpenEvent OpenEvent = e as OpenEvent;
+
+                var data = new InventoryData
+                {
+                    Mercenary = OpenEvent.mercenary.ID,                    
+                    Container = ID
+                };
+
+                SendEvent(new CreateObjectEvent(data), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+
                 mesh.StartClip("Open");
+                open = true;
+
             }
-            else if (e.GetType().Equals(typeof(CloseEvent)))
+            else if (e.GetType().Equals(typeof(CloseEvent)) && open)
             {
                 mesh.StartClip("Close");
+                open = false;
             }
         }
         /****************************************************************************/
@@ -135,11 +163,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinYaw = body.Yaw;
             data.EnabledPhysics = body.Enabled;
 
-            data.Open = open;
             data.DescriptionWindowWidth = DescriptionWindowWidth;
             data.DescriptionWindowHeight = DescriptionWindowHeight;
-            data.Description = Description;            
-            
+            data.Description = Description;
+
+            data.Slots = Slots;
+
+            data.Items = new List<int[]>();
+
+            foreach (var item in Items)
+            {
+                data.Items.Add(new[] { item.Key.ID, item.Value.Slot, item.Value.Orientation });
+            }
+
             return data;
         }
         /****************************************************************************/
@@ -218,8 +254,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Description")]
         public int DescriptionWindowHeight { get; set; }
 
-        [CategoryAttribute("Misc")]
-        public bool Open { get; set; }
+        [CategoryAttribute("Inventory")]
+        public uint Slots { get; set; }
+        [CategoryAttribute("Inventory")]
+        public List<int[]> Items { get; set; }
     }
     /********************************************************************************/
 

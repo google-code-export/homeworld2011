@@ -36,7 +36,7 @@ namespace PlagueEngine
         internal Level                     Level              { get; private set; }
         
        // internal Pathfinder.Pathfinder pf;
-        private readonly RenderConfig _defaultRenderConfig = new RenderConfig(800, 600, false, false, false);
+        private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false);
         
         public bool GameStopped { get;  set; }
 

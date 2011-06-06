@@ -32,6 +32,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private MouseListenerComponent    mouse              = null;
         
         private MercenariesManager        mercenariesManager = null;
+        private Container                 container          = null;
         private SpriteFont                mercenaryName      = null;
 
         /*****************/
@@ -159,12 +160,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          MouseListenerComponent    mouse,
                          Mercenary                 mercenary,
                          Mercenary                 mercenary2,
-                         MercenariesManager        mercenariesManager)
+                         MercenariesManager        mercenariesManager,
+                         Container                 container)
         {
             this.frontEnd           = frontEnd;
             this.mercenary          = mercenary;
             this.mercenary2         = mercenary2;
+            
             this.mercenariesManager = mercenariesManager;
+            this.container          = container;
+            
             this.keyboard           = keyboard;
             this.mouse              = mouse;
 
@@ -185,6 +190,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             SetupMercenary();
             if (mercenary2 != null) SetupMercenary2();
+
+            if (container != null)
+            {
+                PrepareDump(container.Slots, container.Name, container.Items);
+                dump = true;
+            }
         }
         /****************************************************************************/
 
@@ -215,8 +226,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 // Merc Name
                 spriteBatch.DrawString(mercenaryName, mercenary.Name, localPosition + mercenaryNamePos, Color.WhiteSmoke);
                 // Switch Merc Button
-                spriteBatch.Draw(frontEnd.Texture, localPosition + NextMercButtonPos, (nextMerc ? new Rectangle(1290, 14, 15, 14) : new Rectangle(1290, 0, 15, 14)), Color.White);
-                spriteBatch.Draw(frontEnd.Texture, localPosition + PrevMercButtonPos, (prevMerc ? new Rectangle(1275, 14, 15, 14) : new Rectangle(1275, 0, 15, 14)), Color.White);
+                if (mercenariesManager != null)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + NextMercButtonPos, (nextMerc ? new Rectangle(1290, 14, 15, 14) : new Rectangle(1290, 0, 15, 14)), Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + PrevMercButtonPos, (prevMerc ? new Rectangle(1275, 14, 15, 14) : new Rectangle(1275, 0, 15, 14)), Color.White);
+                }
                 // Exit Inventory Button
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInvButtonPos, (exitInv ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
                 // Scroll
@@ -263,10 +277,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                 }
                 spriteBatch.Draw(frontEnd.Texture, 
-                                 localPosition + SlotsStartPos + new Vector2(144, 0), 
+                                 localPosition + SlotsStartPos + new Vector2(103, 0), 
                                  new Rectangle( 1260, 
                                                 177 + 32 * scrollCurrentOffset, 
-                                                64, 
+                                                146, 
                                                 64 - (scrollCurrentOffset > 2 ? 64 : 32 * scrollCurrentOffset)), 
                                  Color.White);
 
@@ -1046,17 +1060,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                              mousePos.Y > DumpButtonPos.Y      &&
                              mousePos.Y < DumpButtonPos.Y + 52)
                     {
-                        if (!dump)
+                        if (dump && container != null)
                         {
-                            dump = true;
+                            SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
+                            CloseDump();
+                            container = null;
                             dumpButton = true;
-                            PrepareDump();
+                            PrepareDump();                            
                         }
-                        else
+                        else if (dump)
                         {
                             dump = false;
                             dumpButton = false;
                             CloseDump();
+                        }
+                        else
+                        {
+                            dump = true;
+                            dumpButton = true;
+                            PrepareDump();
                         }
                     }
                     /*************************/
@@ -1891,7 +1913,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*************************/
                     #region Next Merc
                     /*************************/
-                    if (nextMerc)
+                    else if (nextMerc && mercenariesManager != null)
                     {
                         dump       = false;
                         dumpButton = false;
@@ -1907,8 +1929,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*************************/
                     #region Prev Merc
                     /*************************/
-                    else if (prevMerc)
-                    {
+                    else if (prevMerc && mercenariesManager != null)
+                    {                        
                         dump       = false;
                         dumpButton = false;
                         CloseDump();
@@ -1928,6 +1950,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                         mouse.Modal = false;
                         keyboard.Modal = false;
+                        if (container != null) SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
                     }
                     /*************************/
                     #endregion
@@ -2026,6 +2049,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*************************/
                     #region Process MercManager
                     /*************************/
+                    if (mercenariesManager == null) return;
+
                     Mercenary merc = mercenariesManager.GetMercenaryFromIcon((int)realMousePos.X, (int)realMousePos.Y);
                     if (merc != null)
                     {
@@ -2288,6 +2313,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     mouse.Modal    = false;
                     keyboard.Modal = false;
                     CloseDump();
+                    if (container != null) SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
                 }
                 else if(key == Keys.Space)
                 {
@@ -2299,10 +2325,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                     mouse.Modal = false;
                     keyboard.Modal = false;
+                    if (container != null) SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
                 }
                 else if (key == Keys.D)
                 {
-                    if (dump)
+                    if (dump && container != null)
+                    {
+                        SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
+                        CloseDump();
+                        container = null;
+                        dumpButton = true;
+                        PrepareDump();                        
+                    }
+                    else if (dump)
                     {
                         dump = false;
                         dumpButton = false;
@@ -2312,11 +2347,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         dump = true;
                         dumpButton = true;
-                        PrepareDump();               
+                        PrepareDump();
                     }
                 }
                 else if (key == Keys.Tab)
                 {
+                    if (mercenariesManager == null) return;
+
                     dump       = false;
                     dumpButton = false;
                     CloseDump();
@@ -2486,12 +2523,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Prepare Dump
         /****************************************************************************/
-        private void PrepareDump(int slots = dumpCapacity, string title = defaultDumpTitle)
+        private void PrepareDump(uint slots = dumpCapacity, string title = null, Dictionary<StorableObject, ItemPosition> items = null)
         {
-            dumpTitle = defaultDumpTitle;
-            int height = ((slots % 11) > 0 ? 1 : 1) + slots / 11;
+            dumpTitle = (String.IsNullOrEmpty(title) ? defaultDumpTitle : title);
+            int height = (((int)slots % 11) > 0 ? 1 : 1) + (int)slots / 11;
             dumpContent = new SlotContent[11, height];
-            dumpItems = new Dictionary<StorableObject, ItemPosition>();
+            dumpItems = (items == null ? new Dictionary<StorableObject, ItemPosition>() : items);
 
             int w = 0;
             for (int i = 0; i < dumpContent.GetLength(1); i++)
@@ -2515,6 +2552,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 dumpScrollStep          = 0;
                 dumpScrollCurrentOffset = 0;
             }
+
+            if (items != null)
+            {
+                foreach (KeyValuePair<StorableObject, ItemPosition> pair in items)
+                {
+                    List<int> itemSlots = CalculateSlots(pair.Key, pair.Value.Slot, pair.Value.Orientation, true);
+                    foreach (int slot in itemSlots)
+                    {
+                        dumpContent[slot % 11, slot / 11].Item = pair.Key;
+                    }
+                }
+            }
         }
         /****************************************************************************/
 
@@ -2524,11 +2573,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void CloseDump()
         {
-            foreach (KeyValuePair<StorableObject, ItemPosition> items in dumpItems)
+            if (container == null)
             {
-                mercenary.DropItem(items.Key);
+                foreach (KeyValuePair<StorableObject, ItemPosition> items in dumpItems)
+                {
+                    mercenary.DropItem(items.Key);
+                }
+                dumpItems.Clear();
             }
-            dumpItems.Clear();
+            else
+            {
+                dumpItems = new Dictionary<StorableObject,ItemPosition>();                
+            }            
+
             dumpContent = null;
         }
         /****************************************************************************/
@@ -2568,6 +2625,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public int Mercenary          { get; set; }
         public int Mercenary2         { get; set; }
         public int MercenariesManager { get; set; }
+        public int Container          { get; set; }
     }
     /********************************************************************************/
 
