@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
 using PlagueEngine.Particles.Components;
+using System.ComponentModel.Design;
+using System.Drawing.Design;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -201,6 +203,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Icons")]
         public Rectangle SlotsIcon { get; set; }
 
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         [CategoryAttribute("Description")]
         public String Description          { get; set; }
         [CategoryAttribute("Description")]
