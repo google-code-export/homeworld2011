@@ -41,7 +41,9 @@ namespace PlagueEngine.Physics
         private List<int> subsribedGameObjectStartCollisionEvents = new List<int>();
         private List<int> subsribedGameObjectCollisionsEvents = new List<int>();
         private List<int> subscribedGameObjectLostCollisionsEvents = new List<int>();
-        
+
+        private bool subscribedAnyCollisionEvent = false;
+        private bool CollisionOnThisFrame = false;
 
         private List<Type> gameObjectsTypeToColide = new List<Type>();
         private List<Type> gameObjectsTypeToNotColide = new List<Type>();
@@ -107,11 +109,9 @@ namespace PlagueEngine.Physics
         {
             if (collidee.ExternalData != null)
             {
-               
-                if (subscribedGameObjectTypesCollisionsEvents.Count != 0)
-                {
-                    
-                }
+
+                CollisionOnThisFrame = true;
+
                 if (!gameObjectsCollisionInFrame.ContainsKey((GameObjectInstance)(collidee.ExternalData)))
                 {
                     if (subsribedGameObjectCollisionsEvents.Contains(((GameObjectInstance)(collidee.ExternalData)).ID))
@@ -206,6 +206,15 @@ namespace PlagueEngine.Physics
             }
             gameObjectsCollisionInPrevFrame = gameObjectsCollisionInFrame;
             gameObjectsCollisionInFrame = new Dictionary<GameObjectInstance, int>();
+
+
+            if (subscribedAnyCollisionEvent && CollisionOnThisFrame)
+            {
+                this.GameObject.SendEvent(new AnyCollisionEvent(), EventsSystem.Priority.Normal, GameObject);
+            }
+
+
+            CollisionOnThisFrame = false;
         }
 
 
@@ -236,7 +245,30 @@ namespace PlagueEngine.Physics
             isEnabled = true;
         }
         /****************************************************************************/
-        
+
+
+
+        /****************************************************************************/
+        /// Subscribe Any Collision Event
+        /****************************************************************************/
+        public void SubscribeAnyCollisionEvent()
+        {
+            subscribedAnyCollisionEvent = true;
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Cancel Subscribe Any Collision Event
+        /****************************************************************************/
+        public void CancelSubscribeAnyCollisionEvent()
+        {
+            subscribedAnyCollisionEvent = false;
+        }
+        /****************************************************************************/
+
+
 
         /****************************************************************************/
         /// Subscribe Start Collision Event

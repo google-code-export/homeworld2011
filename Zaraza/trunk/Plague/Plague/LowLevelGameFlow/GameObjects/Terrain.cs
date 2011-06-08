@@ -47,6 +47,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             terrainComponent.ReleaseMe();
             terrainSkinComponent.ReleaseMe();
+            
         }
         /****************************************************************************/
 
