@@ -512,6 +512,20 @@ namespace PlagueEngine.Tools
             Container.dataClassType = typeof(ContainerData);
             gameObjectClassNames.Add(Container);
 
+
+            gameObjectsClassName Checker = new gameObjectsClassName();
+            Checker.className = "Checker";
+            Checker.ClassType = typeof(Checker);
+            Checker.dataClassType = typeof(CheckerData);
+            gameObjectClassNames.Add(Checker);
+
+
+            //gameObjectsClassName CheckerBox = new gameObjectsClassName();
+            //CheckerBox.className = "CheckerBox";
+            //CheckerBox.ClassType = typeof(CheckerBox);
+            //CheckerBox.dataClassType = typeof(CheckerBoxData);
+            //gameObjectClassNames.Add(CheckerBox);
+
         }
         /********************************************************************************/
 
@@ -544,8 +558,8 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 this.currentObject.Type = currentClassNameNew.ClassType;
                 currentEditGameObject = this.level.GameObjectsFactory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
@@ -564,13 +578,13 @@ namespace PlagueEngine.Tools
 
 
 
-            }
-            catch (Exception execption)
-            {
-                releaseInput = false;
-                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                releaseInput = true;
-            }
+            //}
+            //catch (Exception execption)
+            //{
+            //    releaseInput = false;
+            //    MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    releaseInput = true;
+            //}
 
             LoadIconsInfo();
             setUpCameraButton();

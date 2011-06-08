@@ -46,6 +46,8 @@ namespace PlagueEngine.Physics
         private List<int> subsribedGameObjectCollisionsEvents = new List<int>();
         private List<int> subscribedGameObjectLostCollisionsEvents = new List<int>();
 
+        private bool subscribedAnyCollisionEvent = false;
+        private bool CollisionOnThisFrame = false;
 
         private List<Type> gameObjectsTypeToColide = new List<Type>();
         private List<Type> gameObjectsTypeToNotColide = new List<Type>();
@@ -98,6 +100,8 @@ namespace PlagueEngine.Physics
         {
             if (!((GameObjectInstance)(collidee.ExternalData) == null))
             {
+
+                CollisionOnThisFrame = true;
 
                 if (!gameObjectsCollisionInFrame.ContainsKey((GameObjectInstance)(collidee.ExternalData)))
                 {
@@ -203,9 +207,40 @@ namespace PlagueEngine.Physics
             }
             gameObjectsCollisionInPrevFrame = gameObjectsCollisionInFrame;
             gameObjectsCollisionInFrame = new Dictionary<GameObjectInstance, int>();
-        
+
+
+            if (subscribedAnyCollisionEvent && CollisionOnThisFrame)
+            {
+                this.GameObject.SendEvent(new AnyCollisionEvent(), EventsSystem.Priority.Normal, GameObject);
+            }
+
+
+            CollisionOnThisFrame = false;
+
         }
 
+
+
+
+        /****************************************************************************/
+        /// Subscribe Any Collision Event
+        /****************************************************************************/
+        public void SubscribeAnyCollisionEvent()
+        {
+            subscribedAnyCollisionEvent = true;
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Cancel Subscribe Any Collision Event
+        /****************************************************************************/
+        public void CancelSubscribeAnyCollisionEvent()
+        {
+            subscribedAnyCollisionEvent = false;
+        }
+        /****************************************************************************/
 
 
         /****************************************************************************/

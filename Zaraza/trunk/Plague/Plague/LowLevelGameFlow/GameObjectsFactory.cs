@@ -348,6 +348,28 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Create Checker
+        /****************************************************************************/
+        public bool CreateChecker(Checker result, CheckerData data)
+        {
+
+                result.Init(data.boxLength,
+                data.boxWidth,
+                data.boxHeight,
+                data.numberOfBoxesInLength,
+                data.numberOfBoxesInWidth,
+                data.distanceBeetwenBoxes,
+                this,
+                data.boxStartPosition,
+                data.framesToTest);
+
+            return true;
+        }
+        /****************************************************************************/
+
+
         
         /****************************************************************************/
         /// Create Square Body Mesh
@@ -384,6 +406,38 @@ namespace PlagueEngine.LowLevelGameFlow
             return true;
         }
         /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// Create Checker Box
+        /****************************************************************************/
+        public bool CreateCheckerBox(CheckerBox result, CheckerBoxData data)
+        {
+
+
+            result.Init(physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                            data.Mass,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll),
+                                                                            data.posX,
+                                                                            data.posY);
+
+            return true;
+        }
+        /****************************************************************************/
+
 
 
         /****************************************************************************/

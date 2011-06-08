@@ -204,6 +204,8 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Armor.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BuildingWithRoof.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Bulldozer.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Checker.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\CheckerBox.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Clip.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Compass.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Container.cs" />
