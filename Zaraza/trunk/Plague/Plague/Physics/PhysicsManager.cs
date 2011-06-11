@@ -18,6 +18,7 @@ namespace PlagueEngine.Physics
         private  PhysicsSystem                              physicsSystem;
         internal Dictionary<int, RigidBodyComponent>        rigidBodies              = new Dictionary<int, RigidBodyComponent>();
         internal Dictionary<int, CollisionSkinComponent>    collisionSkins           = new Dictionary<int, CollisionSkinComponent>();
+        internal List<Cone>                                 cones = new List<Cone>();
         internal List<PhysicsController>                    controllers              = new List<PhysicsController>();
         internal PhysicsComponentFactory                    physicsComponentFactory;
         /****************************************************************************/
@@ -43,6 +44,7 @@ namespace PlagueEngine.Physics
             CollisionSkinComponent.physicsManager = this;
             PhysicsUlitities.collisionSystem = physicsSystem.CollisionSystem;
             PhysicsController.physicsManager = this;
+            Cone.physicsManager = this;
         }
         /****************************************************************************/
 
@@ -69,6 +71,30 @@ namespace PlagueEngine.Physics
             {
                 controller.UpdateController(timeStep);
             }
+
+
+
+
+
+            List<Cone> wastedCones = new List<Cone>();
+
+            foreach (Cone cone in cones)
+            {
+                cone.Update();
+                if (cone.wasted)
+                {
+                    wastedCones.Add(cone);
+                }
+            }
+
+            foreach (Cone cone in wastedCones)
+            {
+                cones.Remove(cone);
+            }
+
+
+
+
 
             ExplosionManager.Update();
         }

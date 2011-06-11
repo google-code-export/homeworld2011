@@ -38,13 +38,20 @@ namespace PlagueEngine.Physics
         public PhysicsComponentFactory(ContentManager content)
         {
             this.content = content;
+            PhysicsUlitities.physicsFactory = this;
         }
         /****************************************************************************/
 
 
-     
 
-
+        /****************************************************************************/
+        /// Create Cone
+        /****************************************************************************/
+        public Cone CreateCone(Vector3 position, Matrix orientation,GameObjectInstance go)
+        {
+            Cone c=new Cone(position,orientation,content.Load<Model>(@"Models\Cone2"),go);
+            return c;
+        }
 
 
         /****************************************************************************/

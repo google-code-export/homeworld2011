@@ -241,6 +241,22 @@ namespace PlagueEngine.Rendering
 
                 }
 
+                foreach (Cone cone in physicsManager.cones)
+                {
+                    
+                    AddShape(BodyRenderExtensions.GetLocalSkinWireframe(cone.skin));
+                    Matrix skinWorld = cone.body.Orientation;
+                    skinWorld.Translation = cone.body.Position;
+                    basicEffect.World = skinWorld;
+                    basicEffect.CurrentTechnique.Passes[0].Apply();
+                    renderer.Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip,
+                                                                            vertexData.ToArray(),
+                                                                            0,
+                                                                            vertexData.Count - 1);
+                    vertexData.Clear();
+
+                }
+
             }
         }
         /****************************************************************************/
