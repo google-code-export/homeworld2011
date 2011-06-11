@@ -90,7 +90,29 @@ namespace PlagueEngine.Physics
     };
     /****************************************************************************/
 
+    /****************************************************************************/
+    /// ConeTest Event
+    /****************************************************************************/
+    class ConeTestEvent : EventArgs
+    {
+        public List<GameObjectInstance> gameobjects = null;
 
+        public ConeTestEvent(List<GameObjectInstance> gameobjects)
+        {
+            this.gameobjects = gameobjects;
+        }
+
+        public override string ToString()
+        {
+            String tmp = String.Empty;
+            foreach (GameObjectInstance go in gameobjects)
+            {
+                tmp = tmp + " " + go.ID.ToString();
+            }
+            return "Cone test detectected collision with :" + tmp;
+        }
+    };
+    /****************************************************************************/
 
     /********************************************************************************/
 }

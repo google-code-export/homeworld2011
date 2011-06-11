@@ -168,6 +168,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     editor.moveObject = !editor.moveObject;
                     moveObjectEnabled = !moveObjectEnabled;
+                    Physics.PhysicsUlitities.ConeTest(new Vector3(111.000061f, 61.72984f, 222.629959f), 15, 20, Vector3.Right,this);
                    
                 }
                 if (key == Keys.F12)

@@ -8,7 +8,7 @@ using JigLibX.Geometry;
 using JigLibX.Collision;
 using JigLibX.Physics;
 using JigLibX.Math;
-
+using PlagueEngine.LowLevelGameFlow;
 /****************************************************************************/
 /// PlagueEngine.Physics
 /****************************************************************************/
@@ -29,8 +29,35 @@ namespace PlagueEngine.Physics
         /****************************************************************************/
         static public GraphicsDeviceManager graphics = null;
         static public CollisionSystem collisionSystem= null;
+        internal static PhysicsComponentFactory physicsFactory;
         /****************************************************************************/
-        
+
+
+
+
+        /****************************************************************************/
+        /// ConeTest
+        /****************************************************************************/
+
+        public static void ConeTest(Vector3 pos,float radius,float length,Vector3 orientation,GameObjectInstance reciever )
+        {
+
+            Matrix tmp =Matrix.Invert( Matrix.CreateLookAt(Vector3.Zero,orientation,Vector3.Up));
+            
+            Matrix tmp2=Matrix.CreateScale(radius / 45.0f, radius / 45.0f, 1);
+            tmp2 *= Matrix.CreateScale(length, length, length);
+            tmp = tmp2 * tmp;
+
+            physicsFactory.CreateCone(pos, tmp, reciever);
+            
+
+        }
+        /****************************************************************************/
+
+
+
+
+
 
         /****************************************************************************/
         /// RayTest

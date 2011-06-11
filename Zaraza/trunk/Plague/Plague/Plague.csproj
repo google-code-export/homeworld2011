@@ -259,6 +259,7 @@
     <Compile Include="Physics\Components\SquareBodyComponent.cs" />
     <Compile Include="Physics\Components\SquareSkinComponent.cs" />
     <Compile Include="Physics\Components\TerrainSkinComponent.cs" />
+    <Compile Include="Physics\Cone.cs" />
     <Compile Include="Physics\EventsArgs.cs" />
     <Compile Include="Physics\Explosion.cs" />
     <Compile Include="Physics\ExplosionManager.cs" />
@@ -383,6 +384,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

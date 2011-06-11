@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="PlagueEngine.Physics.PhysicsManager">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAQAAAAAAAAAABACAAAAAAAAABIAAAAAAAAA=</HashCode>
+      <FileName>Physics\PhysicsManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlagueEngine.Physics.RigidBodyComponent">
+    <Position X="2.5" Y="0.5" Width="3.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>CIwAAAgpISoIMakAAyVB2ABgCSAIAUDAJCBqoDTEqUA=</HashCode>
+      <FileName>Physics\RigidBodyComponent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlagueEngine.Physics.BodyExtended" Collapsed="true">
+    <Position X="0.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAQAABAAAAAAAAAAABAAAAAACEA=</HashCode>
+      <FileName>Physics\RigidBodyComponent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlagueEngine.Physics.CollisionSkinComponent">
+    <Position X="0.75" Y="0.75" Width="3.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>CAwAAAApIQIIMaEAASVB2ABgCGAIA0DAJCBqoBREqQA=</HashCode>
+      <FileName>Physics\CollisionSkinComponent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlagueEngine.Physics.PhysicsController">
+    <Position X="5.5" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>IgEAAAEEEAQAAAgFAYQAAlgAGwEgAAAYQAAIAAkAAQA=</HashCode>
+      <FileName>Physics\PhysicsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlagueEngine.Physics.RotationConstraint" Collapsed="true">
+    <Position X="2.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAABAAAAAABAAAAAAEACAAAAAAA=</HashCode>
+      <FileName>Physics\PhysicsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Tahoma" Size="9" />
+</ClassDiagram>
