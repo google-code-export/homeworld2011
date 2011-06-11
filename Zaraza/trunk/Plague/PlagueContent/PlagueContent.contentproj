@@ -1703,11 +1703,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\AreparticleEmitterIcon.png">
-      <Name>AreparticleEmitterIcon</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Textures\particleEmitterIcon.png">
       <Name>particleEmitterIcon</Name>
       <Importer>TextureImporter</Importer>
@@ -1715,38 +1710,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Misc\SupplyBox.diff.tga">
-      <Name>SupplyBox.diff</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Misc\SupplyBox.norm.tga">
-      <Name>SupplyBox.norm</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Misc\SupplyBox.spec.tga">
-      <Name>SupplyBox.spec</Name>
+    <Compile Include="Textures\AreparticleEmitterIcon.png">
+      <Name>AreparticleEmitterIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Misc\SupplyBox.X">
-      <Name>SupplyBox</Name>
-      <Importer>XImporter</Importer>
-      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
-      <ProcessorParameters_AnimationClip1>Open</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1Duration>0.33</ProcessorParameters_AnimationClip1Duration>
-      <ProcessorParameters_AnimationClip10>Close</ProcessorParameters_AnimationClip10>
-      <ProcessorParameters_AnimationClip10Duration>0.33</ProcessorParameters_AnimationClip10Duration>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Audio\Bulldozer\startRun.mp3">
-      <Name>startRun</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SoundEffectProcessor</Processor>
+    <Compile Include="Models\Cone2.fbx">
+      <Name>Cone2</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
