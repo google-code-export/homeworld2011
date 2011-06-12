@@ -226,11 +226,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (!String.IsNullOrEmpty(objectName))
             {
+                spriteBatch.DrawString(front, objectName, pos2 + nameOffset + new Vector2(1, 0), Color.Black);
+                spriteBatch.DrawString(front, objectName, pos2 + nameOffset + new Vector2(0, 1), Color.Black);
+                spriteBatch.DrawString(front, objectName, pos2 + nameOffset + new Vector2(-1, 0), Color.Black);
+                spriteBatch.DrawString(front, objectName, pos2 + nameOffset + new Vector2(0, -1), Color.Black);
+
                 spriteBatch.DrawString(front, objectName, pos2 + nameOffset, Color.DarkRed);
             }
 
             if (!String.IsNullOrEmpty(actions[selectedAction].Name))
-            {                
+            {
+                spriteBatch.DrawString(front, actions[selectedAction].Name, pos2 + actions[selectedAction].DescriptionPosition + new Vector2(1, 0), Color.Black);
+                spriteBatch.DrawString(front, actions[selectedAction].Name, pos2 + actions[selectedAction].DescriptionPosition + new Vector2(0, 1), Color.Black);
+                spriteBatch.DrawString(front, actions[selectedAction].Name, pos2 + actions[selectedAction].DescriptionPosition + new Vector2(-1, 0), Color.Black);
+                spriteBatch.DrawString(front, actions[selectedAction].Name, pos2 + actions[selectedAction].DescriptionPosition + new Vector2(0, -1), Color.Black);
+
                 spriteBatch.DrawString(front, actions[selectedAction].Name, pos2 + actions[selectedAction].DescriptionPosition, Color.Gray);
             }
             

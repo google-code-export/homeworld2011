@@ -512,6 +512,25 @@ namespace PlagueEngine.Tools
             Container.dataClassType = typeof(ContainerData);
             gameObjectClassNames.Add(Container);
 
+            gameObjectsClassName AmmoClip = new gameObjectsClassName();
+            AmmoClip.className = "AmmoClip";
+            AmmoClip.ClassType = typeof(AmmoClip);
+            AmmoClip.dataClassType = typeof(AmmoClipData);
+            gameObjectClassNames.Add(AmmoClip);
+
+            gameObjectsClassName AmmoBox = new gameObjectsClassName();
+            AmmoBox.className = "AmmoBox";
+            AmmoBox.ClassType = typeof(AmmoBox);
+            AmmoBox.dataClassType = typeof(AmmoBoxData);
+            gameObjectClassNames.Add(AmmoBox);
+
+            gameObjectsClassName Ammunition = new gameObjectsClassName();
+            Ammunition.className = "Ammunition";
+            Ammunition.ClassType = typeof(Ammunition);
+            Ammunition.dataClassType = typeof(AmmunitionData);
+            gameObjectClassNames.Add(Ammunition);
+
+
 
             gameObjectsClassName Checker = new gameObjectsClassName();
             Checker.className = "Checker";
@@ -525,7 +544,6 @@ namespace PlagueEngine.Tools
             //CheckerBox.ClassType = typeof(CheckerBox);
             //CheckerBox.dataClassType = typeof(CheckerBoxData);
             //gameObjectClassNames.Add(CheckerBox);
-
         }
         /********************************************************************************/
 
@@ -558,8 +576,9 @@ namespace PlagueEngine.Tools
         /********************************************************************************/
         private void button1_Click(object sender, EventArgs e)
         {
-            //try
-            //{
+            // Kto to kurwa cały czas zakomentowywuje !!!
+            try
+            {
                 this.currentObject.Type = currentClassNameNew.ClassType;
                 currentEditGameObject = this.level.GameObjectsFactory.Create(currentObject).GetData();
                 propertyGrid2.SelectedObject = currentEditGameObject;
@@ -578,13 +597,13 @@ namespace PlagueEngine.Tools
 
 
 
-            //}
-            //catch (Exception execption)
-            //{
-            //    releaseInput = false;
-            //    MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    releaseInput = true;
-            //}
+            }
+            catch (Exception execption)
+            {
+                releaseInput = false;
+                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                releaseInput = true;
+            }
 
             LoadIconsInfo();
             setUpCameraButton();
@@ -1353,6 +1372,7 @@ namespace PlagueEngine.Tools
 
         private void buttonCommitMeshTransforms_Click(object sender, EventArgs e)
         {
+            level.SaveGlobalGameObjectsData();
         }
 
         private void checkBoxShowCollisionSkin_CheckedChanged(object sender, EventArgs e)

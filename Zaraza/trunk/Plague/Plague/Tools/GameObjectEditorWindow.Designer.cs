@@ -629,7 +629,7 @@
             this.buttonCommitMeshTransforms.Name = "buttonCommitMeshTransforms";
             this.buttonCommitMeshTransforms.Size = new System.Drawing.Size(147, 23);
             this.buttonCommitMeshTransforms.TabIndex = 4;
-            this.buttonCommitMeshTransforms.Text = "Commit Mesh Transforms";
+            this.buttonCommitMeshTransforms.Text = "Flush Global Game Objects";
             this.buttonCommitMeshTransforms.UseVisualStyleBackColor = true;
             this.buttonCommitMeshTransforms.Click += new System.EventHandler(this.buttonCommitMeshTransforms_Click);
             // 

@@ -39,6 +39,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
         private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions     = null;
         private Game game = null;
+        private Level level = null;
         /****************************************************************************/
 
 
@@ -46,7 +47,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Game Objects
         /****************************************************************************/
         private Dictionary<int, GameObjectInstance> GameObjects;
-        private List<GameObjectInstance> UpdatableObjects;
+        private List<GameObjectInstance> UpdatableObjects;        
 
         public Dictionary<int, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> WaitingRoom { get; set; }
         public bool ProcessWaitingRoom = false;
@@ -58,10 +59,12 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Constructor
         /****************************************************************************/
         public GameObjectsFactory(Dictionary<int, GameObjectInstance> gameObjects,
-                                  List<GameObjectInstance> updatableObjects)
+                                  List<GameObjectInstance> updatableObjects,
+                                  Level level)
         {
-            GameObjects      = gameObjects;
-            UpdatableObjects = updatableObjects;
+            GameObjects             = gameObjects;
+            UpdatableObjects        = updatableObjects;
+            this.level              = level;
         }
         /****************************************************************************/
 
@@ -121,6 +124,8 @@ namespace PlagueEngine.LowLevelGameFlow
             if (result.RequiresUpdate) UpdatableObjects.Add(result);
 
             if (ProcessWaitingRoom) ++ProcessedObjects;
+
+            if (result.ID < 0) level.UpdateGlobalGameObjectsData(data);
 
             result.Broadcast(new CreateEvent());
 
@@ -1615,6 +1620,200 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.Slots,
                         Items);
 
+            return true;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateAmmoClip
+        /****************************************************************************/
+        public bool CreateAmmoClip(AmmoClip result, AmmoClipData data)
+        {
+            Ammunition ammunition = GetObject(GlobalGameObjects.Ammunition) as Ammunition;
+
+            if (ammunition == null)
+            {
+                PushToWaitingRoom(result, data);
+                return false;
+            }
+
+            Queue<Bullet> content = new Queue<Bullet>(data.Capacity);
+
+            for(int i = 0; i < data.Capacity  && i < data.Content.Count; i++)
+            {
+                content.Enqueue(data.Content.ElementAt(i));
+            }
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
+                                                                       Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                       data.EnabledMesh,
+                                                                       false),
+                        physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                          data.Mass,
+                                                                          data.Lenght,
+                                                                          data.Height,
+                                                                          data.Width,
+                                                                          data.Elasticity,
+                                                                          data.StaticRoughness,
+                                                                          data.DynamicRoughness,
+                                                                          data.Immovable,
+                                                                          data.World,
+                                                                          data.Translation,
+                                                                          data.SkinYaw,
+                                                                          data.SkinPitch,
+                                                                          data.SkinRoll),                      
+                      data.Icon,
+                      data.SlotsIcon,
+                      data.Description,
+                      data.DescriptionWindowWidth,
+                      data.DescriptionWindowHeight,                      
+
+                      particleFactory.CreateParticleEmitterComponent(result,
+                                                                      data.BlendState,
+                                                                      data.Duration,
+                                                                      data.DurationRandomnes,
+                                                                      data.EmitterVelocitySensitivity,
+                                                                      data.VelocityEnd,
+                                                                      data.Gravity,
+                                                                      data.ColorMax,
+                                                                      data.EndSizeMax,
+                                                                      data.VelocityHorizontalMax,
+                                                                      data.ParticlesMax,
+                                                                      data.RotateSpeedMax,
+                                                                      data.StartSizeMax,
+                                                                      data.VelocityVerticalMax,
+                                                                      data.ColorMin,
+                                                                      data.EndSizeMin,
+                                                                      data.VelocityHorizontalMin,
+                                                                      data.RotateSpeedMin,
+                                                                      data.StartSizeMin,
+                                                                      data.VelocityVerticalMin,
+                                                                      data.ParticleTexture,
+                                                                      data.ParticlesPerSecond,
+                                                                      data.EmitterTranslation,
+                                                                      data.World,
+                                                                      data.ParticlesEnabled),
+                        ammunition.AmmunitionData[ammunition.NameToID[data.Ammunition]],
+                        ammunition.AmmunitionVersionData[ammunition.NameToID[data.Ammunition]],
+                        content,
+                        data.Capacity);
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateAmmunition
+        /****************************************************************************/
+        public bool CreateAmmunition(Ammunition result, AmmunitionData data)
+        {
+            result.Init(data.AmmunitionInfo);
+            
+            return true;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateAmmoBox
+        /****************************************************************************/
+        public bool CreateAmmoBox(AmmoBox result, AmmoBoxData data)
+        {
+            Ammunition ammunition = GetObject(GlobalGameObjects.Ammunition) as Ammunition;
+
+            if (ammunition == null)
+            {
+                PushToWaitingRoom(result, data);
+                return false;
+            }
+
+            uint ammunitionInfoID;
+            AmmunitionInfo info;
+            AmmunitionVersionInfo versionInfo;
+  
+            try
+            {
+                 ammunitionInfoID = ammunition.NameToID[data.AmmunitionName];
+                 info = ammunition.AmmunitionData[ammunitionInfoID];
+                 versionInfo = ammunition.AmmunitionVersionData[ammunitionInfoID][data.Version];
+            }
+            catch 
+            {
+                return false;
+            }
+
+            String Diffuse = "Firearms\\Jackal";
+
+            switch (info.Genre)
+            {
+                case 1: Diffuse += "Pistol"; break;
+                case 2: Diffuse += "Intermediate"; break;
+                case 3: Diffuse += "Rifle"; break;
+                case 4: Diffuse += "Shotgun"; break;
+            }
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                            "Firearms\\JackalAmmo",
+                                                            Diffuse,
+                                                            String.Empty,
+                                                            String.Empty,
+                                                            InstancingModes.DynamicInstancing,
+                                                            data.EnabledMesh,
+                                                            false),
+            physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                2,
+                                                                1,
+                                                                0.25f,
+                                                                0.55f,
+                                                                0.1f,
+                                                                0.1f,
+                                                                0.1f,
+                                                                data.Immovable,
+                                                                data.World,
+                                                                new Vector3(0, 0.175f, 0),
+                                                                0,
+                                                                0,
+                                                                0),
+            particleFactory.CreateParticleEmitterComponent(result,
+                                                            data.BlendState,
+                                                            data.Duration,
+                                                            data.DurationRandomnes,
+                                                            data.EmitterVelocitySensitivity,
+                                                            data.VelocityEnd,
+                                                            data.Gravity,
+                                                            data.ColorMax,
+                                                            data.EndSizeMax,
+                                                            data.VelocityHorizontalMax,
+                                                            data.ParticlesMax,
+                                                            data.RotateSpeedMax,
+                                                            data.StartSizeMax,
+                                                            data.VelocityVerticalMax,
+                                                            data.ColorMin,
+                                                            data.EndSizeMin,
+                                                            data.VelocityHorizontalMin,
+                                                            data.RotateSpeedMin,
+                                                            data.StartSizeMin,
+                                                            data.VelocityVerticalMin,
+                                                            data.ParticleTexture,
+                                                            data.ParticlesPerSecond,
+                                                            data.EmitterTranslation,
+                                                            data.World,
+                                                            data.ParticlesEnabled),
+            data.AmmunitionName,
+            info.Genre,
+            data.PPP,
+            versionInfo,
+            data.Amount,
+            data.Description,
+            data.DescriptionWindowWidth,
+            data.DescriptionWindowHeight);
+                        
             return true;
         }
         /****************************************************************************/

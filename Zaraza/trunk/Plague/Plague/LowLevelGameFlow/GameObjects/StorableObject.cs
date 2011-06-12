@@ -73,7 +73,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public string[] GetActions(Mercenary mercenary)
         {
-            return new String[] { "Grab" , "Examine" };
+            if (mercenary.FindPlaceForItem(this, false))
+            {
+                return new String[] { "Grab", "Examine" };
+            }
+            else return new String[] { "Examine" };
         }
         /****************************************************************************/
 
@@ -110,6 +114,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             OwnerBone = -1;
             getWorld = GetMyWorld;
             if (emitter != null) emitter.EnableEmitter();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Info
+        /****************************************************************************/
+        public virtual String GetInfo()
+        {
+            return Name;
         }
         /****************************************************************************/
 

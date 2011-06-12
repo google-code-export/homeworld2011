@@ -24,6 +24,16 @@ namespace PlagueEngine.EventsSystem
 
 
         /****************************************************************************/
+        /// Broadcast (sends events only to sniffers)
+        /****************************************************************************/
+        public void Broadcast(EventArgs eventArgs, Priority priority = Priority.Normal)
+        {
+            eventsSystem.AddEvent(new Event(null, this, eventArgs), priority);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Send Event (1)
         /****************************************************************************/
         public void SendEvent(EventArgs eventArgs,Priority priority, params IEventsReceiver[] receivers)
@@ -45,16 +55,6 @@ namespace PlagueEngine.EventsSystem
             {
                 eventsSystem.AddEvent(new Event(eventsSystem.GetGameObject(receiver), this, eventArgs), priority);
             }
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Broadcast (sends events only to sniffers)
-        /****************************************************************************/
-        public void Broadcast(EventArgs eventArgs, Priority priority = Priority.Normal)
-        {
-            eventsSystem.AddEvent(new Event(null, this, eventArgs),priority);
         }
         /****************************************************************************/
 

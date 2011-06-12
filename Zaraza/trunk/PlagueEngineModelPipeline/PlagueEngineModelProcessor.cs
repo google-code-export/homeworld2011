@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+using System.ComponentModel;
 
 
 /************************************************************************************/
@@ -28,6 +29,9 @@ namespace PlagueEngineModelPipeline
         private PlagueEngineModelContent outputModel;
         private bool                     geometryGrabbed = false;
         /****************************************************************************/
+
+        [DefaultValue("False")]
+        public bool ComputeAdjacency { get; set; }
 
 
         /****************************************************************************/
@@ -75,7 +79,7 @@ namespace PlagueEngineModelPipeline
                     outputModel.VertexBufferContent = geometry.Vertices.CreateVertexBuffer();
                     outputModel.BoundingBox = BoundingBox.CreateFromPoints(geometry.Vertices.Positions);
 
-                    if (true)
+                    if (ComputeAdjacency)
                     {
                         outputModel.VertexList = geometry.Vertices.Positions.ToList();
                         //Teoretycznie, powinna siê tu zbudowaæ poprawnie lista...
