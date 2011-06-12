@@ -12,6 +12,18 @@ using PlagueEngine.Input.Components;
 using PlagueEngine.Input;
 using PlagueEngine.EventsSystem;
 
+
+/************************************************************************************/
+/// UWAGA!!!
+/************************************************************************************
+ * W tym kodzie panuje bałagan. Zdaję sobie sprawę że warto byłoby to posprzątać...
+ * ale czasu mało. Poza tym początkowo nie zważałem na rozległą tu copy-paste, nie 
+ * wiedziałem, że aż tak się rozrośnie :/ Będe sie starał to co nowe upokaowywać lepiej 
+ * nieco. Starych rzeczy jeżeli nie będę potrzebował ruszać to nie ruszam.
+ * Pozdrawiam radiosłuchaczy.
+/************************************************************************************/
+
+
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
@@ -34,6 +46,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private MercenariesManager        mercenariesManager = null;
         private Container                 container          = null;
         private SpriteFont                mercenaryName      = null;
+
+        private SpriteFont                AmmoFont           = null;
 
         /*****************/
         /// Merc1
@@ -184,8 +198,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             
             frontEnd.Draw = OnDraw;
 
-            mercenaryName       = frontEnd.GetFont("Arial");
-
+            mercenaryName = frontEnd.GetFont("Arial");
+            AmmoFont      = frontEnd.GetFont("Arial");
+ 
             mouse.SetCursor("Default");
 
             SetupMercenary();
@@ -224,7 +239,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 // Merc Head
                 spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(328, 5), mercenary.InventoryIcon, Color.White);
                 // Merc Name
-                spriteBatch.DrawString(mercenaryName, mercenary.Name, localPosition + mercenaryNamePos, Color.WhiteSmoke);
+                spriteBatch.DrawString(mercenaryName, mercenary.Name, localPosition + mercenaryNamePos, Color.LightGray);
                 // Switch Merc Button
                 if (mercenariesManager != null)
                 {
@@ -241,7 +256,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     spriteBatch.Draw(frontEnd.Texture, localPosition + ScrollButtonBasePos + new Vector2(0, scrollStep * scrollCurrentOffset), (scroll ? new Rectangle(1335, 14, 15, 14) : new Rectangle(1335, 0, 15, 14)), Color.White);
                 }
                 // Dump Button
-                spriteBatch.Draw(frontEnd.Texture, localPosition + DumpButtonPos, (dumpButton ? new Rectangle(1319, 29, 19, 52) : new Rectangle(1300, 29, 19, 52)), Color.White);
+                if (container == null && mercenary2 == null)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + DumpButtonPos, (dumpButton ? new Rectangle(1319, 29, 19, 52) : new Rectangle(1300, 29, 19, 52)), Color.White);
+                }
                 /***********************/
                 #endregion
                 /***********************/
@@ -343,7 +361,31 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
                         }
-                    }
+
+                        if (diff2 <= 0)
+                        {
+                            Type ItemType = pair.Key.GetType();
+
+                            if (pair.Value.Orientation > 0)
+                            {
+                                DrawValue(spriteBatch,
+                                        pair.Key,
+                                        localPosition +
+                                        SlotsStartPos +
+                                        new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset)) +
+                                        new Vector2(pair.Key.SlotsIcon.Width, pair.Key.SlotsIcon.Height));
+                            }
+                            else
+                            {
+                                DrawValue(spriteBatch,
+                                        pair.Key,
+                                        localPosition +
+                                        SlotsStartPos +
+                                        new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset)) +
+                                        new Vector2(pair.Key.SlotsIcon.Height, pair.Key.SlotsIcon.Width));
+                            }                               
+                        }
+                    }                   
                 }            
                 /***********************/
                 #endregion
@@ -365,7 +407,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 // Merc Head
                 spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(461, 5), mercenary2.InventoryIcon, Color.White);
                 //// Merc Name
-                spriteBatch.DrawString(mercenaryName, mercenary2.Name, localPosition + mercenary2NamePos, Color.WhiteSmoke);
+                spriteBatch.DrawString(mercenaryName, mercenary2.Name, localPosition + mercenary2NamePos, Color.LightGray);
                 // Exit Inventory Button
                 spriteBatch.Draw(frontEnd.Texture, localPosition + ExitInv2ButtonPos, (exitInv2 ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
                 // Scroll
@@ -476,6 +518,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos2 + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2 + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
                         }
+                        
+                        if (diff2 <= 0)
+                        {
+                            Type ItemType = pair.Key.GetType();
+
+                            if (pair.Value.Orientation > 0)
+                            {
+                                DrawValue(spriteBatch,
+                                        pair.Key,
+                                        localPosition +
+                                        SlotsStartPos2 +
+                                        new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2)) +
+                                        new Vector2(pair.Key.SlotsIcon.Width, pair.Key.SlotsIcon.Height));
+                            }
+                            else
+                            {
+                                DrawValue(spriteBatch,
+                                        pair.Key,
+                                        localPosition +
+                                        SlotsStartPos2 +
+                                        new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2)) +
+                                        new Vector2(pair.Key.SlotsIcon.Height, pair.Key.SlotsIcon.Width));
+                            }
+                        }
                     }
                 }
                 /***********************/
@@ -495,7 +561,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 // Background
                 spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(420,0), new Rectangle(840, 310, 420, 310), Color.White);
                 // Title
-                spriteBatch.DrawString(frontEnd.GetFont("Arial"), dumpTitle, localPosition + new Vector2(620 - frontEnd.GetFont("Arial").MeasureString(dumpTitle).X/2, 0), Color.WhiteSmoke);
+                spriteBatch.DrawString(frontEnd.GetFont("Arial"), dumpTitle, localPosition + new Vector2(620 - frontEnd.GetFont("Arial").MeasureString(dumpTitle).X/2, 0), Color.LightGray);
                 // Scroll
                 if (dumpScrollMaxOffset > 0)
                 {
@@ -581,6 +647,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         else
                         {
                             spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                        }
+
+                        if (diff2 <= 0)
+                        {
+                            Type ItemType = pair.Key.GetType();
+
+                            if (pair.Value.Orientation > 0)
+                            {
+                                DrawValue(spriteBatch,
+                                        pair.Key,
+                                        localPosition +
+                                        DumpSlotsStartPos +
+                                        new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset)) +
+                                        new Vector2(pair.Key.SlotsIcon.Width, pair.Key.SlotsIcon.Height));
+                            }
+                            else
+                            {
+                                DrawValue(spriteBatch,
+                                        pair.Key,
+                                        localPosition +
+                                        DumpSlotsStartPos +
+                                        new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset)) +
+                                        new Vector2(pair.Key.SlotsIcon.Height, pair.Key.SlotsIcon.Width));
+                            }
                         }
                     }
                 }
@@ -735,8 +825,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 #region Slots Content
                 /***********************/
                 // Current Item            
-                currenItem = mercenary.CurrentObject;            
-                if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.Icon, Color.White);
+                currenItem = mercenary.CurrentObject;
+                if (currenItem != null)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.Icon, Color.White);
+                    DrawValue(spriteBatch, currenItem, localPosition + CurrItemIconPos + new Vector2(50, 50));
+                }
                 // Weapon
                 weapon = mercenary.Weapon;
                 if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, weapon.Icon, Color.White);
@@ -748,7 +842,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     // Current Item
                     currenItem = mercenary2.CurrentObject;
-                    if (currenItem != null) spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, Color.White);
+                    if (currenItem != null)
+                    {
+                        spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, Color.White);
+                        DrawValue(spriteBatch, currenItem, localPosition + CurrItemIconPos2 + new Vector2(50, 50));
+                    }
                     // Weapon
                     weapon = mercenary2.Weapon;
                     if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, weapon.Icon, Color.White);
@@ -790,6 +888,133 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                      SpriteEffects.None, 
                                      0);
                 }
+            }
+            /***********************/
+            #endregion
+            /***********************/
+
+
+            /***********************/
+            #region Draw Info
+            /***********************/
+            if(pickedItem == null)
+            {
+                String Info = String.Empty;
+                /******************************/
+                #region West Side (Bitch!)
+                /******************************/
+                if (mousePos.X > SlotsStartPos.X           &&
+                    mousePos.X < SlotsStartPos.X + 11 * 32 &&
+                    mousePos.Y > SlotsStartPos.Y           &&
+                    mousePos.Y < SlotsStartPos.Y + (Items.GetLength(1) < 15 ? Items.GetLength(1) : 15) * 32)
+                {
+                    int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
+                    int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
+
+                    if (Items[x, y].Item != null) Info = Items[x, y].Item.GetInfo();
+                }
+                /******************************/
+                #endregion
+                /******************************/
+                #region East Side
+                /******************************/
+                else if (
+                    mercenary2 != null &&
+                    mousePos.X > SlotsStartPos2.X &&
+                    mousePos.X < SlotsStartPos2.X + 11 * 32 &&
+                    mousePos.Y > SlotsStartPos2.Y &&
+                    mousePos.Y < SlotsStartPos2.Y + (Items2.GetLength(1) < 15 ? Items2.GetLength(1) : 15) * 32)
+                {
+                    int x = (int)((mousePos.X - SlotsStartPos2.X) / 32);
+                    int y = (int)((mousePos.Y - SlotsStartPos2.Y) / 32) + scrollCurrentOffset2;
+
+                    if (Items2[x, y].Item != null) Info = Items2[x, y].Item.GetInfo();
+                }
+                /******************************/
+                #endregion
+                /******************************/
+                #region Dump
+                /******************************/
+                else if (dump &&
+                         mousePos.X > DumpSlotsStartPos.X &&
+                         mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
+                         mousePos.Y > DumpSlotsStartPos.Y &&
+                         mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
+                {
+                    int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
+                    int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
+                    
+                    if (dumpContent[x, y].Item != null) Info = dumpContent[x, y].Item.GetInfo();
+                }
+                /******************************/
+                #endregion
+                /******************************/                
+                #region Slots
+                /******************************/
+                else if (mousePos.X > CurrItemIconPos.X      &&
+                         mousePos.X < CurrItemIconPos.X + 50 &&
+                         mousePos.Y > CurrItemIconPos.Y      &&
+                         mousePos.Y < CurrItemIconPos.Y + 50)
+                {
+                    currenItem = mercenary.CurrentObject;
+                    if (currenItem != null) Info = currenItem.GetInfo();
+                }
+                else if (mousePos.X > WeaponIconPos.X      &&
+                         mousePos.X < WeaponIconPos.X + 50 &&
+                         mousePos.Y > WeaponIconPos.Y      &&
+                         mousePos.Y < WeaponIconPos.Y + 50)
+                {
+                    weapon = mercenary.Weapon;
+                    if (weapon != null) Info = weapon.GetInfo();                   
+                    
+                }
+                else if (mousePos.X > SideArmIconPos.X &&
+                         mousePos.X < SideArmIconPos.X  + 50 &&
+                         mousePos.Y > SideArmIconPos.Y  &&
+                         mousePos.Y < SideArmIconPos.Y  + 50)
+                {
+                    weapon = mercenary.SideArm;
+                    if (weapon != null) Info = weapon.GetInfo();
+                }
+
+                if (mercenary2 != null)
+                {
+                    if (mousePos.X > CurrItemIconPos2.X  &&
+                        mousePos.X < CurrItemIconPos2.X  + 50 &&
+                        mousePos.Y > CurrItemIconPos2.Y  &&
+                        mousePos.Y < CurrItemIconPos2.Y  + 50)
+                    {
+                        currenItem = mercenary2.CurrentObject;
+                        if (currenItem != null) Info = currenItem.GetInfo();
+                    }
+                    else if (mousePos.X > WeaponIconPos2.X  &&
+                             mousePos.X < WeaponIconPos2.X + 50 &&
+                             mousePos.Y > WeaponIconPos2.Y  &&
+                             mousePos.Y < WeaponIconPos2.Y  + 50)
+                    {
+                        weapon = mercenary2.Weapon;
+                        if (weapon != null) Info = weapon.GetInfo();     
+                    }
+                    else if (mousePos.X > SideArmIconPos2.X  &&
+                             mousePos.X < SideArmIconPos2.X  + 50 &&
+                             mousePos.Y > SideArmIconPos2.Y  &&
+                             mousePos.Y < SideArmIconPos2.Y  + 50)
+                    {
+                        weapon = mercenary2.SideArm;
+                        if (weapon != null) Info = weapon.GetInfo();
+                    }
+                }
+                /******************************/
+                #endregion
+                /******************************/
+
+                // Drawing Black Border // LOL!
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(1, 32),  Color.Black);
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0, 31),  Color.Black);
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(-1, 32), Color.Black);
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0, 33),  Color.Black);
+
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0,32), Color.LightGray);
             }
             /***********************/
             #endregion
@@ -1060,15 +1285,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                              mousePos.Y > DumpButtonPos.Y      &&
                              mousePos.Y < DumpButtonPos.Y + 52)
                     {
-                        if (dump && container != null)
-                        {
-                            SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
-                            CloseDump();
-                            container = null;
-                            dumpButton = true;
-                            PrepareDump();                            
-                        }
-                        else if (dump)
+                        if (container != null || mercenary2 != null) return;
+
+                        if (dump)
                         {
                             dump = false;
                             dumpButton = false;
@@ -1458,7 +1677,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 {
                                     if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
                                     {
-                                        mercenary.PickItem(pickedItem);
+                                        mercenary.PlaceItem(pickedItem,0);
                                         pickedItem = null;
                                         mouse.CursorVisible = true;
                                         return;
@@ -1466,7 +1685,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                                 else
                                 {
-                                    mercenary.PickItem(pickedItem);
+                                    mercenary.PlaceItem(pickedItem, 0);
                                     pickedItem = null;
                                     mouse.CursorVisible = true;
                                     return;
@@ -1486,7 +1705,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 {
                                     if (Vector3.Distance(mercenary2.World.Translation, mercenary.World.Translation) < 3)
                                     {
-                                        mercenary2.PickItem(pickedItem);
+                                        mercenary2.PlaceItem(pickedItem, 0);
                                         pickedItem = null;
                                         mouse.CursorVisible = true;
                                         return;
@@ -1494,7 +1713,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                                 else
                                 {
-                                    mercenary2.PickItem(pickedItem);
+                                    mercenary2.PlaceItem(pickedItem, 0);
                                     pickedItem = null;
                                     mouse.CursorVisible = true;
                                     return;
@@ -1735,16 +1954,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                                 else
                                 {
-                                    List<int> slots = new List<int>();
-                                    for (int i = x; i < x + width + 1; ++i)
+                                    if (!mercenary.GroupAmmo(pickedItem as AmmoBox))
                                     {
-                                        for (int j = y; j < y + height + 1; ++j)
+                                        List<int> slots = new List<int>();
+                                        for (int i = x; i < x + width + 1; ++i)
                                         {
-                                            Items[i, j].Item = pickedItem;
-                                            slots.Add(i + (j * 11));
+                                            for (int j = y; j < y + height + 1; ++j)
+                                            {
+                                                Items[i, j].Item = pickedItem;
+                                                slots.Add(i + (j * 11));
+                                            }
                                         }
+                                        mercenary.Items.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
                                     }
-                                    mercenary.Items.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
+
                                     pickedItem = null;
                                     pickedItemSlot = Slot.Empty;
                                     mouse.CursorVisible = true;
@@ -1811,16 +2034,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                                 else
                                 {
-                                    List<int> slots = new List<int>();
-                                    for (int i = x; i < x + width + 1; ++i)
+                                    if(!mercenary2.GroupAmmo(pickedItem as AmmoBox))
                                     {
-                                        for (int j = y; j < y + height + 1; ++j)
+                                        List<int> slots = new List<int>();
+                                        for (int i = x; i < x + width + 1; ++i)
                                         {
-                                            Items2[i, j].Item = pickedItem;
-                                            slots.Add(i + (j * 11));
+                                            for (int j = y; j < y + height + 1; ++j)
+                                            {
+                                                Items2[i, j].Item = pickedItem;
+                                                slots.Add(i + (j * 11));
+                                            }
                                         }
+                                        mercenary2.Items.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
                                     }
-                                    mercenary2.Items.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
                                     pickedItem = null;
                                     pickedItemSlot = Slot.Empty;
                                     mouse.CursorVisible = true;
@@ -2329,15 +2555,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
                 else if (key == Keys.D)
                 {
-                    if (dump && container != null)
-                    {
-                        SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
-                        CloseDump();
-                        container = null;
-                        dumpButton = true;
-                        PrepareDump();                        
-                    }
-                    else if (dump)
+                    if (container != null) return;
+                    
+                    if (dump)
                     {
                         dump = false;
                         dumpButton = false;
@@ -2491,7 +2711,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Calculate Slots
         /****************************************************************************/
-        private List<int> CalculateSlots(StorableObject item, int slot,int orientation,bool oriented)
+        public static List<int> CalculateSlots(StorableObject item, int slot,int orientation,bool oriented)
         { 
             List<int> slots = new List<int>();
             int width  = (item.SlotsIcon.Width  / 32) - 1;
@@ -2587,6 +2807,41 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }            
 
             dumpContent = null;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Draw Value
+        /****************************************************************************/
+        private void DrawValue(SpriteBatch spriteBatch,StorableObject item,Vector2 pos)
+        {
+            Type ItemType = item.GetType();
+            String valueToDraw = String.Empty;
+            if (ItemType.Equals(typeof(AmmoBox)))
+            {
+                valueToDraw = (item as AmmoBox).Amount.ToString();
+            }
+            else if (ItemType.Equals(typeof(AmmoClip)))
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append((item as AmmoClip).Content.Count.ToString());
+                sb.Append("/");
+                sb.Append((item as AmmoClip).Capacity.ToString());
+                valueToDraw = sb.ToString();
+            }
+
+            if (!String.IsNullOrEmpty(valueToDraw))
+            {
+                pos -= AmmoFont.MeasureString(valueToDraw);
+
+                spriteBatch.DrawString(AmmoFont, valueToDraw, pos + new Vector2(-1, 0), Color.Black);
+                spriteBatch.DrawString(AmmoFont, valueToDraw, pos + new Vector2(0, -1), Color.Black);
+                spriteBatch.DrawString(AmmoFont, valueToDraw, pos + new Vector2(1, 0), Color.Black);
+                spriteBatch.DrawString(AmmoFont, valueToDraw, pos + new Vector2(0, 1), Color.Black);
+
+                spriteBatch.DrawString(AmmoFont, valueToDraw, pos, Color.LightGray);
+            }
         }
         /****************************************************************************/
 

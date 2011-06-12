@@ -224,7 +224,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public String Definition { get { return definition; } }        
         public int    ID         { get { return id; } }
-        public String Name       { get; private set; }
+        public String Name       { get; protected set; }
         public int    OwnerBone  { get; set; }
         
         public bool             RequiresUpdate { get; protected set; }
@@ -448,6 +448,7 @@ namespace PlagueEngine.LowLevelGameFlow
     class GlobalGameObjects
     {
         public static int GameController = -1;
+        public static int Ammunition     = -2;
     }
     /********************************************************************************/
 

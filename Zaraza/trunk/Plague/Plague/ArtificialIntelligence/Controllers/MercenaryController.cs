@@ -64,10 +64,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     #region PickOrExamine
                     if (objectTarget.IsDisposed() || objectTarget.Owner != null)
                     {
+                        controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
                         objectTarget = null;
                         action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
                         controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                         return;
                     }
@@ -144,12 +144,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         if (objectTarget.Status == GameObjectStatus.Pickable)
                         {
-                            if ((controlledObject as Mercenary).CurrentObject != null)
-                            {
-                                (controlledObject as Mercenary).DropItem();
-                            }
-
-                            (controlledObject as Mercenary).PickItem(objectTarget as StorableObject);
+                             (controlledObject as Mercenary).PickItem(objectTarget as StorableObject);
                         }
 
                         objectTarget = null;

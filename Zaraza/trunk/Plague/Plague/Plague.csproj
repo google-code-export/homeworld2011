@@ -20,6 +20,10 @@
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -34,10 +38,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SccProjectName>Svn</SccProjectName>
-    <SccLocalPath>Svn</SccLocalPath>
-    <SccAuxPath>Svn</SccAuxPath>
-    <SccProvider>SubversionScc</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -199,6 +199,9 @@
     <Compile Include="LowLevelGameFlow\GameObjects\AbstractLivingBeing.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActionSwitch.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActivableObject.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\AmmoBox.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\AmmoClip.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Ammunition.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\AreaParticleEmitter.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BackgroundTerrain.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Armor.cs" />
@@ -206,7 +209,6 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Bulldozer.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Checker.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CheckerBox.cs" />
-    <Compile Include="LowLevelGameFlow\GameObjects\Clip.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Compass.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Container.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalBodyMesh2.cs" />

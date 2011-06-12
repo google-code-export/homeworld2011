@@ -309,19 +309,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void PickItem(StorableObject item)
         {
-            if (Grip != null && Mesh.BoneMap.ContainsKey(Grip))
+            if (!GroupAmmo(item as AmmoBox))
             {
-                CurrentObject = item;
-                item.Owner = this;
-                item.OwnerBone = Mesh.BoneMap[Grip];
-                item.OnPicking();
+                FindPlaceForItem(item, true);
             }
-#if DEBUG
-            else
-            {
-                Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu Grip. Nie można podnosić przedmiotów.");
-            }
-#endif
+
+//            if (Grip != null && Mesh.BoneMap.ContainsKey(Grip))
+//            {
+//                CurrentObject = item;
+//                item.Owner = this;
+//                item.OwnerBone = Mesh.BoneMap[Grip];
+//                item.OnPicking();
+//            }
+//#if DEBUG
+//            else
+//            {
+//                Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu Grip. Nie można podnosić przedmiotów.");
+//            }
+//#endif
 
         }
         /****************************************************************************/
@@ -450,6 +455,289 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                     break;
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Find Place For Item
+        /****************************************************************************/
+        public bool FindPlaceForItem(StorableObject item, bool put)
+        {
+
+            /******************************/
+            // Check Weapon Slots
+            /******************************/
+            if (item.GetType().Equals(typeof(Firearm)))
+            {
+                if ((item as Firearm).SideArm)
+                {
+                    if (SideArm == null)
+                    {
+                        PlaceItem(item, 2);
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (Weapon == null)
+                    {
+                        PlaceItem(item, 1);
+                        return true;                    
+                    }
+                }
+            }
+            /******************************/
+
+            int width  = item.SlotsIcon.Width/32;
+            int height = item.SlotsIcon.Height/32;
+
+            int slots = (int)(TinySlots + Slots);
+
+            bool[,] SlotsContent = new bool[11, ((slots % 11) > 0 ? 1 : 1) + slots / 11];
+
+            foreach (var pair in Items)
+            {
+                List<int> itemSlots = Inventory.CalculateSlots(pair.Key, pair.Value.Slot, pair.Value.Orientation, true);
+                foreach (int slot in itemSlots)
+                {
+                    SlotsContent[slot % 11, slot / 11] = true;
+                }
+            }
+
+            bool blocked = false;
+
+            /******************/
+            #region Tiny Slots
+            /******************/
+            if (width < 3 && height < 3)
+            {
+                for (int i = 0; i < TinySlots; i++)
+                {
+                    blocked = false;
+
+                    // Normal Orientation
+                    for (int x = 0; x < width; x++)
+                    {
+                        for (int y = 0; y < height; y++)
+                        {
+                            /* C# w swej pełnej wspaniałości, ma pewną wadę
+                             * skurwysyn nie zatrzymuje się przy sprawdzaniu 
+                             * warunków tylko leci wszytskie, nawet jeżeli 
+                             * dane zadanie już jet prawdziwe/nieprawdziwe.
+                             */
+                             
+                            if(i + x + (y * 11) >= TinySlots)
+                            {
+                                blocked = true;
+                                break;                           
+                            }
+                            else if (SlotsContent[(i + x) % 11, (i/ 11) + y])
+                            {
+                                blocked = true;
+                                break;
+                            }
+                            
+                            /* I właśnie taka sytuacja, normalnie w cywilizowanym
+                             * jezyku, te dwa warunki wsadziłoby się w jeden 'if'
+                             * i nie było by porblemu z tym ze cwaniak przekroczy 
+                             * zakres tablicy. Tutaj jednak, wpierw muszę sprawdzić 
+                             * czy nie przekroczył i dopiero potem zastanawiać się
+                             * nad resztą.
+                             */
+                        }
+                        if (blocked) break;
+                    }
+
+                    if (!blocked)
+                    {
+                        if (put)
+                        {
+                            item.OnStoring();
+                            Items.Add(item,new ItemPosition(i,1));
+                        }
+
+                        return true;
+                    }
+
+                    blocked = false;
+
+                    // Rotated
+                    for (int x = 0; x < height; x++)
+                    {
+                        for (int y = 0; y < width; y++)
+                        {
+                            if (i + x + (y * 11) >= TinySlots)
+                            {
+                                blocked = true;
+                                break;
+                            }
+                            else if (SlotsContent[(i + x) % 11, (i/11) + y])
+                            {
+                                blocked = true;
+                                break;
+                            }
+                        }
+                        if (blocked) break;
+                    }
+
+                    if (!blocked)
+                    {
+                        if (put)
+                        {
+                            item.OnStoring();
+                            Items.Add(item, new ItemPosition(i, -1));
+                        }
+
+                        return true;
+                    }
+                }
+            }
+            /******************/
+            #endregion
+            /******************/
+            #region Slots
+            /******************/
+            for (int i = (int)TinySlots; i < Slots + TinySlots; i++)
+            {
+                blocked = false;
+
+                // Normal Orientation
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        if (i + x + (y * 11) >= Slots + TinySlots)
+                        {
+                            blocked = true;
+                            break;
+                        }
+                        else if (SlotsContent[(i + x) % 11, (i/11) + y])
+                        {
+                            blocked = true;
+                            break;
+                        }
+                    }
+                    if (blocked) break;
+                }
+
+                if (!blocked)
+                {
+                    if (put)
+                    {
+                        item.OnStoring();
+                        Items.Add(item, new ItemPosition(i, 1));
+                    }
+
+                    return true;
+                }
+
+                blocked = false;
+
+                // Rotated
+                for (int x = 0; x < height; x++)
+                {
+                    for (int y = 0; y < width; y++)
+                    {
+                        if (i + x + (y * 11) >= Slots + TinySlots)
+                        {
+                            blocked = true;
+                            break;
+                        }
+                        else if (SlotsContent[(i + x) % 11, (i/11) + y])
+                        {
+                            blocked = true;
+                            break;
+                        }
+                    }
+                    if (blocked) break;
+                }
+
+                if (!blocked)
+                {
+                    if (put)
+                    {
+                        item.OnStoring();
+                        Items.Add(item, new ItemPosition(i, -1));
+                    }
+
+                    return true;
+                }
+            }
+            /******************/
+            #endregion
+            /******************/
+
+
+            /******************************/
+            /// Check Current Item
+            /******************************/
+            if (CurrentObject == null)
+            {
+                PlaceItem(item, 0);
+                return true;
+            }
+            /******************************/
+
+            return false;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// GroupAmmo
+        /****************************************************************************/
+        public bool GroupAmmo(AmmoBox ammo)
+        {
+            if(ammo == null) return false;
+
+            if (CurrentObject != null)
+            {
+                if (CurrentObject.GetType().Equals(typeof(AmmoBox)))
+                {
+                    AmmoBox ammoBox = CurrentObject as AmmoBox;
+
+                    if (ammoBox.AmmunitionVersionInfo == ammoBox.AmmunitionVersionInfo &&
+                        ammoBox.PPP == ammo.PPP &&
+                        ammoBox.Amount < ammoBox.Capacity)
+                    {
+                        int diff = ammoBox.Capacity - ammoBox.Amount;
+
+                        ammoBox.Amount += ammo.Amount > diff ? diff : ammo.Amount;
+                        ammo.Amount -= diff;
+                        if (ammo.Amount < 0)
+                        {
+                            SendEvent(new DestroyObjectEvent(ammo.ID), Priority.High, GlobalGameObjects.GameController);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            foreach (var item in Items)
+            {                 
+                if(item.Key.GetType().Equals(typeof(AmmoBox)))
+                {
+                    AmmoBox ammoBox = item.Key as AmmoBox;
+                    
+                    if(ammoBox.AmmunitionVersionInfo == ammoBox.AmmunitionVersionInfo &&
+                       ammoBox.PPP                   == ammo.PPP                      &&
+                       ammoBox.Amount                 < ammoBox.Capacity)
+                    {
+                        int diff = ammoBox.Capacity - ammoBox.Amount;
+
+                        ammoBox.Amount += ammo.Amount > diff ? diff : ammo.Amount;
+                        ammo.Amount -= diff;
+                        if (ammo.Amount < 0)
+                        {
+                            SendEvent(new DestroyObjectEvent(ammo.ID), Priority.High, GlobalGameObjects.GameController);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
         /****************************************************************************/
 
