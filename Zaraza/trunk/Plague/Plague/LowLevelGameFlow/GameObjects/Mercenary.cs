@@ -23,6 +23,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     class Mercenary : AbstractLivingBeing, IActiveGameObject
     {
 
+        public delegate void OnSomething();
+
         /****************************************************************************/
         // Slots
         /****************************************************************************/
@@ -37,6 +39,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public String WeaponGrip { get; private set; }
 
         public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
+        public OnSomething UpdateInventory = null;
         /****************************************************************************/
 
 
@@ -313,7 +316,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 FindPlaceForItem(item, true);
             }
-
 //            if (Grip != null && Mesh.BoneMap.ContainsKey(Grip))
 //            {
 //                CurrentObject = item;
@@ -555,6 +557,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             item.OnStoring();
                             Items.Add(item,new ItemPosition(i,1));
+                            if (UpdateInventory != null) UpdateInventory();
                         }
 
                         return true;
@@ -587,6 +590,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             item.OnStoring();
                             Items.Add(item, new ItemPosition(i, -1));
+                            if (UpdateInventory != null) UpdateInventory();
                         }
 
                         return true;
@@ -627,6 +631,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         item.OnStoring();
                         Items.Add(item, new ItemPosition(i, 1));
+                        if (UpdateInventory != null) UpdateInventory();
                     }
 
                     return true;
@@ -659,6 +664,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         item.OnStoring();
                         Items.Add(item, new ItemPosition(i, -1));
+                        if (UpdateInventory != null) UpdateInventory();
                     }
 
                     return true;
@@ -690,6 +696,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool GroupAmmo(AmmoBox ammo)
         {
             if(ammo == null) return false;
+            if (ammo.Amount == ammo.Capacity) return false;
 
             if (CurrentObject != null)
             {
@@ -705,7 +712,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         ammoBox.Amount += ammo.Amount > diff ? diff : ammo.Amount;
                         ammo.Amount -= diff;
-                        if (ammo.Amount < 0)
+                        if (ammo.Amount <= 0)
                         {
                             SendEvent(new DestroyObjectEvent(ammo.ID), Priority.High, GlobalGameObjects.GameController);
                             return true;
@@ -719,16 +726,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if(item.Key.GetType().Equals(typeof(AmmoBox)))
                 {
                     AmmoBox ammoBox = item.Key as AmmoBox;
-                    
-                    if(ammoBox.AmmunitionVersionInfo == ammoBox.AmmunitionVersionInfo &&
-                       ammoBox.PPP                   == ammo.PPP                      &&
-                       ammoBox.Amount                 < ammoBox.Capacity)
+
+                    if (ammoBox.AmmunitionVersionInfo == ammo.AmmunitionVersionInfo &&
+                        ammoBox.PPP                   == ammo.PPP                   &&
+                        ammoBox.Amount                 < ammoBox.Capacity)
                     {
                         int diff = ammoBox.Capacity - ammoBox.Amount;
 
                         ammoBox.Amount += ammo.Amount > diff ? diff : ammo.Amount;
                         ammo.Amount -= diff;
-                        if (ammo.Amount < 0)
+                        if (ammo.Amount <= 0)
                         {
                             SendEvent(new DestroyObjectEvent(ammo.ID), Priority.High, GlobalGameObjects.GameController);
                             return true;

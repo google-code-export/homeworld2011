@@ -30,6 +30,7 @@ namespace PlagueEngine.LowLevelGameFlow
                 
         private static int       lastID    = 0;
         private static List<int> freeIDs   = new List<int>();
+        public static GameObjectsFactory factory = null;
 
         protected GameObjectInstance owner     = null;        
         
@@ -344,6 +345,16 @@ namespace PlagueEngine.LowLevelGameFlow
                 case GameObjectStatus.Passable:         return 5;
                 default: return 0;
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CreateGameObject
+        /****************************************************************************/
+        public static GameObjectInstance CreateGameObject(GameObjectInstanceData data)
+        {
+            return factory.Create(data);
         }
         /****************************************************************************/
 

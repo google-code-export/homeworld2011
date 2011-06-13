@@ -65,6 +65,8 @@ namespace PlagueEngine.LowLevelGameFlow
             GameObjects             = gameObjects;
             UpdatableObjects        = updatableObjects;
             this.level              = level;
+
+            GameObjectInstance.factory = this;
         }
         /****************************************************************************/
 
@@ -1638,11 +1640,11 @@ namespace PlagueEngine.LowLevelGameFlow
                 return false;
             }
 
-            Queue<Bullet> content = new Queue<Bullet>(data.Capacity);
+            Stack<Bullet> content = new Stack<Bullet>(data.Capacity);
 
             for(int i = 0; i < data.Capacity  && i < data.Content.Count; i++)
             {
-                content.Enqueue(data.Content.ElementAt(i));
+                content.Push(data.Content.ElementAt(i));
             }
 
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
