@@ -27,12 +27,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         public MeshComponent       mesh = null;
-        public SquareBodyComponent body = null;        
-        
-        private AmmunitionInfo                          AmmunitionInfo      = null;
+        public SquareBodyComponent body = null;
+
+        public AmmunitionInfo AmmunitionInfo { get; private set; }
         private Dictionary<uint, AmmunitionVersionInfo> AmmunitionVersions  = null;
 
-        public Queue<Bullet> Content = null;
+        public Stack<Bullet> Content = null;
         public int Capacity { get; private set; }
         /****************************************************************************/
 
@@ -50,7 +50,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          ParticleEmitterComponent particle,
                          AmmunitionInfo ammunitionInfo,
                          Dictionary<uint, AmmunitionVersionInfo> ammunitionVersions,
-                         Queue<Bullet> content,
+                         Stack<Bullet> content,
                          int capacity)
         {
             this.mesh = mesh;

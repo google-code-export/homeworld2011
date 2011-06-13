@@ -118,6 +118,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int             dumpScrollMaxOffset     = 0;
         private int             dumpScrollCurrentOffset = 0;
         private Dictionary<StorableObject, ItemPosition> dumpItems = new Dictionary<StorableObject, ItemPosition>();
+        /*****************/
+
+
+        /*****************/
+        /// Ammo
+        /*****************/
+        private bool     AmmoLoader         = false;
+        private AmmoClip CurrentAmmoClip    = null;
+        private bool     AmmoLoaderExit     = false;
+        private bool     AmmoLoaderUnload   = false;
+        private object[] AmmoSlots          = new object[4];
+        private bool[]   AmmoSlotsLoad      = new bool[4];
+        private bool[]   AmmoSlotsLoadOne   = new bool[4];
+        private bool     AmmoUnloadOne      = false;
         /*****************/        
 
 
@@ -160,6 +174,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Vector2 DumpScrollUpButtonPos   = new Vector2(425, 50);
         private Vector2 DumpScrollDownButtonPos = new Vector2(425, 260);
         private Vector2 DumpScrollButtonBasePos = new Vector2(425, 64);
+
+        private Vector2 CurrAmmoIconPos              = new Vector2(500,342);
+        private Vector2 AmmoLoaderExitButtonPos      = new Vector2(420,310);
+        private Vector2 AmmoLoaderUnloadButtonPos    = new Vector2(517, 392);
+        private Vector2 AmmoLoaderUnloadOneButtonPos = new Vector2(690, 365);
+        private Vector2 AmmoSlotsLoadButtonPos       = new Vector2(472, 462);
+        private Vector2 AmmoSlotsLoadOneButtonPos    = new Vector2(506, 495);
+        private Vector2 AmmoSlotsIconPos             = new Vector2(455, 480);
+        private Vector2 BulletIconPos                = new Vector2(563, 354);
 
         private const int    dumpCapacity     = 200;
         private const String defaultDumpTitle = "Dump";
@@ -673,6 +696,108 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             }
                         }
                     }
+                }
+            }
+            /***********************/
+            #endregion
+            /***********************/
+
+
+            /***********************/
+            #region Draw Ammo Loader
+            /***********************/
+            if (AmmoLoader)
+            {
+                // Background
+                spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(420, 310), new Rectangle(1628, 0, 420, 310), Color.White);
+                // Exit Button
+                spriteBatch.Draw(frontEnd.Texture, localPosition + AmmoLoaderExitButtonPos, (AmmoLoaderExit ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
+                // Draw Current Clip                
+                spriteBatch.Draw(frontEnd.Texture, localPosition + CurrAmmoIconPos, CurrentAmmoClip.Icon, Color.White);
+                DrawValue(spriteBatch, CurrentAmmoClip, localPosition + CurrAmmoIconPos + new Vector2(50, 50));
+                // Draw Ammo Clip Name
+                spriteBatch.DrawString(AmmoFont, CurrentAmmoClip.Name, localPosition + new Vector2(620 - AmmoFont.MeasureString(CurrentAmmoClip.Name).X / 2, 310), Color.LightGray);
+                // Draw Ammo Name
+                spriteBatch.DrawString(AmmoFont, CurrentAmmoClip.AmmunitionInfo.Name, localPosition + new Vector2(620 - AmmoFont.MeasureString(CurrentAmmoClip.AmmunitionInfo.Name).X / 2, 417), Color.LightGray);
+                // Draw Unload Button
+                spriteBatch.Draw(frontEnd.Texture, localPosition + AmmoLoaderUnloadButtonPos, (AmmoLoaderUnload ? new Rectangle(1320, 14, 15, 14) : new Rectangle(1320, 0, 15, 14)), Color.White);
+                // Draw Onload One button
+                spriteBatch.Draw(frontEnd.Texture, localPosition + AmmoLoaderUnloadOneButtonPos, (AmmoUnloadOne ? new Rectangle(1365, 14, 15, 14) : new Rectangle(1365, 0, 15, 14)), Color.White);
+                // Draw Load Buttons
+                for (int i = 0; i < 4; i++)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, 
+                                     localPosition + AmmoSlotsLoadButtonPos + new Vector2(93 * i,0),
+                                     (AmmoSlotsLoad[i] ? new Rectangle(1305, 14, 15, 14) : new Rectangle(1305, 0, 15, 14)), 
+                                     Color.White);
+                }
+                // Draw Load One Buttons
+                for (int i = 0; i < 4; i++)
+                {
+                    spriteBatch.Draw(frontEnd.Texture,
+                                     localPosition + AmmoSlotsLoadOneButtonPos + new Vector2(93 * i, 0),
+                                     (AmmoSlotsLoadOne[i] ? new Rectangle(1350, 14, 15, 14) : new Rectangle(1350, 0, 15, 14)),
+                                     Color.White);
+                }
+                ClearAmmoSlots();
+                // Draw Slots Background
+                if (pickedItem != null)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (mousePos.X > AmmoSlotsIconPos.X - pickedItemOffset.X + (93 * i) &&
+                            mousePos.X < AmmoSlotsIconPos.X - pickedItemOffset.X + 50 + (93 * i) &&
+                            mousePos.Y > AmmoSlotsIconPos.Y - pickedItemOffset.Y &&
+                            mousePos.Y < AmmoSlotsIconPos.Y - pickedItemOffset.Y + 50)
+                        {
+                            if (!CheckEm(pickedItem, i))
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + AmmoSlotsIconPos + new Vector2(93 * i,0), new Rectangle(1450, 0, 50, 50), Color.White);
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + AmmoSlotsIconPos + new Vector2(93 * i, 0), new Rectangle(1400, 0, 50, 50), Color.White);
+                            }
+                        }
+                    }
+                }
+                // Draw Slots                
+                for (int i = 0; i < 4; i++)
+                {
+                    if (AmmoSlots[i] == null) continue;                                                          
+
+                    spriteBatch.Draw(frontEnd.Texture,
+                                     localPosition + AmmoSlotsIconPos + new Vector2(93 * i, 0),
+                                     (AmmoSlots[i] as StorableObject).Icon,
+                                     Color.White);
+
+                    DrawValue(spriteBatch, AmmoSlots[i] as StorableObject, localPosition + AmmoSlotsIconPos + new Vector2(93 * i, 0) + new Vector2(50, 50));
+
+                    if (AmmoSlots[i].GetType().Equals(typeof(AmmoBox)))
+                    {
+                        String version = AmmunitionVersionInfo.VersionToString((AmmoSlots[i] as AmmoBox).AmmunitionVersionInfo.Version);
+                        spriteBatch.DrawString(AmmoFont, version, localPosition + new Vector2(480 - AmmoFont.MeasureString(version).X / 2 + (93 * i), 530), Color.LightGray);
+                    }
+                    else
+                    {
+                        if ((AmmoSlots[i] as AmmoClip).Content.Count != 0)
+                        {
+                            String version = AmmunitionVersionInfo.VersionToString((AmmoSlots[i] as AmmoClip).Content.Peek().Version);
+                            spriteBatch.DrawString(AmmoFont, version, localPosition + new Vector2(480 - AmmoFont.MeasureString(version).X / 2 + (93 * i), 530), Color.LightGray);
+                        }
+                    }
+                }
+                // Draw Bullet
+                if (CurrentAmmoClip.Content.Count > 0)
+                {
+                    spriteBatch.Draw(frontEnd.Texture,
+                                     localPosition + BulletIconPos,
+                                     GetBulletIcon(CurrentAmmoClip.AmmunitionInfo.Genre,CurrentAmmoClip.Content.Peek().Version),
+                                     Color.White);
+
+                    String version = AmmunitionVersionInfo.VersionToString(CurrentAmmoClip.Content.Peek().Version);
+
+                    spriteBatch.DrawString(AmmoFont, version, localPosition + new Vector2(711, 364), Color.LightGray);                       
                 }
             }
             /***********************/
@@ -1536,6 +1661,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /******************************/
                     else if (!scroll && !scroll2 && !dumpScroll)
                     {
+                        UncheckButtons();
+
                         /*************************/
                         /// Next Merc Button
                         /*************************/
@@ -1544,7 +1671,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             mousePos.Y > NextMercButtonPos.Y &&
                             mousePos.Y < NextMercButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             nextMerc = true;
                         }
                         /*************************/
@@ -1555,7 +1681,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > PrevMercButtonPos.Y &&
                                  mousePos.Y < PrevMercButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             prevMerc = true;
                         }
                         /*************************/
@@ -1566,7 +1691,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > ExitInvButtonPos.Y &&
                                  mousePos.Y < ExitInvButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             exitInv = true;
                         }
                         /*************************/
@@ -1577,7 +1701,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > ScrollUpButtonPos.Y &&
                                  mousePos.Y < ScrollUpButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             scrollUp = true;
                         }
                         /*************************/
@@ -1588,7 +1711,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > ScrollDownButtonPos.Y &&
                                  mousePos.Y < ScrollDownButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             scrollDown = true;
                         }
                         /*************************/
@@ -1599,7 +1721,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > ExitInv2ButtonPos.Y &&
                                  mousePos.Y < ExitInv2ButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             exitInv2 = true;
                         }
                         /*************************/
@@ -1610,7 +1731,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > ScrollUp2ButtonPos.Y &&
                                  mousePos.Y < ScrollUp2ButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             scrollUp2 = true;
                         }
                         /*************************/
@@ -1621,7 +1741,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > ScrollDown2ButtonPos.Y &&
                                  mousePos.Y < ScrollDown2ButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             scrollDown2 = true;
                         }
                         /*************************/
@@ -1632,7 +1751,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > DumpScrollUpButtonPos.Y &&
                                  mousePos.Y < DumpScrollUpButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             dumpScrollUp = true;
                         }
                         /*************************/
@@ -1643,12 +1761,59 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  mousePos.Y > DumpScrollDownButtonPos.Y &&
                                  mousePos.Y < DumpScrollDownButtonPos.Y + 14)
                         {
-                            UncheckButtons();
                             dumpScrollDown = true;
+                        }
+                        /*************************/
+                        /// Ammo Loader Exit
+                        /*************************/
+                        else if (mousePos.X > AmmoLoaderExitButtonPos.X &&
+                                 mousePos.X < AmmoLoaderExitButtonPos.X + 15 &&
+                                 mousePos.Y > AmmoLoaderExitButtonPos.Y &&
+                                 mousePos.Y < AmmoLoaderExitButtonPos.Y + 14)
+                        {
+                            AmmoLoaderExit = true;
+                        }
+                        /*************************/
+                        /// Ammo Loader Unload
+                        /*************************/
+                        else if (mousePos.X > AmmoLoaderUnloadButtonPos.X &&
+                                 mousePos.X < AmmoLoaderUnloadButtonPos.X + 15 &&
+                                 mousePos.Y > AmmoLoaderUnloadButtonPos.Y &&
+                                 mousePos.Y < AmmoLoaderUnloadButtonPos.Y + 14)
+                        {
+                            AmmoLoaderUnload = true;
+                        }
+                        /*************************/
+                        /// Ammo Loader Unload One
+                        /*************************/
+                        else if (mousePos.X > AmmoLoaderUnloadOneButtonPos.X &&
+                                 mousePos.X < AmmoLoaderUnloadOneButtonPos.X + 15 &&
+                                 mousePos.Y > AmmoLoaderUnloadOneButtonPos.Y &&
+                                 mousePos.Y < AmmoLoaderUnloadOneButtonPos.Y + 14)
+                        {
+                            AmmoUnloadOne = true;
                         }
                         else
                         {
-                            UncheckButtons();
+                            for (int i = 0; i < 4; i++)
+                            {
+                                if (mousePos.X > AmmoSlotsLoadButtonPos.X +      (93 * i) &&
+                                    mousePos.X < AmmoSlotsLoadButtonPos.X + 15 + (93 * i) &&
+                                    mousePos.Y > AmmoSlotsLoadButtonPos.Y                 &&
+                                    mousePos.Y < AmmoSlotsLoadButtonPos.Y + 14)
+                                {
+                                    AmmoSlotsLoad[i] = true;
+                                    return;
+                                }
+                                else if (mousePos.X > AmmoSlotsLoadOneButtonPos.X +      (93 * i) &&
+                                         mousePos.X < AmmoSlotsLoadOneButtonPos.X + 15 + (93 * i) &&
+                                         mousePos.Y > AmmoSlotsLoadOneButtonPos.Y                 &&
+                                         mousePos.Y < AmmoSlotsLoadOneButtonPos.Y + 14)
+                                {
+                                    AmmoSlotsLoadOne[i] = true;
+                                    return;
+                                }
+                            }                            
                         }
                     }
                     /******************************/
@@ -1871,17 +2036,61 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
                         /*************************/
                         #endregion
-                        /*************************/                       
+                        /*************************/
+                        #region Ammo Slots 
+                        /*************************/
+                        else if (AmmoLoader &&
+                                 mousePos.X > AmmoSlotsIconPos.X &&
+                                 mousePos.X < AmmoSlotsIconPos.X + 50 &&
+                                 mousePos.Y > AmmoSlotsIconPos.Y &&
+                                 mousePos.Y < AmmoSlotsIconPos.Y + 50)
+                        {
+                            PutOnAmmoSlot(pickedItem, 0);
+                            PutBackPickedItem();
+                        }
+                        else if (AmmoLoader &&
+                                 mousePos.X > AmmoSlotsIconPos.X + 93      &&
+                                 mousePos.X < AmmoSlotsIconPos.X + 50 + 93 &&
+                                 mousePos.Y > AmmoSlotsIconPos.Y &&
+                                 mousePos.Y < AmmoSlotsIconPos.Y + 50)
+                        {
+                            PutOnAmmoSlot(pickedItem, 1);
+                            PutBackPickedItem();
+                        }
+                        else if (AmmoLoader &&
+                                 mousePos.X > AmmoSlotsIconPos.X + 93 + 93      &&
+                                 mousePos.X < AmmoSlotsIconPos.X + 50 + 93 + 93 &&
+                                 mousePos.Y > AmmoSlotsIconPos.Y &&
+                                 mousePos.Y < AmmoSlotsIconPos.Y + 50)
+                        {
+                            PutOnAmmoSlot(pickedItem, 2);
+                            PutBackPickedItem();
+                        }
+                        else if (AmmoLoader &&
+                                 mousePos.X > AmmoSlotsIconPos.X + 93 + 93 + 93      &&
+                                 mousePos.X < AmmoSlotsIconPos.X + 50 + 93 + 93 + 93 &&
+                                 mousePos.Y > AmmoSlotsIconPos.Y &&
+                                 mousePos.Y < AmmoSlotsIconPos.Y + 50)
+                        {
+                            PutOnAmmoSlot(pickedItem, 3);
+                            PutBackPickedItem();
+                        }
+                        /*************************/
+                        #endregion
+                        /*************************/
                         #region Outside Inventory
                         /*************************/
                         else if (realMousePos.X < localPosition.X ||
                                  realMousePos.Y < localPosition.Y ||
                                  realMousePos.Y > localPosition.Y + 620 ||
-                                 (mercenary2 == null && !dump && realMousePos.X > localPosition.X + 420) ||
-                                 (mercenary2 == null && dump  && realMousePos.Y > localPosition.Y + 310 && realMousePos.X > localPosition.X + 420) ||
-                                 (mercenary2 != null && realMousePos.X > localPosition.X + 840))
+                                 realMousePos.X > localPosition.X + 840 ||
+                                 (mercenary2 == null && !dump && !AmmoLoader && realMousePos.X > localPosition.X + 420) ||
+                                 (mercenary2 == null && dump && !AmmoLoader && realMousePos.Y > localPosition.Y + 310 && realMousePos.X > localPosition.X + 420) ||
+                                 (mercenary2 == null && AmmoLoader && !dump && realMousePos.Y < localPosition.Y + 310 && realMousePos.X > localPosition.X + 420)
+                                 )
                         {
                             mercenary.DropItem(pickedItem);
+                            CheckAmmoSlots(pickedItem);
                             pickedItem = null;
                             pickedItemSlot = Slot.Empty;
                             mouse.CursorVisible = true;
@@ -1893,7 +2102,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         /*************************/
                         else
                         {
-                            mousePos.X -= (pickedItem.SlotsIcon.Width / 2)  - 32;
+                            mousePos.X -= (pickedItem.SlotsIcon.Width / 2) - 32;
                             mousePos.Y -= (pickedItem.SlotsIcon.Height / 2) - 32;
 
                             /*************************/
@@ -1972,7 +2181,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                     pickedItemSlot = Slot.Empty;
                                     mouse.CursorVisible = true;
                                 }
-                            }                          
+                            }
                             /*************************/
                             #endregion
                             /*************************/
@@ -2034,7 +2243,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                                 else
                                 {
-                                    if(!mercenary2.GroupAmmo(pickedItem as AmmoBox))
+                                    if (!mercenary2.GroupAmmo(pickedItem as AmmoBox))
                                     {
                                         List<int> slots = new List<int>();
                                         for (int i = x; i < x + width + 1; ++i)
@@ -2053,7 +2262,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                             }
                             /*************************/
-                            #endregion 
+                            #endregion
                             /*************************/
                             #region Dump
                             /*************************/
@@ -2066,7 +2275,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
                                 int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
 
-                                int width  = (pickedItem.SlotsIcon.Width / 32) - 1;
+                                int width = (pickedItem.SlotsIcon.Width / 32) - 1;
                                 int height = (pickedItem.SlotsIcon.Height / 32) - 1;
 
                                 if (newPickedItemOrientation < 0)
@@ -2106,9 +2315,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                             dumpContent[i, j].Item = pickedItem;
                                             slots.Add(i + (j * 11));
                                         }
-                                    }                                    
+                                    }
                                     dumpItems.Add(pickedItem, new ItemPosition(slots.ElementAt(0), newPickedItemOrientation));
-                                    pickedItem    = null;
+                                    pickedItem = null;
                                     pickedItemSlot = Slot.Empty;
                                     mouse.CursorVisible = true;
                                 }
@@ -2173,9 +2382,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     /*************************/
                     else if (exitInv)
                     {
+                        CloseDump();
                         SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                         mouse.Modal = false;
                         keyboard.Modal = false;
+                        mercenary.UpdateInventory = null;
+                        mercenary = null;                        
+                        mercenary2 = null;
                         if (container != null) SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
                     }
                     /*************************/
@@ -2241,6 +2454,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         mercenary2 = null;
                     }
+                    else if (AmmoLoaderExit)
+                    {
+                        CloseAmmoLoader();
+                    }
+                    else if (AmmoLoaderUnload)
+                    {
+                        UnloadAmmo();
+                    }
                     /*************************/
                     #endregion
                     /*************************/
@@ -2258,6 +2479,31 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     else if (scrollUp2)
                     {
                         if (scrollCurrentOffset2 != 0) scrollCurrentOffset2--;
+                    }
+                    /*************************/
+                    #endregion
+                    /*************************/
+                    #region Ammo Loader
+                    /*************************/
+                    else if (AmmoUnloadOne)
+                    {
+                        UnloadOne();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (AmmoSlotsLoad[i])
+                            {
+                                LoadAmmo(i);
+                                return;
+                            }
+                            else if (AmmoSlotsLoadOne[i])
+                            {
+                                LoadOne(i);
+                                return;
+                            }
+                        }
                     }
                     /*************************/
                     #endregion
@@ -2296,7 +2542,77 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     #endregion
                     /*************************/
                 }
+                else if (mouseKeyState.WasReleased() && mercenary2 == null)
+                {
+                    if (mousePos.X > CurrItemIconPos.X &&
+                        mousePos.X < CurrItemIconPos.X + 50 &&
+                        mousePos.Y > CurrItemIconPos.Y &&
+                        mousePos.Y < CurrItemIconPos.Y + 50)
+                    {
+                        if ((mercenary.CurrentObject as AmmoClip) != null)
+                        {
+                            SetupAmmoLoader(mercenary.CurrentObject as AmmoClip);
+                        }
+                    }
+                    else if (mousePos.X > SlotsStartPos.X           &&
+                             mousePos.X < SlotsStartPos.X + 11 * 32 &&
+                             mousePos.Y > SlotsStartPos.Y           &&
+                             mousePos.Y < SlotsStartPos.Y + (Items.GetLength(1) < 15 ? Items.GetLength(1) : 15) * 32)
+                    {
+                        int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
+                        int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
+
+                        if (Items[x, y].Item != null)
+                        {
+                            if ((Items[x, y].Item as AmmoClip) != null)
+                            {
+                                SetupAmmoLoader(Items[x, y].Item as AmmoClip);
+                            }
+                        }
+                    }
+                    else if (dump &&
+                             mousePos.X > DumpSlotsStartPos.X &&
+                             mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
+                             mousePos.Y > DumpSlotsStartPos.Y &&
+                             mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
+                    {
+                        int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
+                        int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
+
+                        if (dumpContent[x, y].Item != null)
+                        {
+                            if ((dumpContent[x, y].Item as AmmoClip) != null)
+                            {
+                                SetupAmmoLoader(dumpContent[x, y].Item as AmmoClip);
+                            }
+                        }
+                    }
+                    else if (AmmoLoader)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (mousePos.X > AmmoSlotsIconPos.X + (93 * i) &&
+                                mousePos.X < AmmoSlotsIconPos.X + 50 + (93 * i) &&
+                                mousePos.Y > AmmoSlotsIconPos.Y &&
+                                mousePos.Y < AmmoSlotsIconPos.Y + 50)
+                            {
+                                AmmoSlots[i] = null;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Update Inventory
+        /****************************************************************************/
+        private void UpdateInventory()
+        {
+            SetupMercenary();
         }
         /****************************************************************************/
 
@@ -2306,6 +2622,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void SetupMercenary()
         {
+            mercenary.UpdateInventory = UpdateInventory;
+
             mercenaryNamePos    = new Vector2(353, 70);
             mercenaryNamePos.X -= mercenaryName.MeasureString(mercenary.Name).X / 2;
 
@@ -2404,16 +2722,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void UncheckButtons()
         {
-            nextMerc        = false;
-            prevMerc        = false;
-            exitInv         = false;
-            scrollUp        = false;
-            scrollDown      = false;
-            exitInv2        = false;
-            scrollUp2       = false;
-            scrollDown2     = false;
-            dumpScrollDown  = false;
-            dumpScrollUp    = false;
+            nextMerc         = false;
+            prevMerc         = false;
+            exitInv          = false;
+            scrollUp         = false;
+            scrollDown       = false;
+            exitInv2         = false;
+            scrollUp2        = false;
+            scrollDown2      = false;
+            dumpScrollDown   = false;
+            dumpScrollUp     = false;
+            AmmoLoaderExit   = false;
+            AmmoLoaderUnload = false;
+            AmmoUnloadOne    = false;
+
+            AmmoSlotsLoad    = new bool[4];
+            AmmoSlotsLoadOne = new bool[4];
         }
         /****************************************************************************/
 
@@ -2539,6 +2863,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     mouse.Modal    = false;
                     keyboard.Modal = false;
                     CloseDump();
+                    mercenary.UpdateInventory = null;
+                    mercenary = null;
+                    mercenary2 = null;
+
                     if (container != null) SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
                 }
                 else if(key == Keys.Space)
@@ -2551,6 +2879,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                     mouse.Modal = false;
                     keyboard.Modal = false;
+                    mercenary.UpdateInventory = null;
+                    mercenary = null;
+                    mercenary2 = null;
+
                     if (container != null) SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
                 }
                 else if (key == Keys.D)
@@ -2798,6 +3130,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 foreach (KeyValuePair<StorableObject, ItemPosition> items in dumpItems)
                 {
                     mercenary.DropItem(items.Key);
+                    CheckAmmoSlots(items.Key);
                 }
                 dumpItems.Clear();
             }
@@ -2842,6 +3175,326 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 spriteBatch.DrawString(AmmoFont, valueToDraw, pos, Color.LightGray);
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// SetupAmmoLoader
+        /****************************************************************************/
+        private void SetupAmmoLoader(AmmoClip clip)
+        {
+            AmmoLoader      = true;
+            CurrentAmmoClip = clip;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Close Ammo Loader
+        /****************************************************************************/
+        private void CloseAmmoLoader()
+        {
+            AmmoLoader      = false;
+            CurrentAmmoClip = null;
+            AmmoSlots       = new object[4];
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        // Unload Ammo
+        /****************************************************************************/
+        private void UnloadAmmo()
+        {
+            if (CurrentAmmoClip.Content.Count == 0) return;
+
+            int foo = CurrentAmmoClip.Content.Count;
+            for (int i = 0; i < foo; i++)
+            {
+                int current = CurrentAmmoClip.Content.Count;
+                UnloadOne();
+                if (current == CurrentAmmoClip.Content.Count) break;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        // Unload One
+        /****************************************************************************/
+        private void UnloadOne()
+        {
+            if(CurrentAmmoClip.Content.Count == 0) return;
+
+            Bullet bullet = CurrentAmmoClip.Content.Pop();
+            /*******************************/
+            #region Ammo Clip
+            /*******************************/
+            for (int i = 0; i < 4; i++)
+            {
+                if (AmmoSlots[i] != null)
+                {
+                    AmmoClip clip = AmmoSlots[i] as AmmoClip;
+                    if (clip != null)
+                    {
+                        if (clip.Content.Count < clip.Capacity)
+                        {
+                            clip.Content.Push(bullet);
+                            return;
+                        }
+                    }
+                }
+            }
+            /*******************************/
+            #endregion
+            /*******************************/
+            #region Ammo Box
+            /*******************************/
+            for (int i = 0; i < 4; i++)
+            {
+                if (AmmoSlots[i] != null)
+                {
+                    AmmoBox box = AmmoSlots[i] as AmmoBox;
+                    if (box != null)
+                    {
+                        if (box.AmmunitionVersionInfo.Version == bullet.Version)
+                        {
+                            if (box.Amount < box.Capacity)
+                            {
+                                box.Amount++;
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            /*******************************/
+            #endregion
+            /*******************************/
+            #region Empty Slot
+            /*******************************/
+            for (int i = 0; i < 4; i++)
+            {
+                if (AmmoSlots[i] == null)
+                {
+                    AmmoBoxData data = new AmmoBoxData();
+                    data.Definition = CurrentAmmoClip.AmmunitionInfo.Name + " AmmoBox";
+                    data.Version = bullet.Version;
+                    data.PPP = bullet.PPP;
+                    data.Amount = 1;
+                    AmmoSlots[i] = CreateGameObject(data);
+                    mercenary.FindPlaceForItem(AmmoSlots[i] as StorableObject, true);
+                    return;
+                }
+            }
+            /*******************************/
+            #endregion
+            /*******************************/
+            CurrentAmmoClip.Content.Push(bullet);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Load Ammo
+        /****************************************************************************/
+        private void LoadAmmo(int ammoSlot)
+        {
+            if (CurrentAmmoClip.Content.Count == CurrentAmmoClip.Capacity) return;
+
+            int foo = CurrentAmmoClip.Capacity - CurrentAmmoClip.Content.Count;
+            
+            for (int i = 0; 
+                i < foo && CurrentAmmoClip.Content.Count < CurrentAmmoClip.Capacity; 
+                i++)
+            {
+                int current = CurrentAmmoClip.Content.Count;
+                LoadOne(ammoSlot);
+                if (current == CurrentAmmoClip.Content.Count) break;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Load One 
+        /****************************************************************************/
+        private void LoadOne(int ammoSlot)
+        {
+            if (AmmoSlots[ammoSlot] != null && CurrentAmmoClip.Content.Count != CurrentAmmoClip.Capacity) 
+            {
+                // Przyadałby się jakiś zaśmierdziały interfejs a nie sprawdzanie dwóch typów :/
+                AmmoBox ammoBox = AmmoSlots[ammoSlot] as AmmoBox;
+                if (ammoBox != null)
+                {
+                    if (ammoBox.Amount > 0)
+                    {
+                        ammoBox.Amount--;
+                        Bullet bullet = new Bullet();
+                        bullet.Version = ammoBox.AmmunitionVersionInfo.Version;
+                        bullet.PPP = ammoBox.PPP;
+                        CurrentAmmoClip.Content.Push(bullet);
+
+                        if (ammoBox.Amount == 0)
+                        {
+                            AmmoSlots[ammoSlot] = null;
+                            mercenary.Items.Remove(ammoBox);
+                            SendEvent(new DestroyObjectEvent(ammoBox.ID), Priority.High, GlobalGameObjects.GameController);
+                            UpdateInventory();
+                        }
+
+                        return;
+                    }
+                }
+
+                AmmoClip clip = AmmoSlots[ammoSlot] as AmmoClip;
+                if (clip != null)
+                {
+                    if (clip.Content.Count > 0)
+                    {
+                        CurrentAmmoClip.Content.Push(clip.Content.Pop());
+                        return;
+                    }
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Put on Ammo Slot
+        /****************************************************************************/
+        private void PutOnAmmoSlot(object item,int slot)
+        {
+            AmmoBox ammoBox = item as AmmoBox;
+            if (ammoBox != null)
+            {
+                if (ammoBox.AmmunitionName.Equals(CurrentAmmoClip.AmmunitionInfo.Name))
+                {
+                    if(!AmmoSlots.Contains(ammoBox)) AmmoSlots[slot] = ammoBox;
+                }
+            }
+            else
+            {
+                AmmoClip ammoClip = item as AmmoClip;
+                if (ammoClip == null) return;
+
+                if (ammoClip == CurrentAmmoClip) return;
+
+                if (ammoClip.AmmunitionInfo == CurrentAmmoClip.AmmunitionInfo)
+                {
+                    if (!AmmoSlots.Contains(ammoClip)) AmmoSlots[slot] = ammoClip;
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Check Ammo Slots
+        /****************************************************************************/
+        private void CheckAmmoSlots(object item)
+        {
+            if (!AmmoLoader) return;
+
+            if (item == CurrentAmmoClip) CloseAmmoLoader();
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (AmmoSlots[i] == item) AmmoSlots[i] = null;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Check'em (http://memeshack.com/checkem/CheckEm_1297557534919.jpg)
+        /****************************************************************************/
+        private bool CheckEm(object item,int slot)
+        {
+            AmmoBox ammoBox = item as AmmoBox;
+            if (ammoBox != null)
+            {
+                if (ammoBox.AmmunitionName.Equals(CurrentAmmoClip.AmmunitionInfo.Name))
+                {
+                    if (!AmmoSlots.Contains(ammoBox)) return true;
+                }
+            }
+            else
+            {
+                AmmoClip ammoClip = item as AmmoClip;
+                if (ammoClip == null) return false;
+
+                if (ammoClip == CurrentAmmoClip) return false;
+
+                if (ammoClip.AmmunitionInfo == CurrentAmmoClip.AmmunitionInfo)
+                {
+                    if (!AmmoSlots.Contains(ammoClip)) return true;
+                }
+            }
+
+            return false;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Clear Ammo Slots
+        /****************************************************************************/
+        private void ClearAmmoSlots()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (AmmoSlots[i] != null)
+                {                    
+                    AmmoBox ammoBox = AmmoSlots[i] as AmmoBox;
+                    if (ammoBox != null)
+                    {
+                        if (ammoBox.Amount <= 0)
+                        {
+                            AmmoSlots[i] = null;
+                        }
+                    }
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Bullet Icon
+        /****************************************************************************/
+        private Rectangle GetBulletIcon(uint genre, uint version)
+        {
+            Rectangle rect = new Rectangle(1500, 0, 128, 32);
+
+            switch (genre)
+            {
+                case 1: rect.Y += 352; break;
+                case 2:
+                case 3: rect.Y += 160; break;
+            }
+
+            switch (version)
+            {                 
+                case 0: 
+                case 3:
+                    break;
+                case 1:
+                    rect.Y += 32; break;
+                case 2:
+                case 4:
+                    rect.Y += 64; break;
+                case 5:
+                    rect.Y += 96; break;
+                case 6:
+                    rect.Y += 128; break;
+                case 7:
+                    rect.Y += 160; break;
+            }
+
+            return rect;
         }
         /****************************************************************************/
 

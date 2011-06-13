@@ -240,7 +240,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     {
         public AmmoBoxData()
         {
-            Type = typeof(AmmoBoxData);            
+            Type = typeof(AmmoBox);            
         }
 
         [CategoryAttribute("Ammunition")]
