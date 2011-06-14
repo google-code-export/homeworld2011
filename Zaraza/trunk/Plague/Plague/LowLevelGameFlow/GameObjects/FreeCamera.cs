@@ -457,7 +457,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     float dist;
                     bool hit = false;
                     hit = Physics.PhysicsUlitities.RayTest(cameraComponent.Position, cameraComponent.Position + direction * 500, out dist, out skin, out pos, out nor);
-                    if (skin != null)
+                    if (skin != null && (GameObjectInstance)skin.ExternalData!=null)
                     {
                         if (editor.jiglibxSelection)
                         {
