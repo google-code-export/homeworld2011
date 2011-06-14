@@ -521,18 +521,21 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        InstancingMode2,
                                                                        data.EnabledMesh2,
                                                                        true),
-                        physicsComponentFactory.CreateSquareSkinComponent(data.EnabledPhysics, result,
-                        data.Elasticity,
-                        data.StaticRoughness,
-                        data.DynamicRoughness,
-                        data.World,
+                        physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics,
+                        result,
+                        data.Mass,
                         data.Lenght,
                         data.Height,
                         data.Width,
+                        data.Elasticity,
+                        data.StaticRoughness,
+                        data.DynamicRoughness,
+                        data.Immovable,
+                        data.World,
                         data.Translation,
-                        data.Yaw,
-                        data.Pitch,
-                        data.Roll));
+                        data.SkinYaw,
+                        data.SkinPitch,
+                        data.SkinRoll));
 
             return true;
         }

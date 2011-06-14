@@ -23,7 +23,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public MeshComponent mesh;
         public MeshComponent mesh2;
 
-        public SquareSkinComponent body;
+        public SquareBodyComponent body;
         int mercsInside = 0;
         /********************************************************************************/
 
@@ -31,7 +31,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(MeshComponent mesh, MeshComponent mesh2, SquareSkinComponent physcisComponent)
+        public void Init(MeshComponent mesh, MeshComponent mesh2, SquareBodyComponent physcisComponent)
         {
             this.mesh = mesh;
             this.mesh2 = mesh2;
@@ -117,6 +117,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinRoll = body.Roll;
             data.SkinYaw = body.Yaw;
             data.EnabledPhysics = body.Enabled;
+            data.Immovable = body.Immovable;
+            data.Mass = body.Mass;
             return data;
         }
         /********************************************************************************/
@@ -171,6 +173,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("EnabledMesh")]
         public bool EnabledMesh2 { get; set; }
 
+
+
+
+        [CategoryAttribute("Physics")]
+        public float Mass { get; set; }
+
+        [CategoryAttribute("Physics")]
+        public bool Immovable { get; set; }
 
 
 
