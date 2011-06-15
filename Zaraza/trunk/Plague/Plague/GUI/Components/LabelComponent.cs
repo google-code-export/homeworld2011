@@ -42,14 +42,27 @@ namespace PlagueEngine.GUI.Components
             gui.Manager.Screen.Desktop.Children.Add(this.Control);
         }
         /****************************************************************************/
-        
+
+        /****************************************************************************/
+        /// Unregister
+        /****************************************************************************/
+        public void Unregister()
+        {
+            gui.Manager.Screen.Desktop.Children.Remove(this.Control);
+
+        }
+        /****************************************************************************/
+
 
         /****************************************************************************/
         /// Release Me 
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            Control.Parent.Children.Remove(Control);
+            if (Control.Parent != null)
+            {
+                Control.Parent.Children.Remove(Control);
+            }
             base.ReleaseMe();
         }
         /****************************************************************************/

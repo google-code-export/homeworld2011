@@ -28,6 +28,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
 
+        FrontEndComponent frame;
 
         /***********************************/
         /// window
@@ -96,13 +97,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /***********************************/
         /// credits window
         /***********************************/
-        private WindowComponent creditswindow;
         private LabelComponent creditslabel;
         private int creditswindowx { get; set; }
         private int creditswindowy { get; set; }
         private int creditswindowwidth { get; set; }
         private int creditswindowheight { get; set; }
         private String creditswindowtext { get; set; }
+        private int creditswindowtextx { get; set; }
+        private int creditswindowtexty { get; set; }
         private bool creditswindowregistered { get; set; }
         /***********************************/
 
@@ -111,13 +113,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /***********************************/
         /// options window
         /***********************************/
-        private WindowComponent optionswindow;
         private LabelComponent optionslabel;
         private int optionswindowx { get; set; }
         private int optionswindowy { get; set; }
         private int optionswindowwidth { get; set; }
         private int optionswindowheight { get; set; }
         private String optionswindowtext { get; set; }
+        private int optionswindowtextx { get; set; }
+        private int optionswindowtexty { get; set; }
         private bool optionswindowregistered { get; set; }
         /***********************************/
 
@@ -133,11 +136,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         ButtonComponent credits, String creditstext, String creditstag, int creditsx, int creditsy, int creditswidth, int creditsheight,
                         ButtonComponent exit, String exittext, String exittag, int exitx, int exity, int exitwidth, int exitheight,
                         FrontEndComponent window, int windowx, int windowy, int windowheight, int windowwidth,
-                        WindowComponent creditswindow, LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext,
-                        WindowComponent optionswindow, LabelComponent optionslabel, int optionswindowx, int optionswindowy, int optionswindowwidth, int optionswindowheight, String optionswindowtext)
+                        LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext,int creditswindowtextx,int creditswindowtexty,
+                        LabelComponent optionslabel, int optionswindowx, int optionswindowy, int optionswindowwidth, int optionswindowheight, String optionswindowtext, int optionswindowtextx, int optionswindowtexty,
+                        FrontEndComponent frame)
    {
-
-
+       
+            this.frame = frame;
+            this.frame.Draw = OnDraw;
            this.window = window;
            this.windowx = windowx;
            this.windowy = windowy;
@@ -207,32 +212,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
 
-          this.creditswindow = creditswindow;
           this.creditslabel=creditslabel;
           this.creditswindowx=creditswindowx;
           this.creditswindowy =creditswindowy;
           this.creditswindowwidth=creditswindowwidth;
           this.creditswindowheight =creditswindowheight;
           this.creditswindowtext =creditswindowtext;
-          this.creditswindow.AddControl(creditslabel.Control);
-          this.creditswindow.Unregister();
-
+          this.creditswindowtextx=creditswindowtextx;
+          this.creditswindowtexty = creditswindowtexty;
           this.creditswindowregistered = false;
 
+          
 
-
-          this.optionswindow = optionswindow;
           this.optionslabel = optionslabel;
           this.optionswindowx = optionswindowx;
           this.optionswindowy = optionswindowy;
           this.optionswindowwidth = optionswindowwidth;
           this.optionswindowheight = optionswindowheight;
           this.optionswindowtext = optionswindowtext;
-          this.optionswindow.AddControl(optionslabel.Control);
-          this.optionswindow.Unregister();
-
+          this.optionswindowtextx = optionswindowtextx;
+          this.optionswindowtexty = optionswindowtexty;
           this.optionswindowregistered = false;
-
         }
         /****************************************************************************/
 
@@ -272,18 +272,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void creditsClick(object sender, EventArgs e)
         {
-            this.optionswindow.Unregister();
+            this.optionslabel.Unregister();
             optionswindowregistered = false;
 
             if (!creditswindowregistered)
             {
                 
-                this.creditswindow.Register();
+                this.creditslabel.Register();
             }
             if (creditswindowregistered)
             {
 
-                this.creditswindow.Unregister();
+                this.creditslabel.Unregister();
             }
 
 
@@ -296,18 +296,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void optionsClick(object sender, EventArgs e)
         {
-            this.creditswindow.Unregister();
+            this.creditslabel.Unregister();
             creditswindowregistered = false;
 
             if (!optionswindowregistered)
             {
 
-                this.optionswindow.Register();
+                this.optionslabel.Register();
             }
             if (optionswindowregistered)
             {
 
-                this.optionswindow.Unregister();
+                this.optionslabel.Unregister();
             }
 
 
@@ -322,6 +322,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
             spriteBatch.Draw(window.Texture, new Rectangle(windowx, windowy, windowwidth, windowheight), Color.White);
+
+            if (optionswindowregistered)
+            {
+                spriteBatch.Draw(frame.Texture, new Rectangle(optionswindowx, optionswindowy, optionswindowwidth, optionswindowheight), Color.White);
+            }
+
+            if (creditswindowregistered)
+            {
+                spriteBatch.Draw(frame.Texture, new Rectangle(creditswindowx, creditswindowy, creditswindowwidth, creditswindowheight), Color.White);
+            }
         }
 
 
@@ -336,11 +346,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             exit.ReleaseMe();
             window.ReleaseMe();
 
-            creditswindow.ReleaseMe();
             creditslabel.ReleaseMe();
 
-            optionswindow.ReleaseMe();
             optionslabel.ReleaseMe();
+
+            frame.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -401,14 +411,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.creditswindowwidth = creditswindowwidth;
             data.creditswindowheight = creditswindowheight;
             data.creditswindowtext = creditswindowtext;
-
+            data.creditswindowtextx = creditswindowtextx;
+            data.creditswindowtexty = creditswindowtexty;
 
             data.optionswindowx = optionswindowx;
             data.optionswindowy = optionswindowy;
             data.optionswindowwidth = optionswindowwidth;
             data.optionswindowheight = optionswindowheight;
             data.optionswindowtext = optionswindowtext;
-
+            data.optionswindowtextx = optionswindowtextx;
+            data.optionswindowtexty = optionswindowtexty;
 
             return data;
         }
@@ -551,9 +563,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("window credits")]
         public String creditswindowtext { get; set; }
 
+        [CategoryAttribute("window credits")]
+        public int creditswindowtextx { get; set; }
 
-
-
+        [CategoryAttribute("window credits")]
+        public int creditswindowtexty { get; set; }
 
 
         [CategoryAttribute("window options")]
@@ -573,6 +587,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         [CategoryAttribute("window options")]
         public String optionswindowtext { get; set; }
+
+        [CategoryAttribute("window options")]
+        public int optionswindowtextx { get; set; }
+
+        [CategoryAttribute("window options")]
+        public int optionswindowtexty { get; set; }
 
     }
     /********************************************************************************/
