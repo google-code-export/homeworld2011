@@ -80,6 +80,7 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.button4 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -376,6 +377,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.button4);
             this.panel4.Controls.Add(this.buttonSaveAs);
             this.panel4.Controls.Add(this.buttonLoad);
             this.panel4.Controls.Add(this.buttonDelete);
@@ -389,9 +391,9 @@
             // 
             // buttonSaveAs
             // 
-            this.buttonSaveAs.Location = new System.Drawing.Point(227, 3);
+            this.buttonSaveAs.Location = new System.Drawing.Point(206, 3);
             this.buttonSaveAs.Name = "buttonSaveAs";
-            this.buttonSaveAs.Size = new System.Drawing.Size(61, 23);
+            this.buttonSaveAs.Size = new System.Drawing.Size(56, 23);
             this.buttonSaveAs.TabIndex = 5;
             this.buttonSaveAs.Text = "Save as";
             this.buttonSaveAs.UseVisualStyleBackColor = true;
@@ -399,9 +401,9 @@
             // 
             // buttonLoad
             // 
-            this.buttonLoad.Location = new System.Drawing.Point(80, 3);
+            this.buttonLoad.Location = new System.Drawing.Point(72, 3);
             this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(68, 23);
+            this.buttonLoad.Size = new System.Drawing.Size(59, 23);
             this.buttonLoad.TabIndex = 1;
             this.buttonLoad.Text = "Load";
             this.buttonLoad.UseVisualStyleBackColor = true;
@@ -409,9 +411,9 @@
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(294, 3);
+            this.buttonDelete.Location = new System.Drawing.Point(265, 3);
             this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(61, 23);
+            this.buttonDelete.Size = new System.Drawing.Size(54, 23);
             this.buttonDelete.TabIndex = 4;
             this.buttonDelete.Text = "Delete";
             this.buttonDelete.UseVisualStyleBackColor = true;
@@ -419,9 +421,9 @@
             // 
             // buttonNew
             // 
-            this.buttonNew.Location = new System.Drawing.Point(13, 3);
+            this.buttonNew.Location = new System.Drawing.Point(9, 3);
             this.buttonNew.Name = "buttonNew";
-            this.buttonNew.Size = new System.Drawing.Size(61, 23);
+            this.buttonNew.Size = new System.Drawing.Size(58, 23);
             this.buttonNew.TabIndex = 2;
             this.buttonNew.Text = "New";
             this.buttonNew.UseVisualStyleBackColor = true;
@@ -429,7 +431,7 @@
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(154, 3);
+            this.buttonSave.Location = new System.Drawing.Point(134, 3);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(67, 23);
             this.buttonSave.TabIndex = 3;
@@ -682,6 +684,16 @@
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(324, 3);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(69, 23);
+            this.button4.TabIndex = 6;
+            this.button4.Text = "Reload";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // GameObjectEditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -776,6 +788,7 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button4;
 
 
     }
