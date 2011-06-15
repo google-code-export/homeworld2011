@@ -539,11 +539,11 @@ namespace PlagueEngine.Tools
             gameObjectClassNames.Add(Checker);
 
 
-            //gameObjectsClassName CheckerBox = new gameObjectsClassName();
-            //CheckerBox.className = "CheckerBox";
-            //CheckerBox.ClassType = typeof(CheckerBox);
-            //CheckerBox.dataClassType = typeof(CheckerBoxData);
-            //gameObjectClassNames.Add(CheckerBox);
+            gameObjectsClassName MainMenu = new gameObjectsClassName();
+            MainMenu.className = "MainMenu";
+            MainMenu.ClassType = typeof(PlagueEngine.LowLevelGameFlow.GameObjects.MainMenu);
+            MainMenu.dataClassType = typeof(MainMenuData);
+            gameObjectClassNames.Add(MainMenu);
         }
         /********************************************************************************/
 
@@ -1151,7 +1151,7 @@ namespace PlagueEngine.Tools
                     PropertyInfo propINFO = currentClassNameNew.dataClassType.GetProperty("definition");
                     propINFO.SetValue(this.currentObject, null, null);
 
-                    // TODO: wtf ?
+                  
                     this.ComboboxDefinitions.SelectedIndex = -1;//2x, tak musi byc
                     this.ComboboxDefinitions.SelectedIndex = -1;
                     currentDefinition = null;
