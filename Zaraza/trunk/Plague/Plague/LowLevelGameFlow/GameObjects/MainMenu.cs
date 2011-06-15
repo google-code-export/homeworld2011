@@ -8,6 +8,8 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.GUI.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PlagueEngine.HighLevelGameFlow;
+
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -24,7 +26,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
 
 
-
         /***********************************/
         /// window
         /***********************************/
@@ -37,7 +38,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /***********************************/
-        /// newGame
+        /// newGame button
         /***********************************/
         private ButtonComponent newGame;
 
@@ -47,10 +48,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int newGamey { get; set; }
         private int newGamewidth { get; set; }
         private int newGameheight { get; set; }
+        private string levelToLoad { get; set; }
         /***********************************/
 
         /***********************************/
-        /// options
+        /// options button
         /***********************************/
         private ButtonComponent options;
 
@@ -63,7 +65,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /***********************************/
 
         /***********************************/
-        /// credits
+        /// credits button
         /***********************************/
         private ButtonComponent credits;
 
@@ -76,7 +78,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /***********************************/
 
         /***********************************/
-        /// exit
+        /// exit button
         /***********************************/
         private ButtonComponent exit;
 
@@ -88,6 +90,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int exitheight { get; set; }
         /***********************************/
 
+        /***********************************/
+        /// credits window
+        /***********************************/
+        private WindowComponent creditswindow;
+        private LabelComponent creditslabel;
+        private int creditswindowx { get; set; }
+        private int creditswindowy { get; set; }
+        private int creditswindowwidth { get; set; }
+        private int creditswindowheight { get; set; }
+        private String creditswindowtext { get; set; }
+        private bool creditswindowregistered { get; set; }
+        /***********************************/
+
 
 
         /****************************************************************************/
@@ -95,12 +110,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(ButtonComponent newGame, String newGametext, String newGametag, int newGamex, int newGamey, int newGamewidth, int newGameheight,
+        public void Init(ButtonComponent newGame, String newGametext, String newGametag, int newGamex, int newGamey, int newGamewidth, int newGameheight,String levelToLoad,
                         ButtonComponent options, String optionstext, String optionstag, int optionsx, int optionsy, int optionswidth, int optionsheight,
                         ButtonComponent credits, String creditstext, String creditstag, int creditsx, int creditsy, int creditswidth, int creditsheight,
                         ButtonComponent exit, String exittext, String exittag, int exitx, int exity, int exitwidth, int exitheight,
-                        FrontEndComponent window, int windowx, int windowy, int windowheight, int windowwidth)
+                        FrontEndComponent window, int windowx, int windowy, int windowheight, int windowwidth,
+                        WindowComponent creditswindow, LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext)
        {
+
 
            this.window = window;
            this.windowx = windowx;
@@ -119,10 +136,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.newGamey = newGamey;
             this.newGamewidth = newGamewidth;
             this.newGameheight = newGameheight;
-
+            this.levelToLoad = levelToLoad;
             this.newGame.Register();
 
-
+            this.newGame.setDelegate(newGameClick);
 
 
             this.options = options;
@@ -149,7 +166,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.creditsheight = creditsheight;
 
             this.credits.Register();
-
+            this.credits.setDelegate(creditsClick);
 
 
 
@@ -165,13 +182,73 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.exit.Register();
 
+            this.exit.setDelegate(exitClick);
 
 
 
 
+
+          this.creditswindow = creditswindow;
+          this.creditslabel=creditslabel;
+          this.creditswindowx=creditswindowx;
+          this.creditswindowy =creditswindowy;
+          this.creditswindowwidth=creditswindowwidth;
+          this.creditswindowheight =creditswindowheight;
+          this.creditswindowtext =creditswindowtext;
+          this.creditswindow.AddControl(creditslabel.Control);
+          this.creditswindow.Unregister();
+
+          this.creditswindowregistered = false;
 
         }
         /****************************************************************************/
+
+
+
+
+
+        /****************************************************************************/
+        /// newGameClick
+        /****************************************************************************/
+        public void newGameClick(object sender, EventArgs e)
+        {
+            if (levelToLoad != String.Empty)
+            {
+                this.SendEvent(new ChangeLevelEvent(levelToLoad), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+               
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// exitClick
+        /****************************************************************************/
+        public void exitClick(object sender, EventArgs e)
+        {
+            
+            this.SendEvent(new ExitGameEvent(), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+               
+        }
+        /****************************************************************************/
+
+       
+
+        /****************************************************************************/
+        /// exitClick
+        /****************************************************************************/
+        public void creditsClick(object sender, EventArgs e)
+        {
+            if (!creditswindowregistered)
+            {
+                creditswindowregistered = true;
+                this.creditswindow.Register();
+            }
+            
+              
+        }
+        /****************************************************************************/
+
 
 
         /****************************************************************************/
@@ -193,6 +270,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             credits.ReleaseMe();
             exit.ReleaseMe();
             window.ReleaseMe();
+
+            creditswindow.ReleaseMe();
+            creditslabel.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -213,6 +293,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.newGamey = newGamey;
             data.newGamewidth = newGamewidth;
             data.newGameheight = newGameheight;
+            data.levelToLoad = levelToLoad;
+
 
             data.optionstext = optionstext;
             data.optionstag = optionstag;
@@ -244,6 +326,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.windowheight = windowheight;
             data.windowwidth = windowwidth;
 
+
+
+            data.creditswindowx = creditswindowx;
+            data.creditswindowy = creditswindowy;
+            data.creditswindowwidth = creditswindowwidth;
+            data.creditswindowheight = creditswindowheight;
+            data.creditswindowtext = creditswindowtext;
 
             return data;
         }
@@ -284,6 +373,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("new game button")]
         public int newGameheight { get; set; }
 
+        [CategoryAttribute("new game button")]
+        public String levelToLoad { get; set; }
+        
 
 
         [CategoryAttribute("options button")]
@@ -359,6 +451,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("window label")]
         public int windowheight { get; set; }
+
+
+
+
+
+
+        [CategoryAttribute("window credits")]
+        public int creditswindowx { get; set; }
+
+        [CategoryAttribute("window credits")]
+        public int creditswindowy { get; set; }
+
+        
+        [CategoryAttribute("window credits")]
+        public int creditswindowwidth { get; set; }
+        
+        [CategoryAttribute("window credits")]
+        public int creditswindowheight { get; set; }
+        
+        [CategoryAttribute("window credits")]
+        public String creditswindowtext { get; set; }
+        
+
 
     }
     /********************************************************************************/

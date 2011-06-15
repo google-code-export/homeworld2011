@@ -82,6 +82,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 game.RendererClock.Ratio *= ChangeSpeedEvent.Amount;
             }
             /*************************************/
+
+            /*************************************/
+            /// ExitGameEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(ExitGameEvent)))
+            {
+                game.Exit();
+            }
+            /*************************************/
         }
         /****************************************************************************/
 
