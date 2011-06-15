@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.HighLevelGameFlow;
 
+using System.ComponentModel.Design;
+using System.Drawing.Design;
+
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -105,6 +108,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
 
+        /***********************************/
+        /// options window
+        /***********************************/
+        private WindowComponent optionswindow;
+        private LabelComponent optionslabel;
+        private int optionswindowx { get; set; }
+        private int optionswindowy { get; set; }
+        private int optionswindowwidth { get; set; }
+        private int optionswindowheight { get; set; }
+        private String optionswindowtext { get; set; }
+        private bool optionswindowregistered { get; set; }
+        /***********************************/
+
+
+
         /****************************************************************************/
 
         /****************************************************************************/
@@ -115,8 +133,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         ButtonComponent credits, String creditstext, String creditstag, int creditsx, int creditsy, int creditswidth, int creditsheight,
                         ButtonComponent exit, String exittext, String exittag, int exitx, int exity, int exitwidth, int exitheight,
                         FrontEndComponent window, int windowx, int windowy, int windowheight, int windowwidth,
-                        WindowComponent creditswindow, LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext)
-       {
+                        WindowComponent creditswindow, LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext,
+                        WindowComponent optionswindow, LabelComponent optionslabel, int optionswindowx, int optionswindowy, int optionswindowwidth, int optionswindowheight, String optionswindowtext)
+   {
 
 
            this.window = window;
@@ -152,7 +171,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.optionsheight = optionsheight;
 
             this.options.Register();
-
+            this.options.setDelegate(optionsClick);
 
 
 
@@ -200,6 +219,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
           this.creditswindowregistered = false;
 
+
+
+          this.optionswindow = optionswindow;
+          this.optionslabel = optionslabel;
+          this.optionswindowx = optionswindowx;
+          this.optionswindowy = optionswindowy;
+          this.optionswindowwidth = optionswindowwidth;
+          this.optionswindowheight = optionswindowheight;
+          this.optionswindowtext = optionswindowtext;
+          this.optionswindow.AddControl(optionslabel.Control);
+          this.optionswindow.Unregister();
+
+          this.optionswindowregistered = false;
+
         }
         /****************************************************************************/
 
@@ -235,20 +268,52 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
        
 
         /****************************************************************************/
-        /// exitClick
+        /// creditsClick
         /****************************************************************************/
         public void creditsClick(object sender, EventArgs e)
         {
+            this.optionswindow.Unregister();
+            optionswindowregistered = false;
+
             if (!creditswindowregistered)
             {
-                creditswindowregistered = true;
+                
                 this.creditswindow.Register();
             }
-            
-              
+            if (creditswindowregistered)
+            {
+
+                this.creditswindow.Unregister();
+            }
+
+
+            creditswindowregistered = !creditswindowregistered;
         }
         /****************************************************************************/
 
+        /****************************************************************************/
+        /// optionsClick
+        /****************************************************************************/
+        public void optionsClick(object sender, EventArgs e)
+        {
+            this.creditswindow.Unregister();
+            creditswindowregistered = false;
+
+            if (!optionswindowregistered)
+            {
+
+                this.optionswindow.Register();
+            }
+            if (optionswindowregistered)
+            {
+
+                this.optionswindow.Unregister();
+            }
+
+
+            optionswindowregistered = !optionswindowregistered;
+        }
+        /****************************************************************************/
 
 
         /****************************************************************************/
@@ -273,6 +338,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             creditswindow.ReleaseMe();
             creditslabel.ReleaseMe();
+
+            optionswindow.ReleaseMe();
+            optionslabel.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -333,6 +401,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.creditswindowwidth = creditswindowwidth;
             data.creditswindowheight = creditswindowheight;
             data.creditswindowtext = creditswindowtext;
+
+
+            data.optionswindowx = optionswindowx;
+            data.optionswindowy = optionswindowy;
+            data.optionswindowwidth = optionswindowwidth;
+            data.optionswindowheight = optionswindowheight;
+            data.optionswindowtext = optionswindowtext;
+
 
             return data;
         }
@@ -469,11 +545,34 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         
         [CategoryAttribute("window credits")]
         public int creditswindowheight { get; set; }
-        
+
+
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         [CategoryAttribute("window credits")]
         public String creditswindowtext { get; set; }
-        
 
+
+
+
+
+
+        [CategoryAttribute("window options")]
+        public int optionswindowx { get; set; }
+
+        [CategoryAttribute("window options")]
+        public int optionswindowy { get; set; }
+
+
+        [CategoryAttribute("window options")]
+        public int optionswindowwidth { get; set; }
+
+        [CategoryAttribute("window options")]
+        public int optionswindowheight { get; set; }
+
+
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        [CategoryAttribute("window options")]
+        public String optionswindowtext { get; set; }
 
     }
     /********************************************************************************/
