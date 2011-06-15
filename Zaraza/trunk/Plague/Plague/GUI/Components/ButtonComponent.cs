@@ -49,9 +49,20 @@ namespace PlagueEngine.GUI.Components
         public override void Register()
         {
             gui.Manager.Screen.Desktop.Children.Add(this.Control);
+            
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Unregister
+        /****************************************************************************/
+        public  void Unregister()
+        {
+            gui.Manager.Screen.Desktop.Children.Remove(this.Control);
+
+        }
+        /****************************************************************************/
 
         /****************************************************************************/
         /// setDelegate

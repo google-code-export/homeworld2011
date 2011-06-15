@@ -1508,11 +1508,17 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateMainMenu(MainMenu result, MainMenuData data)
         {
-            result.Init(guiComponentsFactory.CreateButtonComponent(data.newGametext, data.newGametag, data.newGamex, data.newGamey, data.newGamewidth, data.newGameheight), data.newGametext, data.newGametag, data.newGamex, data.newGamey, data.newGamewidth, data.newGameheight,
+            if (data.creditswindowtext == String.Empty || data.creditswindowtext==null)
+            {
+                data.creditswindowtext = "<empty>";
+            }
+
+            result.Init(guiComponentsFactory.CreateButtonComponent(data.newGametext, data.newGametag, data.newGamex, data.newGamey, data.newGamewidth, data.newGameheight), data.newGametext, data.newGametag, data.newGamex, data.newGamey, data.newGamewidth, data.newGameheight, data.levelToLoad,
                 guiComponentsFactory.CreateButtonComponent(data.optionstext, data.optionstag, data.optionsx, data.optionsy, data.optionswidth, data.optionsheight), data.optionstext, data.optionstag, data.optionsx, data.optionsy, data.optionswidth, data.optionsheight,
                 guiComponentsFactory.CreateButtonComponent(data.creditstext, data.creditstag, data.creditsx, data.creditsy, data.creditswidth, data.creditsheight), data.creditstext, data.creditstag, data.creditsx, data.creditsy, data.creditswidth, data.creditsheight,
                 guiComponentsFactory.CreateButtonComponent(data.exittext, data.exittag, data.exitx, data.exity, data.exitwidth, data.exitheight), data.exittext, data.exittag, data.exitx, data.exity, data.exitwidth, data.exitheight,
-                        renderingComponentsFactory.CreateFrontEndComponent(result,"MainMenuWindow"),data.windowx,data.windowy,data.windowheight,data.windowwidth);
+                        renderingComponentsFactory.CreateFrontEndComponent(result, "MainMenuWindow"), data.windowx, data.windowy, data.windowheight, data.windowwidth,
+                        guiComponentsFactory.CreateWindowComponent("Credits", data.creditswindowx, data.creditswindowy, data.creditswindowwidth, data.creditswindowheight,false),guiComponentsFactory.CreateLabelComponent(data.creditswindowtext,10,35),data.creditswindowx, data.creditswindowy, data.creditswindowwidth, data.creditswindowheight, data.creditswindowtext);
 
             return true;
         }
