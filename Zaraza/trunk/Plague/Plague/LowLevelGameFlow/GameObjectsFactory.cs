@@ -1523,8 +1523,9 @@ namespace PlagueEngine.LowLevelGameFlow
                 guiComponentsFactory.CreateButtonComponent(data.creditstext, data.creditstag, data.creditsx, data.creditsy, data.creditswidth, data.creditsheight), data.creditstext, data.creditstag, data.creditsx, data.creditsy, data.creditswidth, data.creditsheight,
                 guiComponentsFactory.CreateButtonComponent(data.exittext, data.exittag, data.exitx, data.exity, data.exitwidth, data.exitheight), data.exittext, data.exittag, data.exitx, data.exity, data.exitwidth, data.exitheight,
                         renderingComponentsFactory.CreateFrontEndComponent(result, "MainMenuWindow"), data.windowx, data.windowy, data.windowheight, data.windowwidth,
-                        guiComponentsFactory.CreateWindowComponent("Credits", data.creditswindowx, data.creditswindowy, data.creditswindowwidth, data.creditswindowheight,false),guiComponentsFactory.CreateLabelComponent(data.creditswindowtext,10,35),data.creditswindowx, data.creditswindowy, data.creditswindowwidth, data.creditswindowheight, data.creditswindowtext,
-                        guiComponentsFactory.CreateWindowComponent("Options", data.optionswindowx, data.optionswindowy, data.optionswindowwidth, data.optionswindowheight, false), guiComponentsFactory.CreateLabelComponent(data.optionswindowtext, 10, 35), data.optionswindowx, data.optionswindowy, data.optionswindowwidth, data.optionswindowheight, data.optionswindowtext);
+                        guiComponentsFactory.CreateLabelComponent(data.creditswindowtext,data.creditswindowtextx,data.creditswindowtexty),data.creditswindowx, data.creditswindowy, data.creditswindowwidth, data.creditswindowheight, data.creditswindowtext,data.creditswindowtextx,data.creditswindowtexty,
+                        guiComponentsFactory.CreateLabelComponent(data.optionswindowtext,data.optionswindowtextx,data.optionswindowtexty), data.optionswindowx, data.optionswindowy, data.optionswindowwidth, data.optionswindowheight, data.optionswindowtext,data.optionswindowtextx,data.optionswindowtexty,
+                        renderingComponentsFactory.CreateFrontEndComponent(result,"MainMenuFrame"));
 
 
             return true;
