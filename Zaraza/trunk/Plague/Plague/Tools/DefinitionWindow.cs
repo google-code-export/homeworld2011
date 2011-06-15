@@ -118,6 +118,7 @@ namespace PlagueEngine.Tools
                     field.checkbox.Location = new Point(270 + (int)Math.Floor(i / 15.0f) * 300, 35 + 25 * (i%15));
                     field.checkbox.Checked = false;
                     field.checkbox.Size = new Size(20, 20);
+                    field.checkbox.Checked = true;
                     Controls.Add(field.label);
                     Controls.Add(field.checkbox);
                     Controls.Add(field.value);

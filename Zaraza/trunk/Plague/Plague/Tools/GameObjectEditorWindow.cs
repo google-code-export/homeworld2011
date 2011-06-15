@@ -1885,6 +1885,21 @@ namespace PlagueEngine.Tools
             renderer.distanceScale = (float)numericUpDown1.Value;
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            RestoreCamera();
+
+            string name = level.CurrentLevel;
+            level.Clear(true);
+            level.LoadLevel(name);
+            LoadAllObjectsId();
+            LoadIconsInfo();
+            LoadAllObjectsId();
+
+            setUpCameraButton();
+
+        }
+
 
 
 
