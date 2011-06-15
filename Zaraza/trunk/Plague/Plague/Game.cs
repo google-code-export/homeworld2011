@@ -121,7 +121,7 @@ namespace PlagueEngine
         {
 
             Renderer.InitHelpers();
-
+            InitGUI();
             Level.LoadLevel("Level1.lvl");
 
             //Głośność dla podkładu muzycznego powinna być relatywnie niska 
@@ -131,7 +131,7 @@ namespace PlagueEngine
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
 #endif
 
-            InitGUI();
+            
             Input.Enabled = true;
             //pf = new Pathfinder.Pathfinder(PhysicsManager,Renderer);
             //pf.Generate();
