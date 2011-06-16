@@ -814,7 +814,11 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                            data.Intensity,
                                                                            data.Enabled,
                                                                            data.DepthBias,
-                                                                           data.ShadowIntensity));
+                                                                           data.ShadowIntensity,
+                                                                           data.FogColor,
+                                                                           data.FogRange,
+                                                                           data.Fog,
+                                                                           data.Ambient));
 
             return true;
         }
@@ -1085,9 +1089,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /// CreateFlashlight
         /****************************************************************************/
         public bool CreateFlashlight(Flashlight result, FlashlightData data)
-        {
-            Matrix spotlighttrans = Matrix.CreateLookAt(new Vector3(-0.02f, -0.02f, 0.35f), new Vector3(-0.02f, -1, 0.35f), Vector3.Right);
-
+        {           
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                                                                        "Misc\\flashlight",
                                                                        "Misc\\flashlightdiff",
@@ -1097,31 +1099,32 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.EnabledMesh,
                                                                        false),
 
-                        physicsComponentFactory.CreateCylindricalBodyComponent(data.EnabledPhysics, result,
-                                                                               data.Mass,
-                                                                               1,
-                                                                               2,
-                                                                               data.Elasticity,
-                                                                               data.StaticRoughness,
-                                                                               data.DynamicRoughness,
-                                                                               data.Immovable,
-                                                                               data.World,
-                                                                               new Vector3(-0.15f, 0, 0),
-                                                                               0,
-                                                                               0,
-                                                                               90),
+                      physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                        data.Mass,
+                                                                        data.Lenght,
+                                                                        data.Height,
+                                                                        data.Width,
+                                                                        data.Elasticity,
+                                                                        data.StaticRoughness,
+                                                                        data.DynamicRoughness,
+                                                                        data.Immovable,
+                                                                        data.World,
+                                                                        data.Translation,
+                                                                        data.SkinYaw,
+                                                                        data.SkinPitch,
+                                                                        data.SkinRoll),
  
                         renderingComponentsFactory.CreateSpotLightComponent(result,
                                                                             data.Enabled,
                                                                             data.Color,
-                                                                            data.Specular,
+                                                                            data.SpecularEnabled,
                                                                             data.Intensity,
                                                                             data.Radius,
                                                                             data.NearPlane,
                                                                             data.FarPlane,
                                                                             data.LinearAttenuation,
                                                                             data.QuadraticAttenuation,
-                                                                            spotlighttrans,
+                                                                            Matrix.Identity,
                                                                             data.AttenuationTexture,
                                                                             data.ShadowsEnabled,
                                                                             data.DepthBias),
@@ -1154,7 +1157,15 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.ParticlesPerSecond,
                                                                         data.EmitterTranslation,
                                                                         data.World,
-                                                                        data.ParticlesEnabled));
+                                                                        data.ParticlesEnabled),
+                    data.DamageModulation,
+                    data.AccuracyModulation,
+                    data.RangeModulation,
+                    data.PenetrationModulation,
+                    data.RecoilModulation,
+                    data.StoppingPowerModulation,
+                    data.Genre);
+
             return true;
         }
         /****************************************************************************/
@@ -1430,7 +1441,8 @@ namespace PlagueEngine.LowLevelGameFlow
                     data.StoppingPowerModulation,
                     ammoClip,
                     String.IsNullOrEmpty(data.AmmunitionName) ? null : ammunition.AmmunitionData[ammunition.NameToID[data.AmmunitionName]],
-                    data.AmmoClipTranslation);
+                    data.AmmoClipTranslation,
+                    data.On);
 
             return true;
         }

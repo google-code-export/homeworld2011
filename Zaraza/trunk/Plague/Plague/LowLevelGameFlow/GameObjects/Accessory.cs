@@ -120,7 +120,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// On Attach
         /****************************************************************************/
-        public void OnAttach(Firearm firearm, Vector3 translation)
+        public virtual void OnAttach(Firearm firearm, Vector3 translation)
         {
             owner     = firearm;
             OwnerBone = -1;
@@ -198,6 +198,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Switch
+        /****************************************************************************/
+        public virtual void Switch(bool on)
+        { 
+        
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Get Data
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
@@ -237,6 +247,47 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.StoppingPowerModulation = StoppingPowerModulation;
 
             return data;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Data
+        /****************************************************************************/
+        public void GetData(AccessoryData data)
+        {
+            base.GetData(data);
+
+            data.Model = mesh.Model.Name;
+            data.Diffuse = mesh.Textures.Diffuse == null ? String.Empty : mesh.Textures.Diffuse.Name;
+            data.Specular = mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name;
+            data.Normals = mesh.Textures.Normals == null ? String.Empty : mesh.Textures.Normals.Name;
+
+            data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
+
+            data.Mass = body.Mass;
+            data.Elasticity = body.Elasticity;
+            data.StaticRoughness = body.StaticRoughness;
+            data.DynamicRoughness = body.DynamicRoughness;
+            data.Lenght = body.Length;
+            data.Width = body.Width;
+            data.Height = body.Height;
+            data.Immovable = body.Immovable;
+            data.Translation = body.SkinTranslation;
+            data.SkinPitch = body.Pitch;
+            data.SkinRoll = body.Roll;
+            data.SkinYaw = body.Yaw;
+            data.EnabledPhysics = body.Enabled;
+            data.EnabledMesh = mesh.Enabled;
+
+            data.Genre = Genre;
+
+            data.DamageModulation = DamageModulation;
+            data.AccuracyModulation = AccuracyModulation;
+            data.RangeModulation = RangeModulation;
+            data.PenetrationModulation = PenetrationModulation;
+            data.RecoilModulation = RecoilModulation;
+            data.StoppingPowerModulation = StoppingPowerModulation;
         }
         /****************************************************************************/
 

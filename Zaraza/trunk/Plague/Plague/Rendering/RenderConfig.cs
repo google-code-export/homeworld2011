@@ -27,6 +27,7 @@ namespace PlagueEngine.Rendering
         public bool FullScreen;   
         public bool Multisampling;
         public bool VSync;
+        public float Brightness;
         /****************************************************************************/
 
 
@@ -39,7 +40,8 @@ namespace PlagueEngine.Rendering
             Height          = 0;
             FullScreen      = false;
             Multisampling   = false;
-            VSync           = false;            
+            VSync           = false;
+            Brightness = 1.0f;
         }
         /****************************************************************************/
 
@@ -47,13 +49,14 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Constructor (2)
         /****************************************************************************/
-        public RenderConfig(int width,int height,bool fullScreen,bool multisampling,bool vSync) 
+        public RenderConfig(int width,int height,bool fullScreen,bool multisampling,bool vSync,float brightness) 
         {
             Width           = width;
             Height          = height;
             FullScreen      = fullScreen;
             Multisampling   = multisampling;
             VSync           = vSync;
+            Brightness = brightness;
         }
         /****************************************************************************/
 

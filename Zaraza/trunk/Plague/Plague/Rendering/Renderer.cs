@@ -60,18 +60,7 @@ namespace PlagueEngine.Rendering
         /**********************/
         private  CameraComponent   currentCamera = null;
         /**********************/
-        
-
-        /**********************/
-        // Specials
-        /**********************/
-        private  Color   clearColor = Color.FromNonPremultiplied(new Vector4(0.015f,0.015f,0.015f,1));
-        private  Vector3 ambient    = new Vector3(0.15f, 0.15f, 0.15f);
-        private  Vector3 fogColor   = new Vector3(0.0f, 0.0f, 0.5f);
-        private  Vector2 fogRange   = new Vector2(0.995f, 1.0f);
-        private  bool    fogEnabled = true;
-        /**********************/
-
+                       
 
         /**********************/
         /// Rect
@@ -93,6 +82,8 @@ namespace PlagueEngine.Rendering
         private  SpriteBatch          spriteBatch           = null;        
         internal List<FrontEndComponent> frontEndComponents = new List<FrontEndComponent>();
         internal Dictionary<String, SpriteFont> fonts       = new Dictionary<String, SpriteFont>();
+        private Effect colorCorrection = null;        
+        private float brightness = 1.0f;
         /**********************/
 
 
@@ -124,7 +115,7 @@ namespace PlagueEngine.Rendering
         /**********************/
         /// SSAO
         /**********************/
-        private Effect         ssaoEffect     = null;
+        private Effect         ssaoEffect     = null;        
         private Effect         ssaoBlurEffect = null;
         private Texture2D      ditherTexture  = null;
         public  float          sampleRadius   = 0.00005f;
@@ -146,7 +137,19 @@ namespace PlagueEngine.Rendering
         /**********************/
                 
         /****************************************************************************/
-            
+
+        public float Brightness
+        {
+            get { return brightness; }
+            set
+            {
+                brightness = value;
+                if (colorCorrection != null)
+                {
+                    colorCorrection.Parameters["Brightness"].SetValue(brightness);
+                }
+            }
+        }
 
 
         /****************************************************************************/
@@ -183,8 +186,6 @@ namespace PlagueEngine.Rendering
             spriteBatch = new SpriteBatch(Device);
 
             ExtendedMouseMovementState.Display = graphics.GraphicsDevice.DisplayMode;            
-
-            fogColor = clearColor.ToVector3();
 
         }
         /****************************************************************************/
@@ -255,11 +256,14 @@ namespace PlagueEngine.Rendering
                                         Device.DisplayMode.Height,
                                         graphics.IsFullScreen,
                                         graphics.PreferMultiSampling,
-                                        graphics.SynchronizeWithVerticalRetrace);
+                                        graphics.SynchronizeWithVerticalRetrace,
+                                        brightness);
             }
             
             set
             {
+                brightness = value.Brightness;
+
                 graphics.PreferredDepthStencilFormat = depthFormat;
                 graphics.PreferredBackBufferFormat = surfaceFormat;
 
@@ -381,12 +385,12 @@ namespace PlagueEngine.Rendering
             else Device.SetRenderTarget(null);
 
             Device.SetRenderTarget(null);
-            //Device.SetRenderTarget(test);
-            
-            composition.Parameters["Ambient"].SetValue(ambient);
-            composition.Parameters["FogEnabled"].SetValue(fogEnabled);
-            composition.Parameters["FogColor"].SetValue(fogColor);
-            composition.Parameters["FogRange"].SetValue(fogRange);
+            Device.SetRenderTarget(test);
+
+            composition.Parameters["Ambient"].SetValue(lightsManager.sunlight.Ambient);
+            composition.Parameters["FogEnabled"].SetValue(lightsManager.sunlight.Fog);
+            composition.Parameters["FogColor"].SetValue(lightsManager.sunlight.FogColor);
+            composition.Parameters["FogRange"].SetValue(lightsManager.sunlight.FogRange);
             composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);            
 
             composition.Techniques[0].Passes[0].Apply();
@@ -402,7 +406,10 @@ namespace PlagueEngine.Rendering
             DrawRect();
 
 
-            //Device.SetRenderTarget(null);
+            Device.SetRenderTarget(null);
+            colorCorrection.Parameters["Texture"].SetValue(test);
+            colorCorrection.Techniques[0].Passes[0].Apply();
+            fullScreenQuad.Draw();
 
             //debugEffect.Parameters["Texture"].SetValue((preRender[0] as WaterSurfaceComponent).reflectionMap);
             //debugEffect.Techniques[0].Passes[0].Apply();
@@ -550,11 +557,11 @@ namespace PlagueEngine.Rendering
 
             Device.SetRenderTarget(renderTarget);
 
-            composition.Parameters["Ambient"].SetValue(ambient);
-            composition.Parameters["FogEnabled"].SetValue(fogEnabled);
-            composition.Parameters["FogColor"].SetValue(fogColor);
-            composition.Parameters["FogRange"].SetValue(fogRange);
-            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
+            composition.Parameters["Ambient"].SetValue(lightsManager.sunlight.Ambient);
+            composition.Parameters["FogEnabled"].SetValue(lightsManager.sunlight.Fog);
+            composition.Parameters["FogColor"].SetValue(lightsManager.sunlight.FogColor);
+            composition.Parameters["FogRange"].SetValue(lightsManager.sunlight.FogRange);
+            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);  
 
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
@@ -728,24 +735,6 @@ namespace PlagueEngine.Rendering
 
 
         /****************************************************************************/
-        /// Clear Color
-        /****************************************************************************/
-        public Color ClearColor
-        {
-            get
-            {
-                return clearColor;    
-            }
-
-            set
-            {
-                clearColor = value;
-            }
-        }
-        /****************************************************************************/
-        
-
-        /****************************************************************************/
         /// Release Renderable Component
         /****************************************************************************/
         public void ReleaseRenderableComponent(RenderableComponent component)
@@ -808,6 +797,7 @@ namespace PlagueEngine.Rendering
             ssaoEffect       = contentManager.LoadEffect("SSAO");
             ssaoBlurEffect   = contentManager.LoadEffect("GaussianBlur15");
             rectEffect       = contentManager.LoadEffect("SSLineEffect");
+            colorCorrection  = contentManager.LoadEffect("ColorCorrection");
                         
             composition.Parameters["GBufferColor"].SetValue(color);
             composition.Parameters["GBufferDepth"].SetValue(depth);
@@ -816,6 +806,8 @@ namespace PlagueEngine.Rendering
             composition.Parameters["HalfPixel"].SetValue(HalfPixel);
                         
             debugEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
+            colorCorrection.Parameters["HalfPixel"].SetValue(HalfPixel);
+            colorCorrection.Parameters["Brightness"].SetValue(brightness);
                        
             ditherTexture = contentManager.LoadTexture2D("RandomNormals");            
 

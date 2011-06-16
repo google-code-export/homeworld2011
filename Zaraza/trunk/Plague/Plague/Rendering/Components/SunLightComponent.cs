@@ -37,7 +37,11 @@ namespace PlagueEngine.Rendering.Components
                                  float              intensity,
                                  bool               enabled,
                                  float              depthBias,
-                                 float              shadowIntensity)
+                                 float              shadowIntensity,
+                                 Vector3 fogColor,
+                                 Vector2 fogRange,
+                                 bool fog,
+                                 Vector3 ambient)
             : base(gameObject)
         {
             this.gameObject     = gameObject;
@@ -47,6 +51,11 @@ namespace PlagueEngine.Rendering.Components
             Intensity           = intensity;
             DepthBias           = depthBias;
             ShadowIntensity     = shadowIntensity;
+
+            FogColor = fogColor;
+            FogRange = fogRange;
+            Fog = fog;
+            Ambient = ambient;
 
             renderer.lightsManager.sunlight = this;
         }
@@ -72,6 +81,12 @@ namespace PlagueEngine.Rendering.Components
         public float   Intensity     { get; set; }
         public float   DepthBias     { get; set; }
         public float   ShadowIntensity { get; set; }
+
+        public bool    Fog      { get; private set; }
+        public Vector3 FogColor { get; private set; }
+        public Vector2 FogRange { get; private set; }
+        public Vector3 Ambient  { get; private set; }        
+
 
         public Vector3 Direction     
         { 
