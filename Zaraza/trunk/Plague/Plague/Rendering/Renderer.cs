@@ -144,8 +144,7 @@ namespace PlagueEngine.Rendering
         public List<MeshComponent> meshes = new List<MeshComponent>();
         public List<SkinnedMeshComponent> skinnedMeshes = new List<SkinnedMeshComponent>();
         /**********************/
-
-
+                
         /****************************************************************************/
             
 
@@ -388,7 +387,7 @@ namespace PlagueEngine.Rendering
             composition.Parameters["FogEnabled"].SetValue(fogEnabled);
             composition.Parameters["FogColor"].SetValue(fogColor);
             composition.Parameters["FogRange"].SetValue(fogRange);
-            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
+            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);            
 
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();

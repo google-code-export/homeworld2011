@@ -132,8 +132,26 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private bool[]   AmmoSlotsLoad      = new bool[4];
         private bool[]   AmmoSlotsLoadOne   = new bool[4];
         private bool     AmmoUnloadOne      = false;
-        /*****************/        
+        /*****************/
 
+
+        /*****************/
+        /// Item Desc
+        /*****************/
+        private bool           ItemDesc      = false;
+        private StorableObject DescribedItem = null;
+        private bool           ItemDescExit  = false;
+        /*****************/
+
+
+        /*****************/
+        /// Firearm
+        /*****************/
+        private bool    FirearmWindow     = false;
+        private Firearm CurrentFirearm    = null;
+        private bool    FirearmWindowExit = false;
+        /*****************/        
+        
 
         private StorableObject pickedItem     = null;
         private Slot      pickedItemSlot = Slot.Empty;
@@ -141,8 +159,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int       newPickedItemOrientation = 1;
         private int       oldPickedItemOrientation = 1;
         private bool      pickedFromMerc2 = false;
+        private int       pickedFromSlot = 0;
 
         private bool leftControl = false;
+
+        private AmmunitionInfo ammunitionInfo = null;
+
+        private bool highlights = false;
         /****************************************************************************/
 
 
@@ -184,6 +207,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Vector2 AmmoSlotsIconPos             = new Vector2(455, 480);
         private Vector2 BulletIconPos                = new Vector2(563, 354);
 
+        private Vector2 DescribedItemIconPos  = new Vector2(500, 342);
+        private Vector2 ItemDescExitButtonPos = new Vector2(420, 310);
+
+        private Vector2 FirearmIconPos         = new Vector2(440, 345);
+        private Vector2 FirearmAmmoClipIconPos = new Vector2(500, 340);
+        private Vector2 AccessoriesIconPos     = new Vector2(580, 340);
+        private Vector2 FirearmExitButtonPos   = new Vector2(420, 310);
+
         private const int    dumpCapacity     = 200;
         private const String defaultDumpTitle = "Dump";
         /****************************************************************************/
@@ -213,7 +244,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mouse.Modal    = true;
             keyboard.Modal = true;
 
-            keyboard.SubscibeKeys   (OnKey, Keys.Escape,Keys.Space,Keys.E,Keys.Tab,Keys.D);
+            keyboard.SubscibeKeys   (OnKey, Keys.Escape,Keys.Space,Keys.E,Keys.Tab,Keys.D,Keys.F);
             keyboard.SubscibeKeys   (delegate(Keys key, ExtendedKeyState state) { leftControl = state.IsDown(); }, Keys.LeftControl);
 
             mouse.SubscribeKeys     (OnMouseKey, MouseKeyAction.LeftClick,MouseKeyAction.RightClick);
@@ -378,11 +409,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (pair.Value.Orientation > 0)
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)), rect, Color.White);
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)), rect, CheckAmmunitionInfo(pair.Key) ? Color.White : Color.Black);
                         }
                         else
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, CheckAmmunitionInfo(pair.Key) ? Color.White : Color.Black, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
                         }
 
                         if (diff2 <= 0)
@@ -535,11 +566,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (pair.Value.Orientation > 0)
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos2 + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2 + diff)), rect, Color.White);
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos2 + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2 + diff)), rect, CheckAmmunitionInfo(pair.Key) ? Color.White : Color.Black);
                         }
                         else
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos2 + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2 + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + SlotsStartPos2 + new Vector2(32 * (itemSlot % 11), 32 * (y - scrollCurrentOffset2 + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, CheckAmmunitionInfo(pair.Key) ? Color.White : Color.Black, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
                         }
                         
                         if (diff2 <= 0)
@@ -665,11 +696,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (pair.Value.Orientation > 0)
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset + diff)), rect, Color.White);
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset + diff)), rect, CheckAmmunitionInfo(pair.Key) ? Color.White : Color.Black);
                         }
                         else
                         {
-                            spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, Color.White, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + DumpSlotsStartPos + new Vector2(32 * (itemSlot % 11), 32 * (y - dumpScrollCurrentOffset + diff)) + new Vector2(pair.Key.SlotsIcon.Height, 0), rect, CheckAmmunitionInfo(pair.Key) ? Color.White : Color.Black, MathHelper.PiOver2, new Vector2(0, 0), 1, SpriteEffects.None, 0);
                         }
 
                         if (diff2 <= 0)
@@ -953,40 +984,168 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 currenItem = mercenary.CurrentObject;
                 if (currenItem != null)
                 {
-                    spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.Icon, Color.White);
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos, currenItem.Icon, CheckAmmunitionInfo(currenItem) ? Color.White : Color.Black);
                     DrawValue(spriteBatch, currenItem, localPosition + CurrItemIconPos + new Vector2(50, 50));
                 }
                 // Weapon
                 weapon = mercenary.Weapon;
-                if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, weapon.Icon, Color.White);
+                if (weapon != null)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos, weapon.Icon, CheckAmmunitionInfo(weapon) ? Color.White : Color.Black);
+                    if (weapon.AmmoClip != null) DrawValue(spriteBatch, weapon.AmmoClip, localPosition + WeaponIconPos + new Vector2(50, 50));
+                }
                 // Side Arm
                 weapon = mercenary.SideArm;
-                if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos, weapon.Icon, Color.White);
-
+                if (weapon != null)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos, weapon.Icon, CheckAmmunitionInfo(weapon) ? Color.White : Color.Black);
+                    if (weapon.AmmoClip != null) DrawValue(spriteBatch, weapon.AmmoClip, localPosition + SideArmIconPos + new Vector2(50, 50));
+                }
                 if (mercenary2 != null)
                 {
                     // Current Item
                     currenItem = mercenary2.CurrentObject;
                     if (currenItem != null)
                     {
-                        spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, Color.White);
+                        spriteBatch.Draw(frontEnd.Texture, localPosition + CurrItemIconPos2, currenItem.Icon, CheckAmmunitionInfo(currenItem) ? Color.White : Color.Black);
                         DrawValue(spriteBatch, currenItem, localPosition + CurrItemIconPos2 + new Vector2(50, 50));
                     }
                     // Weapon
                     weapon = mercenary2.Weapon;
-                    if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, weapon.Icon, Color.White);
+                    if (weapon != null)
+                    {
+                        spriteBatch.Draw(frontEnd.Texture, localPosition + WeaponIconPos2, weapon.Icon, CheckAmmunitionInfo(weapon) ? Color.White : Color.Black);
+                        if (weapon.AmmoClip != null) DrawValue(spriteBatch, weapon.AmmoClip, localPosition + WeaponIconPos2 + new Vector2(50, 50));
+                    }
                     // Side Arm
                     weapon = mercenary2.SideArm;
-                    if (weapon != null) spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos2, weapon.Icon, Color.White);
+                    if (weapon != null)
+                    {
+                        spriteBatch.Draw(frontEnd.Texture, localPosition + SideArmIconPos2, weapon.Icon, CheckAmmunitionInfo(weapon) ? Color.White : Color.Black);
+                        if (weapon.AmmoClip != null) DrawValue(spriteBatch, weapon.AmmoClip, localPosition + SideArmIconPos2 + new Vector2(50, 50));
+                    }
                 }
                 /***********************/
                 #endregion
                 /***********************/                
             /***********************/
             #endregion
-            /***********************/                      
+            /***********************/                                          
 
-            
+
+            /***********************/
+            #region Draw Description
+            /***********************/
+            if (ItemDesc)
+            {
+                // Background
+                spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(420, 310), new Rectangle(840, 0, 420, 310), Color.White);
+                // Exit Button
+                spriteBatch.Draw(frontEnd.Texture, localPosition + ItemDescExitButtonPos, (ItemDescExit ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
+                // Draw Item                
+                spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(595,345), DescribedItem.Icon, Color.White);
+                spriteBatch.DrawString(AmmoFont, DescribedItem.Name, localPosition + new Vector2(620 - AmmoFont.MeasureString(DescribedItem.Name).X / 2, 310), Color.LightGray);
+                // Draw Description
+                if (!String.IsNullOrEmpty(DescribedItem.Description))
+                {
+                    spriteBatch.DrawString(AmmoFont, DescribedItem.Description, localPosition + new Vector2(430, 440), Color.LightGray);
+                }
+                else
+                {
+                    spriteBatch.DrawString(AmmoFont, "...", localPosition + new Vector2(430, 440), Color.LightGray);
+                }
+            }
+            /***********************/
+            #endregion
+            /***********************/
+
+
+            /***********************/
+            #region Firearm
+            /***********************/
+            if (FirearmWindow)
+            {
+                // Background
+                spriteBatch.Draw(frontEnd.Texture, localPosition + new Vector2(420, 310), new Rectangle(840, 0, 420, 310), Color.White);
+                // Exit Button
+                spriteBatch.Draw(frontEnd.Texture, localPosition + FirearmExitButtonPos, (FirearmWindowExit ? new Rectangle(1260, 14, 15, 14) : new Rectangle(1260, 0, 15, 14)), Color.White);
+                // Draw Item                
+                spriteBatch.Draw(frontEnd.Texture, localPosition + FirearmIconPos, CurrentFirearm.Icon, Color.White);
+                spriteBatch.DrawString(AmmoFont, CurrentFirearm.Name, localPosition + new Vector2(620 - AmmoFont.MeasureString(CurrentFirearm.Name).X / 2, 310), Color.LightGray);
+                // Draw Slots Background
+                if (pickedItem != null)
+                {
+                    if (mousePos.X > FirearmAmmoClipIconPos.X - pickedItemOffset.X &&
+                        mousePos.X < FirearmAmmoClipIconPos.X - pickedItemOffset.X + 50 &&
+                        mousePos.Y > FirearmAmmoClipIconPos.Y - pickedItemOffset.Y &&
+                        mousePos.Y < FirearmAmmoClipIconPos.Y - pickedItemOffset.Y + 50)
+                    {
+                        if (!CheckCompability(pickedItem as AmmoClip))
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + FirearmAmmoClipIconPos, new Rectangle(1450, 0, 50, 50), Color.White);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(frontEnd.Texture, localPosition + FirearmAmmoClipIconPos, new Rectangle(1400, 0, 50, 50), Color.White);
+                        }
+                    }                    
+                }                
+                // Draw Ammo Clip
+                spriteBatch.Draw(frontEnd.Texture, localPosition + FirearmAmmoClipIconPos + new Vector2(-12,-4), new Rectangle(1694,310,75,80) ,Color.White);
+                spriteBatch.DrawString(AmmoFont, "Ammo", localPosition + FirearmAmmoClipIconPos + new Vector2(25 - AmmoFont.MeasureString("Ammo").X / 2, 51), Color.LightGray);
+                if (CurrentFirearm.AmmoClip != null)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + FirearmAmmoClipIconPos, CurrentFirearm.AmmoClip.Icon, Color.White);
+                    DrawValue(spriteBatch, CurrentFirearm.AmmoClip, localPosition + FirearmAmmoClipIconPos + new Vector2(50,50));
+                }
+                // Draw Accessories Bg
+                if (pickedItem != null)
+                {
+                    for (int i = 0; i < CurrentFirearm.Accessories.Length; i++)
+                    {
+                        if (mousePos.X > AccessoriesIconPos.X - pickedItemOffset.X + (80 * i) &&
+                            mousePos.X < AccessoriesIconPos.X - pickedItemOffset.X + 50 + (80 * i) &&
+                            mousePos.Y > AccessoriesIconPos.Y - pickedItemOffset.Y &&
+                            mousePos.Y < AccessoriesIconPos.Y - pickedItemOffset.Y + 50)
+                        {
+                            if (!CheckAccessoryCompability(pickedItem as Accessory, i))
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + AccessoriesIconPos + new Vector2(80 * i, 0), new Rectangle(1450, 0, 50, 50), Color.White);
+                            }
+                            else
+                            {
+                                spriteBatch.Draw(frontEnd.Texture, localPosition + AccessoriesIconPos + new Vector2(80 * i, 0), new Rectangle(1400, 0, 50, 50), Color.White);
+                            }
+                        }
+                    }
+                }
+                // Draw Accessories
+                for(int i = 0; i < CurrentFirearm.Accessories.Length; i++)
+                {
+                    spriteBatch.Draw(frontEnd.Texture, localPosition + AccessoriesIconPos + new Vector2(-12 + 80 * i,-4), new Rectangle(1694, 310, 75, 80), Color.White);
+                    spriteBatch.DrawString(AmmoFont, CurrentFirearm.Accessories[i].Genre, localPosition + AccessoriesIconPos + new Vector2(25 - (AmmoFont.MeasureString(CurrentFirearm.Accessories[i].Genre).X / 2) + (80 * i), 51), Color.LightGray);
+
+                    if (CurrentFirearm.Accessories[i].Accessory != null)
+                    {
+                        spriteBatch.Draw(frontEnd.Texture, localPosition + AccessoriesIconPos + new Vector2(80 * i, 0), CurrentFirearm.Accessories[i].Accessory.Icon, Color.White);
+                    }
+                }
+
+                // Draw Description
+                if (!String.IsNullOrEmpty(CurrentFirearm.Description))
+                {
+                    spriteBatch.DrawString(AmmoFont, CurrentFirearm.Description, localPosition + new Vector2(430, 440), Color.LightGray);
+                }
+                else
+                {
+                    spriteBatch.DrawString(AmmoFont, "...", localPosition + new Vector2(430, 440), Color.LightGray);
+                }
+            }
+            /***********************/
+            #endregion
+            /***********************/
+
+
             /***********************/
             #region Draw Picked Item
             /***********************/
@@ -994,23 +1153,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (newPickedItemOrientation > 0)
                 {
-                    spriteBatch.Draw(frontEnd.Texture, 
-                                     realMousePos - new Vector2(pickedItem.SlotsIcon.Width/2, 
-                                                                pickedItem.SlotsIcon.Height/2), 
-                                    pickedItem.SlotsIcon, 
+                    spriteBatch.Draw(frontEnd.Texture,
+                                     realMousePos - new Vector2(pickedItem.SlotsIcon.Width / 2,
+                                                                pickedItem.SlotsIcon.Height / 2),
+                                    pickedItem.SlotsIcon,
                                     Color.White);
                 }
                 else
                 {
                     spriteBatch.Draw(frontEnd.Texture,
-                                     realMousePos + new Vector2( pickedItem.SlotsIcon.Height/2,
-                                                                -pickedItem.SlotsIcon.Width/2), 
-                                     pickedItem.SlotsIcon, 
-                                     Color.White, 
-                                     MathHelper.PiOver2, 
-                                     new Vector2(0, 0), 
-                                     1, 
-                                     SpriteEffects.None, 
+                                     realMousePos + new Vector2(pickedItem.SlotsIcon.Height / 2,
+                                                                -pickedItem.SlotsIcon.Width / 2),
+                                     pickedItem.SlotsIcon,
+                                     Color.White,
+                                     MathHelper.PiOver2,
+                                     new Vector2(0, 0),
+                                     1,
+                                     SpriteEffects.None,
                                      0);
                 }
             }
@@ -1022,21 +1181,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /***********************/
             #region Draw Info
             /***********************/
-            if(pickedItem == null)
+            if (pickedItem == null)
             {
                 String Info = String.Empty;
+                ammunitionInfo = null;
                 /******************************/
                 #region West Side (Bitch!)
                 /******************************/
-                if (mousePos.X > SlotsStartPos.X           &&
+                if (mousePos.X > SlotsStartPos.X &&
                     mousePos.X < SlotsStartPos.X + 11 * 32 &&
-                    mousePos.Y > SlotsStartPos.Y           &&
+                    mousePos.Y > SlotsStartPos.Y &&
                     mousePos.Y < SlotsStartPos.Y + (Items.GetLength(1) < 15 ? Items.GetLength(1) : 15) * 32)
                 {
                     int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
                     int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
 
                     if (Items[x, y].Item != null) Info = Items[x, y].Item.GetInfo();
+                    SetAmmunitionInfo(Items[x, y].Item);
                 }
                 /******************************/
                 #endregion
@@ -1054,6 +1215,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     int y = (int)((mousePos.Y - SlotsStartPos2.Y) / 32) + scrollCurrentOffset2;
 
                     if (Items2[x, y].Item != null) Info = Items2[x, y].Item.GetInfo();
+                    SetAmmunitionInfo(Items2[x, y].Item);
                 }
                 /******************************/
                 #endregion
@@ -1068,65 +1230,97 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
                     int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
-                    
+
                     if (dumpContent[x, y].Item != null) Info = dumpContent[x, y].Item.GetInfo();
+                    SetAmmunitionInfo(dumpContent[x, y].Item);
+                }
+                else if (FirearmWindow && 
+                    mousePos.X > FirearmAmmoClipIconPos.X &&
+                    mousePos.X < FirearmAmmoClipIconPos.X + 50 &&
+                    mousePos.Y > FirearmAmmoClipIconPos.Y  &&
+                    mousePos.Y < FirearmAmmoClipIconPos.Y + 50)
+                {
+                    if (CurrentFirearm.AmmoClip != null) Info = CurrentFirearm.AmmoClip.GetInfo();
+                    SetAmmunitionInfo(CurrentFirearm.AmmoClip);
+                }
+                else if (FirearmWindow && mousePos.X > 420 && mousePos.Y > 310)
+                {
+
+                    for (int i = 0; i < CurrentFirearm.Accessories.Length; i++)
+                    {
+                        if (CurrentFirearm.Accessories[i].Accessory != null &&
+                            mousePos.X > AccessoriesIconPos.X + (80 * i) &&
+                            mousePos.X < AccessoriesIconPos.X + 50 + (80 * i) &&
+                            mousePos.Y > AccessoriesIconPos.Y &&
+                            mousePos.Y < AccessoriesIconPos.Y + 50)
+                        {
+                            Info = CurrentFirearm.Accessories[i].Accessory.GetInfo();
+                            break;
+                        }
+                    }
                 }
                 /******************************/
                 #endregion
-                /******************************/                
+                /******************************/
                 #region Slots
                 /******************************/
-                else if (mousePos.X > CurrItemIconPos.X      &&
+                else if (mousePos.X > CurrItemIconPos.X &&
                          mousePos.X < CurrItemIconPos.X + 50 &&
-                         mousePos.Y > CurrItemIconPos.Y      &&
+                         mousePos.Y > CurrItemIconPos.Y &&
                          mousePos.Y < CurrItemIconPos.Y + 50)
                 {
                     currenItem = mercenary.CurrentObject;
                     if (currenItem != null) Info = currenItem.GetInfo();
+                    SetAmmunitionInfo(currenItem);
                 }
-                else if (mousePos.X > WeaponIconPos.X      &&
+                else if (mousePos.X > WeaponIconPos.X &&
                          mousePos.X < WeaponIconPos.X + 50 &&
-                         mousePos.Y > WeaponIconPos.Y      &&
+                         mousePos.Y > WeaponIconPos.Y &&
                          mousePos.Y < WeaponIconPos.Y + 50)
                 {
                     weapon = mercenary.Weapon;
-                    if (weapon != null) Info = weapon.GetInfo();                   
-                    
+                    if (weapon != null) Info = weapon.GetInfo();
+                    SetAmmunitionInfo(weapon);
+
                 }
                 else if (mousePos.X > SideArmIconPos.X &&
-                         mousePos.X < SideArmIconPos.X  + 50 &&
-                         mousePos.Y > SideArmIconPos.Y  &&
-                         mousePos.Y < SideArmIconPos.Y  + 50)
+                         mousePos.X < SideArmIconPos.X + 50 &&
+                         mousePos.Y > SideArmIconPos.Y &&
+                         mousePos.Y < SideArmIconPos.Y + 50)
                 {
                     weapon = mercenary.SideArm;
                     if (weapon != null) Info = weapon.GetInfo();
+                    SetAmmunitionInfo(weapon);
                 }
 
                 if (mercenary2 != null)
                 {
-                    if (mousePos.X > CurrItemIconPos2.X  &&
-                        mousePos.X < CurrItemIconPos2.X  + 50 &&
-                        mousePos.Y > CurrItemIconPos2.Y  &&
-                        mousePos.Y < CurrItemIconPos2.Y  + 50)
+                    if (mousePos.X > CurrItemIconPos2.X &&
+                        mousePos.X < CurrItemIconPos2.X + 50 &&
+                        mousePos.Y > CurrItemIconPos2.Y &&
+                        mousePos.Y < CurrItemIconPos2.Y + 50)
                     {
                         currenItem = mercenary2.CurrentObject;
                         if (currenItem != null) Info = currenItem.GetInfo();
+                        SetAmmunitionInfo(currenItem);
                     }
-                    else if (mousePos.X > WeaponIconPos2.X  &&
+                    else if (mousePos.X > WeaponIconPos2.X &&
                              mousePos.X < WeaponIconPos2.X + 50 &&
-                             mousePos.Y > WeaponIconPos2.Y  &&
-                             mousePos.Y < WeaponIconPos2.Y  + 50)
+                             mousePos.Y > WeaponIconPos2.Y &&
+                             mousePos.Y < WeaponIconPos2.Y + 50)
                     {
                         weapon = mercenary2.Weapon;
-                        if (weapon != null) Info = weapon.GetInfo();     
+                        if (weapon != null) Info = weapon.GetInfo();
+                        SetAmmunitionInfo(weapon);
                     }
-                    else if (mousePos.X > SideArmIconPos2.X  &&
-                             mousePos.X < SideArmIconPos2.X  + 50 &&
-                             mousePos.Y > SideArmIconPos2.Y  &&
-                             mousePos.Y < SideArmIconPos2.Y  + 50)
+                    else if (mousePos.X > SideArmIconPos2.X &&
+                             mousePos.X < SideArmIconPos2.X + 50 &&
+                             mousePos.Y > SideArmIconPos2.Y &&
+                             mousePos.Y < SideArmIconPos2.Y + 50)
                     {
                         weapon = mercenary2.SideArm;
                         if (weapon != null) Info = weapon.GetInfo();
+                        SetAmmunitionInfo(weapon);
                     }
                 }
                 /******************************/
@@ -1134,18 +1328,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 /******************************/
 
                 // Drawing Black Border // LOL!
-                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(1, 32),  Color.Black);
-                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0, 31),  Color.Black);
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(1, 32), Color.Black);
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0, 31), Color.Black);
                 spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(-1, 32), Color.Black);
-                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0, 33),  Color.Black);
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0, 33), Color.Black);
 
-                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0,32), Color.LightGray);
+                spriteBatch.DrawString(AmmoFont, Info, realMousePos + new Vector2(0, 32), Color.LightGray);
             }
             /***********************/
             #endregion
             /***********************/
-
-
         }
         /****************************************************************************/
 
@@ -1400,14 +1592,61 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             mouse.CursorVisible = false;
                         }
                     }
+                    else if (FirearmWindow && mousePos.X > 420 && mousePos.Y > 310)
+                    {
+
+                        if (mousePos.X > FirearmAmmoClipIconPos.X &&
+                            mousePos.X < FirearmAmmoClipIconPos.X + 50 &&
+                            mousePos.Y > FirearmAmmoClipIconPos.Y &&
+                            mousePos.Y < FirearmAmmoClipIconPos.Y + 50)
+                        {
+                            if (CurrentFirearm.AmmoClip != null)
+                            {
+                                pickedItem = CurrentFirearm.AmmoClip;
+                                CurrentFirearm.DetachClip();
+
+                                oldPickedItemOrientation = 1;
+                                newPickedItemOrientation = oldPickedItemOrientation;
+                                
+                                pickedItemSlot = Slot.AmmoClip;
+                                mouse.CursorVisible = false;
+                            }
+                            return;
+                        }
+
+
+                        for (int i = 0; i < CurrentFirearm.Accessories.Length; i++)
+                        {
+                            if (mousePos.X > AccessoriesIconPos.X + (80 * i) &&
+                               mousePos.X < AccessoriesIconPos.X + 50 + (80 * i) &&
+                               mousePos.Y > AccessoriesIconPos.Y &&
+                               mousePos.Y < AccessoriesIconPos.Y + 50)
+                            {
+                                if(CurrentFirearm.Accessories[i].Accessory != null)
+                                {
+                                    pickedItem = CurrentFirearm.Accessories[i].Accessory;
+                                    CurrentFirearm.DetachAccessory(i);
+                                    
+                                    oldPickedItemOrientation = 1;
+                                    newPickedItemOrientation = oldPickedItemOrientation;
+                                    
+                                    pickedFromSlot = i;
+                                    pickedItemSlot = Slot.Accessories;
+                                    mouse.CursorVisible = false;
+
+                                }
+                                return;
+                            }
+                        }
+                    }
                     /*************************/
                     #endregion
                     /*************************/
                     #region Dump
                     /*************************/
-                    else if (mousePos.X > DumpButtonPos.X      &&
+                    else if (mousePos.X > DumpButtonPos.X &&
                              mousePos.X < DumpButtonPos.X + 19 &&
-                             mousePos.Y > DumpButtonPos.Y      &&
+                             mousePos.Y > DumpButtonPos.Y &&
                              mousePos.Y < DumpButtonPos.Y + 52)
                     {
                         if (container != null || mercenary2 != null) return;
@@ -1766,7 +2005,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         /*************************/
                         /// Ammo Loader Exit
                         /*************************/
-                        else if (mousePos.X > AmmoLoaderExitButtonPos.X &&
+                        else if (AmmoLoader &&
+                                 mousePos.X > AmmoLoaderExitButtonPos.X &&
                                  mousePos.X < AmmoLoaderExitButtonPos.X + 15 &&
                                  mousePos.Y > AmmoLoaderExitButtonPos.Y &&
                                  mousePos.Y < AmmoLoaderExitButtonPos.Y + 14)
@@ -1776,7 +2016,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         /*************************/
                         /// Ammo Loader Unload
                         /*************************/
-                        else if (mousePos.X > AmmoLoaderUnloadButtonPos.X &&
+                        else if (AmmoLoader &&
+                                 mousePos.X > AmmoLoaderUnloadButtonPos.X &&
                                  mousePos.X < AmmoLoaderUnloadButtonPos.X + 15 &&
                                  mousePos.Y > AmmoLoaderUnloadButtonPos.Y &&
                                  mousePos.Y < AmmoLoaderUnloadButtonPos.Y + 14)
@@ -1786,12 +2027,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         /*************************/
                         /// Ammo Loader Unload One
                         /*************************/
-                        else if (mousePos.X > AmmoLoaderUnloadOneButtonPos.X &&
+                        else if (AmmoLoader &&
+                                 mousePos.X > AmmoLoaderUnloadOneButtonPos.X &&
                                  mousePos.X < AmmoLoaderUnloadOneButtonPos.X + 15 &&
                                  mousePos.Y > AmmoLoaderUnloadOneButtonPos.Y &&
                                  mousePos.Y < AmmoLoaderUnloadOneButtonPos.Y + 14)
                         {
                             AmmoUnloadOne = true;
+                        }
+                        /*************************/
+                        /// Item Desc Exit
+                        /*************************/
+                        else if (ItemDesc &&
+                                 mousePos.X > ItemDescExitButtonPos.X &&
+                                 mousePos.X < ItemDescExitButtonPos.X + 15 &&
+                                 mousePos.Y > ItemDescExitButtonPos.Y &&
+                                 mousePos.Y < ItemDescExitButtonPos.Y + 14)
+                        {
+                            ItemDescExit = true;
+                        }
+                        /*************************/
+                        /// Firearm Exit
+                        /*************************/
+                        else if (FirearmWindow &&
+                                 mousePos.X > FirearmExitButtonPos.X &&
+                                 mousePos.X < FirearmExitButtonPos.X + 15 &&
+                                 mousePos.Y > FirearmExitButtonPos.Y &&
+                                 mousePos.Y < FirearmExitButtonPos.Y + 14)
+                        {
+                            FirearmWindowExit = true;
                         }
                         else
                         {
@@ -2067,13 +2331,82 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             PutBackPickedItem();
                         }
                         else if (AmmoLoader &&
-                                 mousePos.X > AmmoSlotsIconPos.X + 93 + 93 + 93      &&
-                                 mousePos.X < AmmoSlotsIconPos.X + 50 + 93 + 93 + 93 &&
-                                 mousePos.Y > AmmoSlotsIconPos.Y &&
-                                 mousePos.Y < AmmoSlotsIconPos.Y + 50)
+                                 mousePos.X > FirearmAmmoClipIconPos.X + 93 + 93 + 93  &&
+                                 mousePos.X < FirearmAmmoClipIconPos.X + 50 + 93 + 93 + 93 &&
+                                 mousePos.Y > FirearmAmmoClipIconPos.Y &&
+                                 mousePos.Y < FirearmAmmoClipIconPos.Y + 50)
                         {
                             PutOnAmmoSlot(pickedItem, 3);
                             PutBackPickedItem();
+                        }
+                        /*************************/
+                        #endregion
+                        /*************************/
+                        #region Firearm Ammo Clip
+                        /*************************/
+                        else if (FirearmWindow &&
+                                 mousePos.X > FirearmAmmoClipIconPos.X &&
+                                 mousePos.X < FirearmAmmoClipIconPos.X + 50  &&
+                                 mousePos.Y > FirearmAmmoClipIconPos.Y &&
+                                 mousePos.Y < FirearmAmmoClipIconPos.Y + 50)
+                        {
+                            if (CheckCompability(pickedItem as AmmoClip) && CurrentFirearm.AmmoClip == null)
+                            {
+                                CurrentFirearm.AttachClip(pickedItem as AmmoClip);
+                                pickedItem = null;
+                                mouse.CursorVisible = true;
+                            }
+                            else PutBackPickedItem();
+                        }
+                        /*************************/
+                        #endregion
+                        /*************************/
+                        #region Firearm Accessories
+                        /*************************/
+                        else if (FirearmWindow &&
+                                 CurrentFirearm.Accessories.Length > 0 && 
+                                 mousePos.X > AccessoriesIconPos.X &&
+                                 mousePos.X < AccessoriesIconPos.X + 50  &&
+                                 mousePos.Y > AccessoriesIconPos.Y &&
+                                 mousePos.Y < AccessoriesIconPos.Y + 50)
+                        {
+                            if (CheckAccessoryCompability(pickedItem as Accessory, 0))
+                            {
+                                CurrentFirearm.AttachAccessory(pickedItem as Accessory, 0);
+                                pickedItem = null;
+                                mouse.CursorVisible = true;
+                            }
+                            else PutBackPickedItem();
+                        }
+                        else if (FirearmWindow &&
+                                 CurrentFirearm.Accessories.Length > 1 &&
+                                 mousePos.X > AccessoriesIconPos.X + 80 &&
+                                 mousePos.X < AccessoriesIconPos.X + 50 + 80 &&
+                                 mousePos.Y > AccessoriesIconPos.Y &&
+                                 mousePos.Y < AccessoriesIconPos.Y + 50)
+                        {
+                            if (CheckAccessoryCompability(pickedItem as Accessory, 1))
+                            {
+                                CurrentFirearm.AttachAccessory(pickedItem as Accessory, 1);
+                                pickedItem = null;
+                                mouse.CursorVisible = true;
+                            }
+                            else PutBackPickedItem();
+                        }
+                        else if (FirearmWindow &&
+                                 CurrentFirearm.Accessories.Length > 2 &&
+                                 mousePos.X > AccessoriesIconPos.X + 80 + 80 &&
+                                 mousePos.X < AccessoriesIconPos.X + 50 + 80 + 80 &&
+                                 mousePos.Y > AccessoriesIconPos.Y &&
+                                 mousePos.Y < AccessoriesIconPos.Y + 50)
+                        {
+                            if (CheckAccessoryCompability(pickedItem as Accessory, 2))
+                            {
+                                CurrentFirearm.AttachAccessory(pickedItem as Accessory, 2);
+                                pickedItem = null;
+                                mouse.CursorVisible = true;
+                            }
+                            else PutBackPickedItem();
                         }
                         /*************************/
                         #endregion
@@ -2084,9 +2417,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                  realMousePos.Y < localPosition.Y ||
                                  realMousePos.Y > localPosition.Y + 620 ||
                                  realMousePos.X > localPosition.X + 840 ||
-                                 (mercenary2 == null && !dump && !AmmoLoader && realMousePos.X > localPosition.X + 420) ||
-                                 (mercenary2 == null && dump && !AmmoLoader && realMousePos.Y > localPosition.Y + 310 && realMousePos.X > localPosition.X + 420) ||
-                                 (mercenary2 == null && AmmoLoader && !dump && realMousePos.Y < localPosition.Y + 310 && realMousePos.X > localPosition.X + 420)
+                                 (mercenary2 == null && !dump && !AmmoLoader && !ItemDesc && !FirearmWindow && realMousePos.X > localPosition.X + 420) ||
+                                 (mercenary2 == null && dump && !AmmoLoader && !ItemDesc && !FirearmWindow && realMousePos.Y > localPosition.Y + 310 && realMousePos.X > localPosition.X + 420) ||
+                                 (mercenary2 == null && (AmmoLoader || ItemDesc || FirearmWindow) && !dump && realMousePos.Y < localPosition.Y + 310 && realMousePos.X > localPosition.X + 420)
                                  )
                         {
                             mercenary.DropItem(pickedItem);
@@ -2462,6 +2795,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         UnloadAmmo();
                     }
+                    else if (ItemDescExit)
+                    {
+                        CloseDescription();
+                    }
+                    else if (FirearmWindowExit)
+                    {
+                        CloseFirearm();
+                    }
                     /*************************/
                     #endregion
                     /*************************/
@@ -2553,10 +2894,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             SetupAmmoLoader(mercenary.CurrentObject as AmmoClip);
                         }
+                        else if ((mercenary.CurrentObject as Firearm) != null)
+                        {
+                            SetupFirearm(mercenary.CurrentObject as Firearm);
+                        }
+                        else ShowDescription(mercenary.CurrentObject);
                     }
-                    else if (mousePos.X > SlotsStartPos.X           &&
+                    else if (mousePos.X > WeaponIconPos.X &&
+                             mousePos.X < WeaponIconPos.X + 50 &&
+                             mousePos.Y > WeaponIconPos.Y &&
+                             mousePos.Y < WeaponIconPos.Y + 50)
+                    {
+                        if (mercenary.Weapon != null)
+                        {
+                            SetupFirearm(mercenary.Weapon);
+                        }
+                    }
+                    else if (mousePos.X > SideArmIconPos.X &&
+                             mousePos.X < SideArmIconPos.X + 50 &&
+                             mousePos.Y > SideArmIconPos.Y &&
+                             mousePos.Y < SideArmIconPos.Y + 50)
+                    {
+                        if (mercenary.SideArm != null)
+                        {
+                            SetupFirearm(mercenary.SideArm);
+                        }
+                    }
+                    else if (mousePos.X > SlotsStartPos.X &&
                              mousePos.X < SlotsStartPos.X + 11 * 32 &&
-                             mousePos.Y > SlotsStartPos.Y           &&
+                             mousePos.Y > SlotsStartPos.Y &&
                              mousePos.Y < SlotsStartPos.Y + (Items.GetLength(1) < 15 ? Items.GetLength(1) : 15) * 32)
                     {
                         int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
@@ -2568,6 +2934,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             {
                                 SetupAmmoLoader(Items[x, y].Item as AmmoClip);
                             }
+                            else if ((Items[x, y].Item as Firearm) != null)
+                            {
+                                SetupFirearm(Items[x, y].Item as Firearm);
+                            }
+                            else ShowDescription(Items[x, y].Item);
                         }
                     }
                     else if (dump &&
@@ -2584,6 +2955,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             if ((dumpContent[x, y].Item as AmmoClip) != null)
                             {
                                 SetupAmmoLoader(dumpContent[x, y].Item as AmmoClip);
+                            }
+                            else if ((dumpContent[x, y].Item as Firearm) != null)
+                            {
+                                SetupFirearm(dumpContent[x, y].Item as Firearm);
+                            }
+                            else ShowDescription(dumpContent[x, y].Item);
+                        }
+                    }
+                    else if (FirearmWindow &&
+                            mousePos.X > FirearmAmmoClipIconPos.X &&
+                            mousePos.X < FirearmAmmoClipIconPos.X + 50 &&
+                            mousePos.Y > FirearmAmmoClipIconPos.Y &&
+                            mousePos.Y < FirearmAmmoClipIconPos.Y + 50)
+                    {
+                        if (CurrentFirearm.AmmoClip != null) SetupAmmoLoader(CurrentFirearm.AmmoClip);
+                    }
+                    else if (FirearmWindow && mousePos.X > 420 && mousePos.Y > 310)
+                    {
+
+                        for (int i = 0; i < CurrentFirearm.Accessories.Length; i++)
+                        {
+                            if (CurrentFirearm.Accessories[i].Accessory != null &&
+                                mousePos.X > AccessoriesIconPos.X + (80 * i) &&
+                                mousePos.X < AccessoriesIconPos.X + 50 + (80 * i) &&
+                                mousePos.Y > AccessoriesIconPos.Y &&
+                                mousePos.Y < AccessoriesIconPos.Y + 50)
+                            {
+                                ShowDescription(CurrentFirearm.Accessories[i].Accessory);
+                                break;
                             }
                         }
                     }
@@ -2735,7 +3135,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             AmmoLoaderExit   = false;
             AmmoLoaderUnload = false;
             AmmoUnloadOne    = false;
-
+            ItemDescExit     = false;
+            FirearmWindowExit = false;
             AmmoSlotsLoad    = new bool[4];
             AmmoSlotsLoadOne = new bool[4];
         }
@@ -2925,7 +3326,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     SendEvent(new SelectedObjectEvent(mercenary, Vector3.Zero), EventsSystem.Priority.High, mercenariesManager);
                     mercenary2 = null;
                 }
-            }            
+            }
+
+            if (key == Keys.F) highlights = state.IsDown();
         }
         /****************************************************************************/
 
@@ -2956,7 +3359,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Armor,
             Inventory,
             Empty,
-            Dump
+            Dump,
+            Accessories,
+            AmmoClip
         }
         /****************************************************************************/
 
@@ -2984,8 +3389,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             switch (pickedItemSlot)
             {
                 case Slot.CurrentItem:
-                    if (!pickedFromMerc2) mercenary.PickItem(pickedItem);
-                    else                  mercenary2.PickItem(pickedItem);
+                    if (!pickedFromMerc2) mercenary.PlaceItem(pickedItem,0);
+                    else mercenary2.PlaceItem(pickedItem,0);
                     
                     pickedItem = null;
                     mouse.CursorVisible = true;                    
@@ -3034,6 +3439,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     
                     pickedItem = null;
                     mouse.CursorVisible = true;
+                    break;
+                
+                case Slot.Accessories:
+
+                    CurrentFirearm.AttachAccessory(pickedItem as Accessory, pickedFromSlot);
+                    pickedItem = null;
+                    mouse.CursorVisible = true;
+
+                    break;
+                
+                case Slot.AmmoClip:
+                    CurrentFirearm.AttachClip(pickedItem as AmmoClip);
+                    pickedItem = null;
+                    mouse.CursorVisible = true;
+
+                
                     break;
             }
         }
@@ -3186,6 +3607,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             AmmoLoader      = true;
             CurrentAmmoClip = clip;
+            CloseDescription();
+            CloseFirearm();
         }
         /****************************************************************************/
 
@@ -3370,7 +3793,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             AmmoBox ammoBox = item as AmmoBox;
             if (ammoBox != null)
             {
-                if (ammoBox.AmmunitionName.Equals(CurrentAmmoClip.AmmunitionInfo.Name))
+                if (ammoBox.AmmunitionInfo == CurrentAmmoClip.AmmunitionInfo)
                 {
                     if(!AmmoSlots.Contains(ammoBox)) AmmoSlots[slot] = ammoBox;
                 }
@@ -3395,15 +3818,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Check Ammo Slots
         /****************************************************************************/
         private void CheckAmmoSlots(object item)
-        {
-            if (!AmmoLoader) return;
-
+        {            
             if (item == CurrentAmmoClip) CloseAmmoLoader();
 
             for (int i = 0; i < 4; i++)
             {
                 if (AmmoSlots[i] == item) AmmoSlots[i] = null;
             }
+
+            if (item == DescribedItem) CloseDescription();
+
+            if (item == CurrentFirearm) CloseFirearm();
         }
         /****************************************************************************/
 
@@ -3416,7 +3841,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             AmmoBox ammoBox = item as AmmoBox;
             if (ammoBox != null)
             {
-                if (ammoBox.AmmunitionName.Equals(CurrentAmmoClip.AmmunitionInfo.Name))
+                if (ammoBox.AmmunitionInfo == CurrentAmmoClip.AmmunitionInfo)
                 {
                     if (!AmmoSlots.Contains(ammoBox)) return true;
                 }
@@ -3497,6 +3922,145 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             return rect;
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Show Description
+        /****************************************************************************/
+        private void ShowDescription(StorableObject item)
+        {
+            if (item == null) return;
+
+            ItemDesc = true;
+            DescribedItem = item;
+            CloseAmmoLoader();
+            CloseFirearm();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Close Description
+        /****************************************************************************/
+        private void CloseDescription()
+        {
+            ItemDesc = false;
+            DescribedItem = null;
+        }
+        /****************************************************************************/
+
+
+
+        /****************************************************************************/
+        /// Setup Firearm
+        /****************************************************************************/
+        private void SetupFirearm(Firearm firearm)
+        {
+            if (firearm == null) return;
+            
+            FirearmWindow = true;
+            CurrentFirearm = firearm;
+            CloseAmmoLoader();
+            CloseDescription();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Close Firearm
+        /****************************************************************************/
+        private void CloseFirearm()
+        {
+            FirearmWindow = false;
+            CurrentFirearm = null;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Check Compability
+        /****************************************************************************/
+        private bool CheckCompability(AmmoClip ammoClip)
+        {
+            if (ammoClip == null) return false;
+
+             return ammoClip.Compability.Contains(CurrentFirearm.Name);                        
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Check Accessory Compability
+        /****************************************************************************/
+        private bool CheckAccessoryCompability(Accessory accessory,int accessorySlot)
+        {
+            if (accessory == null) return false;
+
+            return CurrentFirearm.Accessories.ElementAt(accessorySlot).Genre.Equals(accessory.Genre);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Set Ammunition Info
+        /****************************************************************************/
+        private void SetAmmunitionInfo(StorableObject item)
+        { 
+            if(item == null) return;
+            Type type = item.GetType();
+            
+            if (type.Equals(typeof(Firearm)))
+            {
+                ammunitionInfo = (item as Firearm).Ammunition;
+                return;
+            }
+
+            if (type.Equals(typeof(AmmoClip)))
+            {
+                ammunitionInfo = (item as AmmoClip).AmmunitionInfo;
+                return;
+            }
+
+            if (type.Equals(typeof(AmmoBox)))
+            {
+                ammunitionInfo = (item as AmmoBox).AmmunitionInfo;
+                return;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Check Ammunition Info
+        /****************************************************************************/
+        private bool CheckAmmunitionInfo(StorableObject item)
+        {            
+            if (!highlights) return true;
+
+            if (item == null || ammunitionInfo == null) return false;
+
+            Type type = item.GetType();
+
+            if (type.Equals(typeof(Firearm)))
+            {
+                if(ammunitionInfo == (item as Firearm).Ammunition) return true;
+            }
+
+            if (type.Equals(typeof(AmmoClip)))
+            {
+                if(ammunitionInfo == (item as AmmoClip).AmmunitionInfo) return true;
+            }
+
+            if (type.Equals(typeof(AmmoBox)))
+            {
+                if(ammunitionInfo == (item as AmmoBox).AmmunitionInfo) return true;
+            }
+
+            return false;
+        }
+        /****************************************************************************/
+
+
 
     }
     /********************************************************************************/

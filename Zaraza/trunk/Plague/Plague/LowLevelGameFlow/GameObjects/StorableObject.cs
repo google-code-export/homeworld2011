@@ -31,7 +31,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int DescriptionWindowWidth  = 0;
         private int DescriptionWindowHeight = 0;
         
-        private ParticleEmitterComponent emitter = null;
+        protected ParticleEmitterComponent emitter = null;
         /****************************************************************************/
 
 

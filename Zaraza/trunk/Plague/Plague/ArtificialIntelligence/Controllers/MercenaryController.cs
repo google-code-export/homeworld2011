@@ -43,7 +43,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 Firearm weapon = unit.CurrentObject as Firearm;
                 //TODO: dorobić wybór między basic a additionalAttack
-                this.attack = weapon.attacks[0];
+                //this.attack = weapon.attacks[0];
             }
             else
             {
