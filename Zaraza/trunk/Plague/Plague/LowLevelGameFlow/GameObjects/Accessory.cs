@@ -10,7 +10,6 @@ using PlagueEngine.Particles.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.Rendering;
 
-
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
@@ -18,56 +17,57 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// Firearm
+    /// Accessory
     /********************************************************************************/
-    class AmmoClip : StorableObject
+    class Accessory : StorableObject
     {
 
         /****************************************************************************/
-        /// Fields
+        /// Fields/Properties
         /****************************************************************************/
         public MeshComponent       mesh = null;
         public SquareBodyComponent body = null;
 
-        public AmmunitionInfo AmmunitionInfo { get; private set; }
-        private Dictionary<uint, AmmunitionVersionInfo> AmmunitionVersions  = null;
+        public float DamageModulation        { get; private set; }
+        public float AccuracyModulation      { get; private set; }
+        public float RangeModulation         { get; private set; }
+        public float PenetrationModulation   { get; private set; }
+        public float RecoilModulation        { get; private set; }
+        public float StoppingPowerModulation { get; private set; }
 
-        public Stack<Bullet> Content = null;
-        public int Capacity { get; private set; }
-        public List<String> Compability = new List<String>();
+        public String Genre { get; private set; }
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(MeshComponent mesh,
+        public void Init(MeshComponent      mesh,
                          SquareBodyComponent body,
-                         Rectangle icon,
-                         Rectangle slotsIcon,
-                         String description,
-                         int descriptionWindowWidth,
-                         int descriptionWindowHeight,
+                         Rectangle          icon,
+                         Rectangle          slotsIcon,
+                         String             description,
+                         int                descriptionWindowWidth,
+                         int                descriptionWindowHeight,
                          ParticleEmitterComponent particle,
-                         AmmunitionInfo ammunitionInfo,
-                         Dictionary<uint, AmmunitionVersionInfo> ammunitionVersions,
-                         Stack<Bullet> content,
-                         int capacity,
-                         List<String> compability)
+                         float              damageModulation,
+                         float              accuracyModulation,
+                         float              rangeModulation,
+                         float              penetrationModulation,
+                         float              recoilModulation,
+                         float              stoppingPowerModulation,
+                         String             genre)
         {
             this.mesh = mesh;
-            this.body = body;            
+            this.body = body;
 
-            AmmunitionInfo      = ammunitionInfo;
-            AmmunitionVersions  = ammunitionVersions;
-            Content             = content;
-            Capacity            = capacity;
-            Compability         = compability;
-
-            if (!body.Immovable)
-            {
-                body.SubscribeCollisionEvent(typeof(Terrain));
-            }
+            DamageModulation        = damageModulation;
+            AccuracyModulation      = accuracyModulation;
+            RangeModulation         = rangeModulation;
+            PenetrationModulation   = penetrationModulation;
+            RecoilModulation        = recoilModulation;
+            StoppingPowerModulation = stoppingPowerModulation;
+            Genre                   = genre;
 
             Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight, particle);
         }
@@ -81,7 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (owner != null)
             {
-                World = Matrix.Identity;
+                //World = Matrix.Identity;
                 if (mesh != null) mesh.Enabled = true;
                 if (body != null) body.DisableBody();
             }
@@ -93,7 +93,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
         }
         /****************************************************************************/
-
+        
 
         /****************************************************************************/
         /// On Event
@@ -118,70 +118,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// GetData
+        /// On Attach
         /****************************************************************************/
-        public override GameObjectInstanceData GetData()
+        public void OnAttach(Firearm firearm, Vector3 translation)
         {
-            AmmoClipData data = new AmmoClipData();
-            GetData(data);
-            data.Model = mesh.Model.Name;
-            data.Diffuse = (mesh.Textures.Diffuse == null ? String.Empty : mesh.Textures.Diffuse.Name);
-            data.Specular = (mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name);
-            data.Normals = (mesh.Textures.Normals == null ? String.Empty : mesh.Textures.Normals.Name);
-
-            data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
-
-            data.Mass = body.Mass;
-            data.Elasticity = body.Elasticity;
-            data.StaticRoughness = body.StaticRoughness;
-            data.DynamicRoughness = body.DynamicRoughness;
-            data.Lenght = body.Length;
-            data.Width = body.Width;
-            data.Height = body.Height;
-            data.Immovable = body.Immovable;
-            data.Translation = body.SkinTranslation;
-            data.SkinPitch = body.Pitch;
-            data.SkinRoll = body.Roll;
-            data.SkinYaw = body.Yaw;
-            data.EnabledPhysics = body.Enabled;
-            data.EnabledMesh = mesh.Enabled;
-
-            data.Ammunition = AmmunitionInfo.Name;
-            data.Capacity   = Capacity;
-            data.Content    = Content.ToList();
-
-            
-            data.Compability.Clear();
-            foreach (String s in Compability)
-            {
-                StringWrapper sw = new StringWrapper();
-                sw.String = s;
-                data.Compability.Add(sw);
-            }
-
-            return data;
-        }
-        /****************************************************************************/
-
-
-        /****************************************************************************/
-        /// Release Components
-        /****************************************************************************/
-        public override void ReleaseComponents()
-        {
-            if (body != null)
-            {
-                body.ReleaseMe();
-                body = null;
-            }
-
-            if (mesh != null)
-            {
-                mesh.ReleaseMe();
-                mesh = null;
-            }
-
-            base.ReleaseComponents();
+            owner     = firearm;
+            OwnerBone = -1;
+            getWorld  = GetOwnerWorld;
+            World = Matrix.CreateTranslation(translation);
+            body.DisableBody();
+            mesh.Enabled = true;
+            emitter.DisableEmitter();
         }
         /****************************************************************************/
 
@@ -229,17 +176,67 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// On Attach
+        /// Release Components
         /****************************************************************************/
-        public void OnAttach(Firearm firearm, Vector3 translation)
+        public override void ReleaseComponents()
         {
-            owner = firearm;
-            OwnerBone = -1;
-            getWorld = GetOwnerWorld;
-            World = Matrix.CreateTranslation(translation);
-            body.DisableBody();
-            mesh.Enabled = true;
-            emitter.DisableEmitter();
+            if (body != null)
+            {
+                body.ReleaseMe();
+                body = null;
+            }
+
+            if (mesh != null)
+            {
+                mesh.ReleaseMe();
+                mesh = null;
+            }
+
+            base.ReleaseComponents();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Get Data
+        /****************************************************************************/
+        public override GameObjectInstanceData GetData()
+        {
+            AccessoryData data = new AccessoryData();
+            GetData(data);
+
+            data.Model    = mesh.Model.Name;
+            data.Diffuse  = mesh.Textures.Diffuse  == null ? String.Empty : mesh.Textures.Diffuse.Name;
+            data.Specular = mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name;
+            data.Normals  = mesh.Textures.Normals  == null ? String.Empty : mesh.Textures.Normals.Name;
+
+            data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
+
+            data.Mass = body.Mass;
+            data.Elasticity = body.Elasticity;
+            data.StaticRoughness = body.StaticRoughness;
+            data.DynamicRoughness = body.DynamicRoughness;
+            data.Lenght = body.Length;
+            data.Width = body.Width;
+            data.Height = body.Height;
+            data.Immovable = body.Immovable;
+            data.Translation = body.SkinTranslation;
+            data.SkinPitch = body.Pitch;
+            data.SkinRoll = body.Roll;
+            data.SkinYaw = body.Yaw;
+            data.EnabledPhysics = body.Enabled;
+            data.EnabledMesh = mesh.Enabled;
+
+            data.Genre = Genre;
+
+            data.DamageModulation        = DamageModulation;
+            data.AccuracyModulation      = AccuracyModulation;
+            data.RangeModulation         = RangeModulation;
+            data.PenetrationModulation   = PenetrationModulation;
+            data.RecoilModulation        = RecoilModulation;
+            data.StoppingPowerModulation = StoppingPowerModulation;
+
+            return data;
         }
         /****************************************************************************/
 
@@ -248,45 +245,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
     /********************************************************************************/
-    /// Bullet
+    /// Accessory Data
     /********************************************************************************/
     [Serializable]
-    public struct Bullet
+    public class AccessoryData : StorableObjectData
     {
-        public uint Version { get; set; }
-        public bool PPP     { get; set; }
-    }
-    /********************************************************************************/
-    
-
-    /********************************************************************************/
-    /// AmmoClipData
-    /********************************************************************************/
-    [Serializable]
-    public class AmmoClipData : StorableObjectData
-    {
-
-        public AmmoClipData()
+        public AccessoryData()
         {
-            Type = typeof(AmmoClip);
-            Content = new List<Bullet>();
-            Compability = new List<StringWrapper>();
+            Type = typeof(Accessory);
         }
 
         [CategoryAttribute("Model")]
         public String Model { get; set; }
 
-        [CategoryAttribute("Model")]
+        [CategoryAttribute("Textures")]
         public String Diffuse { get; set; }
-        [CategoryAttribute("Model")]
+        [CategoryAttribute("Textures")]
         public String Specular { get; set; }
-        [CategoryAttribute("Model")]
+        [CategoryAttribute("Textures")]
         public String Normals { get; set; }
 
-        [CategoryAttribute("Model"),
+        [CategoryAttribute("Instancing"),
         DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
         public uint InstancingMode { get; set; }
-        [CategoryAttribute("Model")]
+        [CategoryAttribute("EnabledMesh")]
         public bool EnabledMesh { get; set; }
 
         [CategoryAttribute("Physics")]
@@ -317,28 +299,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
 
-        [CategoryAttribute("Ammunition")]
-        public String Ammunition { get; set; }
-        [CategoryAttribute("Ammunition")]
-        public int Capacity { get; set; }
-        [CategoryAttribute("Ammunition")]
-        public List<Bullet> Content { get; set; }
-
-        [CategoryAttribute("Firearms")]
-        public List<StringWrapper> Compability { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float DamageModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float AccuracyModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float RangeModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float PenetrationModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float RecoilModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float StoppingPowerModulation { get; set; }
+        [CategoryAttribute("Accessory Genre")]
+        public String Genre { get; set; }
     }
-    /********************************************************************************/
-
-
-    /********************************************************************************/
-    /// StringWrapper - C# Sucks Huge Black Cock
-    /********************************************************************************/
-    [Serializable]
-    public class StringWrapper
-    {
-        public String String { get; set; }
-    }
-    /********************************************************************************/
-
 }
 /************************************************************************************/

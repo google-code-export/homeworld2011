@@ -28,11 +28,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public MeshComponent       mesh = null;
         public SquareBodyComponent body = null;
 
-        public String AmmunitionName  { get; private set; }
-        public uint   AmmunitionGenre { get; private set; }
         public bool   PPP             { get; private set; }
 
         public AmmunitionVersionInfo AmmunitionVersionInfo { get; private set; }
+        public AmmunitionInfo        AmmunitionInfo        { get; private set; }
+
         private int amount = 0;
 
         public int Amount { get; set; }
@@ -46,8 +46,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(MeshComponent mesh,
                          SquareBodyComponent body,
                          ParticleEmitterComponent particle,
-                         String ammunitionName,
-                         uint ammunitionGenre,
+                         AmmunitionInfo ammunitionInfo,
                          bool ppp,
                          AmmunitionVersionInfo ammunitionVersionInfo,
                          int amount,
@@ -58,11 +57,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.mesh = mesh;
             this.body = body;
 
-            AmmunitionName = ammunitionName;
-            AmmunitionGenre = ammunitionGenre;
+            AmmunitionInfo = ammunitionInfo;
+
             PPP = ppp;
 
-            switch (ammunitionGenre)
+            switch (ammunitionInfo.Genre)
             {
                 case 1: Capacity = 60; break;
                 case 2: Capacity = 45; break;
@@ -75,7 +74,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Amount = amount > Capacity ? Capacity : amount;
             
             StringBuilder sb = new StringBuilder();
-            sb.Append(AmmunitionName);
+            sb.Append(AmmunitionInfo.Name);
             sb.Append(" (");
             sb.Append(AmmunitionVersionInfo.VersionToString(AmmunitionVersionInfo.Version));
             sb.Append(")");
@@ -84,8 +83,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Rectangle icon      = new Rectangle(0,0,50,50);
             Rectangle slotsIcon = new Rectangle(0,0,64,64);
 
-            icon.Y      = 964  + (114 * ((int)AmmunitionGenre - 1));
-            slotsIcon.Y = 1014 + (114 * ((int)AmmunitionGenre - 1));
+            icon.Y      = 964  + (114 * ((int)AmmunitionInfo.Genre - 1));
+            slotsIcon.Y = 1014 + (114 * ((int)AmmunitionInfo.Genre - 1));
 
             icon.X      = (int)ammunitionVersionInfo.Version * 50;
             slotsIcon.X = (int)ammunitionVersionInfo.Version * 64;
@@ -155,7 +154,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.EnabledPhysics = body.Enabled;
             data.EnabledMesh = mesh.Enabled;
 
-            data.AmmunitionName = AmmunitionName;
+            data.AmmunitionName = AmmunitionInfo.Name;
             data.Amount = Amount;
             data.Version = AmmunitionVersionInfo.Version;
             data.PPP = PPP;

@@ -476,7 +476,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     if (SideArm == null)
                     {
-                        PlaceItem(item, 2);
+                        if(put)PlaceItem(item, 2);
                         return true;
                     }
                 }
@@ -484,7 +484,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     if (Weapon == null)
                     {
-                        PlaceItem(item, 1);
+                        if(put)PlaceItem(item, 1);
                         return true;                    
                     }
                 }
@@ -528,8 +528,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                              * warunków tylko leci wszytskie, nawet jeżeli 
                              * dane zadanie już jet prawdziwe/nieprawdziwe.
                              */
-                             
-                            if(i + x + (y * 11) >= TinySlots)
+
+                            if (i + x + (y * 11) >= TinySlots ||
+                                (i % 11) + x > 10)
                             {
                                 blocked = true;
                                 break;                           
@@ -570,7 +571,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         for (int y = 0; y < width; y++)
                         {
-                            if (i + x + (y * 11) >= TinySlots)
+                            if (i + x + (y * 11) >= TinySlots ||
+                                (i % 11) + x > 10)
                             {
                                 blocked = true;
                                 break;
@@ -611,7 +613,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     for (int y = 0; y < height; y++)
                     {
-                        if (i + x + (y * 11) >= Slots + TinySlots)
+                        if (i + x + (y * 11) >= Slots + TinySlots ||
+                            (i % 11) + x > 10)
                         {
                             blocked = true;
                             break;
@@ -644,7 +647,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     for (int y = 0; y < width; y++)
                     {
-                        if (i + x + (y * 11) >= Slots + TinySlots)
+                        if (i + x + (y * 11) >= Slots + TinySlots ||
+                            (i % 11) + x > 10)
                         {
                             blocked = true;
                             break;
@@ -680,7 +684,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /******************************/
             if (CurrentObject == null)
             {
-                PlaceItem(item, 0);
+                if(put) PlaceItem(item, 0);
                 return true;
             }
             /******************************/

@@ -98,6 +98,8 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public GameObjectInstance Create(GameObjectInstanceData data)
         {
+         //   if (data.Type.Equals(typeof(Inventory))) return null;
+
             GameObjectInstance result = null;
 
             if (!ProcessWaitingRoom) result = (GameObjectInstance)Activator.CreateInstance(data.Type);
@@ -1315,7 +1317,48 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateFirearm(Firearm result, FirearmData data)
         {
+            Firearm.AttachedAccessory[] accessories = new Firearm.AttachedAccessory[0];
             
+            if(data.AvailableAccessories != null)
+            {
+                accessories = new Firearm.AttachedAccessory[data.AvailableAccessories.Count];
+
+                for(int i = 0; i < accessories.Length; i++)
+                {
+                    if(data.AvailableAccessories[i].AccessoryID != 0)
+                    {
+                        Accessory accessory = (Accessory)GetObject(data.AvailableAccessories[i].AccessoryID);
+                        if(accessory == null)
+                        {
+                            PushToWaitingRoom(result,data);
+                            return false;
+                        }   
+                        accessories[i].Accessory = accessory;
+                    }
+                    else accessories[i].Accessory = null;
+
+                    accessories[i].Genre       = data.AvailableAccessories[i].Genre;
+                    accessories[i].Translation = data.AvailableAccessories[i].Translation;
+                }
+            }
+
+            AmmoClip ammoClip = null;
+            if (data.AmmoClip != 0)
+            {
+                ammoClip = (AmmoClip)GetObject(data.AmmoClip);
+                if (ammoClip == null)
+                {
+                    PushToWaitingRoom(result, data);
+                    return false;
+                }
+            }
+
+            Ammunition ammunition = GetObject(GlobalGameObjects.Ammunition) as Ammunition;
+            if (ammunition == null)
+            {
+                PushToWaitingRoom(result, data);
+                return false;
+            }            
 
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                                                                        data.Model,
@@ -1339,13 +1382,15 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.SkinYaw,
                                                                           data.SkinPitch,
                                                                           data.SkinRoll),
-                      data.Attacks,
+                      accessories,                      
                       data.Icon,
                       data.SlotsIcon,
                       data.Description,
                       data.DescriptionWindowWidth,
                       data.DescriptionWindowHeight,
                       data.SideArm,
+                      data.SelectiveFire,
+                      data.SelectiveFireMode,
                       
                       particleFactory.CreateParticleEmitterComponent( result,
                                                                       data.BlendState,
@@ -1371,7 +1416,21 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       data.ParticlesPerSecond,
                                                                       data.EmitterTranslation,
                                                                       data.World,
-                                                                      data.ParticlesEnabled));
+                                                                      data.ParticlesEnabled),
+                    data.Condition,
+                    data.Reliability,
+                    data.RateOfFire,
+                    data.Ergonomy,
+                    data.ReloadingTime,
+                    data.DamageModulation,
+                    data.AccuracyModulation,
+                    data.RangeModulation,
+                    data.PenetrationModulation,
+                    data.RecoilModulation,
+                    data.StoppingPowerModulation,
+                    ammoClip,
+                    String.IsNullOrEmpty(data.AmmunitionName) ? null : ammunition.AmmunitionData[ammunition.NameToID[data.AmmunitionName]],
+                    data.AmmoClipTranslation);
 
             return true;
         }
@@ -1685,6 +1744,15 @@ namespace PlagueEngine.LowLevelGameFlow
                 content.Push(data.Content.ElementAt(i));
             }
 
+            List<String> compability = new List<String>();
+            if (data.Compability != null)
+            {
+                foreach (var sss in data.Compability)
+                {
+                    compability.Add(sss.String);
+                }
+            }
+
             result.Init(renderingComponentsFactory.CreateMeshComponent(result,
                                                                        data.Model,
                                                                        data.Diffuse,
@@ -1741,7 +1809,8 @@ namespace PlagueEngine.LowLevelGameFlow
                         ammunition.AmmunitionData[ammunition.NameToID[data.Ammunition]],
                         ammunition.AmmunitionVersionData[ammunition.NameToID[data.Ammunition]],
                         content,
-                        data.Capacity);
+                        data.Capacity,
+                        compability);
 
             return true;
         }
@@ -1845,8 +1914,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                             data.EmitterTranslation,
                                                             data.World,
                                                             data.ParticlesEnabled),
-            data.AmmunitionName,
-            info.Genre,
+            info,
             data.PPP,
             versionInfo,
             data.Amount,
@@ -1854,6 +1922,78 @@ namespace PlagueEngine.LowLevelGameFlow
             data.DescriptionWindowWidth,
             data.DescriptionWindowHeight);
                         
+            return true;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Create Accessory
+        /****************************************************************************/
+        public bool CreateAccessory(Accessory result, AccessoryData data)
+        {
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                     data.Model,
+                                                                     data.Diffuse,
+                                                                     data.Specular,
+                                                                     data.Normals,
+                                                                     Renderer.UIntToInstancingMode(data.InstancingMode),
+                                                                     data.EnabledMesh,
+                                                                     false),
+                      physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                        data.Mass,
+                                                                        data.Lenght,
+                                                                        data.Height,
+                                                                        data.Width,
+                                                                        data.Elasticity,
+                                                                        data.StaticRoughness,
+                                                                        data.DynamicRoughness,
+                                                                        data.Immovable,
+                                                                        data.World,
+                                                                        data.Translation,
+                                                                        data.SkinYaw,
+                                                                        data.SkinPitch,
+                                                                        data.SkinRoll),
+                    data.Icon,
+                    data.SlotsIcon,
+                    data.Description,
+                    data.DescriptionWindowWidth,
+                    data.DescriptionWindowHeight,
+
+                    particleFactory.CreateParticleEmitterComponent(result,
+                                                                    data.BlendState,
+                                                                    data.Duration,
+                                                                    data.DurationRandomnes,
+                                                                    data.EmitterVelocitySensitivity,
+                                                                    data.VelocityEnd,
+                                                                    data.Gravity,
+                                                                    data.ColorMax,
+                                                                    data.EndSizeMax,
+                                                                    data.VelocityHorizontalMax,
+                                                                    data.ParticlesMax,
+                                                                    data.RotateSpeedMax,
+                                                                    data.StartSizeMax,
+                                                                    data.VelocityVerticalMax,
+                                                                    data.ColorMin,
+                                                                    data.EndSizeMin,
+                                                                    data.VelocityHorizontalMin,
+                                                                    data.RotateSpeedMin,
+                                                                    data.StartSizeMin,
+                                                                    data.VelocityVerticalMin,
+                                                                    data.ParticleTexture,
+                                                                    data.ParticlesPerSecond,
+                                                                    data.EmitterTranslation,
+                                                                    data.World,
+                                                                    data.ParticlesEnabled),
+                  data.DamageModulation,
+                  data.AccuracyModulation,
+                  data.RangeModulation,
+                  data.PenetrationModulation,
+                  data.RecoilModulation,
+                  data.StoppingPowerModulation,
+                  data.Genre);
+
             return true;
         }
         /****************************************************************************/

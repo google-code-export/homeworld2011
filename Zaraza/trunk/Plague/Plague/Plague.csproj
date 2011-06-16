@@ -197,6 +197,7 @@
     <Compile Include="LowLevelGameFlow\GameObjectInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\AbstractLivingBeing.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Accessory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActionSwitch.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ActivableObject.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\AmmoBox.cs" />

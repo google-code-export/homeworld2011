@@ -12,6 +12,9 @@ using PlagueEngine.Physics;
 using PlagueEngine.ArtificialIntelligence.Controllers;
 
 using PlagueEngine.Particles.Components;
+
+// TODO: Akcesoria
+
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
@@ -27,11 +30,31 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public MeshComponent                mesh = null;
-        public SquareBodyComponent          body = null;
-        public List<Attack>                 attacks = null;
-        //public Attack basicAttack;
-        //public Attack additionalAttack;
+        public MeshComponent                mesh    = null;
+        public SquareBodyComponent          body    = null;
+        //public List<Attack>                 attacks = null;
+        
+        public AmmunitionInfo Ammunition { get; private set; }
+        public AmmoClip       AmmoClip = null;
+        private Vector3 AmmoClipTranslation;
+
+        public float Condition      { get; private set; }
+        public float Reliability    { get; private set; }
+        public float RateOfFire     { get; private set; }
+        public float Ergonomy       { get; private set; }
+        public float ReloadingTime  { get; private set; }
+
+        public float DamageModulation        { get; private set; }
+        public float AccuracyModulation      { get; private set; }
+        public float RangeModulation         { get; private set; }
+        public float PenetrationModulation   { get; private set; }
+        public float RecoilModulation        { get; private set; }
+        public float StoppingPowerModulation { get; private set; }
+
+        public AttachedAccessory[] Accessories = new AttachedAccessory[0];
+
+        public List<int> SelectiveFire     { get; private set; }
+        public int       SelectiveFireMode { get; set; }
         /****************************************************************************/
 
 
@@ -47,29 +70,72 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(MeshComponent       mesh,
                          SquareBodyComponent body,
-                         List<Attack> attacks,
-                         //Attack basicAttack,
-                         //Attack additionalAttack,
-                         Rectangle icon,
-                         Rectangle slotsIcon,
-                         String description,
-                         int descriptionWindowWidth,
-                         int descriptionWindowHeight,
-                         bool sideArm,
-                         ParticleEmitterComponent particle)
+                         AttachedAccessory[] accessories,
+                         Rectangle           icon,
+                         Rectangle           slotsIcon,
+                         String              description,
+                         int                 descriptionWindowWidth,
+                         int                 descriptionWindowHeight,
+                         bool                sideArm,
+                         List<int>           selectiveFire,
+                         int                 selectiveFireMode,
+                         ParticleEmitterComponent particle,
+                         float               condition,
+                         float               reliability,
+                         float               rateOfFire,
+                         float               ergonomy,
+                         float               reloadingTime,
+                         float               damageModulation,
+                         float               accuracyModulation,
+                         float               rangeModulation,
+                         float               penetrationModulation,
+                         float               recoilModulation,
+                         float               stoppingPowerModulation,
+                         AmmoClip            ammoClip,
+                         AmmunitionInfo      ammunitionInfo,
+                         Vector3             ammoClipTranslation)
         {
             this.mesh = mesh;
             this.body = body;
 
-            this.attacks = attacks;
-            //this.basicAttack = basicAttack;
-            //this.additionalAttack = additionalAttack;
+            //this.attacks = attacks;
+
+            Condition               = condition;
+            Reliability             = reliability;
+            RateOfFire              = rateOfFire;
+            Ergonomy                = ergonomy;
+            ReloadingTime           = reloadingTime;
+            DamageModulation        = damageModulation;
+            AccuracyModulation      = accuracyModulation;
+            RangeModulation         = rangeModulation;
+            PenetrationModulation   = penetrationModulation;
+            RecoilModulation        = recoilModulation;
+            StoppingPowerModulation = stoppingPowerModulation;
+
+            Ammunition = ammunitionInfo;
+            AmmoClip   = ammoClip;
+            AmmoClipTranslation = ammoClipTranslation;
+
+            Accessories = accessories;
+
+            SelectiveFire     = selectiveFire;
+            SelectiveFireMode = selectiveFireMode;
             
+            //if (SelectiveFireMode == 0) SelectiveFireMode = SelectiveFire.ElementAt(0);
+
             SideArm = sideArm;
 
             if (!body.Immovable)
             {
                 body.SubscribeCollisionEvent(typeof(Terrain));
+            }
+                        
+            for (int i = 0; i < Accessories.Length; i++)
+            {
+                if (Accessories[i].Accessory != null)
+                {
+                    AddAccessoryModulation(Accessories[i].Accessory);
+                }
             }
 
             Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight, particle);
@@ -107,25 +173,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             FirearmData data = new FirearmData();
             GetData(data);
             data.Model    = mesh.Model.Name;
-            data.Diffuse  = (mesh.Textures.Diffuse == null ? String.Empty : mesh.Textures.Diffuse.Name);
+            data.Diffuse  = (mesh.Textures.Diffuse  == null ? String.Empty : mesh.Textures.Diffuse.Name);
             data.Specular = (mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name);
-            data.Normals  = (mesh.Textures.Normals == null ? String.Empty : mesh.Textures.Normals.Name);
+            data.Normals  = (mesh.Textures.Normals  == null ? String.Empty : mesh.Textures.Normals.Name);
 
             data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
-            //data.AACooldownTicks   = additionalAttack.cooldown.Ticks;
-            //data.AAMaximumDamage   = additionalAttack.maxInflictedDamage;
-            //data.AAMaximumDistance = additionalAttack.maxAttackDistance;
-            //data.AAMinimumDamage   = additionalAttack.minInflictedDamage;
-            //data.AAMinimumDistance = additionalAttack.minAttackDistance;
-
-            //data.BACooldownTicks   = basicAttack.cooldown.Ticks;
-            //data.BAMaximumDamage   = basicAttack.maxInflictedDamage;
-            //data.BAMaximumDistance = basicAttack.maxAttackDistance;
-            //data.BAMinimumDamage   = basicAttack.minInflictedDamage;
-            //data.BAMinimumDistance = basicAttack.minAttackDistance;
-
-            data.Attacks = this.attacks;
+            //data.Attacks = this.attacks;
 
             data.Mass             = body.Mass;
             data.Elasticity       = body.Elasticity;
@@ -143,6 +197,44 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.EnabledMesh      = mesh.Enabled;
             
             data.SideArm          = SideArm;
+
+            List<AccessoryInfo> AvailableAccessories = new List<AccessoryInfo>();
+
+            for (int i = 0; i < Accessories.Length; i++)
+            {
+                AccessoryInfo info = new AccessoryInfo();
+                info.AccessoryID = (Accessories[i].Accessory == null ? 0 : Accessories[i].Accessory.ID);
+                info.Genre       = Accessories[i].Genre;
+                info.Translation = Accessories[i].Translation;
+                AvailableAccessories.Add(info);
+                if (Accessories[i].Accessory != null)
+                {
+                    SubAccessoryModulation(Accessories[i].Accessory);
+                }
+            }
+
+            data.AvailableAccessories = AvailableAccessories;
+
+            data.Condition      = Condition;
+            data.Reliability    = Reliability;
+            data.RateOfFire     = RateOfFire;
+            data.Ergonomy       = Ergonomy;
+            data.ReloadingTime  = ReloadingTime;
+
+            data.DamageModulation        = DamageModulation;
+            data.AccuracyModulation      = AccuracyModulation;
+            data.RangeModulation         = RangeModulation;
+            data.PenetrationModulation   = PenetrationModulation;
+            data.RecoilModulation        = RecoilModulation;
+            data.StoppingPowerModulation = StoppingPowerModulation;
+
+            data.AmmoClip       = AmmoClip == null ? 0 : AmmoClip.ID;
+            data.AmmunitionName = Ammunition == null ? String.Empty: Ammunition.Name;
+
+            data.SelectiveFireMode = SelectiveFireMode;
+            data.SelectiveFire = SelectiveFire;
+
+            data.AmmoClipTranslation = AmmoClipTranslation;
 
             return data;
         }
@@ -176,7 +268,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
-            if (body != null)
+            if (mesh != null)
             {
                 mesh.ReleaseMe();
                 mesh = null;
@@ -234,6 +326,94 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// AttachedAccessory
+        /****************************************************************************/
+        public struct AttachedAccessory
+        {
+            public Accessory Accessory   { get; set; }
+            public String    Genre       { get; set; }
+            public Vector3   Translation { get; set; }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Add Accessory Modulation
+        /****************************************************************************/
+        private void AddAccessoryModulation(Accessory accessory)
+        { 
+            DamageModulation        += accessory.DamageModulation;
+            AccuracyModulation      += accessory.AccuracyModulation;
+            RangeModulation         += accessory.RangeModulation;
+            PenetrationModulation   += accessory.PenetrationModulation;
+            RecoilModulation        += accessory.RecoilModulation;
+            StoppingPowerModulation += accessory.StoppingPowerModulation;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Sub Accessory Modulation
+        /****************************************************************************/
+        private void SubAccessoryModulation(Accessory accessory)
+        {
+            DamageModulation        -= accessory.DamageModulation;
+            AccuracyModulation      -= accessory.AccuracyModulation;
+            RangeModulation         -= accessory.RangeModulation;
+            PenetrationModulation   -= accessory.PenetrationModulation;
+            RecoilModulation        -= accessory.RecoilModulation;
+            StoppingPowerModulation -= accessory.StoppingPowerModulation;        
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Attach Accessory
+        /****************************************************************************/
+        public void AttachAccessory(Accessory accessory,int accessorySlot)
+        {
+            accessory.OnAttach(this, Accessories[accessorySlot].Translation);
+            Accessories[accessorySlot].Accessory = accessory;
+            AddAccessoryModulation(accessory);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Detach Accessory
+        /****************************************************************************/
+        public void DetachAccessory(int accessorySlot)
+        {
+            Accessories[accessorySlot].Accessory.OnStoring();
+            SubAccessoryModulation(Accessories[accessorySlot].Accessory);
+            Accessories[accessorySlot].Accessory = null;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Attach Clip
+        /****************************************************************************/
+        public void AttachClip(AmmoClip clip)
+        {
+            clip.OnAttach(this, AmmoClipTranslation);
+            AmmoClip = clip;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Detach Clip
+        /****************************************************************************/
+        public void DetachClip()
+        {
+            AmmoClip.OnStoring();
+            AmmoClip = null;
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/
 
@@ -248,6 +428,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public FirearmData()
         {
             Type = typeof(Firearm);
+            AvailableAccessories = new List<AccessoryInfo>();
+            SelectiveFire = new List<int>();
         }
 
         [CategoryAttribute("Model")]
@@ -277,30 +459,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Physics")]
         public bool EnabledPhysics { get; set; }
 
-        //[CategoryAttribute("Basic Attack")]
-        //public float BAMinimumDistance { get; set; }
-        //[CategoryAttribute("Basic Attack")]
-        //public float BAMaximumDistance { get; set; }
-        //[CategoryAttribute("Basic Attack")]
-        //public long BACooldownTicks { get; set; }
-        //[CategoryAttribute("Basic Attack")]
-        //public int BAMaximumDamage { get; set; }
-        //[CategoryAttribute("Basic Attack")]
-        //public int BAMinimumDamage { get; set; }
-
-        //[CategoryAttribute("Additional Attack")]
-        //public float AAMinimumDistance { get; set; }
-        //[CategoryAttribute("Additional Attack")]
-        //public float AAMaximumDistance { get; set; }
-        //[CategoryAttribute("Additional Attack")]
-        //public long AACooldownTicks { get; set; }
-        //[CategoryAttribute("Additional Attack")]
-        //public int AAMaximumDamage { get; set; }
-        //[CategoryAttribute("Additional Attack")]
-        //public int AAMinimumDamage { get; set; }
-
-        [CategoryAttribute("Possible Attacks")]
-        public List<Attack> Attacks { get; set; }
+        //[CategoryAttribute("Possible Attacks")]
+        //public List<Attack> Attacks { get; set; }
 
         [CategoryAttribute("Collision Skin")]
         public float Lenght { get; set; }
@@ -323,6 +483,59 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Weapon Genre")]
         public bool SideArm { get; set; }
 
+        [CategoryAttribute("Accessories")]
+        public List<AccessoryInfo> AvailableAccessories { get; set; }
+
+
+        [CategoryAttribute("Firearm Parameters")]
+        public float Condition { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float Reliability { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float RateOfFire { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float Ergonomy { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float ReloadingTime { get; set; }
+
+        [CategoryAttribute("Firearm Parameters")]
+        public float DamageModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float AccuracyModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float RangeModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float PenetrationModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float RecoilModulation { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public float StoppingPowerModulation { get; set; }
+
+        [CategoryAttribute("Firearm Parameters")]
+        public List<int> SelectiveFire { get; set; }
+        [CategoryAttribute("Firearm Parameters")]
+        public int SelectiveFireMode { get; set; }
+
+        [CategoryAttribute("Ammo Clip")]
+        public int AmmoClip { get; set; }
+        [CategoryAttribute("Ammo Clip")]
+        public Vector3 AmmoClipTranslation { get; set; }
+
+        [CategoryAttribute("Firearm Parameters")]
+        public String AmmunitionName { get; set; }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// AccessoryInfo
+    /********************************************************************************/
+    [Serializable]
+    public class AccessoryInfo
+    {
+        public int     AccessoryID { get; set; }
+        public String  Genre       { get; set; }
+        public Vector3 Translation { get; set; }
     }
     /********************************************************************************/
 

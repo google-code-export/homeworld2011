@@ -530,7 +530,11 @@ namespace PlagueEngine.Tools
             Ammunition.dataClassType = typeof(AmmunitionData);
             gameObjectClassNames.Add(Ammunition);
 
-
+            gameObjectsClassName Accessory = new gameObjectsClassName();
+            Accessory.className = "Accessory";
+            Accessory.ClassType = typeof(Accessory);
+            Accessory.dataClassType = typeof(AccessoryData);
+            gameObjectClassNames.Add(Accessory);
 
             gameObjectsClassName Checker = new gameObjectsClassName();
             Checker.className = "Checker";
@@ -601,7 +605,7 @@ namespace PlagueEngine.Tools
             catch (Exception execption)
             {
                 releaseInput = false;
-                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("That makes 100 errors \nPlease try again.\n\n" + execption.Message + "\n\n\n" + execption.StackTrace, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 releaseInput = true;
             }
 
