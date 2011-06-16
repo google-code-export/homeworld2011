@@ -1904,6 +1904,11 @@ namespace PlagueEngine.Tools
 
         }
 
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.Brightness = (float)numericUpDown2.Value;
+        }
+
 
 
 

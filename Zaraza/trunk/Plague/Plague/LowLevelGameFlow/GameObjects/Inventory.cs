@@ -2372,7 +2372,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             if (CheckAccessoryCompability(pickedItem as Accessory, 0))
                             {
-                                CurrentFirearm.AttachAccessory(pickedItem as Accessory, 0);
+                                CurrentFirearm.AttachAccessory(pickedItem as Accessory, 0);                                
                                 pickedItem = null;
                                 mouse.CursorVisible = true;
                             }
@@ -3582,6 +3582,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 sb.Append((item as AmmoClip).Content.Count.ToString());
                 sb.Append("/");
                 sb.Append((item as AmmoClip).Capacity.ToString());
+                valueToDraw = sb.ToString();
+            }
+            else if (ItemType.Equals(typeof(Firearm)))
+            {
+                StringBuilder sb = new StringBuilder();
+                Firearm firearm = item as Firearm;
+                if (firearm.AmmoClip == null) return;
+
+                sb.Append(firearm.AmmoClip.Content.Count.ToString());
+                sb.Append("/");
+                sb.Append(firearm.AmmoClip.Capacity.ToString());
                 valueToDraw = sb.ToString();
             }
 

@@ -55,6 +55,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public List<int> SelectiveFire     { get; private set; }
         public int       SelectiveFireMode { get; set; }
+        private bool isOn = false;
         /****************************************************************************/
 
 
@@ -93,13 +94,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float               stoppingPowerModulation,
                          AmmoClip            ammoClip,
                          AmmunitionInfo      ammunitionInfo,
-                         Vector3             ammoClipTranslation)
+                         Vector3             ammoClipTranslation,
+                         bool                on)
         {
             this.mesh = mesh;
             this.body = body;
 
             //this.attacks = attacks;
-
+            isOn = on;
             Condition               = condition;
             Reliability             = reliability;
             RateOfFire              = rateOfFire;
@@ -235,6 +237,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SelectiveFire = SelectiveFire;
 
             data.AmmoClipTranslation = AmmoClipTranslation;
+            data.On = isOn;
 
             return data;
         }
@@ -308,7 +311,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             
             body.Immovable = false;
             body.SubscribeCollisionEvent(typeof(Terrain));
-            
+
+            Switch(true);
+
             base.OnDropping();
         }
         /****************************************************************************/
@@ -377,6 +382,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             accessory.OnAttach(this, Accessories[accessorySlot].Translation);
             Accessories[accessorySlot].Accessory = accessory;
             AddAccessoryModulation(accessory);
+            accessory.Switch(isOn);
         }
         /****************************************************************************/
 
@@ -411,6 +417,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             AmmoClip.OnStoring();
             AmmoClip = null;
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Switch
+        /****************************************************************************/
+        public void Switch(bool on)
+        {
+            foreach (var accessory in Accessories)
+            {
+                if (accessory.Accessory != null) accessory.Accessory.Switch(on);                
+            }
+            isOn = on;
         }
         /****************************************************************************/
 
@@ -523,6 +543,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Firearm Parameters")]
         public String AmmunitionName { get; set; }
+
+        [CategoryAttribute("Misc")]
+        public bool On { get; set; }
     }
     /********************************************************************************/
 

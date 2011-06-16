@@ -81,6 +81,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.DepthBias = SunlightComponent.DepthBias;
             data.ShadowIntensity = SunlightComponent.ShadowIntensity;
 
+            data.FogColor = SunlightComponent.FogColor;
+            data.FogRange = SunlightComponent.FogRange;
+            data.Fog = SunlightComponent.Fog;
+            data.Ambient = SunlightComponent.Ambient;
+
             return data;
         }
         /****************************************************************************/
@@ -111,10 +116,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/        
         public bool Enabled   { get; set; }
 
-        [CategoryAttribute("Color")]
+        [CategoryAttribute("Light")]
         public Vector3 Diffuse   { get; set; }
-        [CategoryAttribute("Intensity")]
+        [CategoryAttribute("Light")]
         public float   Intensity { get; set; }
+
+        [CategoryAttribute("Fog")]
+        public bool Fog { get; set; }
+        [CategoryAttribute("Fog")]
+        public Vector3 FogColor { get; set; }
+        [CategoryAttribute("Fog")]
+        public Vector2 FogRange { get; set; }
+
+        [CategoryAttribute("Light")]
+        public Vector3 Ambient { get; set; }     
 
         [CategoryAttribute("Shadows")]
         public float DepthBias { get; set; }

@@ -139,7 +139,11 @@ namespace PlagueEngine.Rendering
                                                          float   intensity,
                                                          bool    enabled,
                                                          float   depthBias,
-                                                         float   shadowIntensity)
+                                                         float   shadowIntensity,
+                                                         Vector3 fogColor,
+                                                         Vector2 fogRange,
+                                                         bool fog,
+                                                         Vector3 ambient)
         {
             SunlightComponent result = new SunlightComponent(gameObject,
                                                              renderer,
@@ -147,7 +151,11 @@ namespace PlagueEngine.Rendering
                                                              intensity,
                                                              enabled,
                                                              depthBias,
-                                                             shadowIntensity);
+                                                             shadowIntensity,
+                                                             fogColor,
+                                                             fogRange,
+                                                             fog,
+                                                             ambient);
             return result;
         }                                                         
         /****************************************************************************/

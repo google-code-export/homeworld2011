@@ -27,8 +27,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             Distance        = distance;
             AnglePrecision  = angle;
             animationBinding = new Dictionary<Action, string>();
-            animationBinding.Add(Action.IDLE, "Idle");
-            animationBinding.Add(Action.MOVE, "Run");
+            animationBinding.Add(Action.IDLE, "Fire_Carabine");
+            animationBinding.Add(Action.MOVE, "Fire_Carabine");
             animationBinding.Add(Action.ATTACK, "Idle");
 
             ai.registerController(this);

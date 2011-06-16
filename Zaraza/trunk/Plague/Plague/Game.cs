@@ -36,7 +36,7 @@ namespace PlagueEngine
         internal Level                     Level              { get; private set; }
         
        // internal Pathfinder.Pathfinder pf;
-        private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false);
+        private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false,1.0f);
         
         public bool GameStopped { get;  set; }
 
@@ -125,7 +125,7 @@ namespace PlagueEngine
             Level.LoadLevel("Level1.lvl");
             
             //Głośność dla podkładu muzycznego powinna być relatywnie niska 
-            AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);
+            //AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);
             
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
