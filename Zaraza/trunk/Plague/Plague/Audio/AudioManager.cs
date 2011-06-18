@@ -50,7 +50,7 @@ namespace PlagueEngine.Audio
                 if (_audioManager == null)
                 {
 #if DEBUG
-                    Diagnostics.PushLog("AudioMenager nie został odpowiednio zainicjalizowany.");
+                    Diagnostics.PushLog(LoggingLevel.ERROR,"AudioMenager nie został odpowiednio zainicjalizowany.");
 #endif
                 }
                 return _audioManager;
@@ -137,7 +137,7 @@ namespace PlagueEngine.Audio
             if (_songs.ContainsKey(songName))
             {
 #if DEBUG
-                Diagnostics.PushLog("Piosenka " + songName + " została już załadowana. Zwrócono poprzednią instancje.");
+                Diagnostics.PushLog(LoggingLevel.INFO,"Piosenka " + songName + " została już załadowana. Zwrócono poprzednią instancje.");
 #endif
                 song = _songs[songName];
             }
@@ -160,7 +160,7 @@ namespace PlagueEngine.Audio
             if (_sounds.ContainsKey(soundName))
             {
 #if DEBUG
-                Diagnostics.PushLog("Dźwięk " + soundName + " został już załadowany. Zwrócono poprzednią instancje.");
+                Diagnostics.PushLog(LoggingLevel.INFO, "Dźwięk " + soundName + " został już załadowany. Zwrócono poprzednią instancje.");
 #endif
                 soundEffect = _sounds[soundName];
             }
@@ -174,7 +174,7 @@ namespace PlagueEngine.Audio
                 catch(Exception e)
                 {
 #if DEBUG
-                    Diagnostics.PushLog("Problem z załadowaniem dźwięku. " + e.Message);
+                    Diagnostics.PushLog(LoggingLevel.ERROR,"Problem z załadowaniem dźwięku. " + e.Message);
 #endif
                     
                     soundEffect =null;
@@ -195,7 +195,7 @@ namespace PlagueEngine.Audio
         public void PlaySong(SongCue songCue, bool loop)
         {
             MediaPlayer.Stop();
-            Diagnostics.PushLog("Głośność playera:" + MediaPlayer.Volume + " Ustawiam na " + songCue.Volume);
+            Diagnostics.PushLog(LoggingLevel.INFO, "Głośność playera:" + MediaPlayer.Volume + " Ustawiam na " + songCue.Volume);
             MediaPlayer.Volume = songCue.Volume;
             
             MediaPlayer.IsRepeating = loop;

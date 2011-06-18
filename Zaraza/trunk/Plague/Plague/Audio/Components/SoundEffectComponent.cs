@@ -25,13 +25,18 @@ namespace PlagueEngine.Audio.Components
 
         public void LoadSound(string soundEffectGroup, string soundEffectName, string soundName, float volume, float pitch, float pan)
         {
+            LoadSound(soundEffectGroup, soundEffectName, soundName, volume, pitch, pan, false);
+        }
+
+        public void LoadSound(string soundEffectGroup, string soundEffectName, string soundName, float volume, float pitch, float pan, bool allowMultiInstancing)
+        {
             var sf = _audioManager.LoadSound(soundName);
             if (sf == null) return;
             if (!_sounds.ContainsKey(soundEffectGroup))
             {
                 _sounds.Add(soundEffectGroup, new Dictionary<string, SoundCue>());
             }
-            _sounds[soundEffectGroup].Add(soundEffectName, new SoundCue(volume, pitch, pan, sf)); ;
+            _sounds[soundEffectGroup].Add(soundEffectName, new SoundCue(volume, pitch, pan, sf, allowMultiInstancing)); ;
         }
 
         public void LoadFolder(string folderName, float volume, float pitch, float pan)
@@ -62,7 +67,7 @@ namespace PlagueEngine.Audio.Components
             }
 #if DEBUG
             if (xbnFiles.Length == 0)
-                Diagnostics.PushLog("W folderze " + folderName + " nie ma plików .xba");
+                Diagnostics.PushLog(LoggingLevel.WARN, "W folderze " + folderName + " nie ma plików .xba");
 #endif
         }
 
@@ -76,7 +81,7 @@ namespace PlagueEngine.Audio.Components
             if (!_sounds.ContainsKey(soundGroup) || !_sounds[soundGroup].TryGetValue(soundName, out sound))
             {
 #if DEBUG
-                Diagnostics.PushLog("Dźwięk " + soundName + " lub grupa "+soundGroup+" nie istnieje.");
+                Diagnostics.PushLog(LoggingLevel.ERROR, "Dźwięk " + soundName + " lub grupa " + soundGroup + " nie istnieje.");
 #endif
                 return;
             }
@@ -97,7 +102,7 @@ namespace PlagueEngine.Audio.Components
                     else
                     {
 #if DEBUG
-                        Diagnostics.PushLog("Dźwięk " + soundName + " nie pozwala na tworzenie jego wielu instacji.");
+                        Diagnostics.PushLog(LoggingLevel.INFO,"Dźwięk " + soundName + " nie pozwala na tworzenie jego wielu instacji.");
 #endif
                         return;
                     }
@@ -115,7 +120,7 @@ namespace PlagueEngine.Audio.Components
             if (!_sounds.ContainsKey(soundGroup) || _sounds[soundGroup].Values.Count==0)
             {
 #if DEBUG
-                Diagnostics.PushLog("Grupa " + soundGroup + " nie istnieje lub nie zawiera dźwięków");
+                Diagnostics.PushLog(LoggingLevel.ERROR, "Grupa " + soundGroup + " nie istnieje lub nie zawiera dźwięków");
 #endif
                 return;
             }
@@ -139,7 +144,7 @@ namespace PlagueEngine.Audio.Components
             if (!_playingSounds.TryGetValue(soundName,out soundEffectInstance))
             {
 #if DEBUG
-                Diagnostics.PushLog("Obecnie dźwięk " + soundName + " nie jest odtwarzany");
+                Diagnostics.PushLog(LoggingLevel.INFO,"Obecnie dźwięk " + soundName + " nie jest odtwarzany");
 #endif
                 return;
             }
