@@ -37,10 +37,11 @@ namespace PlagueEngine
             this.textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox.Location = new System.Drawing.Point(-1, 0);
+            this.textBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.textBox.Location = new System.Drawing.Point(0, 0);
             this.textBox.Name = "textBox";
             this.textBox.ReadOnly = true;
-            this.textBox.Size = new System.Drawing.Size(1011, 116);
+            this.textBox.Size = new System.Drawing.Size(1009, 116);
             this.textBox.TabIndex = 0;
             this.textBox.Text = "";
             this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);

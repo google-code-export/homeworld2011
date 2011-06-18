@@ -347,7 +347,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 #if DEBUG
                     else
                     {
-                        Diagnostics.PushLog(LogingLevel.WARN, this, "Nie ma określonej kości uchwytu Grip. Nie można przypisać przedmiotów.");
+                        Diagnostics.PushLog(LoggingLevel.WARN, this, "Nie ma określonej kości uchwytu Grip. Nie można przypisać przedmiotów.");
                     }
 #endif
                     break;
@@ -369,7 +369,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 #if DEBUG
                     else
                     {
-                        Diagnostics.PushLog(LogingLevel.WARN,this, "Nie ma określonej kości uchwytu WeaponGrip. Nie można przypisać przedmiotów.");
+                        Diagnostics.PushLog(LoggingLevel.WARN,this, "Nie ma określonej kości uchwytu WeaponGrip. Nie można przypisać przedmiotów.");
                     }
 #endif
                     break;
@@ -391,7 +391,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 #if DEBUG
                     else
                     {
-                        Diagnostics.PushLog(LogingLevel.WARN, this, "Nie ma określonej kości uchwytu SideArmGrip. Nie można przypisać przedmiotów.");
+                        Diagnostics.PushLog(LoggingLevel.WARN, this, "Nie ma określonej kości uchwytu SideArmGrip. Nie można przypisać przedmiotów.");
                     }
 #endif
                     break;

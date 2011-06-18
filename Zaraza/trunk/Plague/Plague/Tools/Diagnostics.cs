@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace PlagueEngine
 {
-    public enum LogingLevel{INFO, DEBUG, WARN, ERROR};
+    public enum LoggingLevel{INFO, DEBUG, WARN, ERROR};
     /********************************************************************************/
     /// Diagnostics
     /********************************************************************************/
@@ -95,7 +95,7 @@ namespace PlagueEngine
                 }
                 catch (IOException)
                 {
-                    PushLog(LogingLevel.ERROR, "Nie udało się utworzyć pliku logu o nazwie "+_logFile);
+                    PushLog(LoggingLevel.ERROR, "Nie udało się utworzyć pliku logu o nazwie "+_logFile);
                 }
                 if (_textWriter != null)
                 {
@@ -105,25 +105,25 @@ namespace PlagueEngine
                 return (_logWindow != null && !_logWindow.TextBox.IsDisposed) || _textWriter != null;
             }
             else{
-                PushLog(LogingLevel.WARN, "Próba utworzenia nowego pliku logu w czasie gdy jest używany inny plik.");
+                PushLog(LoggingLevel.WARN, "Próba utworzenia nowego pliku logu w czasie gdy jest używany inny plik.");
             }
             return false;
         }
         /****************************************************************************/
-        private static Color LogColor(LogingLevel loginglevel)
+        private static Color LogColor(LoggingLevel logginglevel)
         {
-            switch (loginglevel)
+            switch (logginglevel)
             {
-                case LogingLevel.DEBUG:
+                case LoggingLevel.DEBUG:
                     return Color.Green;
                     break;
-                case LogingLevel.ERROR:
+                case LoggingLevel.ERROR:
                     return Color.Red;
                     break;
-                case LogingLevel.WARN:
-                    return Color.LightSalmon;
+                case LoggingLevel.WARN:
+                    return Color.OrangeRed;
                     break;
-                case LogingLevel.INFO:
+                case LoggingLevel.INFO:
                     return Color.Blue;
                     break;
                 default:
@@ -137,14 +137,14 @@ namespace PlagueEngine
         /****************************************************************************/
         public static void PushLog(String text)
         {
-            PushLog(LogingLevel.DEBUG, text);
+            PushLog(LoggingLevel.DEBUG, text);
         }
 
         public static void PushLog(Object obj, String text)
         {
-            PushLog(LogingLevel.DEBUG, obj, text);
+            PushLog(LoggingLevel.DEBUG, obj, text);
         }
-        public static void PushLog(LogingLevel loginglevel, String text)
+        public static void PushLog(LoggingLevel logginglevel, String text)
         {
             if (_textWriter == null && _logWindow == null) return;
  
@@ -155,17 +155,20 @@ namespace PlagueEngine
             sb.Append(_totalElapsedTime.ToString(@"hh\:mm\:ss"));
             sb.Append(" >> ");
             sb.Append("[");
-            sb.Append(loginglevel.ToString());
+            sb.Append(logginglevel.ToString());
             sb.Append("] ");
             sb.Append(text);
             sb.AppendLine();
 
             if (_logWindow != null && !_logWindow.TextBox.IsDisposed)
             {
-                _logWindow.TextBox.SuspendLayout();
-                _logWindow.TextBox.SelectionColor = LogColor(loginglevel);
+                lock(_logWindow.TextBox){
+                    _logWindow.TextBox.SuspendLayout();
+                _logWindow.TextBox.SelectionColor = LogColor(logginglevel);
                 _logWindow.TextBox.AppendText(sb.ToString());
                 _logWindow.TextBox.ResumeLayout();
+                }
+
             }
             if (_textWriter != null) 
             {
@@ -174,13 +177,13 @@ namespace PlagueEngine
             
         }
 
-        public static void PushLog(LogingLevel loginglevel, Object obj, String text)
+        public static void PushLog(LoggingLevel logginglevel, Object obj, String text)
         {
             var sb = new StringBuilder();
             sb.Append(obj.GetType().Name);
             sb.Append(":");
             sb.Append(text);
-            PushLog(loginglevel, sb.ToString());
+            PushLog(logginglevel, sb.ToString());
         }
         /****************************************************************************/
 
