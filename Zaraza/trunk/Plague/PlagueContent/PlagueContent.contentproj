@@ -1842,6 +1842,7 @@
       <Name>MainMenu</Name>
       <Importer>TextImporter</Importer>
       <Processor>PlagueLangProcessor</Processor>
+      <SubType>Designer</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -1849,6 +1850,14 @@
       <Name>MainMenuFrame</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lang\English\OptionsMenu.lang">
+      <Name>OptionsMenu</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
+      <SubType>Designer</SubType>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

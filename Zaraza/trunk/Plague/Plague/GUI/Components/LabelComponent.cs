@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Nuclex.UserInterface.Controls;
 using Nuclex.UserInterface;
+using PlagueEngine.LowLevelGameFlow;
 
 /************************************************************************************/
 /// PlagueEngine.GUI.Components
@@ -18,18 +19,24 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        public LabelControl Control { get; private set; }
+        public LabelControl Control { get; protected set; }
+        public string Text { get; protected set; }
         /****************************************************************************/
+
         
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public LabelComponent(String text, UniRectangle bounds)
-            : base()
+        public LabelComponent(string text, int x, int y, int width, int height)
+            : base(x,y,width,height)
         {
             Control = new LabelControl();
-            Control.Bounds = bounds;
-            Control.Text = text;                  
+            Control.Bounds = new UniRectangle(new UniScalar(x),
+                                              new UniScalar(y),
+                                              new UniScalar(width),
+                                              new UniScalar(height));
+            Control.Text = GlobalGameObjects.StringManager.Load<string>(text) ;
+            this.Text = text;  
         }
         /****************************************************************************/
                         

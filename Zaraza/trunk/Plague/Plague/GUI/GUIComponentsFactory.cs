@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using PlagueEngine.GUI.Components;
 using Nuclex.UserInterface;
 using PlagueEngine.LowLevelGameFlow;
+using Nuclex.UserInterface.Controls.Desktop;
 
 
 namespace PlagueEngine.GUI
@@ -30,6 +31,11 @@ namespace PlagueEngine.GUI
         }
         /****************************************************************************/
 
+        public ListComponent CreateListComponent(List<string> Items, int x, int y, int width, int height, ListSelectionMode mode)
+        {
+            ListComponent result = new ListComponent(Items, x, y, width, height, mode);
+            return result;
+        }
 
         /****************************************************************************/
         /// Create Button Component
@@ -57,12 +63,7 @@ namespace PlagueEngine.GUI
         public LabelComponent CreateLabelComponent(String text,
                                                    int x, int y)
         {
-            LabelComponent result = new LabelComponent(text, 
-                                                       new UniRectangle(new UniScalar(x),
-                                                                        new UniScalar(y),
-                                                                        new UniScalar(1),
-                                                                        new UniScalar(1)));
-
+            LabelComponent result = new LabelComponent(text, x,y,1,1);
             return result;
         }
         /****************************************************************************/

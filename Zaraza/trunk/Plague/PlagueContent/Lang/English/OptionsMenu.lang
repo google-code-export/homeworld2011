@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XNABabylonStringFile>
+  <version>1.0</version>
+  <revisionDate>15-06-2011</revisionDate>
+  <author>Bartosz Herman</author>
+  <language>English</language>
+
+  <package id="OptionsMenu">
+    <key id="main" val="OPTIONS"/>
+    <key id="language_change" val="Language"/>
+    <key id="music_volume" val="Music Volume"/>
+    <key id="sounds_effects_volume" val="Sound Effects Volume"/>
+    <key id="back" val="Save and quit"/>
+  </package>
+</XNABabylonStringFile>
