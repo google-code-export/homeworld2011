@@ -338,7 +338,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         CurrentObject = item;
                         item.Owner = this;
                         item.OwnerBone = Mesh.BoneMap[Grip];
-                        if (item.GetType().Equals(typeof(Firearm))) (item as Firearm).Switch(true);
+                        if (item.GetType().Equals(typeof(Firearm)))
+                        {
+                            (item as Firearm).Switch(true);
+                            (item as Firearm).OnPlacing();
+                        }
                     }
 #if DEBUG
                     else
@@ -356,7 +360,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         Weapon = item as Firearm;
                         item.Owner = this;
                         item.OwnerBone = Mesh.BoneMap[WeaponGrip];
-                        if (item.GetType().Equals(typeof(Firearm))) (item as Firearm).Switch(false);
+                        if (item.GetType().Equals(typeof(Firearm)))
+                        {
+                            (item as Firearm).Switch(false);
+                            (item as Firearm).OnPlacing();
+                        }
                     }
 #if DEBUG
                     else
@@ -374,7 +382,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         SideArm = item as Firearm;
                         item.Owner = this;
                         item.OwnerBone = Mesh.BoneMap[SideArmGrip];
-                        if (item.GetType().Equals(typeof(Firearm))) (item as Firearm).Switch(false);
+                        if (item.GetType().Equals(typeof(Firearm)))
+                        {
+                            (item as Firearm).Switch(false);
+                            (item as Firearm).OnPlacing();
+                        }
                     }
 #if DEBUG
                     else
