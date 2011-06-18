@@ -98,7 +98,7 @@ namespace PlagueEngine.AItest
                
                 //float angleBetweenGO = MathHelper.ToDegrees((float)Math.Acos(dot));
                 
-                if ( Math.Abs((angleBetweenGO)) <= angle)
+                if ( Math.Abs((angleBetweenGO)) <= MathHelper.ToRadians(angle))
                 {
                     testedTargets2.Add(go);
                 }

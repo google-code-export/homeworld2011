@@ -25,19 +25,23 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         //TODO: sprawdzić czemu tu public
         public ButtonControl Control { get; private set; }
+        
         public String Tag            { get; private set; }
         /****************************************************************************/
+
         
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public ButtonComponent(String text, UniRectangle bounds, String tag)
-            : base()
+        public ButtonComponent(String text, int x, int y, int width, int height, String tag)
+            : base(x,y,width,height)
         {
             Control = new ButtonControl();
             Control.Text = text;
-            Control.Bounds = bounds;
-
+            Control.Bounds = new UniRectangle(new UniScalar(x),
+                                              new UniScalar(y),
+                                              new UniScalar(width),
+                                              new UniScalar(height));
             Tag = tag;
         }
         /****************************************************************************/

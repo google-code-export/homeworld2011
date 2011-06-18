@@ -48,10 +48,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private String newGametext { get; set; }
         private String newGametag { get; set; }
-        private int newGamex { get; set; }
-        private int newGamey { get; set; }
-        private int newGamewidth { get; set; }
-        private int newGameheight { get; set; }
         private string levelToLoad { get; set; }
         /***********************************/
 
@@ -62,10 +58,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private String optionstext { get; set; }
         private String optionstag { get; set; }
-        private int optionsx { get; set; }
-        private int optionsy { get; set; }
-        private int optionswidth { get; set; }
-        private int optionsheight { get; set; }
         /***********************************/
 
         /***********************************/
@@ -75,10 +67,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private String creditstext { get; set; }
         private String creditstag { get; set; }
-        private int creditsx { get; set; }
-        private int creditsy { get; set; }
-        private int creditswidth { get; set; }
-        private int creditsheight { get; set; }
         /***********************************/
 
         /***********************************/
@@ -88,10 +76,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private String exittext { get; set; }
         private String exittag { get; set; }
-        private int exitx { get; set; }
-        private int exity { get; set; }
-        private int exitwidth { get; set; }
-        private int exitheight { get; set; }
         /***********************************/
 
         /***********************************/
@@ -131,10 +115,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(ButtonComponent newGame, String newGametext, String newGametag, int newGamex, int newGamey, int newGamewidth, int newGameheight,String levelToLoad,
-                        ButtonComponent options, String optionstext, String optionstag, int optionsx, int optionsy, int optionswidth, int optionsheight,
-                        ButtonComponent credits, String creditstext, String creditstag, int creditsx, int creditsy, int creditswidth, int creditsheight,
-                        ButtonComponent exit, String exittext, String exittag, int exitx, int exity, int exitwidth, int exitheight,
+        public void Init(ButtonComponent newGame, String newGametext, String newGametag,String levelToLoad,
+                        ButtonComponent options, String optionstext, String optionstag,
+                        ButtonComponent credits, String creditstext, String creditstag,
+                        ButtonComponent exit, String exittext, String exittag,
                         FrontEndComponent window, int windowx, int windowy, int windowheight, int windowwidth,
                         LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext,int creditswindowtextx,int creditswindowtexty,
                         LabelComponent optionslabel, int optionswindowx, int optionswindowy, int optionswindowwidth, int optionswindowheight, String optionswindowtext, int optionswindowtextx, int optionswindowtexty,
@@ -156,10 +140,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.newGametext = newGametext;
             this.newGametag = newGametag;
-            this.newGamex = newGamex;
-            this.newGamey = newGamey;
-            this.newGamewidth = newGamewidth;
-            this.newGameheight = newGameheight;
             this.levelToLoad = levelToLoad;
             this.newGame.Register();
 
@@ -170,11 +150,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.optionstext = optionstext;
             this.optionstag = optionstag;
-            this.optionsx = optionsx;
-            this.optionsy = optionsy;
-            this.optionswidth = optionswidth;
-            this.optionsheight = optionsheight;
-
+            
             this.options.Register();
             this.options.setDelegate(optionsClick);
 
@@ -184,11 +160,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.creditstext = creditstext;
             this.creditstag = creditstag;
-            this.creditsx = creditsx;
-            this.creditsy = creditsy;
-            this.creditswidth = creditswidth;
-            this.creditsheight = creditsheight;
-
+            
             this.credits.Register();
             this.credits.setDelegate(creditsClick);
 
@@ -199,11 +171,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.exittext = exittext;
             this.exittag = exittag;
-            this.exitx = exitx;
-            this.exity = exity;
-            this.exitwidth = exitwidth;
-            this.exitheight = exitheight;
-
+            
             this.exit.Register();
 
             this.exit.setDelegate(exitClick);
@@ -367,35 +335,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.newGametext = newGametext;
             data.newGametag = newGametag;
-            data.newGamex = newGamex;
-            data.newGamey = newGamey;
-            data.newGamewidth = newGamewidth;
-            data.newGameheight = newGameheight;
+            data.newGamex = newGame.X;
+            data.newGamey = newGame.Y;
+            data.newGamewidth = newGame.Width;
+            data.newGameheight = newGame.Height;
             data.levelToLoad = levelToLoad;
 
 
             data.optionstext = optionstext;
             data.optionstag = optionstag;
-            data.optionsx = optionsx;
-            data.optionsy = optionsy;
-            data.optionswidth = optionswidth;
-            data.optionsheight = optionsheight;
+            data.optionsx = options.X;
+            data.optionsy = options.Y;
+            data.optionswidth = options.Width;
+            data.optionsheight = options.Height;
 
 
             data.creditstext = creditstext;
             data.creditstag = creditstag;
-            data.creditsx = creditsx;
-            data.creditsy = creditsy;
-            data.creditswidth = creditswidth;
-            data.creditsheight = creditsheight;
+            data.creditsx = credits.X;
+            data.creditsy = credits.Y;
+            data.creditswidth = credits.Width;
+            data.creditsheight = credits.Height;
 
 
             data.exittext = exittext;
             data.exittag = exittag;
-            data.exitx = exitx;
-            data.exity = exity;
-            data.exitwidth = exitwidth;
-            data.exitheight = exitheight;
+            data.exitx = exit.X;
+            data.exity = exit.Y;
+            data.exitwidth = exit.Width;
+            data.exitheight = exit.Height;
 
 
 
