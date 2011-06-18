@@ -160,7 +160,7 @@
     <Compile Include="Audio\MusicFadeEffect.cs" />
     <Compile Include="Audio\SongCue.cs" />
     <Compile Include="Audio\SoundCue.cs" />
-    <Compile Include="EventsHistorian.cs" />
+    <Compile Include="Tools\EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />
     <Compile Include="EventsSystem\EventsSniffer.cs" />
     <Compile Include="EventsSystem\EventsSnifferComponent.cs" />
@@ -187,11 +187,11 @@
     <Compile Include="Input\InputComponent.cs" />
     <Compile Include="Input\InputComponentsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectComponent.cs" />
-    <Compile Include="Diagnostics.cs" />
-    <Compile Include="LogWindow.cs">
+    <Compile Include="Tools\Diagnostics.cs" />
+    <Compile Include="Tools\LogWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LogWindow.Designer.cs">
+    <Compile Include="Tools\LogWindow.Designer.cs">
       <DependentUpon>LogWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="LowLevelGameFlow\GameObjectDefinition.cs" />
@@ -326,6 +326,9 @@
     <Compile Include="Tools\LevelNameMessageBox.Designer.cs">
       <DependentUpon>LevelNameMessageBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\ScrollingRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -373,7 +376,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LogWindow.resx">
+    <EmbeddedResource Include="Tools\LogWindow.resx">
       <DependentUpon>LogWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

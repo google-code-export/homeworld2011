@@ -3,10 +3,11 @@ using System.IO;
 using System.Text;
 using PlagueEngine.TimeControlSystem;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace PlagueEngine
 {
-
+    public enum LogingLevel{INFO, DEBUG, WARN, ERROR};
     /********************************************************************************/
     /// Diagnostics
     /********************************************************************************/
@@ -74,88 +75,112 @@ namespace PlagueEngine
         {
             if (_textWriter == null)
             {
-                _logFile = (directory == null ? String.Empty : directory + "\\") + DateTime.Now.ToString(@"HH-mm-ss dd-MM-yy") + ".txt";
+                var sb = new StringBuilder();
+                sb.AppendLine(_game.Title);
+                sb.AppendLine(DateTime.Now.ToString());
+                sb.AppendLine(_lineBrake);
+                if (_logWindow != null && !_logWindow.TextBox.IsDisposed)
+                {
+                    _logWindow.TextBox.AppendText(sb.ToString());
+                }
+                if (!String.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory + "\\");
+                }
 
+                _logFile = (directory == null ? String.Empty : directory + "\\") + DateTime.Now.ToString(@"HH-mm-ss dd-MM-yy") + ".txt";
                 try
                 {
                     _textWriter = new StreamWriter(_logFile);
                 }
                 catch (IOException)
                 {
-                    if (directory != null)
-                    {
-                        Directory.CreateDirectory(directory + "\\");
-                        _textWriter = new StreamWriter(_logFile);
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    PushLog(LogingLevel.ERROR, "Nie udało się utworzyć pliku logu o nazwie "+_logFile);
                 }
-                
-                _textWriter.WriteLine(_game.Title);
-                _textWriter.WriteLine(DateTime.Now.ToString());
-                _textWriter.WriteLine(_lineBrake);
-                _textWriter.Flush();
-
-                if (_logWindow != null)
+                if (_textWriter != null)
                 {
-                    var sb = new StringBuilder();
-                    sb.AppendLine(_game.Title);
-                    sb.AppendLine(DateTime.Now.ToString());
-                    sb.AppendLine(_lineBrake);
-                    _logWindow.TextBox.Text += sb.ToString();
+                    _textWriter.Write(sb.ToString());
+                    _textWriter.Flush();
                 }
-
-                return true;
+                return (_logWindow != null && !_logWindow.TextBox.IsDisposed) || _textWriter != null;
             }
-
+            else{
+                PushLog(LogingLevel.WARN, "Próba utworzenia nowego pliku logu w czasie gdy jest używany inny plik.");
+            }
             return false;
         }
         /****************************************************************************/
-
+        private static Color LogColor(LogingLevel loginglevel)
+        {
+            switch (loginglevel)
+            {
+                case LogingLevel.DEBUG:
+                    return Color.Green;
+                    break;
+                case LogingLevel.ERROR:
+                    return Color.Red;
+                    break;
+                case LogingLevel.WARN:
+                    return Color.LightSalmon;
+                    break;
+                case LogingLevel.INFO:
+                    return Color.Blue;
+                    break;
+                default:
+                    return Color.Green;
+                    break;
+            }
+        }
 
         /****************************************************************************/
         /// Push Log
         /****************************************************************************/
         public static void PushLog(String text)
         {
-            if (_textWriter == null) return;
-            if (_logWindow == null) return;
-
-            var sb = new StringBuilder();
-            sb.Append(">> ");
-            sb.Append(DateTime.Now.ToString(@"HH\:mm\:ss"));
-            sb.Append(" | ");
-            sb.Append(_totalElapsedTime.ToString(@"hh\:mm\:ss"));
-            sb.Append(" >> ");
-            sb.Append(text);
-            sb.AppendLine();
-            _logWindow.TextBox.Text += sb.ToString();
-            _textWriter.Write(sb.ToString());
-            _logWindow.TextBox.SelectionStart = _logWindow.TextBox.TextLength;
-            _logWindow.TextBox.ScrollToCaret();
+            PushLog(LogingLevel.DEBUG, text);
         }
 
         public static void PushLog(Object obj, String text)
         {
-            if (_textWriter == null) return;
-            if (_logWindow == null) return;
-
+            PushLog(LogingLevel.DEBUG, obj, text);
+        }
+        public static void PushLog(LogingLevel loginglevel, String text)
+        {
+            if (_textWriter == null && _logWindow == null) return;
+ 
             var sb = new StringBuilder();
             sb.Append(">> ");
             sb.Append(DateTime.Now.ToString(@"HH\:mm\:ss"));
             sb.Append(" | ");
             sb.Append(_totalElapsedTime.ToString(@"hh\:mm\:ss"));
             sb.Append(" >> ");
+            sb.Append("[");
+            sb.Append(loginglevel.ToString());
+            sb.Append("] ");
+            sb.Append(text);
+            sb.AppendLine();
+
+            if (_logWindow != null && !_logWindow.TextBox.IsDisposed)
+            {
+                _logWindow.TextBox.SuspendLayout();
+                _logWindow.TextBox.SelectionColor = LogColor(loginglevel);
+                _logWindow.TextBox.AppendText(sb.ToString());
+                _logWindow.TextBox.ResumeLayout();
+            }
+            if (_textWriter != null) 
+            {
+                _textWriter.Write(sb.ToString());
+            }
+            
+        }
+
+        public static void PushLog(LogingLevel loginglevel, Object obj, String text)
+        {
+            var sb = new StringBuilder();
             sb.Append(obj.GetType().Name);
             sb.Append(":");
             sb.Append(text);
-            sb.AppendLine();
-            _logWindow.TextBox.Text += sb.ToString();
-            _textWriter.Write(sb.ToString());
-            _logWindow.TextBox.SelectionStart = _logWindow.TextBox.TextLength;
-            _logWindow.TextBox.ScrollToCaret();
+            PushLog(loginglevel, sb.ToString());
         }
         /****************************************************************************/
 
@@ -171,14 +196,13 @@ namespace PlagueEngine
                 _textWriter.WriteLine("Run Time: " + _totalElapsedTime.ToString(@"hh\:mm\:ss"));
                 _textWriter.Flush();
                 _textWriter.Close();
-
-                if (_logWindow != null)
+            }
+            if (_logWindow != null)
                 {
                     _logWindow.Close();
                     _logWindow       = null;
                     _showLogWindow   = false;
                 }
-            }
         }
         /****************************************************************************/
                      

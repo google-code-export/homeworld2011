@@ -11,7 +11,7 @@ namespace PlagueEngine
 {
     public partial class LogWindow : Form
     {
-        public TextBox TextBox
+        public RichTextBox TextBox
         {
             get
             {
@@ -22,6 +22,11 @@ namespace PlagueEngine
         public LogWindow()
         {
             InitializeComponent();
+        }
+
+        private void textBox_TextChanged(object sender, EventArgs e)
+        {
+            this.textBox.ScrollToBottom();
         }
     }
 }

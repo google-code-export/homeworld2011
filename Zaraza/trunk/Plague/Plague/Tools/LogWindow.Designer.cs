@@ -1,4 +1,5 @@
-﻿namespace PlagueEngine
+﻿using PlagueEngine.Tools;
+namespace PlagueEngine
 {
     partial class LogWindow
     {
@@ -28,19 +29,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox = new System.Windows.Forms.TextBox();
+            this.textBox = new PlagueEngine.Tools.ScrollingRichTextBox();
             this.SuspendLayout();
             // 
             // textBox
             // 
-            this.textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox.Location = new System.Drawing.Point(0, 0);
-            this.textBox.Multiline = true;
+            this.textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox.Location = new System.Drawing.Point(-1, 0);
             this.textBox.Name = "textBox";
             this.textBox.ReadOnly = true;
-            this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox.Size = new System.Drawing.Size(1008, 116);
+            this.textBox.Size = new System.Drawing.Size(1011, 116);
             this.textBox.TabIndex = 0;
+            this.textBox.Text = "";
+            this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
             // 
             // LogWindow
             // 
@@ -53,12 +56,12 @@
             this.Name = "LogWindow";
             this.Text = "Log";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox;
+        private ScrollingRichTextBox textBox;
+
     }
 }
