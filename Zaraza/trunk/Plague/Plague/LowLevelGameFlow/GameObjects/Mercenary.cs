@@ -317,19 +317,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 FindPlaceForItem(item, true);
             }
-//            if (Grip != null && Mesh.BoneMap.ContainsKey(Grip))
-//            {
-//                CurrentObject = item;
-//                item.Owner = this;
-//                item.OwnerBone = Mesh.BoneMap[Grip];
-//                item.OnPicking();
-//            }
-//#if DEBUG
-//            else
-//            {
-//                Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu Grip. Nie można podnosić przedmiotów.");
-//            }
-//#endif
 
         }
         /****************************************************************************/
@@ -356,7 +343,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 #if DEBUG
                     else
                     {
-                        Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu Grip. Nie można przypisać przedmiotów.");
+                        Diagnostics.PushLog(LogingLevel.WARN, this, "Nie ma określonej kości uchwytu Grip. Nie można przypisać przedmiotów.");
                     }
 #endif
                     break;
@@ -374,7 +361,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 #if DEBUG
                     else
                     {
-                        Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu WeaponGrip. Nie można przypisać przedmiotów.");
+                        Diagnostics.PushLog(LogingLevel.WARN,this, "Nie ma określonej kości uchwytu WeaponGrip. Nie można przypisać przedmiotów.");
                     }
 #endif
                     break;
@@ -392,7 +379,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 #if DEBUG
                     else
                     {
-                        Diagnostics.PushLog(this, "Nie ma określonej kości uchwytu SideArmGrip. Nie można przypisać przedmiotów.");
+                        Diagnostics.PushLog(LogingLevel.WARN, this, "Nie ma określonej kości uchwytu SideArmGrip. Nie można przypisać przedmiotów.");
                     }
 #endif
                     break;
