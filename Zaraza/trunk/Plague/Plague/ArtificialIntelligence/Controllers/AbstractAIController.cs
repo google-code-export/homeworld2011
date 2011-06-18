@@ -470,8 +470,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                                            new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Z));
                         if (currentDistance < attack.maxAttackDistance)
                         {
-                            controlledObject.Mesh.StartClip(AnimationBinding[Action.ATTACK]);
-                            controlledObject.Mesh.SubscribeAnimationsEnd(AnimationBinding[Action.ATTACK]);
+                            //controlledObject.Mesh.StartClip(AnimationBinding[Action.ATTACK]);
+                            //controlledObject.Mesh.SubscribeAnimationsEnd(AnimationBinding[Action.ATTACK]);
                             controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject), Priority.Normal, this.attackTarget);
                             action = Action.ATTACK_IDLE;
                         }

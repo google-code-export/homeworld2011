@@ -72,7 +72,7 @@ namespace PlagueLocalizationExtension
  
             try
             {
-                LangFile bab = base.Load<LangFile>(package + "." + packageLanguage);
+                LangFile bab = base.Load<LangFile>(LangDir + "/" + packageLanguage + "/" + package);
                 packages.Add(package, bab.keys);
             }
             catch (ContentLoadException )
@@ -136,7 +136,8 @@ namespace PlagueLocalizationExtension
                 }
             }
         }
- 
+
+        public string LangDir { get; set; }
         //Change this variable to the default language your content files are in
         //This value will be used as a fallback for untranslated content
         private static string DEFAULTLANGUAGE = "English";

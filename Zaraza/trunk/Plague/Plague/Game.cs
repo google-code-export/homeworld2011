@@ -106,8 +106,9 @@ namespace PlagueEngine
             RendererClock = TimeControl.CreateClock();
             PhysicsClock  = TimeControl.CreateClock();
 
-             GlobalGameObjects.StringManager = new LangContent(Content.ServiceProvider, Content.RootDirectory);
-             GlobalGameObjects.StringManager.Language = "English";
+            GlobalGameObjects.StringManager = new LangContent(Content.ServiceProvider, Content.RootDirectory);
+            GlobalGameObjects.StringManager.Language = "English";
+            GlobalGameObjects.StringManager.LangDir = "Lang";
             
         }
         /****************************************************************************/
@@ -127,7 +128,7 @@ namespace PlagueEngine
             
             Renderer.InitHelpers();
             InitGUI();
-            Level.LoadLevel("Level1.lvl");
+            Level.LoadLevel("Menu.lvl");
             
             //Głośność dla podkładu muzycznego powinna być relatywnie niska 
             //AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);

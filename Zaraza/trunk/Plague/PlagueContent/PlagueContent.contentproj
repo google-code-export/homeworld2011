@@ -1838,10 +1838,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lang\English\MainMenu.English.lang">
-      <Name>MainMenu.English</Name>
+    <Compile Include="Lang\English\MainMenu.lang">
+      <Name>MainMenu</Name>
       <Importer>TextImporter</Importer>
       <Processor>PlagueLangProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\MainMenuFrame.png">
+      <Name>MainMenuFrame</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

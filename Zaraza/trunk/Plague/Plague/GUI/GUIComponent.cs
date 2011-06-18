@@ -1,4 +1,5 @@
 ﻿using PlagueEngine.LowLevelGameFlow;
+using Nuclex.UserInterface;
 
 /************************************************************************************/
 ///PlagueEngine.GUI
@@ -18,15 +19,30 @@ namespace PlagueEngine.GUI
         internal static GUI gui = null;
         /****************************************************************************/
 
-
+        public int X { get; protected set; }
+        public int Y { get; protected set; }
+        public int Width { get; protected set; }
+        public int Height { get; protected set; }
+        
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
         public GUIComponent() : base(null)
-        { 
+        {
+            this.X = 0;
+            this.Y = 0;
+            this.Width  = 0;
+            this.Height = 0;
         }
         /****************************************************************************/
 
+        public GUIComponent(int X, int Y, int Width, int Height) : base(null)
+        {
+            this.X = X;
+            this.Y = Y;
+            this.Width  = Width;
+            this.Height = Height;
+        }
 
         /****************************************************************************/
         /// Register

@@ -41,11 +41,11 @@ namespace PlagueEngine.GUI
         {
 
             ButtonComponent result = new ButtonComponent(text,
-                                                         new UniRectangle(new UniScalar(x),
-                                                                          new UniScalar(y),
-                                                                          new UniScalar(width),
-                                                                          new UniScalar(height)),
-                                                        tag);
+                                                         x,
+                                                         y,
+                                                         width,
+                                                         height,
+                                                         tag);
             return result;
         }
         /****************************************************************************/

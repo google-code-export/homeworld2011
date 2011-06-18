@@ -168,6 +168,7 @@
     <Compile Include="EventsSystem\EventsSystem.cs" />
     <Compile Include="EventsSystem\EventsSender.cs" />
     <Compile Include="GUI\Components\ButtonComponent.cs" />
+    <Compile Include="GUI\Components\DropdownComponent.cs" />
     <Compile Include="GUI\Components\InputComponent.cs" />
     <Compile Include="GUI\Components\LabelComponent.cs" />
     <Compile Include="GUI\Components\PanelComponent.cs" />
@@ -229,6 +230,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\LinkedCamera.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MercenariesManager.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Mercenary.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\OptionsMenu.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Panel.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\ParticleEmitter.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\PointLight.cs" />
