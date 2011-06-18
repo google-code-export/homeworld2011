@@ -296,6 +296,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             body.DisableBody();
             mesh.Enabled = false;
 
+            foreach (var accessory in Accessories)
+            {
+                if (accessory.Accessory != null) accessory.Accessory.OnOwnerStoring();
+            }
+
+            if (AmmoClip != null)
+            {
+                AmmoClip.body.DisableBody();
+                AmmoClip.mesh.Enabled = false;
+            }
+
             base.OnStoring();
         }
         /****************************************************************************/
@@ -331,6 +342,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// On Placing
+        /****************************************************************************/
+        public virtual void OnPlacing()
+        {
+            foreach (var accessory in Accessories)
+            {
+                if (accessory.Accessory != null)
+                {
+                    accessory.Accessory.OnOwnerPlacing();
+                }
+            }
+
+            if (AmmoClip != null)
+            {
+                AmmoClip.body.DisableBody();
+                AmmoClip.mesh.Enabled = true;
+            }
+        }
+        /****************************************************************************/
+        
 
         /****************************************************************************/
         /// AttachedAccessory
@@ -428,7 +461,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             foreach (var accessory in Accessories)
             {
-                if (accessory.Accessory != null) accessory.Accessory.Switch(on);                
+                if (accessory.Accessory != null)
+                {
+                    accessory.Accessory.Switch(on);
+                }
             }
             isOn = on;
         }

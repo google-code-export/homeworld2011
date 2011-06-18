@@ -128,7 +128,7 @@ namespace PlagueEngine
             
             Renderer.InitHelpers();
             InitGUI();
-            Level.LoadLevel("Menu.lvl");
+            Level.LoadLevel("Level1.lvl");
             
             //Głośność dla podkładu muzycznego powinna być relatywnie niska 
             //AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);

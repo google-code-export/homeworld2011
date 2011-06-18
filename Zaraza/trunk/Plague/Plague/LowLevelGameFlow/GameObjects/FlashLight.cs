@@ -182,6 +182,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// OnOwnerStoring
+        /****************************************************************************/
+        public override void OnOwnerStoring()
+        {
+            light.Enabled = false;
+            base.OnOwnerStoring();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// On Attach
         /****************************************************************************/
         public override void OnAttach(Firearm firearm, Vector3 translation)
