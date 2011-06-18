@@ -85,7 +85,7 @@ namespace PlagueEngine.AItest
 
 
                 Vector3 dir = (go.controlledObject.World.Translation - owner.controlledObject.World.Translation);
-                Vector2 v1 = Vector2.Normalize(new Vector2(dir.X, dir.Y));
+                Vector2 v1 = Vector2.Normalize(new Vector2(dir.X, dir.Z));
                 Vector2 v2 = Vector2.Normalize(new Vector2(owner.controlledObject.World.Forward.X, 
                                                 owner.controlledObject.World.Forward.Z));
                 //float det = v1.X * v2.Y - v1.Y * v2.X;
@@ -97,8 +97,8 @@ namespace PlagueEngine.AItest
                 //float dot = Vector3.Dot(ownerForward, dir);
                
                 //float angleBetweenGO = MathHelper.ToDegrees((float)Math.Acos(dot));
-
-                if ( Math.Abs(angleBetweenGO) <= angle)
+                
+                if ( Math.Abs((angleBetweenGO)) <= angle)
                 {
                     testedTargets2.Add(go);
                 }

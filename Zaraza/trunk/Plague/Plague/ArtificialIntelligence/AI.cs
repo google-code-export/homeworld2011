@@ -10,8 +10,10 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 namespace PlagueEngine.ArtificialIntelligence
 {
-    class AI : IEventsReceiver
+    class AI : EventsSender, IEventsReceiver
     {
+        private bool isDisposed;
+
         private List<AbstractAIController> GoodGuys;
         private List<AbstractAIController> BadGuys;
 
@@ -20,14 +22,22 @@ namespace PlagueEngine.ArtificialIntelligence
 
         int counter = 0;
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public AI()
         {
+            this.isDisposed         = false;
             this.BadGuys            = new List<AbstractAIController>();
-            this.GoodGuys = new List<AbstractAIController>();
+            this.GoodGuys           = new List<AbstractAIController>();
             AbstractAIController.ai = this;
         }
         
-        public void registerController(IAIController controller)
+        /// <summary>
+        /// Registers newly created controller in the AI subsystem.
+        /// </summary>
+        /// <param name="controller">Controller to register in the AI subsystem</param>
+        public void registerController(AbstractAIController controller)
         {
             if(controller.GetType().Equals(typeof (MercenaryController)))
             {
@@ -39,7 +49,11 @@ namespace PlagueEngine.ArtificialIntelligence
             }
         }
 
-
+        /// <summary>
+        /// Accepts events from EventsSystem.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void OnEvent(EventsSender sender, EventArgs e)
         {
             if (e.GetType().Equals(typeof(EnemyKilled)))
@@ -47,46 +61,59 @@ namespace PlagueEngine.ArtificialIntelligence
                 EnemyKilled evt = e as EnemyKilled;
                 if(evt.DeadEnemy.GetType().Equals(typeof (Mercenary)))
                 {
-                    if(GoodGuys.Contains(evt.DeadEnemy.ObjectAIController))
-                    {
-                        GoodGuys.Remove(evt.DeadEnemy.ObjectAIController);
-                        evt.DeadEnemy.SendEvent(evt, Priority.Normal, BadGuys.ToArray());
-                    }
+                    GoodGuys.Remove(evt.DeadEnemy.ObjectAIController);
+                    SendEvent(evt, Priority.Normal, BadGuys.ToArray());
                 }
                 else
                 {
                     BadGuys.Remove(evt.DeadEnemy.ObjectAIController);
-                    evt.DeadEnemy.SendEvent(evt, Priority.Normal, GoodGuys.ToArray());
+                    SendEvent(evt, Priority.Normal, GoodGuys.ToArray());
                 }
             }
         }
 
+        /// <summary>
+        /// Informs whether Object was disposed
+        /// </summary>
+        /// <returns>True, if object is disposed</returns>
         public bool IsDisposed()
         {
-            return GoodGuys == null && BadGuys == null;
+            return isDisposed;
         }
 
+        /// <summary>
+        /// Prepares Object for destruction
+        /// </summary>
         public void Dispose()
         {
             this.BadGuys.Clear();
-            this.BadGuys = null;
             this.GoodGuys.Clear();
+            this.BadGuys  = null;
             this.GoodGuys = null;
+            this.isDisposed = true;
         }
 
+        /// <summary>
+        /// Performs all necessary checks and tests.
+        /// </summary>
         public void Update()
          {
             if (counter % 2 == 0)
             {
                 foreach (MobController contr in BadGuys)
                 {
-                    AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
-                    if (found != null && found.controlledObject != contr.attackTarget)
+                    #region Sight Sensor
+                    if (!contr.IsBlinded)
                     {
-                        Diagnostics.PushLog("=========================MOB SEES!=========================");
-                        EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
-                        found.controlledObject.SendEvent(evt, Priority.Normal, contr.controlledObject);
+                        AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Forward, contr.SightAngle, contr.SightRange);
+                        if (found != null && found.controlledObject != contr.attackTarget)
+                        {
+                            Diagnostics.PushLog("=========================MOB SEES!=========================");
+                            EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
+                            SendEvent(evt, Priority.Normal, contr);
+                        }
                     }
+                    #endregion
 
                 }
                 counter = 1;
@@ -95,13 +122,18 @@ namespace PlagueEngine.ArtificialIntelligence
             {
                 foreach (MercenaryController contr in GoodGuys)
                 {
-                    AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(BadGuys, contr, contr.controlledObject.World.Forward, (float)30.0, (float)100.0);
-                    if (found != null && found.controlledObject != contr.attackTarget)
+                    #region SightSensor
+                    if (!contr.IsBlinded)
                     {
-                        Diagnostics.PushLog("=========================MERC SEES!=========================");
-                        EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
-                        found.controlledObject.SendEvent(evt, Priority.Normal, contr.controlledObject);
+                        AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(BadGuys, contr, contr.controlledObject.World.Forward, contr.SightAngle, contr.SightRange);
+                        if (found != null && found.controlledObject != contr.attackTarget)
+                        {
+                            Diagnostics.PushLog("=========================MERC SEES!=========================");
+                            EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
+                            SendEvent(evt, Priority.Normal, contr);
+                        }
                     }
+                    #endregion
 
                 }
                 counter = 0;

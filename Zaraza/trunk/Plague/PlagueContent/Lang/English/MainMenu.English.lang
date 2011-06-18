@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XNABabylonStringFile>
+  <version>1.0</version>
+  <revisionDate>15-06-2011</revisionDate>
+  <author>Bartosz Herman</author>
+  <language>English</language>
+  <!--The package id for a file named PACKAGE.LANGUAGE.bab should be PACKAGE-->
+  <!--
+  README!!! 
+  UWAGA 1: id nie może zawierać wielkich znaków !!!
+  UWAGA 2: package może zawierać wielkie znaki.
+  UWAGA 3: podawany argument w Load może mieć wielkie i małe znaki jak komu pasi w nazwie key'a,
+           ale w nazwie package'u muszą się case'y zgadzać.
+  UWAGA 4: jest tak dlatego, że id są przepuszczane przez toLower() przed porównaniem z keyem 
+           wczytanym z pliku.
+  UWAGA 5: tak, w zasadzie możnaby albo toLower symetrycznie dać, albo wywalić.
+           Ale niech będzie jak działa.
+  UWAGA 6: nazwa pliku powinna wyglądać tak: 
+           
+           ++   <package>.<język>.lang
+           
+           Żeby być poprawnie wczytana. Zła nazwa pliku na 90% spowoduje rzucanie wyjątkami na ładowaniu.
+  UWAGA 7: tak nadal idealnie to to nie jest, najfajniej by było jakby se można
+           plikami z językami zarządzać jakoś z edytora i z niego dodawać do nich wpisy.
+  UWAGA 8: Ten plik stanowi przykład poglądowy. Działa na menu Andrzeja (zmieniłem mu tam kodzik).
+  UWAGA 9: żeby docelowo działało zmienianie języków trzaby jeszcze jakiś ficzer w menu dorzucić,
+           no i tam wybierać z dropdowna język, przy czym string tego języka podajemy w poniższy sposób:
+           
+           ++   GlobalGameObjects.StringManager.Language = "English";
+           
+           I mamy przestawiony język.
+  UWAGA10: Jak czasu starczy, można tak zlokalizować dźwięki, bądź dorobić jakiś system wyświetlania 
+           napisów do dialogów. 
+  -->
+  <package id="MainMenu">
+    <key id="playtext" val="Start Demo"/>
+    <key id="playtag" val=""/>
+    <key id="exittext" val="Exit Demo"/>
+    <key id="exittag" val=""/>
+    <key id="optionstext" val="Options"/>
+    <key id="optionstag" val=""/>
+    <key id="creditstext" val="Credits"/>
+    <key id="creditstag" val=""/>
+  
+  </package>
+</XNABabylonStringFile>

@@ -136,6 +136,8 @@ namespace PlagueEngine.HighLevelGameFlow
             GameObjectsFactory.WaitingRoom        = null;
             GameObjectsFactory.ProcessWaitingRoom = false;
 
+            
+
             CurrentLevel = levelName;
         }
         /****************************************************************************/
