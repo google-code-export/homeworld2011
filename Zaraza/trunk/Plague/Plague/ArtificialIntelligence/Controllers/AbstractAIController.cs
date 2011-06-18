@@ -141,7 +141,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.DistancePrecision = DistancePrecision;
             this.MovingSpeed = MovingSpeed;
             this.RotationSpeed = RotationSpeed;
-
+            
             this.SightRange = (float)100.0;
             this.AnimationBinding = AnimationMapping;
             //TODO: zrobić poprawne ustawianie ataków.
@@ -251,6 +251,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
             else if (e.GetType().Equals(typeof(AnimationEndEvent)))
             {
+               
                 #region Attack or Chase or Idle
                if (action == Action.ATTACK_IDLE)
                 {
@@ -286,6 +287,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         public virtual void Update(TimeSpan deltaTime)
         {
+            //Diagnostics.PushLog("AKCJA: " + action.ToString());
             if (isDisposed) return;
 
             if (IsBleeding)
@@ -455,6 +457,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 case Action.ATTACK:
                     #region Attack Enemy
                     {
+                        
                         Vector3 direction = controlledObject.World.Translation - attackTarget.World.Translation;
                         Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
                         Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
@@ -470,8 +473,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                                            new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Z));
                         if (currentDistance < attack.maxAttackDistance)
                         {
-                            //controlledObject.Mesh.StartClip(AnimationBinding[Action.ATTACK]);
-                            //controlledObject.Mesh.SubscribeAnimationsEnd(AnimationBinding[Action.ATTACK]);
+                            controlledObject.Mesh.StartClip(AnimationBinding[Action.ATTACK]);
+                            controlledObject.Mesh.SubscribeAnimationsEnd(AnimationBinding[Action.ATTACK]);
                             controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject), Priority.Normal, this.attackTarget);
                             action = Action.ATTACK_IDLE;
                         }

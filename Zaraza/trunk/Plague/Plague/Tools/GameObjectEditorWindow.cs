@@ -38,14 +38,25 @@ namespace PlagueEngine.Tools
         class DummySniffer : EventsSniffer
         {
             GameObjectEditorWindow editor = null;
+            bool reload = false;
 
             public DummySniffer(GameObjectEditorWindow editor)
             {
                 this.editor = editor;
                 SubscribeAll();
-                SubscribeEvents(typeof(LowLevelGameFlow.GameObjectReleased), typeof(LowLevelGameFlow.GameObjectClicked));
+                SubscribeEvents(typeof(LowLevelGameFlow.GameObjectReleased), typeof(LowLevelGameFlow.GameObjectClicked),typeof(LowLevelGameFlow.CreateEvent),typeof(LowLevelGameFlow.DestroyEvent));
+                TimeControlSystem.TimeControl.CreateTimer(TimeSpan.FromSeconds(1),-1,CheckToReload);
             }
 
+
+            public void CheckToReload()
+            {
+                if (reload)
+                {
+                    editor.LoadAllObjectsId();
+                    reload = false;
+                }
+            }
             public override void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
             {
                 if (this.editor.Visible == true)
@@ -62,9 +73,17 @@ namespace PlagueEngine.Tools
                 {
                     editor.renderer.debugDrawer.StopSelectiveDrawing();
                 }
+                if (e.GetType().Equals(typeof(LowLevelGameFlow.CreateEvent)) || e.GetType().Equals(typeof(LowLevelGameFlow.DestroyEvent))) 
+                {
+                    reload = true;
+                    
+                }
+
 
 
             }
+
+
 
         }
 

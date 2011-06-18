@@ -54,7 +54,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.body = body;
 
             
-            mesh.SubscribeAnimationsEnd("Attack");
+            mesh.SubscribeAnimationsEnd("Attack03");
             Controller = new PhysicsController(body);
             Controller.EnableControl();
             mesh.StartClip("Idle");
@@ -182,6 +182,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
             this.ObjectAIController.OnEvent(sender, e);
+     
         }
         /****************************************************************************/
 
