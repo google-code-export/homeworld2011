@@ -46,7 +46,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float rotationSpeed,
                          float movingSpeed,
                          float distance,
-                         float angle)
+                         float angle,
+                         Dictionary<PlagueEngine.ArtificialIntelligence.Controllers.Action, String> animationMapping)
         {
             this.mesh = mesh;
             this.SoundEffectComponent = new SoundEffectComponent();
@@ -58,7 +59,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Controller.EnableControl();
             mesh.StartClip("Idle");
             //TODO: Fix HP => get from data
-            this.ObjectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle, 100, 90);
+            this.ObjectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle, 100, 90, animationMapping);
             this.RequiresUpdate = true;
         }
         /****************************************************************************/
@@ -254,7 +255,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.MovingSpeed = (ObjectAIController as MobController).MovingSpeed;
             data.RotationSpeed = (ObjectAIController as MobController).RotationSpeed;
-            data.DistancePrecision = (ObjectAIController as MobController).Distance;
+            data.DistancePrecision = (ObjectAIController as MobController).DistancePrecision;
             data.AnglePrecision = (ObjectAIController as MobController).AnglePrecision;
 
             return data;
@@ -287,7 +288,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// StaticSkinnedMeshData
     /********************************************************************************/
     [Serializable]
-    public class CreatureData : GameObjectInstanceData
+    public class CreatureData : AbstractLivingBeingData
     {
         [CategoryAttribute("Model")]
         public String Model    { get; set; }
@@ -365,6 +366,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float DistancePrecision { get; set; }
         [CategoryAttribute("Movement")]
         public float AnglePrecision { get; set; }
+
     }
     /********************************************************************************/
 

@@ -86,9 +86,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Dictionary<StorableObject, ItemPosition> items,
                          StorableObject currentObject,
                          Firearm weapon,
-                         Firearm sideArm)
+                         Firearm sideArm,
+                         Dictionary<PlagueEngine.ArtificialIntelligence.Controllers.Action, String> animationMapping)
         {
-            ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle, maxHP, HP);
+            ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle, maxHP, HP, animationMapping);
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
@@ -862,7 +863,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Slots = Slots;
             data.MovingSpeed = ObjectAIController.MovingSpeed;
             data.RotationSpeed = ObjectAIController.RotationSpeed;
-            data.DistancePrecision = ObjectAIController.Distance;
+            data.DistancePrecision = ObjectAIController.DistancePrecision;
             data.AnglePrecision = ObjectAIController.AnglePrecision;
 
 
@@ -937,7 +938,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /// Mercenary Data
     /********************************************************************************/
     [Serializable]
-    public class MercenaryData : GameObjectInstanceData
+    public class MercenaryData : AbstractLivingBeingData
     {
         [CategoryAttribute("Model")]
         public String Model { get; set; }

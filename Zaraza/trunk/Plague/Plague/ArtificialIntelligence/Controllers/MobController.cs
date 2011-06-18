@@ -13,37 +13,45 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     class MobController : AbstractAIController
     {
-        private GameObjectInstance currentObject;
         //TODO: change temporary constructor
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="person"></param>
+        /// <param name="rotationSpeed"></param>
+        /// <param name="movingSpeed"></param>
+        /// <param name="distance"></param>
+        /// <param name="angle"></param>
+        /// <param name="MaxHP"></param>
+        /// <param name="HP"></param>
+        /// <param name="AnimationBinding"></param>
         public MobController(AbstractLivingBeing person, float rotationSpeed,
                          float movingSpeed,
                          float distance,
                          float angle,
                          uint MaxHP,
-                         uint HP)
-            : base(person, MaxHP, HP)
+                         uint HP,
+                         Dictionary<Action, System.String> AnimationBinding)
+            : base(person, MaxHP, HP, rotationSpeed, movingSpeed, distance, angle, AnimationBinding)
         {
-            RotationSpeed   = rotationSpeed;
-            MovingSpeed     = movingSpeed;
-            Distance        = distance;
-            AnglePrecision  = angle;
-            animationBinding = new Dictionary<Action, string>();
-            animationBinding.Add(Action.IDLE, "Idle");
-            animationBinding.Add(Action.MOVE, "Run");
-            animationBinding.Add(Action.ENGAGE, "Run");
-            animationBinding.Add(Action.ATTACK, "Attack03");
             ai.registerController(this);
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         override public void OnEvent(EventsSystem.EventsSender sender, System.EventArgs e)
         {
            base.OnEvent(sender, e);
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deltaTime">Różnica czasu między Update'ami</param>
         public override void Update(System.TimeSpan deltaTime)
         {
             switch (action)

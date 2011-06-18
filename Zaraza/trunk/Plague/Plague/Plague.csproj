@@ -334,6 +334,10 @@
       <Project>{1F938490-A946-4E1A-A1A2-51B61F8E2BC1}</Project>
       <Name>PlagueEngineSkinning</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\PlagueLocalizationExtension\PlagueLocalizationExtension.csproj">
+      <Project>{6E33BEBF-F679-4CCD-B1FC-F49C7196D1EB}</Project>
+      <Name>PlagueLocalizationExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PlagueContent\PlagueContent.contentproj">
       <Name>PlagueContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>

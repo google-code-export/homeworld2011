@@ -12,6 +12,7 @@ using PlagueEngine.Tools;
 using PlagueEngine.Physics;
 using PlagueEngine.Particles;
 using PlagueEngine.ArtificialIntelligence;
+using PlagueLocalizationExtension;
 
 namespace PlagueEngine
 {
@@ -104,6 +105,10 @@ namespace PlagueEngine
 
             RendererClock = TimeControl.CreateClock();
             PhysicsClock  = TimeControl.CreateClock();
+
+             GlobalGameObjects.StringManager = new LangContent(Content.ServiceProvider, Content.RootDirectory);
+             GlobalGameObjects.StringManager.Language = "English";
+            
         }
         /****************************************************************************/
 
@@ -119,7 +124,7 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void Initialize()
         {
-
+            
             Renderer.InitHelpers();
             InitGUI();
             Level.LoadLevel("Level1.lvl");
@@ -130,7 +135,6 @@ namespace PlagueEngine
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
 #endif
-
             
             Input.Enabled = true;
             //pf = new Pathfinder.Pathfinder(PhysicsManager,Renderer);

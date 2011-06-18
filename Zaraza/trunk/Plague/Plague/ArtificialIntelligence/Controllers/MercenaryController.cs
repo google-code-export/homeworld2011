@@ -20,37 +20,24 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public uint Slots { get; protected set; }
         
 
-        public MercenaryController(AbstractLivingBeing lb, float rotationSpeed, float movingSpeed, float distance, float angle, uint MaxHP, uint HP):base(lb, MaxHP, HP)
+        public MercenaryController(AbstractLivingBeing lb,
+                                   float rotationSpeed,
+                                   float movingSpeed,
+                                   float distance,
+                                   float angle,
+                                   uint MaxHP,
+                                   uint HP,
+                                   Dictionary<Action,String> animationMapping
+            ):base(lb, MaxHP, HP, rotationSpeed, movingSpeed, distance, angle, animationMapping)
         {
-            RotationSpeed   = rotationSpeed;
-            MovingSpeed     = movingSpeed;
-            Distance        = distance;
-            AnglePrecision  = angle;
-            animationBinding = new Dictionary<Action, string>();
-            animationBinding.Add(Action.IDLE, "Fire_Carabine");
-            animationBinding.Add(Action.MOVE, "Fire_Carabine");
-            animationBinding.Add(Action.ATTACK, "Idle");
-
             ai.registerController(this);
-            
         }
 
-        protected override void useAttack()
-        {
-            if (isDisposed) return;
-            Mercenary unit = controlledObject as Mercenary;
-            if (typeof(Firearm).Equals(unit.CurrentObject))
-            {
-                Firearm weapon = unit.CurrentObject as Firearm;
-                //TODO: dorobić wybór między basic a additionalAttack
-                //this.attack = weapon.attacks[0];
-            }
-            else
-            {
-                this.attack = new Attack((float)(0.0), (float)(1.0), 2,3,30);
-            }
-            base.useAttack();
-        }
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public override void Update(TimeSpan deltaTime)
         {
             if (isDisposed) return;
@@ -68,7 +55,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         objectTarget = null;
                         action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(animationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        objectTarget = null;
                         return;
                     }
                     {
@@ -85,9 +73,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
                         
-                        if (controlledObject.Mesh.CurrentClip != animationBinding[Action.MOVE])
+                        if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.MOVE])
                         {
-                            controlledObject.Mesh.BlendTo(animationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(AnimationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
                         }
                     }
                     #endregion
@@ -98,6 +86,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
             if (isDisposed) return;

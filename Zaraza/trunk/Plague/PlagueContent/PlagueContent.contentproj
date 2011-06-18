@@ -1831,6 +1831,19 @@
       <Processor>EffectProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\PlagueLocalizationExtension\PlagueLocalizationExtension.csproj">
+      <Project>{6E33BEBF-F679-4CCD-B1FC-F49C7196D1EB}</Project>
+      <Name>PlagueLocalizationExtension</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lang\English\MainMenu.English.lang">
+      <Name>MainMenu.English</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <Target Name="BeforeBuild">
   </Target>

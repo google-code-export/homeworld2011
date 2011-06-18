@@ -121,10 +121,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     CollisionSkinComponent body = (CollisionSkinComponent)field;
                     body.Disable();
-
                 }
-
-
             }
         }
 

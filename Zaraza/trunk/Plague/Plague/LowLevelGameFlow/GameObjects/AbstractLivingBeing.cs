@@ -9,6 +9,7 @@ using PlagueEngine.Physics.Components;
 using PlagueEngine.Audio.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
+using System.ComponentModel;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -19,18 +20,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         
-        /****************************************************************************/
-
-
-
-    
-        /****************************************************************************/
-        /// Properties
-        /****************************************************************************/
-        //public uint MaxHP { get; protected set; }
-        //public uint HP { get; protected set; }
-        /****************************************************************************/
-
 
         /****************************************************************************/
         /// Components
@@ -42,6 +31,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public CapsuleBodyComponent Body { get { return this.body; } protected set { this.body = value; } }
         public PhysicsController Controller { get; protected set; }
         /****************************************************************************/
+
+        public GameObjectInstanceData GetData(AbstractLivingBeingData data)
+        {
+            base.GetData(data);
+            data.animationMapping = this.ObjectAIController.AnimationBinding;
+            return data;
+        }
+    }
+
+    [Serializable]
+    public class AbstractLivingBeingData : GameObjectInstanceData
+    {
+        [CategoryAttribute("AI")]
+        public Dictionary<ArtificialIntelligence.Controllers.Action, string> animationMapping { get; set; }
 
     }
 }

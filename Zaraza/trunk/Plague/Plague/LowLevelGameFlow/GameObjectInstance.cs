@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using System.ComponentModel;
 
 using PlagueEngine.EventsSystem;
+using PlagueLocalizationExtension;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
@@ -458,8 +459,9 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
     class GlobalGameObjects
     {
-        public static int GameController = -1;
-        public static int Ammunition     = -2;
+        public static int GameController        = -1;
+        public static int Ammunition            = -2;
+        public static LangContent StringManager = null;
     }
     /********************************************************************************/
 
