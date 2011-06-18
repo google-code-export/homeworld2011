@@ -108,33 +108,32 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private bool optionswindowregistered { get; set; }
         /***********************************/
 
-
+        OptionsMenu optionsMenu;
 
         /****************************************************************************/
 
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(ButtonComponent newGame, String newGametext, String newGametag,String levelToLoad,
+        public void Init(ButtonComponent newGame, String newGametext, String newGametag, String levelToLoad,
                         ButtonComponent options, String optionstext, String optionstag,
                         ButtonComponent credits, String creditstext, String creditstag,
                         ButtonComponent exit, String exittext, String exittag,
                         FrontEndComponent window, int windowx, int windowy, int windowheight, int windowwidth,
-                        LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext,int creditswindowtextx,int creditswindowtexty,
+                        LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext, int creditswindowtextx, int creditswindowtexty,
                         LabelComponent optionslabel, int optionswindowx, int optionswindowy, int optionswindowwidth, int optionswindowheight, String optionswindowtext, int optionswindowtextx, int optionswindowtexty,
                         FrontEndComponent frame)
-   {
-       
+        {
+            optionsMenu = new OptionsMenu("OptionsMenu.language_change","OptionsMenu.main","OptionsMenu.back",optionswindowx, optionswindowy, optionswindowwidth, optionswindowheight, frame);
             this.frame = frame;
             this.frame.Draw = OnDraw;
-           this.window = window;
-           this.windowx = windowx;
-           this.windowy = windowy;
-           this.windowheight = windowheight;
-           this.windowwidth = windowwidth;
+            this.window = window;
+            this.windowx = windowx;
+            this.windowy = windowy;
+            this.windowheight = windowheight;
+            this.windowwidth = windowwidth;
 
-           this.window.Draw = OnDraw;
-            
+            this.window.Draw = OnDraw;
 
             this.newGame = newGame;
 
@@ -142,66 +141,56 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.newGametag = newGametag;
             this.levelToLoad = levelToLoad;
             this.newGame.Register();
-
             this.newGame.setDelegate(newGameClick);
-
 
             this.options = options;
 
             this.optionstext = optionstext;
             this.optionstag = optionstag;
-            
+
             this.options.Register();
             this.options.setDelegate(optionsClick);
-
 
 
             this.credits = credits;
 
             this.creditstext = creditstext;
             this.creditstag = creditstag;
-            
+
             this.credits.Register();
             this.credits.setDelegate(creditsClick);
-
-
-
 
             this.exit = exit;
 
             this.exittext = exittext;
             this.exittag = exittag;
-            
+
             this.exit.Register();
 
             this.exit.setDelegate(exitClick);
 
+            this.creditslabel = creditslabel;
+            this.creditswindowx = creditswindowx;
+            this.creditswindowy = creditswindowy;
+            this.creditswindowwidth = creditswindowwidth;
+            this.creditswindowheight = creditswindowheight;
+            this.creditswindowtext = creditswindowtext;
+            this.creditswindowtextx = creditswindowtextx;
+            this.creditswindowtexty = creditswindowtexty;
+            this.creditswindowregistered = false;
 
 
 
-
-          this.creditslabel=creditslabel;
-          this.creditswindowx=creditswindowx;
-          this.creditswindowy =creditswindowy;
-          this.creditswindowwidth=creditswindowwidth;
-          this.creditswindowheight =creditswindowheight;
-          this.creditswindowtext =creditswindowtext;
-          this.creditswindowtextx=creditswindowtextx;
-          this.creditswindowtexty = creditswindowtexty;
-          this.creditswindowregistered = false;
-
-          
-
-          this.optionslabel = optionslabel;
-          this.optionswindowx = optionswindowx;
-          this.optionswindowy = optionswindowy;
-          this.optionswindowwidth = optionswindowwidth;
-          this.optionswindowheight = optionswindowheight;
-          this.optionswindowtext = optionswindowtext;
-          this.optionswindowtextx = optionswindowtextx;
-          this.optionswindowtexty = optionswindowtexty;
-          this.optionswindowregistered = false;
-        }
+            this.optionslabel = optionslabel;
+            this.optionswindowx = optionswindowx;
+            this.optionswindowy = optionswindowy;
+            this.optionswindowwidth = optionswindowwidth;
+            this.optionswindowheight = optionswindowheight;
+            this.optionswindowtext = optionswindowtext;
+            this.optionswindowtextx = optionswindowtextx;
+            this.optionswindowtexty = optionswindowtexty;
+            this.optionswindowregistered = false;
+        }        
         /****************************************************************************/
 
 
@@ -216,7 +205,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (levelToLoad != String.Empty)
             {
                 this.SendEvent(new ChangeLevelEvent(levelToLoad), EventsSystem.Priority.High, GlobalGameObjects.GameController);
-               
             }
         }
         /****************************************************************************/
@@ -227,9 +215,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void exitClick(object sender, EventArgs e)
         {
-            
-            this.SendEvent(new ExitGameEvent(), EventsSystem.Priority.High, GlobalGameObjects.GameController);
-               
+            this.SendEvent(new ExitGameEvent(), EventsSystem.Priority.High, GlobalGameObjects.GameController);  
         }
         /****************************************************************************/
 
@@ -240,20 +226,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void creditsClick(object sender, EventArgs e)
         {
-            this.optionslabel.Unregister();
+            this.optionsMenu.Disable();
             optionswindowregistered = false;
 
             if (!creditswindowregistered)
             {
-                
                 this.creditslabel.Register();
             }
             if (creditswindowregistered)
             {
-
                 this.creditslabel.Unregister();
             }
-
 
             creditswindowregistered = !creditswindowregistered;
         }
@@ -269,13 +252,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (!optionswindowregistered)
             {
+                optionsMenu.Enable();
 
-                this.optionslabel.Register();
             }
             if (optionswindowregistered)
             {
-
-                this.optionslabel.Unregister();
+                optionsMenu.Disable();
             }
 
 
@@ -291,10 +273,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             spriteBatch.Draw(window.Texture, new Rectangle(windowx, windowy, windowwidth, windowheight), Color.White);
 
-            if (optionswindowregistered)
-            {
-                spriteBatch.Draw(frame.Texture, new Rectangle(optionswindowx, optionswindowy, optionswindowwidth, optionswindowheight), Color.White);
-            }
+            optionsMenu.OnDraw(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
 
             if (creditswindowregistered)
             {

@@ -1590,8 +1590,8 @@ namespace PlagueEngine.LowLevelGameFlow
                 data.optionswindowtext = "<empty>";
             }
 
-            result.Init(guiComponentsFactory.CreateButtonComponent(GlobalGameObjects.StringManager.Load<string>(data.newGametext),
-                                                                   GlobalGameObjects.StringManager.Load<string>(data.newGametag),
+            result.Init(guiComponentsFactory.CreateButtonComponent(data.newGametext,
+                                                                   data.newGametag,
                                                                    data.newGamex,
                                                                    data.newGamey,
                                                                    data.newGamewidth,
@@ -1600,8 +1600,8 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.newGametag,
                         data.levelToLoad,
 
-                        guiComponentsFactory.CreateButtonComponent(GlobalGameObjects.StringManager.Load<string>(data.optionstext),
-                                                                   GlobalGameObjects.StringManager.Load<string>(data.optionstag),
+                        guiComponentsFactory.CreateButtonComponent(data.optionstext,
+                                                                   data.optionstag,
                                                                    data.optionsx,
                                                                    data.optionsy,
                                                                    data.optionswidth,
@@ -1609,8 +1609,8 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.optionstext,
                         data.optionstag,
                         
-                        guiComponentsFactory.CreateButtonComponent(GlobalGameObjects.StringManager.Load<string>(data.creditstext),
-                                                                   GlobalGameObjects.StringManager.Load<string>(data.creditstag),
+                        guiComponentsFactory.CreateButtonComponent(data.creditstext,
+                                                                   data.creditstag,
                                                                    data.creditsx,
                                                                    data.creditsy,
                                                                    data.creditswidth,
@@ -1618,8 +1618,8 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.creditstext,
                         data.creditstag,
                         
-                        guiComponentsFactory.CreateButtonComponent(GlobalGameObjects.StringManager.Load<string>(data.exittext),
-                                                                   GlobalGameObjects.StringManager.Load<string>(data.exittag),
+                        guiComponentsFactory.CreateButtonComponent(data.exittext,
+                                                                   data.exittag,
                                                                    data.exitx,
                                                                    data.exity,
                                                                    data.exitwidth,
@@ -1632,7 +1632,7 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.windowy,
                         data.windowheight,
                         data.windowwidth,
-                        guiComponentsFactory.CreateLabelComponent(GlobalGameObjects.StringManager.Load<string>(data.creditswindowtext),
+                        guiComponentsFactory.CreateLabelComponent(data.creditswindowtext,
                                                                   data.creditswindowtextx,
                                                                   data.creditswindowtexty),
                         data.creditswindowx,
@@ -1642,7 +1642,7 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.creditswindowtext,
                         data.creditswindowtextx,
                         data.creditswindowtexty,
-                        guiComponentsFactory.CreateLabelComponent(GlobalGameObjects.StringManager.Load<string>(data.optionswindowtext),
+                        guiComponentsFactory.CreateLabelComponent(data.optionswindowtext,
                                                                   data.optionswindowtextx,
                                                                   data.optionswindowtexty),
                         data.optionswindowx,
