@@ -98,14 +98,17 @@ namespace PlagueEngine.ArtificialIntelligence
         /// </summary>
         public void Update()
          {
-            if (counter % 2 == 0)
+            if (counter % 5 == 0)
             {
+                counter = 0;
+
+                
                 foreach (MobController contr in BadGuys)
                 {
                     #region Sight Sensor
                     if (!contr.IsBlinded)
                     {
-                        AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Forward, contr.SightAngle, contr.SightRange);
+                        AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Backward, contr.SightAngle, contr.SightRange);
                         if (found != null && found.controlledObject != contr.attackTarget)
                         {
                             Diagnostics.PushLog("=========================MOB SEES!=========================");
@@ -116,7 +119,7 @@ namespace PlagueEngine.ArtificialIntelligence
                     #endregion
 
                 }
-                counter = 1;
+               
             }
             else
             {
@@ -136,9 +139,10 @@ namespace PlagueEngine.ArtificialIntelligence
                     #endregion
 
                 }
-                counter = 0;
+              
             }
 
+            counter++;
         }
     }
 }

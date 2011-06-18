@@ -47,14 +47,14 @@ namespace PlagueEngine.AItest
 
 
 
-        public static AbstractAIController FindClosestVisible(List<AbstractAIController> targets, AbstractAIController owner, Vector3 ownerForward, float angle, float maxDistance, float rayForwardTranslation = 0.75f)
+        public static AbstractAIController FindClosestVisible(List<AbstractAIController> targets, AbstractAIController owner, Vector3 ownerForward, float angle, float maxDistance, float rayTranslation = 1.5f)
         {
 
             //ownerForward.Y = 0;
             ownerForward=Vector3.Normalize(ownerForward);
             Vector3 ownerForwardCopy = ownerForward;
 
-
+            
             List<AbstractAIController> testedTargets = new List<AbstractAIController>();
 
             //test odleglosci
@@ -83,24 +83,29 @@ namespace PlagueEngine.AItest
                 
                 //if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
 
+                
 
                 Vector3 dir = (go.controlledObject.World.Translation - owner.controlledObject.World.Translation);
                 Vector2 v1 = Vector2.Normalize(new Vector2(dir.X, dir.Z));
-                Vector2 v2 = Vector2.Normalize(new Vector2(owner.controlledObject.World.Forward.X, 
-                                                owner.controlledObject.World.Forward.Z));
+                Vector2 v2 = Vector2.Normalize(new Vector2(ownerForward.X,
+                                                ownerForward.Z));
                 //float det = v1.X * v2.Y - v1.Y * v2.X;
                 float angleBetweenGO = (float)Math.Acos((double)Vector2.Dot(v1, v2));
                 //if (det < 0) angleBetweenGO = -angleBetweenGO;
-
+                
                 //dir.Y = 0;
                 //ownerForward.Y = 0;
                 //float dot = Vector3.Dot(ownerForward, dir);
-               
-                //float angleBetweenGO = MathHelper.ToDegrees((float)Math.Acos(dot));
+
+                float angleBetweenGO2 = (float)(angleBetweenGO * 180.0 / Math.PI);
                 
-                if ( Math.Abs((angleBetweenGO)) <= MathHelper.ToRadians(angle))
+                //if ( Math.Abs((angleBetweenGO)) <= MathHelper.ToRadians(angle))
+                if (Math.Abs((angleBetweenGO2)) <= angle)
                 {
+                    //Diagnostics.PushLog("KAT W STOPNIACH: " + angleBetweenGO2.ToString());
                     testedTargets2.Add(go);
+                    //Diagnostics.PushLog("MAx kat: " + angle.ToString());
+                    //Diagnostics.PushLog("Otrzymany kat: " + angleBetweenGO.ToString());
                 }
             }
 
@@ -110,18 +115,23 @@ namespace PlagueEngine.AItest
             foreach (AbstractAIController go in testedTargets2)
             {
 
-
+                
             float distance;
             CollisionSkin skin;
             Vector3 skinPosition;
             Vector3 normal;
-            Vector3 modifiedOwnerPosition = owner.controlledObject.World.Translation + rayForwardTranslation * ownerForwardCopy;
-            PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.SegmentIntersect(out distance, out skin, out skinPosition, out normal, new Segment(modifiedOwnerPosition, go.controlledObject.World.Translation - modifiedOwnerPosition), new ImmovableSkinPredicate());
+            Vector3 modifiedOwnerPosition = owner.controlledObject.World.Translation + rayTranslation * ownerForwardCopy +rayTranslation * Vector3.Up;
+                //Diagnostics.PushLog("PROMIEN LECI Z :" + modifiedOwnerPosition.ToString());
+                //Diagnostics.PushLog("PROMIEN LECI DO :" + (go.controlledObject.World.Translation).ToString());
+                PhysicsSystem.CurrentPhysicsSystem.CollisionSystem.SegmentIntersect(out distance, out skin, out skinPosition, out normal, new Segment(modifiedOwnerPosition, go.controlledObject.World.Translation - modifiedOwnerPosition + rayTranslation * Vector3.Up), new ImmovableSkinPredicate());
 
             if (skin != null)
             {
+                //Diagnostics.PushLog("ID:!" + ((GameObjectInstance)(skin.ExternalData)).ID.ToString());
+
                 if (skin.ExternalData!=null && ((GameObjectInstance)(skin.ExternalData)).ID == go.controlledObject.ID)
                 {
+                    //Diagnostics.PushLog("TRAFILO!");
                     //znaleziony!!!
                     return go;
                 }
