@@ -25,9 +25,9 @@ namespace PlagueEngine.Audio.Components
 
         public void LoadSound(string soundEffectGroup, string soundEffectName, string soundName, float volume, float pitch, float pan)
         {
-            LoadSound(soundEffectGroup, soundEffectName, soundName, volume, pitch, pan, false,false);
+            LoadSound(soundEffectGroup, soundEffectName, soundName, volume, pitch, pan, false);
         }
-        public void LoadSound(string soundEffectGroup, string soundEffectName, string soundName, float volume, float pitch, float pan, bool allowMultiInstancing,bool isLooped)
+        public void LoadSound(string soundEffectGroup, string soundEffectName, string soundName, float volume, float pitch, float pan, bool allowMultiInstancing)
         {
             var sf = _audioManager.LoadSound(soundName);
             if (sf == null) return;
@@ -35,40 +35,32 @@ namespace PlagueEngine.Audio.Components
             {
                 _sounds.Add(soundEffectGroup, new Dictionary<string, SoundCue>());
             }
-            _sounds[soundEffectGroup].Add(soundEffectName, new SoundCue(volume, pitch, pan, sf, allowMultiInstancing, 1000f, isLooped));
+            _sounds[soundEffectGroup].Add(soundEffectName, new SoundCue(volume, pitch, pan, sf, allowMultiInstancing));
         }
 
         public void LoadFolder(string folderName, float volume, float pitch, float pan)
         {
-            LoadFolder(folderName, volume, pitch, pan, false,false);
+            LoadFolder(folderName, volume, pitch, pan, false);
         }
 
         public void LoadFolder(string folderName, float volume, float pitch, float pan, bool allowMultiInstancing)
-        {
-            LoadFolder(folderName, volume, pitch, pan, allowMultiInstancing, false);
-        }
-        public void LoadFolder(string folderName, float volume, float pitch, float pan, bool allowMultiInstancing, bool isLoooped)
         {
             var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
             if (!dir.Exists) return;
             var xbnFiles = dir.GetFiles("*.xnb");
             foreach (var soundName in xbnFiles.Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
             {
-                LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan, allowMultiInstancing, isLoooped);
+                LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan, allowMultiInstancing);
             }
         }
 
         public void LoadFolderTree(string folderName, float volume, float pitch, float pan, int maxDepth)
         {
-            LoadFolderTree(folderName, volume, pitch, pan, maxDepth, false, false);
+            LoadFolderTree(folderName, volume, pitch, pan, maxDepth, false);
         }
+
 
         public void LoadFolderTree(string folderName, float volume, float pitch, float pan, int maxDepth, bool allowMultiInstancing)
-        {
-            LoadFolderTree(folderName, volume, pitch, pan, maxDepth, allowMultiInstancing, false);
-        }
-
-        public void LoadFolderTree(string folderName, float volume, float pitch, float pan, int maxDepth, bool allowMultiInstancing, bool isLooped)
         {
             if (maxDepth < 0) return;
             var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
@@ -81,7 +73,7 @@ namespace PlagueEngine.Audio.Components
             }
             foreach (var soundName in xbnFiles.Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
             {
-                LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan, allowMultiInstancing, isLooped);
+                LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan, allowMultiInstancing);
             }
 #if DEBUG
             if (xbnFiles.Length == 0)
@@ -95,6 +87,11 @@ namespace PlagueEngine.Audio.Components
         /// <param name="soundName">Nazwa dźwięku</param>
         public void PlaySound(string soundGroup, string soundName)
         {
+            PlaySound(soundGroup, soundName, false);
+        }
+
+        public void PlaySound(string soundGroup, string soundName, bool isLooped)
+        {
             SoundCue sound;
             if (!_sounds.ContainsKey(soundGroup) || !_sounds[soundGroup].TryGetValue(soundName, out sound))
             {
@@ -103,15 +100,18 @@ namespace PlagueEngine.Audio.Components
 #endif
                 return;
             }
-            PlaySound(sound,soundName);
+            PlaySound(sound, soundName, isLooped);
         }
-
         private void PlaySound(SoundCue sound, string soundName)
         {
-          if (!sound.AllowMultiInstancing && _playingSounds.ContainsKey(soundName))
+            PlaySound(sound, soundName, false);
+        }
+        private void PlaySound(SoundCue sound, string soundName, bool isLooped)
+        {
+            if (!sound.AllowMultiInstancing && _playingSounds.ContainsKey(soundName))
             {
                 var playedSound = _playingSounds[soundName];
-                if (playedSound!=null)
+                if (playedSound != null)
                 {
                     if (playedSound.IsDisposed)
                     {
@@ -120,13 +120,13 @@ namespace PlagueEngine.Audio.Components
                     else
                     {
 #if DEBUG
-                        Diagnostics.PushLog(LoggingLevel.INFO,"Dźwięk " + soundName + " nie pozwala na tworzenie jego wielu instacji.");
+                        Diagnostics.PushLog(LoggingLevel.INFO, "Dźwięk " + soundName + " nie pozwala na tworzenie jego wielu instacji.");
 #endif
                         return;
                     }
                 }
             }
-            var sei = _audioManager.PlaySound(sound, _emitter);
+            var sei = _audioManager.PlaySound(sound, _emitter, isLooped);
             if (!sound.AllowMultiInstancing && sei != null)
             {
                 _playingSounds.Add(soundName, sei);
@@ -135,7 +135,11 @@ namespace PlagueEngine.Audio.Components
 
         public void PlayRandomSound(string soundGroup)
         {
-            if (!_sounds.ContainsKey(soundGroup) || _sounds[soundGroup].Values.Count==0)
+            PlayRandomSound(soundGroup, false);
+        }
+        public void PlayRandomSound(string soundGroup, bool isLooped)
+        {
+            if (!_sounds.ContainsKey(soundGroup) || _sounds[soundGroup].Values.Count == 0)
             {
 #if DEBUG
                 Diagnostics.PushLog(LoggingLevel.ERROR, "Grupa " + soundGroup + " nie istnieje lub nie zawiera dźwięków");
@@ -144,11 +148,11 @@ namespace PlagueEngine.Audio.Components
             }
             var soundId = _random.Next(_sounds[soundGroup].Values.Count - 1);
             var sound = _sounds[soundGroup].Values.ElementAt(soundId);
-            if(sound.SoundEffect!=null)
+            if (sound.SoundEffect != null)
             {
-                PlaySound(sound, _sounds[soundGroup].Keys.ElementAt(soundId));
+                PlaySound(sound, _sounds[soundGroup].Keys.ElementAt(soundId),isLooped);
             }
-            
+
 
         }
         public void SetPosiotion(Vector3 position)
