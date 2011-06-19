@@ -62,7 +62,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private Dictionary<uint, AmmunitionVersionInfo> AmmunitionVersionData;
 
         public SoundEffectComponent sounds;
-        
+        private Vector3 FireOffset;
+        private float MaxDispersion;
         /****************************************************************************/
 
 
@@ -104,7 +105,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          AmmunitionInfo      ammunitionInfo,
                          Vector3             ammoClipTranslation,
                          bool                on,
-                         Dictionary<uint, AmmunitionVersionInfo> ammunitionVersionData)
+                         Dictionary<uint, AmmunitionVersionInfo> ammunitionVersionData,
+                         Vector3 fireOffset,
+                         float maxDispersion)
         {
             this.mesh = mesh;
             this.body = body;
@@ -129,7 +132,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             AmmoClipTranslation = ammoClipTranslation;
 
             Accessories = accessories;
-
+            FireOffset = fireOffset;
+            MaxDispersion = MathHelper.ToRadians(maxDispersion);
             SelectiveFire     = selectiveFire;
             SelectiveFireMode = selectiveFireMode;
             
@@ -190,13 +194,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 
                 AmmunitionVersionInfo bulletInfo = AmmunitionVersionData[AmmoClip.Content.Pop().Version];
                 Matrix world = GetWorld();
-
+                world = Matrix.CreateTranslation(FireOffset) * world;
+                Vector3 position = world.Translation;
                 float dist;
                 CollisionSkin skin;
                 Vector3 pos, nor;
+                Random random = new Random();
+                
+                Vector3 dispersion = new Vector3((float)(2 * random.NextDouble() - 1) * (float)(MaxDispersion / Math.PI) * Math.Max(1 - bulletInfo.Accuracy * AccuracyModulation, 0),
+                                                 (float)(2 * random.NextDouble() - 1) * (float)(MaxDispersion / Math.PI) * Math.Max(1 - bulletInfo.Accuracy * AccuracyModulation, 0),
+                                                 -1);                                        
+                
+                dispersion.Normalize();                
+                world.Translation = Vector3.Zero;
+                dispersion = Vector3.Transform(dispersion, world);
+                dispersion.Normalize();
 
-                PhysicsUlitities.RayTest(world.Translation + world.Forward * 2,
-                                         world.Translation + bulletInfo.Range * RangeModulation * world.Forward,
+                PhysicsUlitities.RayTest(position,
+                                         position + bulletInfo.Range * RangeModulation * dispersion,
                                          out dist,
                                          out skin,
                                          out pos,
@@ -211,7 +226,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                     if ((skin.ExternalData as IShootable) != null)
                     {
-                        (skin.ExternalData as IShootable).OnShoot(bulletInfo.Damage * DamageModulation, 
+                        (skin.ExternalData as IShootable).OnShoot(bulletInfo.Damage        * DamageModulation, 
                                                                   bulletInfo.StoppingPower * StoppingPowerModulation);
 
                         if (skin.ExternalData as IPenetrable != null)
@@ -319,6 +334,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.RecoilModulation        = RecoilModulation;
             data.StoppingPowerModulation = StoppingPowerModulation;
 
+            for (int i = 0; i < Accessories.Length; i++)
+            {
+                if (Accessories[i].Accessory != null)
+                {
+                    AddAccessoryModulation(Accessories[i].Accessory);
+                }
+            }
+
             data.AmmoClip       = AmmoClip == null ? 0 : AmmoClip.ID;
             data.AmmunitionName = Ammunition == null ? String.Empty: Ammunition.Name;
 
@@ -336,6 +359,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Intensity = light.Intensity;
             data.LightLocalPoistion = light.LocalPosition;
 
+            data.MaxDispersion = MathHelper.ToDegrees(MaxDispersion);
+            data.FireOffset = FireOffset;
 
             return data;
         }
@@ -677,6 +702,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public List<int> SelectiveFire { get; set; }
         [CategoryAttribute("Firearm Parameters")]
         public int SelectiveFireMode { get; set; }
+
+        [CategoryAttribute("Firearm Parameters")]
+        public Vector3 FireOffset { get; set; }
+
+        [CategoryAttribute("Firearm Parameters")]
+        public float MaxDispersion { get; set; }
+
 
         [CategoryAttribute("Ammo Clip")]
         public int AmmoClip { get; set; }

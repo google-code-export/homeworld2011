@@ -418,6 +418,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     return;
                 case Action.ENGAGE:
                     #region Engage to Enemy
+                    if (attackTarget == null) break;
                     currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Z),
                                                                new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Z));
                     if (currentDistance < attack.maxAttackDistance)
