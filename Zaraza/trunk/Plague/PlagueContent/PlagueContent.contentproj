@@ -1888,6 +1888,41 @@
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\Misc\Campfire.mp3">
+      <Name>Campfire</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Misc\SupplyBox.X">
+      <Name>SupplyBox</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+      <ProcessorParameters_AnimationClip1>Open</ProcessorParameters_AnimationClip1>
+      <ProcessorParameters_AnimationClip1Duration>0.3</ProcessorParameters_AnimationClip1Duration>
+      <ProcessorParameters_AnimationClip10>Close</ProcessorParameters_AnimationClip10>
+      <ProcessorParameters_AnimationClip10Duration>0.3</ProcessorParameters_AnimationClip10Duration>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Misc\SupplyBox.diff.tga">
+      <Name>SupplyBox.diff</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Misc\SupplyBox.norm.tga">
+      <Name>SupplyBox.norm</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Misc\SupplyBox.spec.tga">
+      <Name>SupplyBox.spec</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <Target Name="BeforeBuild">
   </Target>

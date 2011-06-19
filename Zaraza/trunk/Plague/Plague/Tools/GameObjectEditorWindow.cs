@@ -573,6 +573,13 @@ namespace PlagueEngine.Tools
             FlammableBarrel.ClassType = typeof(FlammableBarrel);
             FlammableBarrel.dataClassType = typeof(FlammableBarrelData);
             gameObjectClassNames.Add(FlammableBarrel);
+
+
+            gameObjectsClassName Fire = new gameObjectsClassName();
+            Fire.className = "Fire";
+            Fire.ClassType = typeof(Fire);
+            Fire.dataClassType = typeof(FireData);
+            gameObjectClassNames.Add(Fire);
         }
         /********************************************************************************/
 
