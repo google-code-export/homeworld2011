@@ -78,6 +78,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class PointLightData : GameObjectInstanceData
     {
+
+        public PointLightData()
+        {
+            Type = typeof(PointLight);
+        }
+
         [CategoryAttribute("Light")]
         public bool Enabled { get; set; }
 

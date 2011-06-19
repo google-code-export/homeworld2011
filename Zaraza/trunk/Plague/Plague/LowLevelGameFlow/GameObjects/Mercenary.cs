@@ -963,7 +963,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void OnShoot(float damage, float stoppingPower)
         {
-            ObjectAIController.OnEvent(Owner,new ArtificialIntelligence.TakeDamage(damage, null));
+            ObjectAIController.OnEvent(null,new ArtificialIntelligence.TakeDamage(damage, null));
         }
     }
     /********************************************************************************/
