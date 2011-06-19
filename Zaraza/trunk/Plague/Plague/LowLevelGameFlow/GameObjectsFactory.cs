@@ -2149,6 +2149,57 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
+        /****************************************************************************/
+        /// Create Fire
+        /****************************************************************************/
+        public bool CreateFire(Fire result, FireData data)
+        {
+
+
+            result.Init(
+                        particleFactory.CreateParticleEmitterComponent(result,
+                                                            data.BlendState,
+                                                            data.Duration,
+                                                            data.DurationRandomnes,
+                                                            data.EmitterVelocitySensitivity,
+                                                            data.VelocityEnd,
+                                                            data.Gravity,
+                                                            data.ColorMax,
+                                                            data.EndSizeMax,
+                                                            data.VelocityHorizontalMax,
+                                                            data.ParticlesMax,
+                                                            data.RotateSpeedMax,
+                                                            data.StartSizeMax,
+                                                            data.VelocityVerticalMax,
+                                                            data.ColorMin,
+                                                            data.EndSizeMin,
+                                                            data.VelocityHorizontalMin,
+                                                            data.RotateSpeedMin,
+                                                            data.StartSizeMin,
+                                                            data.VelocityVerticalMin,
+                                                            data.ParticleTexture,
+                                                            data.ParticlesPerSecond,
+                                                            data.EmitterTranslation,
+                                                            data.World,
+                                                            data.ParticlesEnabled),
+                     renderingComponentsFactory.CreatePointLightComponent(result,
+                                                                           data.LightEnabled,
+                                                                           data.Color,
+                                                                           false,
+                                                                           0,
+                                                                           data.LightRadius,
+                                                                           data.LinearAttenuation,
+                                                                           data.QuadraticAttenuation,
+                                                                           data.LightLocalPoistion),
+                                                                           data.Frequency,
+                                                                           data.IntensityRange
+                                                                           );
+
+            return true;
+        }
+        /****************************************************************************/
+
+
     }
     /********************************************************************************/    
 
