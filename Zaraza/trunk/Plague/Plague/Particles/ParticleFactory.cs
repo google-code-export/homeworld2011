@@ -88,7 +88,6 @@ namespace PlagueEngine.Particles
             bool enabled)
         {
             ParticleSettings settings = new ParticleSettings();
-            
             switch(blendState)
             {
                 case 1:
