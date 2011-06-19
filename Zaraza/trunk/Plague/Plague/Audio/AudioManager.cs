@@ -238,7 +238,7 @@ namespace PlagueEngine.Audio
         /// </summary>
         /// <param name="soundCue">Obiekt klasy SoundCue</param>
         /// <param name="emitter">Obiekt klasy AudioEmitter wskazujący na źródło dźwięku</param>
-        public SoundEffectInstance PlaySound(SoundCue soundCue, AudioEmitter emitter)
+        public SoundEffectInstance PlaySound(SoundCue soundCue, AudioEmitter emitter, bool isLooped)
         {
             var index = GetAvailableSoundIndex();
 
@@ -247,7 +247,7 @@ namespace PlagueEngine.Audio
             _playingSounds[index].Volume = soundCue.Volume;
             _playingSounds[index].Pitch = soundCue.Pitch;
             _playingSounds[index].Pan = soundCue.Pan;
-            _playingSounds[index].IsLooped = soundCue.IsLooped;
+            _playingSounds[index].IsLooped = isLooped;
             if (emitter != null && Listener != null)
             {
                 _playingSounds[index].Apply3D(Listener, emitter);
