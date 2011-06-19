@@ -251,6 +251,29 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 this.attackTarget = evt.EnemyToAttack;
                 #endregion 
             }
+            else if (e.GetType().Equals(typeof(OpenFireCommandEvent)))
+            { 
+                Mercenary merc = controlledObject as Mercenary;
+                if ((merc.CurrentObject as Firearm) != null)
+                {
+                    OpenFireCommandEvent OpenFireCommandEvent = e as OpenFireCommandEvent;
+
+                    if ((merc.CurrentObject as Firearm).Fire())
+                    {
+                        controlledObject.Mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.1f));
+
+                        Vector3 direction = controlledObject.World.Translation - OpenFireCommandEvent.point;
+                        Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                        Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                        float det = v1.X * v2.Y - v1.Y * v2.X;
+                        float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+                        if (det < 0) angle = -angle;
+                        controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
+                        TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); });
+                    }
+                }
+                controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
+            }
             else
             {
                 base.OnEvent(sender, e);

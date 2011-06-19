@@ -939,6 +939,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class MercenaryData : AbstractLivingBeingData
     {
+
+
         [CategoryAttribute("Model")]
         public String Model { get; set; }
 

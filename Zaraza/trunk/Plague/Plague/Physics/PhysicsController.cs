@@ -132,7 +132,8 @@ namespace PlagueEngine.Physics
 
         public void Rotate(float dt)
         {
-
+            body.Controllable = true;
+            body.Immovable = false;
             body.DesiredOrientation *= Matrix.CreateRotationY(MathHelper.ToRadians(dt));
 
         }

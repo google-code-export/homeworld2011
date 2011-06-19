@@ -179,6 +179,46 @@ namespace PlagueEngine.LowLevelGameFlow
         }
     }
     /********************************************************************************/
+    
+
+    /********************************************************************************/
+    /// Open Fire Command Event
+    /********************************************************************************/
+    class OpenFireCommandEvent : EventArgs
+    {
+        public Vector3 point;
+
+        public OpenFireCommandEvent(Vector3 point)
+        {
+            this.point = point;
+        }
+
+        public override string ToString()
+        {
+            return point.ToString();
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
+    /// Open Fire To Target Command Event
+    /********************************************************************************/
+    class OpenFireToTargetCommandEvent : EventArgs
+    {
+        public GameObjectInstance target;
+
+        public OpenFireToTargetCommandEvent(GameObjectInstance target)
+        {
+            this.target = target;
+        }
+
+        public override string ToString()
+        {
+            return target.ToString();
+        }
+    }
+    /********************************************************************************/
 
 
     /********************************************************************************/

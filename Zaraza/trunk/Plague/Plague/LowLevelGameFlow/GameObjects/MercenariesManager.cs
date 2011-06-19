@@ -78,7 +78,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             keyboard.SubscibeKeys(OnKey, Keys.Tab, Keys.LeftControl, Keys.LeftAlt, Keys.OemTilde,
                                           Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5,
                                           Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0,
-                                          Keys.E);
+                                          Keys.E, Keys.F);
 
             mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
             mouse.SubscribeKeys(OnMouseKey, MouseKeyAction.LeftClick,
@@ -160,7 +160,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*****************************************/
             else if (argsType.Equals(typeof(CommandOnObjectEvent)))
             {
-                if (_commandMode)
+                if (LinkedCamera.FireMode)
+                {
+                    var commandOnObjectEvent = e as CommandOnObjectEvent;
+                    if (commandOnObjectEvent == null) return;
+
+                    if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Targetable)
+                    {
+                        if (_currentMercenary != null)
+                        {
+                            QueueEvent(new OpenFireToTargetCommandEvent(commandOnObjectEvent.gameObject), !_leftControl, _currentMercenary);
+                        }
+                        else
+                        {
+                            QueueEvent(new OpenFireToTargetCommandEvent(commandOnObjectEvent.gameObject), !_leftControl, _selectedMercenaries.ToArray());
+                        }
+                    }
+                    else
+                    {
+                        if (_currentMercenary != null)
+                        {
+                            QueueEvent(new OpenFireCommandEvent(commandOnObjectEvent.position), !_leftControl, _currentMercenary);
+                        }
+                        else
+                        {
+                            QueueEvent(new OpenFireCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
+                        }                    
+                    }                                      
+                }
+                else if (_commandMode)
                 {
                     var commandOnObjectEvent = e as CommandOnObjectEvent;
                     if (commandOnObjectEvent == null) return;
@@ -461,6 +489,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                              };
                     if (_inventory != null) SendEvent(new DestroyObjectEvent(_inventory.ID), Priority.High, GlobalGameObjects.GameController);
                     SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+                }
+            }
+            /************************************************************************/
+            // F
+            /************************************************************************/
+            else if (key == Keys.F)
+            {
+                if (state.WasPressed())
+                {
+                    LinkedCamera.FireMode = true;
+                }
+                else if (state.WasReleased())
+                {
+                    LinkedCamera.FireMode = false;
                 }
             }
             /************************************************************************/

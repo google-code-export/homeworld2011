@@ -98,7 +98,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public GameObjectInstance Create(GameObjectInstanceData data)
         {
-         //   if (data.Type.Equals(typeof(Inventory))) return null;
+            //if (data.Type.Equals(typeof(Inventory))) return null;
 
             GameObjectInstance result = null;
 
@@ -1394,6 +1394,15 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.SkinYaw,
                                                                           data.SkinPitch,
                                                                           data.SkinRoll),
+                      renderingComponentsFactory.CreatePointLightComponent(result,
+                                                                           false,
+                                                                           data.Color,
+                                                                           false,
+                                                                           data.Intensity,
+                                                                           data.LightRadius,
+                                                                           data.LinearAttenuation,
+                                                                           data.QuadraticAttenuation,
+                                                                           data.LightLocalPoistion),
                       accessories,                      
                       data.Icon,
                       data.SlotsIcon,
@@ -1429,6 +1438,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       data.EmitterTranslation,
                                                                       data.World,
                                                                       data.ParticlesEnabled),
+
                     data.Condition,
                     data.Reliability,
                     data.RateOfFire,
