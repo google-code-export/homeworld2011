@@ -652,33 +652,55 @@ namespace PlagueEngine.Physics
         public Matrix DesiredOrientation;
         public Matrix SkinOrientation;
 
+        Vector3 forceToAdd = Vector3.Zero;
+        Vector3 forceToAdd2 = Vector3.Zero;
+        Vector3 pos= Vector3.Zero;
         public void SetUpOrientationForController()
         {
             DesiredOrientation = Orientation;
         }
-        
+
+        public void AddWorldForce2(Vector3 force)
+        {
+            forceToAdd = force;
+        }
+        public void AddWorldForce2(Vector3 force,Vector3 pos)
+        {
+            forceToAdd2 = force;
+            this.pos = pos;
+        }
         public override void AddExternalForces(float dt)
         {
+
             ClearForces();
 
             if (Controllable)
             {
                 AllowFreezing = false;
-                EnableBody();               
-              
+                EnableBody();
+
                 Orientation = DesiredOrientation;
 
                 DesiredVelocity = Vector3.Transform(DesiredVelocity, SkinOrientation);
-                DesiredVelocity = Vector3.Transform(DesiredVelocity, Orientation);                
+                DesiredVelocity = Vector3.Transform(DesiredVelocity, Orientation);
 
-                Vector3 deltaVel = DesiredVelocity - Velocity;                
+                Vector3 deltaVel = DesiredVelocity - Velocity;
 
-                deltaVel.Y = 0;                
+                deltaVel.Y = 0;
 
-                AddWorldForce((deltaVel * Mass) / dt);                                
+                AddWorldForce((deltaVel * Mass) / dt);
             }
 
+
+            AddWorldForce(forceToAdd);
+            forceToAdd = Vector3.Zero;
+
+            AddWorldForce(forceToAdd2, pos);
+            forceToAdd2 = Vector3.Zero;
+            pos = Vector3.Zero;
+
             AddGravityToExternalForce();
+
         }
     }
 }
