@@ -41,6 +41,8 @@ namespace PlagueEngine.Physics
                                                 };
             physicsSystem.CollisionSystem.UseSweepTests = true;
             RigidBodyComponent.physicsManager = this;
+            physicsSystem.EnableFreezing = true;
+
             CollisionSkinComponent.physicsManager = this;
             PhysicsUlitities.collisionSystem = physicsSystem.CollisionSystem;
             PhysicsController.physicsManager = this;
