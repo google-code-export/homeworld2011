@@ -961,9 +961,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             return 1;
         }
 
-        public void OnShoot(float damage, float stoppingPower)
+        public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction)
         {
-            ObjectAIController.OnEvent(null,new ArtificialIntelligence.TakeDamage(damage, null));
+            ObjectAIController.OnEvent(null, new ArtificialIntelligence.TakeDamage(damage, null));
         }
     }
     /********************************************************************************/

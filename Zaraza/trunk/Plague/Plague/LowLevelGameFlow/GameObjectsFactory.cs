@@ -2079,6 +2079,76 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Create FlammableBarrel
+        /****************************************************************************/
+        public bool CreateFlammableBarrel(FlammableBarrel result, FlammableBarrelData data)
+        {
+            InstancingModes InstancingMode;
+            InstancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
+
+            result.Init(renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
+                                                                       InstancingMode,
+                                                                       data.EnabledMesh,
+                                                                       data.Static),
+             physicsComponentFactory.CreateCylindricalBodyComponent( data.EnabledPhysics, result,
+                                                                                data.Mass,
+                                                                                data.Radius,
+                                                                                data.Lenght,
+                                                                                data.Elasticity,
+                                                                                data.StaticRoughness,
+                                                                                data.DynamicRoughness,
+                                                                                data.Immovable,
+                                                                                data.World,
+                                                                                data.Translation,
+                                                                                data.SkinYaw,
+                                                                                data.SkinPitch,
+                                                                                data.SkinRoll),
+                        particleFactory.CreateParticleEmitterComponent(result,
+                                                            data.BlendState,
+                                                            data.Duration,
+                                                            data.DurationRandomnes,
+                                                            data.EmitterVelocitySensitivity,
+                                                            data.VelocityEnd,
+                                                            data.Gravity,
+                                                            data.ColorMax,
+                                                            data.EndSizeMax,
+                                                            data.VelocityHorizontalMax,
+                                                            data.ParticlesMax,
+                                                            data.RotateSpeedMax,
+                                                            data.StartSizeMax,
+                                                            data.VelocityVerticalMax,
+                                                            data.ColorMin,
+                                                            data.EndSizeMin,
+                                                            data.VelocityHorizontalMin,
+                                                            data.RotateSpeedMin,
+                                                            data.StartSizeMin,
+                                                            data.VelocityVerticalMin,
+                                                            data.ParticleTexture,
+                                                            data.ParticlesPerSecond,
+                                                            data.EmitterTranslation,
+                                                            data.World,
+                                                            data.ParticlesEnabled),
+                     renderingComponentsFactory.CreatePointLightComponent(result,
+                                                                           data.LightEnabled,
+                                                                           data.Color,
+                                                                           false,
+                                                                           0,
+                                                                           data.LightRadius,
+                                                                           data.LinearAttenuation,
+                                                                           data.QuadraticAttenuation,
+                                                                           data.LightLocalPoistion));
+
+            return true;
+        }
+        /****************************************************************************/
+
+
     }
     /********************************************************************************/    
 
