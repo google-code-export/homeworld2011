@@ -247,6 +247,7 @@ namespace PlagueEngine.Audio
             _playingSounds[index].Volume = soundCue.Volume;
             _playingSounds[index].Pitch = soundCue.Pitch;
             _playingSounds[index].Pan = soundCue.Pan;
+            _playingSounds[index].IsLooped = soundCue.IsLooped;
             if (emitter != null && Listener != null)
             {
                 _playingSounds[index].Apply3D(Listener, emitter);
