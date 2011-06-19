@@ -41,7 +41,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private int  _rotateCamera   = -1;
         private bool _isOnWindow;
-        private bool _useCommands;
+        private bool _useCommands;        
         private bool _movingToPoint;
         private bool _tracing;
         
@@ -58,6 +58,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         public MercenariesManager MercenariesManager;
+
+        public bool FireMode { get; set; }
         /****************************************************************************/
 
 
@@ -446,7 +448,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             if (skin.ExternalData != null)
                             {
-                                if (_useCommands)
+                                if (FireMode)
+                                {
+                                    cursor = "Targeting";
+                                }
+                                else if (_useCommands)
                                 {
 
                                     switch (((GameObjectInstance)skin.ExternalData).Status)

@@ -63,7 +63,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.QuadraticAttenuation = light.QuadraticAttenuation;
             data.Intensity = light.Intensity;
             data.Specular = light.Specular;
-
+            
             return data;
         }
         /****************************************************************************/

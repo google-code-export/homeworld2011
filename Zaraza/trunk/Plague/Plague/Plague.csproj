@@ -160,7 +160,6 @@
     <Compile Include="Audio\MusicFadeEffect.cs" />
     <Compile Include="Audio\SongCue.cs" />
     <Compile Include="Audio\SoundCue.cs" />
-    <Compile Include="TimeControlSystem\ExpireClock.cs" />
     <Compile Include="Tools\EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />
     <Compile Include="EventsSystem\EventsSniffer.cs" />

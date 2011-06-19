@@ -32,17 +32,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public PhysicsController Controller { get; protected set; }
         /****************************************************************************/
 
-        public GameObjectInstanceData GetData(AbstractLivingBeingData data)
+        public void GetData(AbstractLivingBeingData data)
         {
             base.GetData(data);
             data.animationMapping = this.ObjectAIController.AnimationBinding;
-            return data;
         }
     }
 
     [Serializable]
     public class AbstractLivingBeingData : GameObjectInstanceData
     {
+
+        public AbstractLivingBeingData()
+        {
+            Type = typeof(AbstractLivingBeing);
+            animationMapping = new Dictionary<ArtificialIntelligence.Controllers.Action, string>();
+        }
+
         [CategoryAttribute("AI")]
         public Dictionary<ArtificialIntelligence.Controllers.Action, string> animationMapping { get; set; }
 

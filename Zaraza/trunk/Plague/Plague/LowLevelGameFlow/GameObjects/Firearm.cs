@@ -10,8 +10,9 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.ArtificialIntelligence.Controllers;
-
+using PlagueEngine.TimeControlSystem;
 using PlagueEngine.Particles.Components;
+using PlagueEngine.Audio.Components;
 
 // TODO: Akcesoria
 
@@ -32,6 +33,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public MeshComponent                mesh    = null;
         public SquareBodyComponent          body    = null;
+        public PointLightComponent          light   = null;
         //public List<Attack>                 attacks = null;
         
         public AmmunitionInfo Ammunition { get; private set; }
@@ -56,6 +58,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public List<int> SelectiveFire     { get; private set; }
         public int       SelectiveFireMode { get; set; }
         private bool isOn = false;
+
+        public SoundEffectComponent sounds;
+        
         /****************************************************************************/
 
 
@@ -71,6 +76,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void Init(MeshComponent       mesh,
                          SquareBodyComponent body,
+                         PointLightComponent light,
                          AttachedAccessory[] accessories,
                          Rectangle           icon,
                          Rectangle           slotsIcon,
@@ -99,7 +105,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             this.mesh = mesh;
             this.body = body;
-
+            this.light = light;
             //this.attacks = attacks;
             isOn = on;
             Condition               = condition;
@@ -140,7 +146,37 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 }
             }
 
+            sounds = new SoundEffectComponent();
+            sounds.LoadFolder("Firearms", 0.6f, 0, 0);
+            
             Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight, particle);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Fire
+        /****************************************************************************/
+        public bool Fire()
+        {
+            if (AmmoClip == null)
+            {
+                sounds.PlaySound("Firearms", "DryFire");
+                return false;
+            }
+            else if (AmmoClip.Content.Count == 0)
+            {
+                sounds.PlaySound("Firearms", "DryFire");
+                return false;
+            }
+            else
+            {
+                sounds.PlaySound("Firearms", "Fireshot");
+                light.Enabled = true;
+                AmmoClip.Content.Pop();
+                TimeControl.CreateTimer(TimeSpan.FromSeconds(0.1f), 0, delegate() { light.Enabled = false; });
+                return true;
+            }
         }
         /****************************************************************************/
 
@@ -239,6 +275,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.AmmoClipTranslation = AmmoClipTranslation;
             data.On = isOn;
 
+            
+            data.Color = light.Color;
+            data.LightRadius = light.Radius;
+            data.LinearAttenuation = light.LinearAttenuation;
+            data.QuadraticAttenuation = light.QuadraticAttenuation;
+            data.Intensity = light.Intensity;
+            data.LightLocalPoistion = light.LocalPosition;
+
+
             return data;
         }
         /****************************************************************************/
@@ -281,6 +326,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 body.ReleaseMe();
                 body = null;
+            }
+
+            if (light != null)
+            {
+                light.ReleaseMe();
+                light = null;
             }
 
             base.ReleaseComponents();
@@ -582,6 +633,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Misc")]
         public bool On { get; set; }
+
+
+        [CategoryAttribute("Light")]
+        public Vector3 Color { get; set; }
+        [CategoryAttribute("Light")]
+        public float Intensity { get; set; }
+        [CategoryAttribute("Light")]
+        public float LightRadius { get; set; }
+        [CategoryAttribute("Light")]
+        public float LinearAttenuation { get; set; }
+        [CategoryAttribute("Light")]
+        public float QuadraticAttenuation { get; set; }
+        [CategoryAttribute("Light")]
+        public Vector3 LightLocalPoistion { get; set; }
     }
     /********************************************************************************/
 
