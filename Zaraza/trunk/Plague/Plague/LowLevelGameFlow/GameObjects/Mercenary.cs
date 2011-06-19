@@ -20,7 +20,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Mercenary
     /********************************************************************************/
-    class Mercenary : AbstractLivingBeing, IActiveGameObject
+    class Mercenary : AbstractLivingBeing, IActiveGameObject, IPenetrable
     {
 
         public delegate void OnSomething();
@@ -929,6 +929,42 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Reload
+        /****************************************************************************/
+        public void Reload()
+        {
+            if (CurrentObject as Firearm == null) return;
+            foreach (var item in Items)
+            {
+                if (item.Key as AmmoClip != null && item.Value.Slot < TinySlots)
+                {
+                    if ((item.Key as AmmoClip).Compability.Contains(CurrentObject.Name) &&
+                        (item.Key as AmmoClip).Content.Count > 0)
+                    {
+                        Items.Remove(item.Key);
+                        Firearm firearm = CurrentObject as Firearm;
+                        AmmoClip ammoClip = firearm.DetachClip();
+                        firearm.AttachClip(item.Key as AmmoClip);
+                        FindPlaceForItem(ammoClip, true);
+                        return;
+                    }
+                }
+            }
+        }
+        /****************************************************************************/
+
+
+        public float GetArmorClass()
+        {
+            return 1;
+        }
+
+        public void OnShoot(float damage, float stoppingPower)
+        {
+            ObjectAIController.OnEvent(Owner,new ArtificialIntelligence.TakeDamage(damage, null));
+        }
     }
     /********************************************************************************/
 

@@ -268,9 +268,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         float det = v1.X * v2.Y - v1.Y * v2.X;
                         float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
                         if (det < 0) angle = -angle;
-                        controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
+                        if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
                         TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); });
                     }
+                    else merc.Reload();
                 }
                 controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }

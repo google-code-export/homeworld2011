@@ -1453,7 +1453,8 @@ namespace PlagueEngine.LowLevelGameFlow
                     ammoClip,
                     String.IsNullOrEmpty(data.AmmunitionName) ? null : ammunition.AmmunitionData[ammunition.NameToID[data.AmmunitionName]],
                     data.AmmoClipTranslation,
-                    data.On);
+                    data.On,
+                    String.IsNullOrEmpty(data.AmmunitionName) ? null : ammunition.AmmunitionVersionData[ammunition.NameToID[data.AmmunitionName]]);
 
             return true;
         }
