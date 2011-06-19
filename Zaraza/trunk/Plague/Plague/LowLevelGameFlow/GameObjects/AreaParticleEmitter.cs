@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework;
 using System.ComponentModel;
 using PlagueEngine.Particles.Components;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
     class AreaParticleEmitter : GameObjectInstance
@@ -63,6 +65,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.AreaSpawnLength=emitter.areaLength;
             data.AreaSpawnWidth=emitter.areaWidth;
+
+
+
+            if (emitter.particleSystem.settings.BlendState == BlendState.Additive)
+            {
+                data.BlendState = 1;
+            }
+            else if (emitter.particleSystem.settings.BlendState == BlendState.AlphaBlend)
+            {
+                data.BlendState = 2;
+            }
+            else if (emitter.particleSystem.settings.BlendState == BlendState.NonPremultiplied)
+            {
+                data.BlendState = 3;
+            }
+            else if (emitter.particleSystem.settings.BlendState == BlendState.Opaque)
+            {
+                data.BlendState = 4;
+            }
 
             return data;
 

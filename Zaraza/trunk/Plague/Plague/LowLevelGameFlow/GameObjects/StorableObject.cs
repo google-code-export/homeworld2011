@@ -8,6 +8,9 @@ using PlagueEngine.Particles.Components;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
 
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
@@ -163,6 +166,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ParticlesPerSecond         = emitter.particlesPerSecond;
             data.EmitterTranslation         = emitter.particleTranslation;
             data.ParticlesEnabled           = emitter.enabled;
+
+            if (emitter.particleSystem.settings.BlendState == BlendState.Additive)
+            {
+                data.BlendState = 1;
+            }
+            else if (emitter.particleSystem.settings.BlendState == BlendState.AlphaBlend)
+            {
+                data.BlendState = 2;
+            }
+            else if (emitter.particleSystem.settings.BlendState == BlendState.NonPremultiplied)
+            {
+                data.BlendState = 3;
+            }
+            else if (emitter.particleSystem.settings.BlendState == BlendState.Opaque)
+            {
+                data.BlendState = 4;
+            }
         }
         /****************************************************************************/
 
