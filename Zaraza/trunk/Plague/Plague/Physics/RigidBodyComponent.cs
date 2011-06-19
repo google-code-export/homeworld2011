@@ -660,7 +660,7 @@ namespace PlagueEngine.Physics
         public override void AddExternalForces(float dt)
         {
             ClearForces();
-   
+
             if (Controllable)
             {
                 AllowFreezing = false;

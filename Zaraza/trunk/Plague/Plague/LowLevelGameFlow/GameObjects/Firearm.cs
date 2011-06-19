@@ -227,7 +227,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     if ((skin.ExternalData as IShootable) != null)
                     {
                         (skin.ExternalData as IShootable).OnShoot(bulletInfo.Damage        * DamageModulation, 
-                                                                  bulletInfo.StoppingPower * StoppingPowerModulation);
+                                                                  bulletInfo.StoppingPower * StoppingPowerModulation,
+                                                                  pos,
+                                                                  dispersion);
 
                         if (skin.ExternalData as IPenetrable != null)
                         {

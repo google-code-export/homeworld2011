@@ -567,6 +567,12 @@ namespace PlagueEngine.Tools
             MainMenu.ClassType = typeof(PlagueEngine.LowLevelGameFlow.GameObjects.MainMenu);
             MainMenu.dataClassType = typeof(MainMenuData);
             gameObjectClassNames.Add(MainMenu);
+
+            gameObjectsClassName FlammableBarrel = new gameObjectsClassName();
+            FlammableBarrel.className = "FlammableBarrel";
+            FlammableBarrel.ClassType = typeof(FlammableBarrel);
+            FlammableBarrel.dataClassType = typeof(FlammableBarrelData);
+            gameObjectClassNames.Add(FlammableBarrel);
         }
         /********************************************************************************/
 
