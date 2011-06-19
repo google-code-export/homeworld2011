@@ -41,16 +41,26 @@ namespace PlagueEngine.Audio.Components
 
         public void LoadFolder(string folderName, float volume, float pitch, float pan)
         {
+            LoadFolder(folderName, volume, pitch, pan, false);
+        }
+
+        public void LoadFolder(string folderName, float volume, float pitch, float pan, bool allowMultiInstancing)
+        {
             var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
             if (!dir.Exists) return;
             var xbnFiles = dir.GetFiles("*.xnb");
             foreach (var soundName in xbnFiles.Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
             {
-                LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan);
+                LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan, allowMultiInstancing);
             }
         }
 
         public void LoadFolderTree(string folderName, float volume, float pitch, float pan, int maxDepth)
+        {
+            LoadFolderTree(folderName, volume, pitch, pan, maxDepth, false);
+        }
+
+        public void LoadFolderTree(string folderName, float volume, float pitch, float pan, int maxDepth, bool allowMultiInstancing)
         {
             if (maxDepth < 0) return;
             var dir = new DirectoryInfo("Content\\" + _audioManager.ContentFolder + "\\" + folderName);
@@ -59,11 +69,11 @@ namespace PlagueEngine.Audio.Components
             var xbnFiles = dir.GetFiles("*.xnb");
             foreach (var directoryInfo in dirFiles)
             {
-                LoadFolderTree(folderName + "\\" + directoryInfo.Name, volume, pitch, pan, maxDepth - 1);
+                LoadFolderTree(folderName + "\\" + directoryInfo.Name, volume, pitch, pan, maxDepth - 1, allowMultiInstancing);
             }
             foreach (var soundName in xbnFiles.Select(file => file.Name.Substring(0, file.Name.Length - file.Extension.Length)))
             {
-                LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan);
+                LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan, allowMultiInstancing);
             }
 #if DEBUG
             if (xbnFiles.Length == 0)
