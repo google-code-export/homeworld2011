@@ -13,8 +13,8 @@ using PlagueEngine.ArtificialIntelligence.Controllers;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.Particles.Components;
 using PlagueEngine.Audio.Components;
+using JigLibX.Collision;
 
-// TODO: Akcesoria
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -59,6 +59,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public int       SelectiveFireMode { get; set; }
         private bool isOn = false;
 
+        private Dictionary<uint, AmmunitionVersionInfo> AmmunitionVersionData;
+
         public SoundEffectComponent sounds;
         
         /****************************************************************************/
@@ -101,7 +103,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          AmmoClip            ammoClip,
                          AmmunitionInfo      ammunitionInfo,
                          Vector3             ammoClipTranslation,
-                         bool                on)
+                         bool                on,
+                         Dictionary<uint, AmmunitionVersionInfo> ammunitionVersionData)
         {
             this.mesh = mesh;
             this.body = body;
@@ -120,6 +123,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             RecoilModulation        = recoilModulation;
             StoppingPowerModulation = stoppingPowerModulation;
 
+            AmmunitionVersionData = ammunitionVersionData;
             Ammunition = ammunitionInfo;
             AmmoClip   = ammoClip;
             AmmoClipTranslation = ammoClipTranslation;
@@ -147,7 +151,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
 
             sounds = new SoundEffectComponent();
-            sounds.LoadFolder("Firearms", 0.6f, 0, 0);
+            sounds.LoadFolder("Firearms", 0.6f, 0, 0,true);
             
             Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight, particle);
         }
@@ -158,6 +162,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fire
         /****************************************************************************/
         public bool Fire()
+        {
+            return SingleFireshot();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Single Fireshot
+        /****************************************************************************/
+        private bool SingleFireshot()
         {
             if (AmmoClip == null)
             {
@@ -172,8 +186,47 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else
             {
                 sounds.PlaySound("Firearms", "Fireshot");
-                light.Enabled = true;
-                AmmoClip.Content.Pop();
+                light.Enabled = true;                                
+                
+                AmmunitionVersionInfo bulletInfo = AmmunitionVersionData[AmmoClip.Content.Pop().Version];
+                Matrix world = GetWorld();
+
+                float dist;
+                CollisionSkin skin;
+                Vector3 pos, nor;
+
+                PhysicsUlitities.RayTest(world.Translation + world.Forward * 2,
+                                         world.Translation + bulletInfo.Range * RangeModulation * world.Forward,
+                                         out dist,
+                                         out skin,
+                                         out pos,
+                                         out nor);
+
+                if (skin != null)
+                {
+                    if(skin.ExternalData != null)
+                    {
+                        Diagnostics.PushLog(LoggingLevel.INFO, skin.ExternalData.ToString() + " | " + pos.ToString() + " | " + dist.ToString());
+                    }
+
+                    if ((skin.ExternalData as IShootable) != null)
+                    {
+                        (skin.ExternalData as IShootable).OnShoot(bulletInfo.Damage * DamageModulation, 
+                                                                  bulletInfo.StoppingPower * StoppingPowerModulation);
+
+                        if (skin.ExternalData as IPenetrable != null)
+                        {
+                            (skin.ExternalData as IPenetrable).GetArmorClass();
+                        }
+
+                        if (bulletInfo.Version == 7 && (skin.ExternalData as IFlammable) != null) 
+                        {
+                            (skin.ExternalData as IFlammable).SetOnFire();
+                        }
+                        
+                    }
+                }
+
                 TimeControl.CreateTimer(TimeSpan.FromSeconds(0.1f), 0, delegate() { light.Enabled = false; });
                 return true;
             }
@@ -497,10 +550,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Detach Clip
         /****************************************************************************/
-        public void DetachClip()
+        public AmmoClip DetachClip()
         {
-            AmmoClip.OnStoring();
+            AmmoClip result = AmmoClip;
+            AmmoClip.OnStoring();            
             AmmoClip = null;
+            return result;
         }
         /****************************************************************************/
 
