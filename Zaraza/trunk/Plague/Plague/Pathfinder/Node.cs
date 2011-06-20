@@ -64,5 +64,57 @@ namespace PlagueEngine.Pathfinder
             var n = obj as Node;
             return (object)n == null ? 0 : (Value + Distance).CompareTo((n.Value + n.Distance));
         }
+
+        public int directionToNode(Node node)
+        {
+            if (node != null && !node.Equals(this))
+            {
+                int direction;
+                int xD = x - node.x;
+                int yD = y - node.y;
+                if (x < 0)
+                {
+                    if (y < 0)
+                    {
+                        return 0;
+                    }
+                    if (y == 0)
+                    {
+                        return 1;
+                    }
+                    if (y > 0)
+                    {
+                        return 2;
+                    }
+                }
+                if (x == 0)
+                {
+                    if (y > 0)
+                    {
+                        return 3;
+                    }
+                    if (y < 0)
+                    {
+                        return 4;
+                    }
+                }
+                if (x > 0)
+                {
+                    if (y < 0)
+                    {
+                        return 5;
+                    }
+                    if (y == 0)
+                    {
+                        return 6;
+                    }
+                    if (y > 0)
+                    {
+                        return 7;
+                    }
+                }
+            }
+            return 9;
+        }
     }
 }

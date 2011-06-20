@@ -24,7 +24,7 @@ namespace PlagueEngine.Pathfinder
         {
             _nodes = new Stack<Node>();
         }
-        bool GetPath(Vector3 startPoint, Vector3 destinationPoint)
+       public bool GetPath(Vector3 startPoint, Vector3 destinationPoint)
         {
             clear();
             if (PathfinderManager.PM != null)
@@ -53,6 +53,7 @@ namespace PlagueEngine.Pathfinder
                                    _nodes.Push(active);
                                    active = active.Parent;
                                }
+                               simplifiePath();
                                return true;
                            }
                            foreach (var child in active.GenerateChildren())
@@ -80,6 +81,7 @@ namespace PlagueEngine.Pathfinder
                                _nodes.Push(closest);
                                closest = closest.Parent;
                            }
+                           simplifiePath();
                            return true;
                        }
                        _visited = null;
@@ -89,6 +91,36 @@ namespace PlagueEngine.Pathfinder
             
             }
             return false;
+        }
+        private void simplifiePath()
+        {
+            if (_nodes != null && _nodes.Count > 0)
+            {
+                List<Node> tempNodes = new List<Node>();
+                int curentDirection=-1;
+                int nodeDirection;
+                tempNodes.Add(_nodes.Pop());
+                while (_nodes.Count > 0)
+                {
+                    Node temp = _nodes.Pop();
+                    nodeDirection = tempNodes[tempNodes.Count - 1].directionToNode(temp);
+                    if (nodeDirection == curentDirection)
+                    {
+                        tempNodes[tempNodes.Count - 1] = temp;
+                    }
+                    else
+                    {
+                        curentDirection = nodeDirection;
+                        tempNodes.Add(temp);
+                    }
+                    
+                }
+                tempNodes.Reverse(0, tempNodes.Count);
+                _nodes= new Stack<Node>(tempNodes);
+            }
+        }
+        public bool isEmpty{
+            get { return _nodes.Count == 0; }
         }
         private void clear()
         {
