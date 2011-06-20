@@ -81,7 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (owner != null)
             {
-                //World = Matrix.Identity;
+                if (owner as Firearm == null) World = Matrix.CreateRotationY(MathHelper.ToRadians(-90));
                 if (mesh != null) mesh.Enabled = true;
                 if (body != null) body.DisableBody();
             }
