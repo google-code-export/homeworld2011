@@ -36,7 +36,14 @@ namespace PlagueEngine.TimeControlSystem
         /****************************************************************************/
         public static void Update(TimeSpan deltaTime)
         {
+            // przepraszam 
+            List<Timer> tmpTimers = new List<Timer>(Timers.Count);
             foreach (Timer timer in Timers.Values)
+            {
+                tmpTimers.Add(timer);
+            }
+
+            foreach (Timer timer in tmpTimers)
             {
                 if (timer.Wasted) WastedTimers.Add(timer);               
                 else timer.Update(deltaTime);

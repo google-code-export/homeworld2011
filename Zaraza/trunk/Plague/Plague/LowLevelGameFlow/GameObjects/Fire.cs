@@ -116,7 +116,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             emitter = null;
             light.ReleaseMe();
             light = null;
-            TimeControlSystem.TimeControl.ReleaseTimer(timer);
+            TimeControlSystem.TimeControl.ReleaseTimer(timer);            
         }
         /********************************************************************************/
     }

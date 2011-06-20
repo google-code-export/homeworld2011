@@ -59,7 +59,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public MercenariesManager MercenariesManager;
 
-        public bool FireMode { get; set; }
+        public bool StopScrolling   { get; set; }
+        public bool FireMode        { get; set; }
         /****************************************************************************/
 
 
@@ -391,33 +392,35 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             switch (mouseMoveAction)
             {
                 case MouseMoveAction.Scroll:
-                    var testPosition = _position + direction * _zoomSpeed  * mouseMoveState.ScrollDifference;
-
-                    var distance = Vector3.Distance(_target, testPosition);
-                    if (distance > 3.0f && testPosition.Y > _target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
+                    if (!StopScrolling)
                     {
-                        if (_zoom)
-                        {
-                            var tmp = _position;
-                            tmp.Y += _zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
+                        var testPosition = _position + direction * _zoomSpeed * mouseMoveState.ScrollDifference;
 
-                            if (CanIMove(_position, tmp))
+                        var distance = Vector3.Distance(_target, testPosition);
+                        if (distance > 3.0f && testPosition.Y > _target.Y)//kamera musi patrzec z gory w dol, nie odwrotnie. wiec lepiej jej nie przyblizac za duzo
+                        {
+                            if (_zoom)
                             {
-                                _position.Y += _zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
+                                var tmp = _position;
+                                tmp.Y += _zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
+
+                                if (CanIMove(_position, tmp))
+                                {
+                                    _position.Y += _zoomSpeed * direction.Y * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
+                                }
                             }
-                        }
-                        else
-                        {
-                            var tmp = _position;
-                            tmp += _zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
-
-                            if (CanIMove(_position, tmp))
+                            else
                             {
-                                _position += _zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
+                                var tmp = _position;
+                                tmp += _zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
+
+                                if (CanIMove(_position, tmp))
+                                {
+                                    _position += _zoomSpeed * direction * mouseMoveState.ScrollDifference * (Vector3.Distance(_position, _target) / 20);
+                                }
                             }
                         }
                     }
-
                     break;
 
 

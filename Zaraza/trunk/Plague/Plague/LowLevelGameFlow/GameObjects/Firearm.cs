@@ -66,6 +66,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float MaxDispersion;
         private bool sureFire = false;
         private Vector3 sureFireTarget;
+        private bool openFire = false;
+        private int ticks = 0;
+        private uint autoFireTimer;
         /****************************************************************************/
 
 
@@ -165,12 +168,73 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Release Trigger
+        /****************************************************************************/
+        public void ReleaseTrigger()
+        {
+            if (openFire && autoFireTimer != 0)
+            { 
+                TimeControl.ReleaseTimer(autoFireTimer);
+                openFire = false;
+                autoFireTimer = 0;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// Fire
         /****************************************************************************/
         public bool Fire()
         {
-            sureFire = false; 
-            return SingleFireshot();            
+            if(openFire) return true;
+
+            sureFire = false;             
+
+            switch (SelectiveFireMode)
+            { 
+                case 1:                    
+                    return SingleFireshot();
+                case -1:
+                    {
+                        bool result = SingleFireshot();
+
+                        if (result)
+                        {
+                            openFire = true;
+                            autoFireTimer = TimeControl.CreateTimer(TimeSpan.FromSeconds(1 / RateOfFire),
+                                                                    -1,
+                                                                    delegate()
+                                                                    {
+                                                                        if (!SingleFireshot())
+                                                                        {
+                                                                            TimeControl.ReleaseTimer(autoFireTimer);
+                                                                            openFire = false;
+                                                                            autoFireTimer = 0;
+                                                                        }
+                                                                    });
+                        }
+                        return result;
+                    }
+                default:
+                    {
+                        ticks = 0;
+                        bool result = SingleFireshot();
+
+                        if (result)
+                        {
+                            openFire = true;
+                            TimeControl.CreateTimer(TimeSpan.FromSeconds(1 / RateOfFire),
+                                                    SelectiveFireMode - 1,
+                                                    delegate()
+                                                    {
+                                                        SingleFireshot();
+                                                        if (++ticks == SelectiveFireMode - 1) openFire = false;
+                                                    });
+                        }
+                        return result;
+                    }
+            }
         }
         /****************************************************************************/
 
@@ -182,7 +246,51 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             sureFire       = true;
             sureFireTarget = target;
-            return SingleFireshot();
+
+            switch (SelectiveFireMode)
+            {
+                case 1:
+                    return SingleFireshot();
+                case -1:
+                    {
+                        bool result = SingleFireshot();
+
+                        if (result)
+                        {
+                            openFire = true;
+                            autoFireTimer = TimeControl.CreateTimer(TimeSpan.FromSeconds(1 / RateOfFire),
+                                                                    -1,
+                                                                    delegate()
+                                                                    {
+                                                                        if (!SingleFireshot())
+                                                                        {
+                                                                            TimeControl.ReleaseTimer(autoFireTimer);
+                                                                            openFire = false;
+                                                                            autoFireTimer = 0;
+                                                                        }
+                                                                    });
+                        }
+                        return result;
+                    }
+                default:
+                    {
+                        ticks = 0;
+                        bool result = SingleFireshot();
+
+                        if (result)
+                        {
+                            openFire = true;
+                            TimeControl.CreateTimer(TimeSpan.FromSeconds(1 / RateOfFire),
+                                                    SelectiveFireMode - 1,
+                                                    delegate()
+                                                    {
+                                                        SingleFireshot();
+                                                        if (++ticks == SelectiveFireMode - 1) openFire = false;
+                                                    });
+                        }
+                        return result;
+                    }
+            }
         }
         /****************************************************************************/
 
@@ -276,16 +384,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }                        
                     }
 
-                    PointLightData data = new PointLightData();
-                    data.Color = new Vector3(1, 0, 0);
-                    data.Enabled = true;
-                    data.Intensity = 1;
-                    data.LightRadius = 5;
-                    data.LinearAttenuation = 0;
-                    data.QuadraticAttenuation = 2;
-                    data.Specular = false;
-                    data.World = Matrix.CreateTranslation(pos);
-                    CreateGameObject(data);
+                    //PointLightData data = new PointLightData();
+                    //data.Color = new Vector3(1, 0, 0);
+                    //data.Enabled = true;
+                    //data.Intensity = 1;
+                    //data.LightRadius = 5;
+                    //data.LinearAttenuation = 0;
+                    //data.QuadraticAttenuation = 2;
+                    //data.Specular = false;
+                    //data.World = Matrix.CreateTranslation(pos);
+                    //CreateGameObject(data);
 
                 }
 
