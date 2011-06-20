@@ -28,6 +28,8 @@ namespace PlagueEngine.Rendering
         public bool Multisampling;
         public bool VSync;
         public float Brightness;
+        public float Contrast;
+        public bool SSAO;
         /****************************************************************************/
 
 
@@ -41,7 +43,9 @@ namespace PlagueEngine.Rendering
             FullScreen      = false;
             Multisampling   = false;
             VSync           = false;
-            Brightness = 1.0f;
+            Brightness      = 0.0f;
+            Contrast        = 1.0f;
+            SSAO            = false;
         }
         /****************************************************************************/
 
@@ -49,14 +53,16 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Constructor (2)
         /****************************************************************************/
-        public RenderConfig(int width,int height,bool fullScreen,bool multisampling,bool vSync,float brightness) 
+        public RenderConfig(int width, int height, bool fullScreen, bool multisampling, bool vSync, float brightness, float contrast,bool ssao) 
         {
             Width           = width;
             Height          = height;
             FullScreen      = fullScreen;
             Multisampling   = multisampling;
             VSync           = vSync;
-            Brightness = brightness;
+            Brightness      = brightness;
+            Contrast        = contrast;
+            SSAO            = ssao;
         }
         /****************************************************************************/
 

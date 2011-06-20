@@ -83,7 +83,8 @@ namespace PlagueEngine.Rendering
         internal List<FrontEndComponent> frontEndComponents = new List<FrontEndComponent>();
         internal Dictionary<String, SpriteFont> fonts       = new Dictionary<String, SpriteFont>();
         private Effect colorCorrection = null;        
-        private float brightness = 1.0f;
+        private float brightness = 0.0f;
+        private float contrast   = 1.0f;
         /**********************/
 
 
@@ -151,6 +152,19 @@ namespace PlagueEngine.Rendering
             }
         }
 
+
+        public float Contrast
+        {
+            get { return contrast; }
+            set
+            {
+                contrast = value;
+                if (colorCorrection != null)
+                {
+                    colorCorrection.Parameters["Contrast"].SetValue(contrast);
+                }
+            }
+        }
 
         /****************************************************************************/
         /// Constants
@@ -252,17 +266,21 @@ namespace PlagueEngine.Rendering
         {
             get
             {
-                return new RenderConfig(Device.DisplayMode.Width,
-                                        Device.DisplayMode.Height,
+                return new RenderConfig(Device.PresentationParameters.BackBufferWidth,
+                                        Device.PresentationParameters.BackBufferHeight,
                                         graphics.IsFullScreen,
                                         graphics.PreferMultiSampling,
                                         graphics.SynchronizeWithVerticalRetrace,
-                                        brightness);
+                                        brightness,
+                                        contrast,
+                                        ssaoEnabled);
             }
             
             set
             {
-                brightness = value.Brightness;
+                Brightness = value.Brightness;
+                Contrast = value.Contrast;
+                ssaoEnabled = value.SSAO;
 
                 graphics.PreferredDepthStencilFormat = depthFormat;
                 graphics.PreferredBackBufferFormat = surfaceFormat;
@@ -808,6 +826,7 @@ namespace PlagueEngine.Rendering
             debugEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
             colorCorrection.Parameters["HalfPixel"].SetValue(HalfPixel);
             colorCorrection.Parameters["Brightness"].SetValue(brightness);
+            colorCorrection.Parameters["Contrast"].SetValue(contrast);
                        
             ditherTexture = contentManager.LoadTexture2D("RandomNormals");            
 
