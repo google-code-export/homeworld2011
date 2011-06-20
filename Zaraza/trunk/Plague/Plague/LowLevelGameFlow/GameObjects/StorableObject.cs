@@ -166,6 +166,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.ParticlesPerSecond         = emitter.particlesPerSecond;
             data.EmitterTranslation         = emitter.particleTranslation;
             data.ParticlesEnabled           = emitter.enabled;
+            data.Technique = emitter.particleSystem.settings.Technique;
 
             if (emitter.particleSystem.settings.BlendState == BlendState.Additive)
             {
@@ -319,6 +320,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Particles"),
         DescriptionAttribute("Range of values controlling how fast the particles rotate. Values for individual particles are randomly chosen from somewhere between min and max. If both these values are set to 0, the particle system will automatically switch to an alternative shader technique that does not support rotation, and thus requires significantly less GPU power. This means if you don't need the rotation effect, you may get a performance boost from leaving these values at 0.")]
         public float RotateSpeedMin { get; set; }
+
+        [CategoryAttribute("Particles"),
+        DescriptionAttribute("0 - FacedToScreen 1 - FacedUp")]
+        public int Technique { get; set; }
     }
     /********************************************************************************/
 

@@ -1053,7 +1053,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.ParticlesPerSecond,
                                                                         data.EmitterTranslation,
                                                                         data.World,
-                                                                        data.ParticlesEnabled));                        
+                                                                        data.ParticlesEnabled,
+                                                                        data.Technique));                        
 
             return true;
         }
@@ -1157,7 +1158,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.ParticlesPerSecond,
                                                                         data.EmitterTranslation,
                                                                         data.World,
-                                                                        data.ParticlesEnabled),
+                                                                        data.ParticlesEnabled,
+                                                                        data.Technique),
                     data.DamageModulation,
                     data.AccuracyModulation,
                     data.RangeModulation,
@@ -1437,7 +1439,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       data.ParticlesPerSecond,
                                                                       data.EmitterTranslation,
                                                                       data.World,
-                                                                      data.ParticlesEnabled),
+                                                                      data.ParticlesEnabled,
+                                                                      data.Technique),
 
                     data.Condition,
                     data.Reliability,
@@ -1502,7 +1505,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       data.ParticlesPerSecond,
                                                                       data.EmitterTranslation,
                                                                       data.World,
-                                                                      data.ParticlesEnabled));
+                                                                      data.ParticlesEnabled,
+                                                                      data.Technique));
 
             return true;
         }
@@ -1886,7 +1890,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       data.ParticlesPerSecond,
                                                                       data.EmitterTranslation,
                                                                       data.World,
-                                                                      data.ParticlesEnabled),
+                                                                      data.ParticlesEnabled,
+                                                                      data.Technique),
                         ammunition.AmmunitionData[ammunition.NameToID[data.Ammunition]],
                         ammunition.AmmunitionVersionData[ammunition.NameToID[data.Ammunition]],
                         content,
@@ -1994,7 +1999,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                             data.ParticlesPerSecond,
                                                             data.EmitterTranslation,
                                                             data.World,
-                                                            data.ParticlesEnabled),
+                                                            data.ParticlesEnabled,
+                                                            data.Technique),
             info,
             data.PPP,
             versionInfo,
@@ -2066,7 +2072,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                     data.ParticlesPerSecond,
                                                                     data.EmitterTranslation,
                                                                     data.World,
-                                                                    data.ParticlesEnabled),
+                                                                    data.ParticlesEnabled,
+                                                                    data.Technique),
                   data.DamageModulation,
                   data.AccuracyModulation,
                   data.RangeModulation,
@@ -2133,7 +2140,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                             data.ParticlesPerSecond,
                                                             data.EmitterTranslation,
                                                             data.World,
-                                                            data.ParticlesEnabled),
+                                                            data.ParticlesEnabled,
+                                                            data.Technique),
                      renderingComponentsFactory.CreatePointLightComponent(result,
                                                                            data.LightEnabled,
                                                                            data.Color,
@@ -2181,7 +2189,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                             data.ParticlesPerSecond,
                                                             data.EmitterTranslation,
                                                             data.World,
-                                                            data.ParticlesEnabled),
+                                                            data.ParticlesEnabled,
+                                                            data.Technique),
                      renderingComponentsFactory.CreatePointLightComponent(result,
                                                                            data.LightEnabled,
                                                                            data.Color,

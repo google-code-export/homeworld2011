@@ -110,7 +110,7 @@ namespace PlagueEngine.Physics
         {
             body.DesiredVelocity = new Vector3(0,0,0);
             //body.Controllable = false;            
-            body.Immovable = true;
+            //body.Immovable = true;
         }
 
         public bool IsControlEnabled
