@@ -18,7 +18,7 @@ namespace PlagueEngine.Audio
             Pan = pan;
             SoundEffect = soundEffect;
             AllowMultiInstancing = false;
-            SoundEffect.DistanceScale = 200;
+            //SoundEffect.DistanceScale = 50f;
         }
 
         public SoundCue(float volume, float pitch, float pan, SoundEffect soundEffect, bool allowMultiInstancing)
@@ -28,7 +28,7 @@ namespace PlagueEngine.Audio
             Pan = pan;
             SoundEffect = soundEffect;
             AllowMultiInstancing = allowMultiInstancing;
-            SoundEffect.DistanceScale = 200;
+            SoundEffect.DistanceScale = 20f;
         }
 
         public SoundCue(float volume, float pitch, float pan, SoundEffect soundEffect, bool allowMultiInstancing, float distaceScale)
@@ -38,7 +38,7 @@ namespace PlagueEngine.Audio
             Pan = pan;
             SoundEffect = soundEffect;
             AllowMultiInstancing = allowMultiInstancing;
-            SoundEffect.DistanceScale = distaceScale;
+            //SoundEffect.DistanceScale = distaceScale;
         }
     }
 }

@@ -9,11 +9,17 @@ namespace PlagueEngine.Audio.Components
 {
     class SoundEffectComponent
     {
-        private readonly Dictionary<string, Dictionary<string, SoundCue>> _sounds = new Dictionary<string, Dictionary<string, SoundCue>>();
-        private readonly Dictionary<string, SoundEffectInstance> _playingSounds;
-        private readonly AudioEmitter _emitter;
-        private readonly AudioManager _audioManager;
-        private readonly Random _random;
+        private Dictionary<string, Dictionary<string, SoundCue>> _sounds = new Dictionary<string, Dictionary<string, SoundCue>>();
+        private Dictionary<string, SoundEffectInstance> _playingSounds;
+        private AudioEmitter _emitter;
+
+        public AudioEmitter Emitter
+        {
+            get { return _emitter; }
+        } 
+
+        private AudioManager _audioManager;
+        private Random _random;
 
         public SoundEffectComponent()
         {
@@ -87,10 +93,15 @@ namespace PlagueEngine.Audio.Components
         /// <param name="soundName">Nazwa dźwięku</param>
         public void PlaySound(string soundGroup, string soundName)
         {
-            PlaySound(soundGroup, soundName, false);
+            PlaySound(soundGroup, soundName, false,0);
         }
 
         public void PlaySound(string soundGroup, string soundName, bool isLooped)
+        {
+
+            PlaySound(soundGroup, soundName, isLooped, 0);
+        }
+        public void PlaySound(string soundGroup, string soundName, bool isLooped, float maxDistance)
         {
             SoundCue sound;
             if (!_sounds.ContainsKey(soundGroup) || !_sounds[soundGroup].TryGetValue(soundName, out sound))
@@ -100,13 +111,17 @@ namespace PlagueEngine.Audio.Components
 #endif
                 return;
             }
-            PlaySound(sound, soundName, isLooped);
+            PlaySound(sound, soundName, isLooped, maxDistance);
         }
         private void PlaySound(SoundCue sound, string soundName)
         {
-            PlaySound(sound, soundName, false);
+            PlaySound(sound, soundName, false, 0);
         }
         private void PlaySound(SoundCue sound, string soundName, bool isLooped)
+        {
+            PlaySound(sound, soundName, isLooped, 0);
+        }
+        private void PlaySound(SoundCue sound, string soundName, bool isLooped, float maxDistance)
         {
             if (!sound.AllowMultiInstancing && _playingSounds.ContainsKey(soundName))
             {
@@ -126,13 +141,12 @@ namespace PlagueEngine.Audio.Components
                     }
                 }
             }
-            var sei = _audioManager.PlaySound(sound, _emitter, isLooped);
+            var sei = _audioManager.PlaySound(this, sound, _emitter, isLooped, maxDistance);
             if (!sound.AllowMultiInstancing && sei != null)
             {
                 _playingSounds.Add(soundName, sei);
             }
         }
-
         public void PlayRandomSound(string soundGroup)
         {
             PlayRandomSound(soundGroup, false);
@@ -186,10 +200,21 @@ namespace PlagueEngine.Audio.Components
         {
             foreach (var soundEffectInstance in _playingSounds.Values)
             {
-                soundEffectInstance.Stop();
-                soundEffectInstance.Dispose();
+                if (!soundEffectInstance.IsDisposed) { 
+                    soundEffectInstance.Stop();
+                    soundEffectInstance.Dispose();
+                }
             }
             _playingSounds.Clear();
+        }
+        public void  ReleaseMe(){
+            StopAllSounds();
+            _emitter = null;
+            _random = null;
+            _playingSounds = null;
+            _audioManager = null;
+            _sounds.Clear();
+            _sounds = null;
         }
     }
 }

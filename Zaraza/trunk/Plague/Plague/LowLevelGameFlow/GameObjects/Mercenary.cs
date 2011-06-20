@@ -93,7 +93,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mesh = mesh;
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
-            SoundEffectComponent.LoadFolderTree("Mercenary", 0.4f, 0, 0, 2);
+            SoundEffectComponent.LoadFolderTree("Mercenary", 1f, 0, 0, 2);
             InventoryIcon = inventoryIcon;
             TinySlots = tinySlots;
             Slots = slots;

@@ -184,7 +184,7 @@ namespace PlagueEngine.Resources
             catch (System.IO.IOException e) 
             {
 #if DEBUG
-                Diagnostics.PushLog("Loading Configuration: " + typeof(T).ToString() + " failed.");
+                Diagnostics.PushLog(LoggingLevel.ERROR,"Loading Configuration: " + typeof(T).ToString() + " failed.");
 #endif
                 throw e;
             }
@@ -375,7 +375,7 @@ namespace PlagueEngine.Resources
             catch (System.IO.IOException)
             {    
 #if DEBUG
-                Diagnostics.PushLog("File: " + defaultProfileFile + " not found.");
+                Diagnostics.PushLog(LoggingLevel.WARN, "File: " + defaultProfileFile + " not found.");
 #endif
                 return;
             }
@@ -449,7 +449,7 @@ namespace PlagueEngine.Resources
                 godd.Set(god);
                 gameObjectsDefinitions.Add(godd.Name, godd);
 #if DEBUG
-                Diagnostics.PushLog("Loading object definition: " + god.Name + ".");
+                Diagnostics.PushLog(LoggingLevel.INFO, "Loading object definition: " + god.Name + ".");
 #endif
             }
 

@@ -160,12 +160,16 @@
     <Compile Include="Audio\MusicFadeEffect.cs" />
     <Compile Include="Audio\SongCue.cs" />
     <Compile Include="Audio\SoundCue.cs" />
+    <Compile Include="Audio\SoundCueInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Fire.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FireSelector.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FlammableBarrel.cs" />
     <Compile Include="LowLevelGameFlow\IFlammable.cs" />
     <Compile Include="LowLevelGameFlow\IPenetrable.cs" />
     <Compile Include="LowLevelGameFlow\IShootable.cs" />
+    <Compile Include="Pathfinder\Node.cs" />
+    <Compile Include="Pathfinder\PathfinderComponent.cs" />
+    <Compile Include="Pathfinder\PathfinderManager.cs" />
     <Compile Include="Tools\EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />
     <Compile Include="EventsSystem\EventsSniffer.cs" />
@@ -396,9 +400,7 @@
       <DependentUpon>LevelNameMessageBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pathfinder\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config">
       <SubType>Designer</SubType>
