@@ -282,6 +282,20 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
 
+        /****************************************************************************/
+        /// Create Dialog Messages Manager
+        /****************************************************************************/
+        public bool CreateDialogMessagesManager(DialogMessagesManager result, DialogMessagesManagerData data)
+        {
+
+            result.Init(renderingComponentsFactory.CreateFrontEndComponent(result, "MercenariesSet"),
+                guiComponentsFactory.CreateLabelComponent(" ", (int)data.TextPosition.X, (int)data.TextPosition.Y),
+                guiComponentsFactory.CreateWindowComponent("", (int)data.WindowPosition.X, (int)data.WindowPosition.Y, data.windowWidth, data.windowHeight, false),
+                data.IconPosition);
+            return true;
+        }
+        /****************************************************************************/
+
 
 
 

@@ -557,6 +557,33 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
 
 
+
+
+    /********************************************************************************/
+    /// NewDialogMessageEvent
+    /********************************************************************************/
+    class NewDialogMessageEvent : EventArgs
+    {
+        public String name;
+        public String text;
+        public Rectangle icon;
+
+        public NewDialogMessageEvent(String name,String text, Rectangle icon)
+        {
+            this.name = name;
+            this.text = text;
+            this.icon = icon;
+        }
+      
+
+        public override string ToString()
+        {
+            return name + " is saying: " + text;
+        }
+    }
+    /********************************************************************************/
+
+
     /********************************************************************************/
     /// SetBloomEvent
     /********************************************************************************/
@@ -586,4 +613,5 @@ namespace PlagueEngine.LowLevelGameFlow
         }
     }
     /********************************************************************************/
+
 }

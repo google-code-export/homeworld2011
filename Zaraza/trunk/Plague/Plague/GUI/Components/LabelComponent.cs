@@ -20,7 +20,10 @@ namespace PlagueEngine.GUI.Components
         /// Fields
         /****************************************************************************/
         public LabelControl Control { get; protected set; }
-        public string Text { get; protected set; }
+        private string text;
+
+
+        private int width, height,x,y;
         /****************************************************************************/
 
         
@@ -36,10 +39,14 @@ namespace PlagueEngine.GUI.Components
                                               new UniScalar(width),
                                               new UniScalar(height));
             Control.Text = GlobalGameObjects.StringManager.Load<string>(text) ;
-            this.Text = text;  
+            this.Text = text;
+            this.height = height;
+            this.width = width;
+            this.x = x;
+            this.y = y;
         }
         /****************************************************************************/
-                        
+
 
         /****************************************************************************/
         /// register
@@ -73,5 +80,109 @@ namespace PlagueEngine.GUI.Components
             base.ReleaseMe();
         }
         /****************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        public string Text
+        {
+            get
+            {
+                return text;
+            }
+            set
+            {
+                Control.Text = GlobalGameObjects.StringManager.Load<string>(value);
+                text = value;
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        public int X
+        {
+            get
+            {
+                return x;
+            }
+            set
+            {
+                Control.Bounds = new UniRectangle(new UniScalar(value),
+                                  new UniScalar(y),
+                                  new UniScalar(width),
+                                  new UniScalar(height));
+                x = value;
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        public int Y
+        {
+            get
+            {
+                return y;
+            }
+            set
+            {
+                Control.Bounds = new UniRectangle(new UniScalar(x),
+                                  new UniScalar(value),
+                                  new UniScalar(width),
+                                  new UniScalar(height));
+                y = value;
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        public int Width
+        {
+            get
+            {
+                return width;
+            }
+            set
+            {
+                Control.Bounds = new UniRectangle(new UniScalar(x),
+                                  new UniScalar(y),
+                                  new UniScalar(value),
+                                  new UniScalar(height));
+                width = value;
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        public int Height
+        {
+            get
+            {
+                return height;
+            }
+            set
+            {
+                Control.Bounds = new UniRectangle(new UniScalar(x),
+                                  new UniScalar(y),
+                                  new UniScalar(width),
+                                  new UniScalar(value));
+                height = value;
+            }
+        }
+        /********************************************************************************/
+
+
     }
 }
