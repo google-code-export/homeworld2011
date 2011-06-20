@@ -47,7 +47,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float movingSpeed,
                          float distance,
                          float angle,
-                         Dictionary<PlagueEngine.ArtificialIntelligence.Controllers.Action, String> animationMapping)
+                         List<AnimationBinding> AnimationMapping
+            )
         {
             this.mesh = mesh;
             this.SoundEffectComponent = new SoundEffectComponent();
@@ -59,7 +60,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Controller.EnableControl();
             mesh.StartClip("Idle");
             //TODO: Fix HP => get from data
-            this.ObjectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle, 100, 90, animationMapping);
+            this.ObjectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle, 100, 90, AnimationMapping);
             this.RequiresUpdate = true;
         }
         /****************************************************************************/

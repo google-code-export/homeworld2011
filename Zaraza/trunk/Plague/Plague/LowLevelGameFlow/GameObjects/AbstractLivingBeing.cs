@@ -10,6 +10,7 @@ using PlagueEngine.Audio.Components;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
 using System.ComponentModel;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -35,8 +36,79 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void GetData(AbstractLivingBeingData data)
         {
             base.GetData(data);
-            data.animationMapping = this.ObjectAIController.AnimationBinding;
+
+            #region CREATE STRINGS FROM ACTIONS
+            List<AnimationBinding> AnimationMapping = new List<AnimationBinding>();
+            foreach (KeyValuePair<PlagueEngine.ArtificialIntelligence.Controllers.Action, String> pair in ObjectAIController.AnimationBinding)
+            {
+                switch (pair.Key)
+                {
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.ACTIVATE:
+                        AnimationMapping.Add(new AnimationBinding("ACTIVATE", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.ATTACK:
+                        AnimationMapping.Add(new AnimationBinding("ATTACK", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.ATTACK_IDLE:
+                        AnimationMapping.Add(new AnimationBinding("ATTACK_IDLE", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.ENGAGE:
+                        AnimationMapping.Add(new AnimationBinding("ENGAGE", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.EXAMINE:
+                        AnimationMapping.Add(new AnimationBinding("EXAMINE", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.EXCHANGE:
+                        AnimationMapping.Add(new AnimationBinding("EXCHANGE", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.FOLLOW:
+                        AnimationMapping.Add(new AnimationBinding("FOLLOW", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.IDLE:
+                        AnimationMapping.Add(new AnimationBinding("IDLE", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.MOVE:
+                        AnimationMapping.Add(new AnimationBinding("MOVE", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.OPEN:
+                        AnimationMapping.Add(new AnimationBinding("OPEN", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.PICK:
+                        AnimationMapping.Add(new AnimationBinding("PICK", pair.Value));
+                        break;
+                    case PlagueEngine.ArtificialIntelligence.Controllers.Action.TO_IDLE:
+                        AnimationMapping.Add(new AnimationBinding("TO_IDLE", pair.Value));
+                        break;
+                    default:
+                        AnimationMapping.Add(new AnimationBinding("IDLE", pair.Value));
+                        break;
+                }
+
+            }
+            #endregion
+            
+            data.AnimationMapping = AnimationMapping;
+            //data.animationMapping = null;
         }
+    }
+
+    [Serializable]
+    public class AnimationBinding
+    {
+        public AnimationBinding()
+        {
+            this.Action = "";
+            this.Animation = "";
+        }
+        public AnimationBinding(string Action, string Animation)
+        {
+            this.Action = Action;
+            this.Animation = Animation;
+        }
+        [CategoryAttribute("Binding")]
+        public string Action { get; set; }
+        [CategoryAttribute("Binding")]
+        public string Animation { get; set; }
     }
 
     [Serializable]
@@ -45,12 +117,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public AbstractLivingBeingData()
         {
-            Type = typeof(AbstractLivingBeing);
-            animationMapping = new Dictionary<ArtificialIntelligence.Controllers.Action, string>();
+            AnimationMapping = new List<AnimationBinding>();
+            //animationMapping = new Dictionary<ArtificialIntelligence.Controllers.Action, string>();
         }
 
         [CategoryAttribute("AI")]
-        public Dictionary<ArtificialIntelligence.Controllers.Action, string> animationMapping { get; set; }
+        public List<AnimationBinding> AnimationMapping { get; set; }
+        
 
+        //[CategoryAttribute("AI")]
+        //public Dictionary<PlagueEngine.ArtificialIntelligence.Controllers.Action, string> animationMapping { get; set; }
+        
     }
 }
