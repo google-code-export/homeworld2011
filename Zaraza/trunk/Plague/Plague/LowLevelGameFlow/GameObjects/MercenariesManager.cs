@@ -167,25 +167,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                     if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Targetable)
                     {
-                        if (_currentMercenary != null)
-                        {
-                            QueueEvent(new OpenFireToTargetCommandEvent(commandOnObjectEvent.gameObject), !_leftControl, _currentMercenary);
-                        }
-                        else
-                        {
-                            QueueEvent(new OpenFireToTargetCommandEvent(commandOnObjectEvent.gameObject), !_leftControl, _selectedMercenaries.ToArray());
-                        }
+                        QueueEvent(new OpenFireToTargetCommandEvent(commandOnObjectEvent.gameObject), !_leftControl, _selectedMercenaries.ToArray());
                     }
                     else
                     {
-                        if (_currentMercenary != null)
-                        {
-                            QueueEvent(new OpenFireCommandEvent(commandOnObjectEvent.position), !_leftControl, _currentMercenary);
-                        }
-                        else
-                        {
-                            QueueEvent(new OpenFireCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
-                        }                    
+                        QueueEvent(new OpenFireCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());                                            
                     }                                      
                 }
                 else if (_commandMode)
@@ -193,7 +179,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     var commandOnObjectEvent = e as CommandOnObjectEvent;
                     if (commandOnObjectEvent == null) return;
 
-                    if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Passable)
+                    if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Targetable)
+                    {
+                        QueueEvent(new OpenFireToTargetCommandEvent(commandOnObjectEvent.gameObject), !_leftControl, _selectedMercenaries.ToArray());
+                    }
+                    else if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Passable)
                     {
                         //finezja :D!
                         if (_selectedMercenaries.Count == 1)

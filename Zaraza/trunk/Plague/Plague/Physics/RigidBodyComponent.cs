@@ -700,7 +700,6 @@ namespace PlagueEngine.Physics
             pos = Vector3.Zero;
 
             AddGravityToExternalForce();
-
         }
     }
 }

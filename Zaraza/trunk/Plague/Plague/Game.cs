@@ -59,16 +59,16 @@ namespace PlagueEngine
             Title = title;
             Window.Title = title;
             IsMouseVisible = true;
-            
+            Diagnostics.Game = this;
 #if DEBUG
-            Diagnostics.Game                = this;
             Diagnostics.ShowDiagnostics     = true;
             Diagnostics.ForceGCOnUpdate     = false;
-            Diagnostics.LimitUpdateTimeStep = false;
             Diagnostics.ShowLogWindow       = true;
             Diagnostics.OpenLogFile("log");
 #endif
-            
+
+            Diagnostics.LimitUpdateTimeStep = false;
+
             ContentManager = new ContentManager(this, "Content");
 
             AudioManager.SetInstance(this, "Audio");
@@ -128,7 +128,7 @@ namespace PlagueEngine
             
             Renderer.InitHelpers();
             InitGUI();
-            Level.LoadLevel("Level1.lvl");
+            Level.LoadLevel("Menu.lvl");
             
             //Głośność dla podkładu muzycznego powinna być relatywnie niska 
             //AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);

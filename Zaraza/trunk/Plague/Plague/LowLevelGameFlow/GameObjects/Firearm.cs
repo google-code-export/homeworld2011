@@ -64,6 +64,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public SoundEffectComponent sounds;
         private Vector3 FireOffset;
         private float MaxDispersion;
+        private bool sureFire = false;
+        private Vector3 sureFireTarget;
         /****************************************************************************/
 
 
@@ -167,6 +169,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public bool Fire()
         {
+            sureFire = false; 
+            return SingleFireshot();            
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Sure Fire
+        /****************************************************************************/
+        public bool SureFire(Vector3 target)
+        {
+            sureFire       = true;
+            sureFireTarget = target;
             return SingleFireshot();
         }
         /****************************************************************************/
@@ -198,9 +213,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 
                 AmmunitionVersionInfo bulletInfo = AmmunitionVersionData[AmmoClip.Content.Pop().Version];
                 (Owner as Mercenary).Recoil(bulletInfo.Recoil * RecoilModulation);
+                
                 Matrix world = GetWorld();
                 world = Matrix.CreateTranslation(FireOffset) * world;
+                
                 Vector3 position = world.Translation;
+                
                 float dist;
                 CollisionSkin skin;
                 Vector3 pos, nor;
@@ -213,10 +231,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                                  (float)(2 * random.NextDouble() - 1) * dispersionFactor,
                                                  -1);                                        
                 
-                dispersion.Normalize();                
-                world.Translation = Vector3.Zero;
-                dispersion = Vector3.Transform(dispersion, world);
                 dispersion.Normalize();
+                if (sureFire)
+                {
+                    dispersion = Vector3.Transform(dispersion,Matrix.CreateWorld(Vector3.Zero, sureFireTarget - position, Vector3.Up));
+                    dispersion.Normalize();
+                }
+                else
+                {
+                    world.Translation = Vector3.Zero;
+                    dispersion = Vector3.Transform(dispersion, world);
+                    dispersion.Normalize();
+                }
 
                 PhysicsUlitities.RayTest(position,
                                          position + bulletInfo.Range * RangeModulation * dispersion,
