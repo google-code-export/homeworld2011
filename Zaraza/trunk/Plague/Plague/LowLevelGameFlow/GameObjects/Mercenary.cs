@@ -87,7 +87,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          StorableObject currentObject,
                          Firearm weapon,
                          Firearm sideArm,
-                         Dictionary<PlagueEngine.ArtificialIntelligence.Controllers.Action, String> animationMapping)
+                         List<AnimationBinding> animationMapping
+            )
         {
             ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle, maxHP, HP, animationMapping);
             Mesh = mesh;

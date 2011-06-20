@@ -866,7 +866,8 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.MovingSpeed,
                         data.DistancePrecision,
                         data.AnglePrecision,
-                        data.animationMapping);
+                        data.AnimationMapping
+                        );
 
             return true;
         }
@@ -1281,7 +1282,8 @@ namespace PlagueEngine.LowLevelGameFlow
                         currentObject,
                         weapon,
                         sideArm,
-                        data.animationMapping);
+                        data.AnimationMapping
+                        );
 
             return true;
         }

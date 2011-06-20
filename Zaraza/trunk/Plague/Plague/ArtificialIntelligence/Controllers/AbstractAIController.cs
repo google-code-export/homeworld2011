@@ -91,7 +91,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                     uint MaxHP,
                                     float RotationSpeed,
                                     float MovingSpeed,
-                                    Dictionary<Action, String> AnimationMapping
+                                    List<AnimationBinding> AnimationMapping
                                     )
             :this(being,
                   MaxHP,
@@ -131,9 +131,62 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                     float MovingSpeed,
                                     float DistancePrecision,
                                     float AnglePrecision,
-                                    Dictionary<Action, String> AnimationMapping
+                                    List<AnimationBinding> AnimationMapping
                                     ):this()
         {
+            
+            #region CREATE ACTIONS FROM STRINGS
+            
+            this.AnimationBinding = new Dictionary<Action, string>();
+            if(AnimationMapping!=null){
+                foreach (AnimationBinding pair in AnimationMapping)
+                {
+                    switch (pair.Action)
+                    {
+                        case "ACTIVATE":
+                            this.AnimationBinding.Add(Action.ACTIVATE, pair.Animation);
+                            break;
+                        case "ATTACK":
+                            this.AnimationBinding.Add(Action.ATTACK, pair.Animation);
+                            break;
+                        case "ATTACK_IDLE":
+                            this.AnimationBinding.Add(Action.ATTACK_IDLE, pair.Animation);
+                            break;
+                        case "ENGAGE":
+                            this.AnimationBinding.Add(Action.ENGAGE, pair.Animation);
+                            break;
+                        case "EXAMINE":
+                            this.AnimationBinding.Add(Action.EXAMINE, pair.Animation);
+                            break;
+                        case "EXCHANGE":
+                            this.AnimationBinding.Add(Action.EXCHANGE, pair.Animation);
+                            break;
+                        case "FOLLOW":
+                            this.AnimationBinding.Add(Action.FOLLOW, pair.Animation);
+                            break;
+                        case "IDLE":
+                            this.AnimationBinding.Add(Action.IDLE, pair.Animation);
+                            break;
+                        case "MOVE":
+                            this.AnimationBinding.Add(Action.MOVE, pair.Animation);
+                            break;
+                        case "OPEN":
+                            this.AnimationBinding.Add(Action.OPEN, pair.Animation);
+                            break;
+                        case "PICK":
+                            this.AnimationBinding.Add(Action.PICK, pair.Animation);
+                            break;
+                        case "TO_IDLE":
+                            this.AnimationBinding.Add(Action.TO_IDLE, pair.Animation);
+                            break;
+                        default:
+                            this.AnimationBinding.Add(Action.IDLE, pair.Animation);
+                            break;
+                    }
+                }
+
+            }
+            #endregion
             this.HP = HP;
             this.MaxHP = MaxHP;
 
@@ -143,9 +196,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.RotationSpeed = RotationSpeed;
             
             this.SightRange = (float)100.0;
-            this.AnimationBinding = AnimationMapping;
+            //this.AnimationBinding = AnimationMapping;
             //TODO: zrobić poprawne ustawianie ataków.
-            this.attack = new Attack((float)(0.0), (float)(4.0), 10, 10, 30);
+            this.attack = new Attack((float)(0.0), (float)(4.0), 1, 1, 30);
             this.controlledObject = being;
             
         }
@@ -287,6 +340,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         public virtual void Update(TimeSpan deltaTime)
         {
+            Vector3 direction;
+            Vector2 v1;
+            Vector2 v2;
+
+            float det;
+            float angle;
+                        
             //Diagnostics.PushLog("AKCJA: " + action.ToString());
             if (isDisposed) return;
 
@@ -324,12 +384,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     }
                     else
                     {
-                        Vector3 direction = controlledObject.World.Translation - target;
-                        Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                        Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                        direction = controlledObject.World.Translation - target;
+                        v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                        v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
 
-                        float det = v1.X * v2.Y - v1.Y * v2.X;
-                        float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+                        det = v1.X * v2.Y - v1.Y * v2.X;
+                        angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
 
                         if (det < 0) angle = -angle;
 
@@ -374,12 +434,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         else if (controlledObject.Mesh.CurrentClip == AnimationBinding[Action.IDLE] && currDistance > 8)
                         {
                             #region Resume Chase
-                            Vector3 direction = controlledObject.World.Translation - objectTarget.World.Translation;
-                            Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                            Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                            direction = controlledObject.World.Translation - objectTarget.World.Translation;
+                            v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                            v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
 
-                            float det = v1.X * v2.Y - v1.Y * v2.X;
-                            float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+                            det = v1.X * v2.Y - v1.Y * v2.X;
+                            angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
 
                             if (det < 0) angle = -angle;
 
@@ -395,12 +455,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
                         else if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.IDLE])
                         {
-                            Vector3 direction = controlledObject.World.Translation - objectTarget.World.Translation;
-                            Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                            Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                            direction = controlledObject.World.Translation - objectTarget.World.Translation;
+                            v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                            v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
 
-                            float det = v1.X * v2.Y - v1.Y * v2.X;
-                            float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+                            det = v1.X * v2.Y - v1.Y * v2.X;
+                            angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
 
                             if (det < 0) angle = -angle;
 
@@ -414,7 +474,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             }
                         }
                     }
-#endregion
+                    #endregion
                     return;
                 case Action.ENGAGE:
                     #region Engage to Enemy
@@ -435,12 +495,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     }
                     else
                     {
-                        Vector3 direction = controlledObject.World.Translation - attackTarget.World.Translation;
-                        Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                        Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                        direction = controlledObject.World.Translation - attackTarget.World.Translation;
+                        v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                        v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
 
-                        float det = v1.X * v2.Y - v1.Y * v2.X;
-                        float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+                        det = v1.X * v2.Y - v1.Y * v2.X;
+                        angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
 
                         if (det < 0) angle = -angle;
 
@@ -458,17 +518,20 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 case Action.ATTACK:
                     #region Attack Enemy
                     {
+                        direction = controlledObject.World.Translation - attackTarget.World.Translation;
+                        v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                        v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
                         
-                        Vector3 direction = controlledObject.World.Translation - attackTarget.World.Translation;
-                        Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                        Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
-
-                        float det = v1.X * v2.Y - v1.Y * v2.X;
-                        float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                        if (det < 0) angle = -angle;
-
-                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
+                        det = v1.X * v2.Y - v1.Y * v2.X;
+                        
+                        angle = (float)Math.Acos((double)Vector2.Dot(v1, v2)); 
+                        
+                        if (det < 0) angle = -angle; 
+                        
+                        if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle)); 
+                        
+                        TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); }); 
+                        
 
                         currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X, controlledObject.World.Translation.Z),
                                                            new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Z));
@@ -485,6 +548,22 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
                     }
                     #endregion
+                    return;
+                case Action.ATTACK_IDLE:
+                    direction = controlledObject.World.Translation - attackTarget.World.Translation;
+                    v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                    v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                        
+                    det = v1.X * v2.Y - v1.Y * v2.X;
+                        
+                    angle = (float)Math.Acos((double)Vector2.Dot(v1, v2)); 
+                        
+                    if (det < 0) angle = -angle; 
+                        
+                    if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle)); 
+                        
+                    TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); }); 
+                        
                     return;
                 default:
                     break;

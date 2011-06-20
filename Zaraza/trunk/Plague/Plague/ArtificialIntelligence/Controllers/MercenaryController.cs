@@ -27,8 +27,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                    float angle,
                                    uint MaxHP,
                                    uint HP,
-                                   Dictionary<Action,String> animationMapping
-            ):base(lb, MaxHP, HP, rotationSpeed, movingSpeed, distance, angle, animationMapping)
+                                   List<AnimationBinding> AnimationMapping
+            ):base(lb, MaxHP, HP, rotationSpeed, movingSpeed, distance, angle, AnimationMapping)
         {
             ai.registerController(this);
         }
