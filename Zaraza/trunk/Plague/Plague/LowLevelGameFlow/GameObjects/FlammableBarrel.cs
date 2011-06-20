@@ -60,7 +60,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction)
         {
-            body.Body.AddWorldForce(100000000000000 * Vector3.Up);
+            body.Body.Velocity += direction * (stoppingPower * damage) / body.Mass;
         }
 
         public float GetArmorClass()

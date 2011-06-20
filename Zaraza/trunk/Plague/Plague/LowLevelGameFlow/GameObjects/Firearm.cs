@@ -179,20 +179,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (AmmoClip == null)
             {
+                sounds.SetPosiotion(GetWorld().Translation);
                 sounds.PlaySound("Firearms", "DryFire");
                 return false;
             }
             else if (AmmoClip.Content.Count == 0)
             {
+                sounds.SetPosiotion(GetWorld().Translation);
                 sounds.PlaySound("Firearms", "DryFire");
                 return false;
             }
             else
-            {
+            {                
+
+                sounds.SetPosiotion(GetWorld().Translation);
                 sounds.PlaySound("Firearms", "Fireshot");
                 light.Enabled = true;                                
                 
                 AmmunitionVersionInfo bulletInfo = AmmunitionVersionData[AmmoClip.Content.Pop().Version];
+                (Owner as Mercenary).Recoil(bulletInfo.Recoil * RecoilModulation);
                 Matrix world = GetWorld();
                 world = Matrix.CreateTranslation(FireOffset) * world;
                 Vector3 position = world.Translation;
@@ -239,9 +244,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         if (bulletInfo.Version == 7 && (skin.ExternalData as IFlammable) != null) 
                         {
                             (skin.ExternalData as IFlammable).SetOnFire();
-                        }
-                        
+                        }                        
                     }
+
+                    PointLightData data = new PointLightData();
+                    data.Color = new Vector3(1, 0, 0);
+                    data.Enabled = true;
+                    data.Intensity = 1;
+                    data.LightRadius = 5;
+                    data.LinearAttenuation = 0;
+                    data.QuadraticAttenuation = 2;
+                    data.Specular = false;
+                    data.World = Matrix.CreateTranslation(pos);
+                    CreateGameObject(data);
+
                 }
 
                 TimeControl.CreateTimer(TimeSpan.FromSeconds(0.1f), 0, delegate() { light.Enabled = false; });

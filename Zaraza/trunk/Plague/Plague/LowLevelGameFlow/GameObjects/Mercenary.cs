@@ -955,6 +955,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+        public void Recoil(float recoil)
+        { 
+            // TODO: Efekt na odrzut
+            Mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.1f));
+        }
 
         public float GetArmorClass()
         {

@@ -260,8 +260,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                     if ((merc.CurrentObject as Firearm).Fire())
                     {
-                        controlledObject.Mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.1f));
-
                         Vector3 direction = controlledObject.World.Translation - OpenFireCommandEvent.point;
                         Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
                         Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
