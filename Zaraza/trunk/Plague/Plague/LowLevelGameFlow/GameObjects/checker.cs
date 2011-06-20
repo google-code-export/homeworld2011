@@ -50,7 +50,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Initialization
         /****************************************************************************/
-        public void Init(string levelName,float boxLength,
+        public void Init(string levelName,
         float boxWidth,
         float boxHeight,
         int numberOfBoxesInLength,
@@ -82,7 +82,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             _fileName = _path + levelName + "." + _extension;
             _pm = new PathfinderManager();
             _pm.BoxHeight = boxHeight;
-            _pm.BoxLength = boxLength;
             _pm.BoxWidth = boxWidth;
             _pm.DistanceBeetwenBoxes = distanceBeetwenBoxes==0?0.01f:distanceBeetwenBoxes;
             _pm.NumberOfBoxesInLength = numberOfBoxesInLength;
@@ -156,7 +155,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             dddtata.Mass = 1;
             dddtata.Immovable = true;
             dddtata.EnabledPhysics = true;
-            dddtata.Lenght = _pm.BoxLength;
             dddtata.Width = _pm.BoxWidth;
             dddtata.Height = _pm.BoxHeight;
             Vector3 move;
@@ -165,8 +163,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 for (int j = 0; j < _pm.NumberOfBoxesInWidth; j++)
                 {
                     move = _pm.BoxStartPosition;
-                    move.X += (_pm.BoxWidth + _pm.DistanceBeetwenBoxes) * i;
-                    move.Z += (_pm.BoxWidth + _pm.DistanceBeetwenBoxes) * j;
+                    move.X += (_pm.BoxSpace) * i;
+                    move.Z += (_pm.BoxSpace) * j;
                     dddtata.World = Matrix.CreateTranslation(move);
                     dddtata.posX = i;
                     dddtata.posY = j;
@@ -194,7 +192,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             GetData(data);
             data.levelName = _levelName;
             data.boxHeight = _pm.BoxHeight;
-            data.boxLength = _pm.BoxLength;
             data.boxWidth = _pm.BoxWidth;
             data.distanceBeetwenBoxes = _pm.DistanceBeetwenBoxes;
             data.numberOfBoxesInLength = _pm.NumberOfBoxesInLength;
@@ -217,10 +214,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class CheckerData : GameObjectInstanceData
     {
-        [CategoryAttribute("Level name")]
-        public string levelName { get; set; }
         [CategoryAttribute("Checker properties")]
-        public float boxLength { get; set; }
+        public string levelName { get; set; }
         [CategoryAttribute("Checker properties")]
         public float boxWidth { get; set; }
         [CategoryAttribute("Checker properties")]

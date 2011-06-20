@@ -88,7 +88,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Elasticity = body.Elasticity;
             data.StaticRoughness = body.StaticRoughness;
             data.DynamicRoughness = body.DynamicRoughness;
-            data.Lenght = body.Length;
             data.Width = body.Width;
             data.Height = body.Height;
             data.Immovable = body.Immovable;
@@ -139,8 +138,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Physics")]
         public bool EnabledPhysics { get; set; }
 
-        [CategoryAttribute("Collision Skin")]
-        public float Lenght { get; set; }
 
         [CategoryAttribute("Collision Skin")]
         public float Width { get; set; }
