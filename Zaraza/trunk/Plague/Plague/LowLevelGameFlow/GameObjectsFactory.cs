@@ -363,7 +363,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateChecker(Checker result, CheckerData data)
         {
-                result.Init(data.levelName, data.boxLength,
+                result.Init(data.levelName,
                 data.boxWidth,
                 data.boxHeight,
                 data.numberOfBoxesInLength,
@@ -427,7 +427,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
             result.Init(physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
                                                                             data.Mass,
-                                                                            data.Lenght,
+                                                                            data.Width,
                                                                             data.Height,
                                                                             data.Width,
                                                                             data.Elasticity,
