@@ -2200,6 +2200,20 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
+        /****************************************************************************/
+        /// CreateFireSelector
+        /****************************************************************************/
+        public bool CreateFireSelector(FireSelector result, FireSelectorData data)
+        {
+
+            result.Init(renderingComponentsFactory.CreateFrontEndComponent(result, "selector"),
+                        inputComponentsFactory.CreateMouseListenerComponent(result, true),
+                        (Firearm)GetObject(data.Firearm));
+
+            return true;
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/    
 

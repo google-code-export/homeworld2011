@@ -44,6 +44,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int _mouseOnMerc;
 
         private int _iconsOffset;
+        private FireSelector fireSelector = null;
         /****************************************************************************/
 
 
@@ -489,9 +490,30 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (state.WasPressed())
                 {
                     LinkedCamera.FireMode = true;
+                    if (_selectedMercenaries.Count == 1)
+                    {
+                        if (_selectedMercenaries.ElementAt(0).CurrentObject as Firearm != null)
+                        {
+                            Firearm firearm = _selectedMercenaries.ElementAt(0).CurrentObject as Firearm;
+                            if (firearm.SelectiveFire.Count > 1)
+                            { 
+                                FireSelectorData data = new FireSelectorData();
+                                data.Firearm = firearm.ID;
+
+                                fireSelector = (FireSelector)CreateGameObject(data);
+                                LinkedCamera.StopScrolling = true;
+                            }
+                        }
+                    }
                 }
                 else if (state.WasReleased())
                 {
+                    if (fireSelector != null)
+                    {
+                        SendEvent(new DestroyObjectEvent(fireSelector.ID), Priority.High, GlobalGameObjects.GameController);
+                        fireSelector = null;
+                        LinkedCamera.StopScrolling = false;
+                    }
                     LinkedCamera.FireMode = false;
                 }
             }
