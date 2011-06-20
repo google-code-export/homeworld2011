@@ -590,6 +590,12 @@ namespace PlagueEngine.Tools
             Fire.ClassType = typeof(Fire);
             Fire.dataClassType = typeof(FireData);
             gameObjectClassNames.Add(Fire);
+
+            gameObjectsClassName Bloom = new gameObjectsClassName();
+            Bloom.className = "Bloom";
+            Bloom.ClassType = typeof(Bloom);
+            Bloom.dataClassType = typeof(BloomData);
+            gameObjectClassNames.Add(Bloom);
         }
         /********************************************************************************/
 

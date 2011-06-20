@@ -82,8 +82,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 game.RendererClock.Ratio *= ChangeSpeedEvent.Amount;
             }
             /*************************************/
-
-            /*************************************/
             /// ExitGameEvent
             /*************************************/
             else if (e.GetType().Equals(typeof(ExitGameEvent)))
@@ -91,6 +89,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 game.Exit();
             }
             /*************************************/
+            /// SetBloomEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(SetBloomEvent)))
+            { 
+                SetBloomEvent SetBloomEvent = e as SetBloomEvent;
+                game.Renderer.BaseIntensity = SetBloomEvent.BaseIntensity;
+                game.Renderer.BaseSaturation = SetBloomEvent.BaseSaturation;
+                game.Renderer.BloomIntensity = SetBloomEvent.BloomIntensity;
+                game.Renderer.BloomSaturation = SetBloomEvent.BloomSaturation;
+                game.Renderer.BloomThreshold = SetBloomEvent.BloomThreshold;
+            }
+            /*************************************/        
+
         }
         /****************************************************************************/
 

@@ -2224,6 +2224,19 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// CreateBloom
+        /****************************************************************************/
+        public bool CreateBloom(Bloom result, BloomData data)
+        {
+
+            result.Init(data.BloomIntensity, data.BaseIntensity, data.BloomSaturation, data.BaseSaturation, data.BloomThreshold);
+
+            return true;
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/    
 
