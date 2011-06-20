@@ -208,6 +208,14 @@ namespace PlagueEngine.Tools
             numericUpDown1.Value = (decimal)renderer.distanceScale;
             numericUpDown2.Value = (decimal)renderer.Brightness;
             numericUpDown3.Value = (decimal)renderer.Contrast;
+
+            numericUpDown4.Value = (decimal)renderer.BloomThreshold;
+
+             numericUpDown5.Value = (decimal)renderer.BaseSaturation;
+
+            numericUpDown6.Value = (decimal)renderer.BaseIntensity;
+            numericUpDown7.Value = (decimal)renderer.BloomSaturation;
+            numericUpDown8.Value = (decimal)renderer.BloomIntensity;
         }
         /********************************************************************************/
 
@@ -1946,6 +1954,31 @@ namespace PlagueEngine.Tools
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
         {
             renderer.Contrast = (float)numericUpDown3.Value;
+        }
+
+        private void numericUpDown4_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.BloomThreshold = (float)numericUpDown4.Value;
+        }
+
+        private void numericUpDown5_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.BaseSaturation = (float)numericUpDown5.Value;
+        }
+
+        private void numericUpDown6_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.BaseIntensity = (float)numericUpDown6.Value;
+        }
+
+        private void numericUpDown7_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.BloomSaturation = (float)numericUpDown7.Value;
+        }
+
+        private void numericUpDown8_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.BloomIntensity = (float)numericUpDown8.Value;
         }
 
 

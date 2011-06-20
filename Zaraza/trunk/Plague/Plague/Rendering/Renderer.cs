@@ -128,6 +128,21 @@ namespace PlagueEngine.Rendering
         /**********************/
 
 
+        /**********************/
+        /// Bloom 
+        /**********************/
+        private Effect bloomEffect       = null;
+        private Effect bloomComposition  = null;
+        private RenderTarget2D bloom     = null;
+        private RenderTarget2D bloomBlur = null;
+        private float bloomIntensity;
+        private float baseIntensity;
+        private float bloomSaturation;
+        private float baseSaturation;
+        private float bloomThreshold;
+        /**********************/
+        private RenderTarget2D final = null;
+
 
         /**********************/
         /// G-O EDITOR
@@ -150,9 +165,7 @@ namespace PlagueEngine.Rendering
                     colorCorrection.Parameters["Brightness"].SetValue(brightness);
                 }
             }
-        }
-
-
+        }       
         public float Contrast
         {
             get { return contrast; }
@@ -162,6 +175,68 @@ namespace PlagueEngine.Rendering
                 if (colorCorrection != null)
                 {
                     colorCorrection.Parameters["Contrast"].SetValue(contrast);
+                }
+            }
+        }
+
+
+        public float BloomIntensity
+        {
+            get { return bloomIntensity; }
+            set
+            {
+                bloomIntensity = value;
+                if (bloomComposition != null)
+                {
+                    bloomComposition.Parameters["BloomIntensity"].SetValue(bloomIntensity);
+                }
+            }
+        }
+        public float BloomSaturation
+        {
+            get { return bloomSaturation; }
+            set
+            {
+                bloomSaturation = value;
+                if (bloomComposition != null)
+                {
+                    bloomComposition.Parameters["BloomSaturation"].SetValue(bloomSaturation);
+                }
+            }
+        }
+        public float BaseIntensity
+        {
+            get { return baseIntensity; }
+            set
+            {
+                baseIntensity = value;
+                if (bloomComposition != null)
+                {
+                    bloomComposition.Parameters["BaseIntensity"].SetValue(baseIntensity);
+                }
+            }
+        }
+        public float BaseSaturation
+        {
+            get { return baseSaturation; }
+            set
+            {
+                baseSaturation = value;
+                if (bloomComposition != null)
+                {
+                    bloomComposition.Parameters["BaseSaturation"].SetValue(baseSaturation);
+                }
+            }
+        }
+        public float BloomThreshold
+        {
+            get { return bloomThreshold; }
+            set
+            {
+                bloomThreshold = value;
+                if (bloomEffect != null)
+                {
+                    bloomEffect.Parameters["BloomThreshold"].SetValue(bloomThreshold);
                 }
             }
         }
@@ -273,7 +348,12 @@ namespace PlagueEngine.Rendering
                                         graphics.SynchronizeWithVerticalRetrace,
                                         brightness,
                                         contrast,
-                                        ssaoEnabled);
+                                        ssaoEnabled,
+                                        bloomIntensity,
+                                        baseIntensity,
+                                        bloomSaturation,
+                                        baseSaturation,
+                                        bloomThreshold);
             }
             
             set
@@ -281,6 +361,11 @@ namespace PlagueEngine.Rendering
                 Brightness = value.Brightness;
                 Contrast = value.Contrast;
                 ssaoEnabled = value.SSAO;
+                BloomIntensity = value.BaseIntensity;
+                BaseIntensity = value.BaseIntensity;
+                BloomSaturation = value.BloomSaturation;
+                BaseSaturation = value.BaseSaturation;
+                BloomThreshold = value.BloomThreshold;
 
                 graphics.PreferredDepthStencilFormat = depthFormat;
                 graphics.PreferredBackBufferFormat = surfaceFormat;
@@ -400,9 +485,7 @@ namespace PlagueEngine.Rendering
             lightsManager.RenderLights(ref ViewProjection, ref InverseViewProjection, ref CameraPosition, Frustrum);
 
             if (ssaoEnabled) RenderSSAO(ref Projection, ref View, currentCamera.ZFar, currentCamera.Aspect);
-            else Device.SetRenderTarget(null);
-
-            Device.SetRenderTarget(null);
+            
             Device.SetRenderTarget(test);
 
             composition.Parameters["Ambient"].SetValue(lightsManager.sunlight.Ambient);
@@ -416,8 +499,29 @@ namespace PlagueEngine.Rendering
 
             particleManager.DrawParticles(gameTime);
 
-            DrawFrontEnd(ViewProjection);
+            Device.SetRenderTarget(bloom);
+            bloomEffect.Parameters["Texture"].SetValue(test);
+            bloomEffect.CurrentTechnique.Passes[0].Apply();
+            fullScreenQuad.Draw();
             
+            Device.SetRenderTarget(bloomBlur);
+            ssaoBlurEffect.Parameters["Texture"].SetValue(bloom);
+            ssaoBlurEffect.CurrentTechnique.Passes[0].Apply();
+            fullScreenQuad.JustDraw();
+
+            Device.SetRenderTarget(bloom);
+            ssaoBlurEffect.Parameters["Texture"].SetValue(bloomBlur);
+            ssaoBlurEffect.CurrentTechnique.Passes[1].Apply();
+            fullScreenQuad.JustDraw();
+
+            Device.SetRenderTarget(final);
+            Device.Clear(Color.Black);
+            bloomComposition.Parameters["Texture"].SetValue(test);
+            bloomComposition.Parameters["Bloom"].SetValue(bloom);
+            bloomComposition.CurrentTechnique.Passes[0].Apply();
+            fullScreenQuad.JustDraw();
+            
+            DrawFrontEnd(ViewProjection);            
 #if DEBUG
             DrawIcons(ViewProjection);
 #endif    
@@ -425,7 +529,7 @@ namespace PlagueEngine.Rendering
 
 
             Device.SetRenderTarget(null);
-            colorCorrection.Parameters["Texture"].SetValue(test);
+            colorCorrection.Parameters["Texture"].SetValue(final);
             colorCorrection.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
@@ -816,7 +920,9 @@ namespace PlagueEngine.Rendering
             ssaoBlurEffect   = contentManager.LoadEffect("GaussianBlur15");
             rectEffect       = contentManager.LoadEffect("SSLineEffect");
             colorCorrection  = contentManager.LoadEffect("ColorCorrection");
-                        
+            bloomEffect      = contentManager.LoadEffect("Bloom");
+            bloomComposition = contentManager.LoadEffect("BloomComposition");
+            
             composition.Parameters["GBufferColor"].SetValue(color);
             composition.Parameters["GBufferDepth"].SetValue(depth);
             composition.Parameters["LightMap"].SetValue(light);
@@ -824,6 +930,15 @@ namespace PlagueEngine.Rendering
             composition.Parameters["HalfPixel"].SetValue(HalfPixel);
                         
             debugEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
+
+            bloomEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
+            bloomComposition.Parameters["HalfPixel"].SetValue(HalfPixel);
+            bloomEffect.Parameters["BloomThreshold"].SetValue(bloomThreshold);
+            bloomComposition.Parameters["BloomIntensity"].SetValue(bloomIntensity);
+            bloomComposition.Parameters["BloomSaturation"].SetValue(bloomSaturation);
+            bloomComposition.Parameters["BaseIntensity"].SetValue(baseIntensity);
+            bloomComposition.Parameters["BaseSaturation"].SetValue(baseSaturation);
+
             colorCorrection.Parameters["HalfPixel"].SetValue(HalfPixel);
             colorCorrection.Parameters["Brightness"].SetValue(brightness);
             colorCorrection.Parameters["Contrast"].SetValue(contrast);
@@ -835,7 +950,7 @@ namespace PlagueEngine.Rendering
             ssaoEffect.Parameters["GBufferDepth"].SetValue(ssaoDepth);
             ssaoEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
 
-            ssaoBlurEffect.Parameters["Texture"].SetValue(ssao);
+            ssaoBlurEffect.Parameters["Texture"].SetValue(ssao);            
         }
         /****************************************************************************/
 
@@ -921,6 +1036,27 @@ namespace PlagueEngine.Rendering
                                           false,
                                           SurfaceFormat.Color,
                                           DepthFormat.None);
+
+            bloom = new RenderTarget2D(Device,
+                              Device.PresentationParameters.BackBufferWidth/2,
+                              Device.PresentationParameters.BackBufferHeight/2,
+                              false,
+                              SurfaceFormat.Color,
+                              DepthFormat.None);
+
+            bloomBlur = new RenderTarget2D(Device,
+                              Device.PresentationParameters.BackBufferWidth/2,
+                              Device.PresentationParameters.BackBufferHeight/2,
+                              false,
+                              SurfaceFormat.Color,
+                              DepthFormat.None);
+
+            final = new RenderTarget2D(Device,
+                              Device.PresentationParameters.BackBufferWidth,
+                              Device.PresentationParameters.BackBufferHeight,
+                              false,
+                              SurfaceFormat.Color,
+                              DepthFormat.None);
 
             fullScreenQuad = new Quad(-1, 1, 1, -1);
 
