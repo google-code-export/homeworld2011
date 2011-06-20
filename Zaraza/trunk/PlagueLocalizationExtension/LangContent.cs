@@ -24,13 +24,13 @@ namespace PlagueLocalizationExtension
             if (typeof(T) == typeof(String))
             {
                 string[] packageKey = assetName.Split('.');
-                if (packageKey.Length > 1)
+                if (packageKey.Length > 1 && !packageKey[0].Contains(' '))
                 {
                     return (T)(object)GetString(packageKey[0], packageKey[1]);
                 }
                 else
                 {
-                    return (T)(object) (assetName + " is not of the format 'PackageName.Key'");
+                    return (T)(object) (assetName);
                 }
             }
             else
