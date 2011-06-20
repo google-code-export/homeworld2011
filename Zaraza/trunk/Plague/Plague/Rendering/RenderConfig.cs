@@ -30,6 +30,11 @@ namespace PlagueEngine.Rendering
         public float Brightness;
         public float Contrast;
         public bool SSAO;
+        public float BloomIntensity;
+        public float BaseIntensity;
+        public float BloomSaturation;
+        public float BaseSaturation;
+        public float BloomThreshold;
         /****************************************************************************/
 
 
@@ -53,7 +58,12 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Constructor (2)
         /****************************************************************************/
-        public RenderConfig(int width, int height, bool fullScreen, bool multisampling, bool vSync, float brightness, float contrast,bool ssao) 
+        public RenderConfig(int width, int height, bool fullScreen, bool multisampling, bool vSync, float brightness, float contrast,bool ssao,
+                                     float bloomIntensity,
+         float baseIntensity,
+         float bloomSaturation,
+         float baseSaturation,
+         float bloomThreshold) 
         {
             Width           = width;
             Height          = height;
@@ -63,6 +73,12 @@ namespace PlagueEngine.Rendering
             Brightness      = brightness;
             Contrast        = contrast;
             SSAO            = ssao;
+
+            BloomIntensity = bloomIntensity;
+            BaseIntensity = baseIntensity;
+            BloomSaturation = bloomSaturation;
+            BaseSaturation = baseSaturation;
+            BloomThreshold = bloomThreshold;
         }
         /****************************************************************************/
 

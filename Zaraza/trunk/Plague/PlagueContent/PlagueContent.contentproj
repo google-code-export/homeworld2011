@@ -1518,6 +1518,22 @@
       <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
       <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
       <ProcessorParameters_AnimationClip1Duration>0.8</ProcessorParameters_AnimationClip1Duration>
+      <ProcessorParameters_AnimationClip10>Run_Carabine</ProcessorParameters_AnimationClip10>
+      <ProcessorParameters_AnimationClip10Duration>0.8</ProcessorParameters_AnimationClip10Duration>
+      <ProcessorParameters_AnimationClip11>Run_Pistol</ProcessorParameters_AnimationClip11>
+      <ProcessorParameters_AnimationClip11Duration>0.8</ProcessorParameters_AnimationClip11Duration>
+      <ProcessorParameters_AnimationClip12>Walk_Carabine</ProcessorParameters_AnimationClip12>
+      <ProcessorParameters_AnimationClip12Duration>0.8</ProcessorParameters_AnimationClip12Duration>
+      <ProcessorParameters_AnimationClip13>Walk_Pistol</ProcessorParameters_AnimationClip13>
+      <ProcessorParameters_AnimationClip13Duration>0.8</ProcessorParameters_AnimationClip13Duration>
+      <ProcessorParameters_AnimationClip14>Idle</ProcessorParameters_AnimationClip14>
+      <ProcessorParameters_AnimationClip14Duration>2.1</ProcessorParameters_AnimationClip14Duration>
+      <ProcessorParameters_AnimationClip15>Dying</ProcessorParameters_AnimationClip15>
+      <ProcessorParameters_AnimationClip15Duration>0.6</ProcessorParameters_AnimationClip15Duration>
+      <ProcessorParameters_AnimationClip16>Fire_Carabine</ProcessorParameters_AnimationClip16>
+      <ProcessorParameters_AnimationClip16Duration>0.3</ProcessorParameters_AnimationClip16Duration>
+      <ProcessorParameters_AnimationClip17>Fire_Pistol</ProcessorParameters_AnimationClip17>
+      <ProcessorParameters_AnimationClip17Duration>0.3</ProcessorParameters_AnimationClip17Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -1928,6 +1944,20 @@
       <Name>selector</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\Bloom.fx">
+      <Name>Bloom</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\BloomComposition.fx">
+      <Name>BloomComposition</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
