@@ -85,7 +85,8 @@ namespace PlagueEngine.Particles
             float particlesPerSecond,
             Vector3 particleTranslation,
             Matrix world,
-            bool enabled)
+            bool enabled,
+            int technique)
         {
             ParticleSettings settings = new ParticleSettings();
             switch(blendState)
@@ -125,6 +126,7 @@ namespace PlagueEngine.Particles
             settings.MinVerticalVelocity=minVerticalVelocity;
             settings.TextureName=particleTexture;
             settings.DurationInSeconds = duration;
+            settings.Technique = technique;
 
             Effect particleEffect = content.LoadEffect("ParticleEffect");
             particleEffect.Parameters["DepthTexture"].SetValue(renderer.depth);
@@ -217,7 +219,7 @@ namespace PlagueEngine.Particles
 
             Effect particleEffect = content.LoadEffect("ParticleEffect");
             particleEffect.Parameters["DepthTexture"].SetValue(renderer.depth);
-
+            
             Texture2D texture=content.LoadTexture2D(particleTexture);
 
 

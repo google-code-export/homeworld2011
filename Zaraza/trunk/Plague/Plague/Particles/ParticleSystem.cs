@@ -147,7 +147,7 @@ namespace PlagueEngine.Particles
             parameters["EndVelocity"].SetValue(settings.EndVelocity);
             parameters["MinColor"].SetValue(settings.MinColor.ToVector4());
             parameters["MaxColor"].SetValue(settings.MaxColor.ToVector4());
-
+            
             parameters["RotateSpeed"].SetValue(
                 new Vector2(settings.MinRotateSpeed, settings.MaxRotateSpeed));
 
@@ -159,6 +159,15 @@ namespace PlagueEngine.Particles
 
     
             parameters["Texture"].SetValue(texture);
+
+            if (settings.Technique == 0)
+            {
+            particleEffect.CurrentTechnique = particleEffect.Techniques["Particles"];
+            }
+            else
+            {
+            particleEffect.CurrentTechnique = particleEffect.Techniques["ParticlesFacedUp"];
+            }
         }
 
         /********************************************************************************/
@@ -274,6 +283,7 @@ namespace PlagueEngine.Particles
 
                 graphics.SetVertexBuffer(vertexBuffer);
                 graphics.Indices = indexBuffer;
+                
 
                 foreach (EffectPass pass in particleEffect.CurrentTechnique.Passes)
                 {

@@ -66,6 +66,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.AreaSpawnLength=emitter.areaLength;
             data.AreaSpawnWidth=emitter.areaWidth;
 
+            data.Technique = emitter.particleSystem.settings.Technique;
 
 
             if (emitter.particleSystem.settings.BlendState == BlendState.Additive)
@@ -196,6 +197,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float AreaSpawnLength { get; set; }
         [CategoryAttribute("Particles")]
         public float AreaSpawnWidth { get; set; }
+
+        [CategoryAttribute("Particles"),
+        DescriptionAttribute("0 - FacedToScreen 1 - FacedUp")]
+        public int Technique { get; set; }
 
     }
     /********************************************************************************/

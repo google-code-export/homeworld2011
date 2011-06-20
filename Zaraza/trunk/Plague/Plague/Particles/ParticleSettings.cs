@@ -41,7 +41,7 @@ namespace PlagueEngine.Particles
         public float MinEndSize = 100;
         public float MaxEndSize = 100;
         public BlendState BlendState = BlendState.NonPremultiplied;
-
+        public int Technique = 0;
         /********************************************************************************/
     }
 
