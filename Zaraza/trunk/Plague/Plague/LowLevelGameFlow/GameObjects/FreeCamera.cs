@@ -473,7 +473,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                             camPickDistance = (cameraComponent.Position - pos).Length();
 
-                            //skin.Owner.Immovable = false;
+                            skin.Owner.Immovable = false;
                             skin.Owner.SetActive();
                             objectController.Destroy();
                             damperController.Destroy();
@@ -515,7 +515,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (skin.Owner != null)
                         {
-                             //skin.Owner.Immovable = true;
+                             skin.Owner.Immovable = true;
                         }
                         skin = null;
                     }
