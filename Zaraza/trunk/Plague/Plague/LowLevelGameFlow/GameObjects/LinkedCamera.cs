@@ -437,41 +437,43 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 _position += _target;
                             }
                         }
-
-                        CollisionSkin skin;
-                        var direction1 = Physics.PhysicsUlitities.DirectionFromMousePosition(CameraComponent.Projection, CameraComponent.View, _mouseX, _mouseY);
-                        Vector3 pos, nor;
                         var cursor = "Default";
-                        float dist;
-                        Physics.PhysicsUlitities.RayTest(CameraComponent.Position, CameraComponent.Position + direction1 * CameraComponent.ZFar, out dist, out skin, out pos, out nor);
-                        if (skin != null)
+                        if (MercenariesManager.isSomeoneSelected())
                         {
-                            if (skin.ExternalData != null)
+                            CollisionSkin skin;
+                            var direction1 = Physics.PhysicsUlitities.DirectionFromMousePosition(CameraComponent.Projection, CameraComponent.View, _mouseX, _mouseY);
+                            Vector3 pos, nor;
+                            float dist;
+                            Physics.PhysicsUlitities.RayTest(CameraComponent.Position, CameraComponent.Position + direction1 * CameraComponent.ZFar, out dist, out skin, out pos, out nor);
+                            if (skin != null)
                             {
-                                if (FireMode)
+                                if (skin.ExternalData != null)
                                 {
-                                    cursor = "Targeting";
-                                }
-                                else if (_useCommands)
-                                {
-
-                                    switch (((GameObjectInstance)skin.ExternalData).Status)
+                                    if (FireMode)
                                     {
-                                        case GameObjectStatus.Interesting: cursor = "QuestionMark"; break;
-                                        case GameObjectStatus.Pickable: cursor = "Hand"; break;
-                                        case GameObjectStatus.Targetable: cursor = "Target"; break;
-                                        case GameObjectStatus.Passable: cursor = "Footsteps"; break;
-                                        case GameObjectStatus.Mercenary: cursor = "Person"; break;
-                                        default: cursor = "Default"; break;
+                                        cursor = "Targeting";
                                     }
-
-                                }
-                                else
-                                {
-                                    switch (((GameObjectInstance)skin.ExternalData).Status)
+                                    else if (_useCommands)
                                     {
-                                        case GameObjectStatus.Mercenary: cursor = "Person"; break;
-                                        default: cursor = "Default"; break;
+
+                                        switch (((GameObjectInstance)skin.ExternalData).Status)
+                                        {
+                                            case GameObjectStatus.Interesting: cursor = "QuestionMark"; break;
+                                            case GameObjectStatus.Pickable: cursor = "Hand"; break;
+                                            case GameObjectStatus.Targetable: cursor = "Target"; break;
+                                            case GameObjectStatus.Passable: cursor = "Footsteps"; break;
+                                            case GameObjectStatus.Mercenary: cursor = "Person"; break;
+                                            default: cursor = "Default"; break;
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        switch (((GameObjectInstance)skin.ExternalData).Status)
+                                        {
+                                            case GameObjectStatus.Mercenary: cursor = "Person"; break;
+                                            default: cursor = "Default"; break;
+                                        }
                                     }
                                 }
                             }
