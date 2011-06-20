@@ -55,7 +55,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         objectTarget = null;
                         action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                         objectTarget = null;
                         return;
                     }
@@ -73,9 +73,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
                         
-                        if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.MOVE])
+                        if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.MOVE])
                         {
-                            controlledObject.Mesh.BlendTo(AnimationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.5f));
                         }
                     }
                     #endregion
