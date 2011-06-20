@@ -645,7 +645,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         /****************************************************************************/
 
-
+        public bool isSomeoneSelected()
+        {
+            return _selectedMercenaries.Count > 0;
+        }
         /****************************************************************************/
         /// Get Mercenary From Icon
         /****************************************************************************/
