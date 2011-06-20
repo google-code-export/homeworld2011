@@ -40,7 +40,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         protected IEventsReceiver receiver = null;
         
-        public Dictionary<Action, String> AnimationBinding{ get; protected set; }
+        public Dictionary<Action, String> AnimationToActionMapping{ get; protected set; }
         /****************************************************************************/
 
         /****************************************************************************/
@@ -137,50 +137,50 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             
             #region CREATE ACTIONS FROM STRINGS
             
-            this.AnimationBinding = new Dictionary<Action, string>();
-            if(AnimationMapping!=null){
+            this.AnimationToActionMapping = new Dictionary<Action, string>();
+            if(AnimationMapping != null){
                 foreach (AnimationBinding pair in AnimationMapping)
                 {
                     switch (pair.Action)
                     {
                         case "ACTIVATE":
-                            this.AnimationBinding.Add(Action.ACTIVATE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.ACTIVATE, pair.Animation);
                             break;
                         case "ATTACK":
-                            this.AnimationBinding.Add(Action.ATTACK, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.ATTACK, pair.Animation);
                             break;
                         case "ATTACK_IDLE":
-                            this.AnimationBinding.Add(Action.ATTACK_IDLE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.ATTACK_IDLE, pair.Animation);
                             break;
                         case "ENGAGE":
-                            this.AnimationBinding.Add(Action.ENGAGE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.ENGAGE, pair.Animation);
                             break;
                         case "EXAMINE":
-                            this.AnimationBinding.Add(Action.EXAMINE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.EXAMINE, pair.Animation);
                             break;
                         case "EXCHANGE":
-                            this.AnimationBinding.Add(Action.EXCHANGE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.EXCHANGE, pair.Animation);
                             break;
                         case "FOLLOW":
-                            this.AnimationBinding.Add(Action.FOLLOW, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.FOLLOW, pair.Animation);
                             break;
                         case "IDLE":
-                            this.AnimationBinding.Add(Action.IDLE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.IDLE, pair.Animation);
                             break;
                         case "MOVE":
-                            this.AnimationBinding.Add(Action.MOVE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.MOVE, pair.Animation);
                             break;
                         case "OPEN":
-                            this.AnimationBinding.Add(Action.OPEN, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.OPEN, pair.Animation);
                             break;
                         case "PICK":
-                            this.AnimationBinding.Add(Action.PICK, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.PICK, pair.Animation);
                             break;
                         case "TO_IDLE":
-                            this.AnimationBinding.Add(Action.TO_IDLE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.TO_IDLE, pair.Animation);
                             break;
                         default:
-                            this.AnimationBinding.Add(Action.IDLE, pair.Animation);
+                            this.AnimationToActionMapping.Add(Action.IDLE, pair.Animation);
                             break;
                     }
                 }
@@ -196,11 +196,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.RotationSpeed = RotationSpeed;
             
             this.SightRange = (float)100.0;
-            //this.AnimationBinding = AnimationMapping;
             //TODO: zrobić poprawne ustawianie ataków.
             this.attack = new Attack((float)(0.0), (float)(4.0), 1, 1, 30);
             this.controlledObject = being;
-            
+
         }
 
         /*protected virtual void useAttack()
@@ -294,11 +293,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 EnemyKilled evt = e as EnemyKilled;
                 if (evt.DeadEnemy.Equals(attackTarget))
                 {
-                    controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationBinding[Action.ATTACK]);
+                    controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.ATTACK]);
                     attackTarget = null;
                     action = Action.IDLE;
                     controlledObject.Controller.StopMoving();
-                    controlledObject.Mesh.BlendTo(AnimationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                 }
                 #endregion
             }
@@ -318,19 +317,19 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
                         else
                         {
-                            controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationBinding[Action.ATTACK]);
+                            controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.ATTACK]);
                             action = Action.ENGAGE;
                         }
                     }
                     else
                     {
-                        controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationBinding[Action.ATTACK]);
+                        controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.ATTACK]);
                         action = Action.IDLE;
                     }
                 }
                 else
                 {
-                    controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationBinding[Action.ATTACK]);
+                    controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.ATTACK]);
                 }
                 #endregion
             }
@@ -379,7 +378,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     {
                         action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                     }
                     else
@@ -397,9 +396,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
 
-                        if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.MOVE])
+                        if (controlledObject.Mesh.CurrentClip != this.AnimationToActionMapping[Action.MOVE])
                         {
-                            controlledObject.Mesh.BlendTo(AnimationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.5f));
                         }
                     }
                     #endregion
@@ -424,14 +423,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         {
                             #region Stop Chasing
                             controlledObject.Controller.StopMoving();
-                            if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.IDLE])
+                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.IDLE])
                             {
-                                controlledObject.Mesh.BlendTo(AnimationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                             }
                             return;
                             #endregion
                         }
-                        else if (controlledObject.Mesh.CurrentClip == AnimationBinding[Action.IDLE] && currDistance > 8)
+                        else if (controlledObject.Mesh.CurrentClip == AnimationToActionMapping[Action.IDLE] && currDistance > 8)
                         {
                             #region Resume Chase
                             direction = controlledObject.World.Translation - objectTarget.World.Translation;
@@ -447,13 +446,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                             controlledObject.Controller.MoveForward(MovingSpeed);
 
-                            if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.MOVE])
+                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.MOVE])
                             {
-                                controlledObject.Mesh.BlendTo(AnimationBinding[Action.MOVE], TimeSpan.FromSeconds(0.3f));
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.3f));
                             }
                             #endregion
                         }
-                        else if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.IDLE])
+                        else if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.IDLE])
                         {
                             direction = controlledObject.World.Translation - objectTarget.World.Translation;
                             v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
@@ -468,9 +467,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                             controlledObject.Controller.MoveForward(MovingSpeed);
 
-                            if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.MOVE])
+                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.MOVE])
                             {
-                                controlledObject.Mesh.BlendTo(AnimationBinding[Action.MOVE], TimeSpan.FromSeconds(0.3f));
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.3f));
                             }
                         }
                     }
@@ -491,7 +490,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         this.attackTarget = null;
                         this.action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        this.controlledObject.Mesh.BlendTo(AnimationBinding[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        this.controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                     }
                     else
                     {
@@ -508,9 +507,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
 
-                        if (controlledObject.Mesh.CurrentClip != AnimationBinding[Action.MOVE])
+                        if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.MOVE])
                         {
-                            controlledObject.Mesh.BlendTo(AnimationBinding[Action.MOVE], TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.5f));
                         }
                     }
                     #endregion
@@ -537,8 +536,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                                            new Vector2(attackTarget.World.Translation.X, attackTarget.World.Translation.Z));
                         if (currentDistance < attack.maxAttackDistance)
                         {
-                            controlledObject.Mesh.StartClip(AnimationBinding[Action.ATTACK]);
-                            controlledObject.Mesh.SubscribeAnimationsEnd(AnimationBinding[Action.ATTACK]);
+                            controlledObject.Mesh.StartClip(AnimationToActionMapping[Action.ATTACK]);
+                            controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action.ATTACK]);
                             controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject), Priority.Normal, this.attackTarget);
                             action = Action.ATTACK_IDLE;
                         }
@@ -582,7 +581,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.receiver = null;
             this.attack = null;
             this.attackTarget = null;
-            this.AnimationBinding = null;
+            this.AnimationToActionMapping = null;
             this.objectTarget = null;
             this.controlledObject.SendEvent(new DestroyObjectEvent(this.controlledObject.ID),Priority.Normal, GlobalGameObjects.GameController);
             this.isDisposed = true;

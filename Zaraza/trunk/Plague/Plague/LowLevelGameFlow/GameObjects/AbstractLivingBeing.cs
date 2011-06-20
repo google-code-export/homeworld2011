@@ -39,7 +39,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             #region CREATE STRINGS FROM ACTIONS
             List<AnimationBinding> AnimationMapping = new List<AnimationBinding>();
-            foreach (KeyValuePair<PlagueEngine.ArtificialIntelligence.Controllers.Action, String> pair in ObjectAIController.AnimationBinding)
+            foreach (KeyValuePair<PlagueEngine.ArtificialIntelligence.Controllers.Action, String> pair in ObjectAIController.AnimationToActionMapping)
             {
                 switch (pair.Key)
                 {
@@ -117,7 +117,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public AbstractLivingBeingData()
         {
-            AnimationMapping = new List<AnimationBinding>();
+            this.AnimationMapping = new List<AnimationBinding>();
             //animationMapping = new Dictionary<ArtificialIntelligence.Controllers.Action, string>();
         }
 
