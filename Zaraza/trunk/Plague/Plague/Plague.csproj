@@ -161,6 +161,7 @@
     <Compile Include="Audio\SongCue.cs" />
     <Compile Include="Audio\SoundCue.cs" />
     <Compile Include="Audio\SoundCueInstance.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Bloom.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Fire.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FireSelector.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FlammableBarrel.cs" />

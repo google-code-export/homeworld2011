@@ -556,4 +556,34 @@ namespace PlagueEngine.LowLevelGameFlow
     }
     /********************************************************************************/
 
+
+    /********************************************************************************/
+    /// SetBloomEvent
+    /********************************************************************************/
+    class SetBloomEvent : EventArgs
+    {
+        public float BloomIntensity;
+        public float BaseIntensity;
+        public float BloomSaturation;
+        public float BaseSaturation;
+        public float BloomThreshold;
+
+        public SetBloomEvent(float bloomIntensity,
+                            float baseIntensity,
+                            float bloomSaturation,
+                            float baseSaturation,
+                            float bloomThreshold)
+        {
+            BloomIntensity = bloomIntensity;
+            BaseIntensity = baseIntensity;
+            BloomSaturation = bloomSaturation;
+            BaseSaturation = baseSaturation;
+            BloomThreshold = bloomThreshold;
+        }
+        
+        public SetBloomEvent()
+        {
+        }
+    }
+    /********************************************************************************/
 }
