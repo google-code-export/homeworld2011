@@ -11,5 +11,10 @@
     <key id="music_volume" val="Music Volume"/>
     <key id="sounds_effects_volume" val="Sound Effects Volume"/>
     <key id="back" val="Save and quit"/>
+
+    <key id="language_english" val="English"/>
+    <key id="language_polish"  val="Polski"/>
+    <key id="language_german"  val="Deutsch"/>
+
   </package>
 </XNABabylonStringFile>
