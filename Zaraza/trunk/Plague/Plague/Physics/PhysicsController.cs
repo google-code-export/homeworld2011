@@ -46,7 +46,7 @@ namespace PlagueEngine.Physics
             body = (BodyExtended)rigidBodyComponent.Body;
             physicsManager.controllers.Add(this);
             EnableController();
-            body.Immovable = true;             
+            //body.Immovable = true;             
             RotationConstraint rotationConstraint = new RotationConstraint();
             rotationConstraint.Init(body);
         }
@@ -67,40 +67,40 @@ namespace PlagueEngine.Physics
         public void MoveUp(float dt)
         {
             //body.Controllable = true;
-            body.Immovable = false;
+            //body.Immovable = false;
             body.DesiredVelocity = Vector3.Up * dt;            
         }
 
         public void MoveDown(float dt)
         {            
             //body.Controllable = true;
-            body.Immovable = false;
+            //body.Immovable = false;
             body.DesiredVelocity = Vector3.Down * dt;         
         }
         public void MoveLeft(float dt)
         {            
             //body.Controllable = true;
-            body.Immovable = false;
+            //body.Immovable = false;
             body.DesiredVelocity = Vector3.Left * dt;         
         }
 
         public void MoveRight(float dt)
         {            
             //body.Controllable = true;
-            body.Immovable = false;
+            //body.Immovable = false;
             body.DesiredVelocity = Vector3.Right * dt;         
         }
 
         public void MoveBackward(float dt)
         {            
             //body.Controllable = true;
-            body.Immovable = false;
+            //body.Immovable = false;
             body.DesiredVelocity = Vector3.Backward * dt;            
         }
 
         public void MoveForward(float dt)
         {            
-            body.Immovable = false;
+            //body.Immovable = false;
             //body.Controllable = true;
             body.DesiredVelocity = Vector3.Forward * dt;            
         }
@@ -110,7 +110,7 @@ namespace PlagueEngine.Physics
         {
             body.DesiredVelocity = new Vector3(0,0,0);
             //body.Controllable = false;            
-            body.Immovable = true;
+            //body.Immovable = true;
         }
 
         public bool IsControlEnabled
@@ -133,7 +133,7 @@ namespace PlagueEngine.Physics
         public void Rotate(float dt)
         {
             body.Controllable = true;
-            body.Immovable = false;
+            //body.Immovable = false;
             body.DesiredOrientation *= Matrix.CreateRotationY(MathHelper.ToRadians(dt));
 
         }
