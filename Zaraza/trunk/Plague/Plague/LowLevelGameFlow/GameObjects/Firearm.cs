@@ -206,8 +206,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 Vector3 pos, nor;
                 Random random = new Random();
                 
-                Vector3 dispersion = new Vector3((float)(2 * random.NextDouble() - 1) * (float)(MaxDispersion / Math.PI) * Math.Max(1 - bulletInfo.Accuracy * AccuracyModulation, 0),
-                                                 (float)(2 * random.NextDouble() - 1) * (float)(MaxDispersion / Math.PI) * Math.Max(1 - bulletInfo.Accuracy * AccuracyModulation, 0),
+                float ownerAccuracy = (Owner as Mercenary).GetAccuracyModulation(this);
+                float dispersionFactor = (float)(MaxDispersion / Math.PI) * Math.Max(1 - bulletInfo.Accuracy * AccuracyModulation * ownerAccuracy, 0);
+                
+                Vector3 dispersion = new Vector3((float)(2 * random.NextDouble() - 1) * dispersionFactor,
+                                                 (float)(2 * random.NextDouble() - 1) * dispersionFactor,
                                                  -1);                                        
                 
                 dispersion.Normalize();                

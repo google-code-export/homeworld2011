@@ -961,6 +961,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.1f));
         }
 
+        public float GetAccuracyModulation(Firearm firearm)
+        {
+            // TODO: Obsłużyć to
+            return 1;
+        }
+
         public float GetArmorClass()
         {
             return 1;
