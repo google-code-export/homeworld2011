@@ -10,6 +10,7 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.Rendering;
 using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
+using PlagueEngine.Pathfinder;
 
 /********************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -29,7 +30,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /********************************************************************************/
         public SquareBodyComponent body = null;
-        internal static Checker checker = null;
+        public bool isCollision;
+        public NodeType nodeType = NodeType.STATIC;
         int posX, posY;
         /********************************************************************************/
 
@@ -55,7 +57,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (e.GetType().Equals(typeof(AnyCollisionEvent)))
             {
-                checker.collisionValues[posX, posY] = true;
+                isCollision = true;
             }
         }
 

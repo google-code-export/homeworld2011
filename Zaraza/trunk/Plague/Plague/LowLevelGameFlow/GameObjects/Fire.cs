@@ -41,7 +41,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             sounds.LoadFolder("Misc", 0.7f, 0, 0,false);
             timer = TimeControlSystem.TimeControl.CreateTimer(TimeSpan.FromSeconds(Frequency), -1, delegate() { if (light.Enabled) light.Intensity = MathHelper.Clamp((float)random.NextDouble(), IntensityRange.X, IntensityRange.Y); });
             sounds.SetPosiotion(World.Translation);            
-            sounds.PlaySound("Misc", "Campfire",true);            
+            sounds.PlaySound("Misc", "Campfire",true,100);            
         }
 
         /********************************************************************************/
@@ -116,6 +116,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             emitter = null;
             light.ReleaseMe();
             light = null;
+            sounds.ReleaseMe();
+            sounds = null;
             TimeControlSystem.TimeControl.ReleaseTimer(timer);            
         }
         /********************************************************************************/

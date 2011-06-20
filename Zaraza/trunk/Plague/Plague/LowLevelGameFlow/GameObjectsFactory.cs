@@ -363,8 +363,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateChecker(Checker result, CheckerData data)
         {
-
-                result.Init(data.boxLength,
+                result.Init(data.levelName, data.boxLength,
                 data.boxWidth,
                 data.boxHeight,
                 data.numberOfBoxesInLength,

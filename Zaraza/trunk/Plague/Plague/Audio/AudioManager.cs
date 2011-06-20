@@ -23,11 +23,12 @@ namespace PlagueEngine.Audio
         private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();
         private readonly Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
 
-        private SoundEffectInstance[] _playingSounds;
+        private SoundCueInstance[] _playingSounds;
         private bool _enabled = true;
         private bool _isLooped;
         private bool _isPlaying;
         private bool _isFading;
+        private AudioListener[] _listeners;
         // Maksymalna ilość dźwięków która będzie odtwarzana jednocześnie standardowo 64.
         private int _maxSounds = 64;
 
@@ -82,12 +83,14 @@ namespace PlagueEngine.Audio
         internal void SetListenerPosition(CameraComponent cameraComponent)
         {
             if (cameraComponent == null) return;
-            Listener.Position = cameraComponent.Position;
-            Listener.Forward = cameraComponent.Forward;
-            Listener.Up = cameraComponent.Up;
+            LeftListener.Position = cameraComponent.Position - new Vector3(0.2f, 0f, 0f);
+            RightListener.Position = cameraComponent.Position + new Vector3(0.2f, 0f, 0f);
+            //LeftListener.Forward = cameraComponent.Forward;
+            //LeftListener.Up = cameraComponent.Up;
         }
-        public AudioListener Listener { get; private set; }
-
+        public AudioListener LeftListener { get; private set; }
+        public AudioListener RightListener { get; private set; }
+        
         public MusicFadeEffect FadeEffect { get; set; }
 
         internal BackgroundMusicComponent BackgroundMusicComponent { get; set; }
@@ -99,7 +102,7 @@ namespace PlagueEngine.Audio
                 if(_maxSounds!=value)
                 {
                     var index = 0;
-                    var tempSei = new SoundEffectInstance[value];
+                    var tempSei = new SoundCueInstance[value];
                     foreach (var sei in _playingSounds.Where(sei => sei != null).TakeWhile(sei => index < value))
                     {
                         tempSei[index++] = sei;
@@ -122,9 +125,11 @@ namespace PlagueEngine.Audio
         private AudioManager(Game game, string contentFolder)
         {
             ContentFolder = contentFolder + "\\";
-            Listener = new AudioListener();
+            LeftListener = new AudioListener();
+            RightListener = new AudioListener();
             _contentManager = game.ContentManager;
-            _playingSounds = new SoundEffectInstance[_maxSounds];
+            _playingSounds = new SoundCueInstance[_maxSounds];
+            _listeners = new AudioListener[] { LeftListener, RightListener };
         }
         public Song LoadSong(string songName)
         {
@@ -238,26 +243,28 @@ namespace PlagueEngine.Audio
         /// </summary>
         /// <param name="soundCue">Obiekt klasy SoundCue</param>
         /// <param name="emitter">Obiekt klasy AudioEmitter wskazujący na źródło dźwięku</param>
-        public SoundEffectInstance PlaySound(SoundCue soundCue, AudioEmitter emitter, bool isLooped)
+        internal SoundEffectInstance PlaySound(SoundEffectComponent soundEffectComponent, SoundCue soundCue, AudioEmitter emitter, bool isLooped, float maxDistance)
         {
             var index = GetAvailableSoundIndex();
 
             if (index == -1) return null;
-            _playingSounds[index] = soundCue.SoundEffect.CreateInstance();
-            _playingSounds[index].Volume = soundCue.Volume;
-            _playingSounds[index].Pitch = soundCue.Pitch;
-            _playingSounds[index].Pan = soundCue.Pan;
-            _playingSounds[index].IsLooped = isLooped;
-            if (emitter != null && Listener != null)
+            
+            SoundEffectInstance soundEffectInstace = soundCue.SoundEffect.CreateInstance();
+            soundEffectInstace.Volume = soundCue.Volume;
+            soundEffectInstace.Pitch = soundCue.Pitch;
+            soundEffectInstace.Pan = soundCue.Pan;
+            soundEffectInstace.IsLooped = isLooped;
+            if (emitter != null && _listeners != null)
             {
-                _playingSounds[index].Apply3D(Listener, emitter);
+                soundEffectInstace.Apply3D(_listeners, emitter);
             }
-            _playingSounds[index].Play();
+            soundEffectInstace.Play();
             if (!Enabled)
             {
-                _playingSounds[index].Pause();
+                soundEffectInstace.Pause();
             }
-            return _playingSounds[index];
+            _playingSounds[index] = new SoundCueInstance(soundEffectComponent, soundEffectInstace, maxDistance);
+            return soundEffectInstace;
         }
 
         /// <summary>
@@ -268,7 +275,7 @@ namespace PlagueEngine.Audio
             for (var i = 0; i < _playingSounds.Length; ++i)
             {
                 if (_playingSounds[i] == null) continue;
-                _playingSounds[i].Stop();
+                _playingSounds[i].Instance.Stop();
                 _playingSounds[i].Dispose();
                 _playingSounds[i] = null;
             }
@@ -289,7 +296,13 @@ namespace PlagueEngine.Audio
             {
                 for (var i = 0; i < _playingSounds.Length; ++i)
                 {
-                    if (_playingSounds[i] == null || (!_playingSounds[i].IsDisposed && _playingSounds[i].State != SoundState.Stopped)) continue;
+                    if (_playingSounds[i] == null) continue;
+
+                    if (_playingSounds[i].IsActive)
+                    {
+                        _playingSounds[i].Update(_listeners);
+                        continue;
+                    } 
                     _playingSounds[i].Dispose();
                     _playingSounds[i] = null;
                 }
@@ -317,9 +330,9 @@ namespace PlagueEngine.Audio
         {
             if (Enabled)
             {
-                foreach (var t in _playingSounds.Where(t => t != null && t.State == SoundState.Paused))
+                foreach (var t in _playingSounds.Where(t => t != null && t.Instance.State == SoundState.Paused))
                 {
-                    t.Resume();
+                    t.Instance.Resume();
                 }
 
                 if (MediaPlayer.State != MediaState.Paused)
@@ -329,9 +342,9 @@ namespace PlagueEngine.Audio
             }
             else
             {
-                foreach (var t in _playingSounds.Where(t => t != null && t.State == SoundState.Playing))
+                foreach (var t in _playingSounds.Where(t => t != null && t.Instance.State == SoundState.Playing))
                 {
-                    t.Pause();
+                    t.Instance.Pause();
                 }
 
                 MediaPlayer.Pause();
