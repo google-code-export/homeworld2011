@@ -131,10 +131,10 @@ namespace PlagueEngine.GUI
                                                      bool enableDragging)
         {
             WindowComponent result = new WindowComponent(title,
-                                                         new UniRectangle(new UniScalar(x),
-                                                                          new UniScalar(y),
-                                                                          new UniScalar(width),
-                                                                          new UniScalar(height)),
+                                                         x,
+                                                         y,
+                                                         width,
+                                                         height,
                                                          enableDragging);            
 
             return result;

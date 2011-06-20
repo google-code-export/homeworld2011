@@ -591,11 +591,22 @@ namespace PlagueEngine.Tools
             Fire.dataClassType = typeof(FireData);
             gameObjectClassNames.Add(Fire);
 
+
+
+            gameObjectsClassName DialogMessagesManager = new gameObjectsClassName();
+            DialogMessagesManager.className = "DialogMessagesManager";
+            DialogMessagesManager.ClassType = typeof(DialogMessagesManager);
+            DialogMessagesManager.dataClassType = typeof(DialogMessagesManagerData);
+            gameObjectClassNames.Add(DialogMessagesManager);
+
+
+
             gameObjectsClassName Bloom = new gameObjectsClassName();
             Bloom.className = "Bloom";
             Bloom.ClassType = typeof(Bloom);
             Bloom.dataClassType = typeof(BloomData);
             gameObjectClassNames.Add(Bloom);
+
         }
         /********************************************************************************/
 

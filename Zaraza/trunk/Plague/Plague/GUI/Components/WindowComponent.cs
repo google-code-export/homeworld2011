@@ -22,22 +22,34 @@ namespace PlagueEngine.GUI.Components
         /// Fields
         /****************************************************************************/
         public WindowControl Control { get; private set; }
+        private int width, height, x, y;
+        private String title;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public WindowComponent(String title,UniRectangle bounds,bool enableDragging)            
+        public WindowComponent(String title, int x, int y, int width, int height, bool enableDragging)            
         {
             Control                = new WindowControl();
             Control.Title          = title;
-            Control.Bounds         = bounds;
+            Control.Bounds = new UniRectangle(new UniScalar(x),
+                                              new UniScalar(y),
+                                              new UniScalar(width),
+                                              new UniScalar(height));
             Control.EnableDragging = enableDragging;
-
+            this.height = height;
+            this.width = width;
+            this.x = x;
+            this.y = y;
             Register();
         }
         /****************************************************************************/
+
+
+
+
 
                 
         /****************************************************************************/
@@ -88,6 +100,111 @@ namespace PlagueEngine.GUI.Components
             base.ReleaseMe();
         }
         /****************************************************************************/
+
+
+
+
+
+        /********************************************************************************/
+        public string Title
+        {
+            get
+            {
+                return title;
+            }
+            set
+            {
+                Control.Title = value;
+                title = value;
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+
+        /********************************************************************************/
+        public int X
+        {
+            get
+            {
+                return x;
+            }
+            set
+            {
+                Control.Bounds = new UniRectangle(new UniScalar(value),
+                                  new UniScalar(y),
+                                  new UniScalar(width),
+                                  new UniScalar(height));
+                x = value;
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+
+        /********************************************************************************/
+        public int Y
+        {
+            get
+            {
+                return y;
+            }
+            set
+            {
+                Control.Bounds = new UniRectangle(new UniScalar(x),
+                                  new UniScalar(value),
+                                  new UniScalar(width),
+                                  new UniScalar(height));
+                y = value;
+            }
+        }
+        /********************************************************************************/
+
+
+
+
+        /********************************************************************************/
+        public int Width
+        {
+            get
+            {
+                return width;
+            }
+            set
+            {
+                Control.Bounds = new UniRectangle(new UniScalar(x),
+                                  new UniScalar(y),
+                                  new UniScalar(value),
+                                  new UniScalar(height));
+                width = value;
+            }
+        }
+        /********************************************************************************/
+
+
+        /********************************************************************************/
+        public int Height
+        {
+            get
+            {
+                return height;
+            }
+            set
+            {
+                Control.Bounds = new UniRectangle(new UniScalar(x),
+                                  new UniScalar(y),
+                                  new UniScalar(width),
+                                  new UniScalar(value));
+                height = value;
+            }
+        }
+        /********************************************************************************/
+
+
 
     }
     /********************************************************************************/

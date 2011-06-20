@@ -101,7 +101,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             CurrentObject = currentObject;
             Weapon = weapon;
             SideArm = sideArm;
-
+            
             Grip = gripBone;
             SideArmGrip = sideArmBone;
             WeaponGrip = weaponBone;
@@ -153,6 +153,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*************************************/
             if (e.GetType().Equals(typeof(DropItemCommandEvent)))
             {
+              
                 DropItem();
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
@@ -316,7 +317,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (!GroupAmmo(item as AmmoBox))
             {
-                FindPlaceForItem(item, true);
+
+               FindPlaceForItem(item, true);
             }
 
         }
@@ -406,9 +408,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void DropItem(StorableObject item = null)
         {
+          
             if (item != null)
             {
-
+                Broadcast(new NewDialogMessageEvent(this.Name, "dropuje " + item.Name, this.Icon), EventsSystem.Priority.Normal);
+             
                 item.World = Matrix.Identity;
                 item.World.Translation = World.Translation +
                                          Vector3.Normalize(World.Backward) * 2 +
@@ -437,6 +441,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void StoreItem(uint slot)
         {
+            
             switch (slot)
             {
                 case 0:
@@ -762,6 +767,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public void MarkerDraw(SpriteBatch spriteBatch, ref Matrix viewProjection, int screenWidth, int screenHeight)
         {
+          
             if (IsDisposed) return;
             if (!Marker) return;
             Vector2 pos2;

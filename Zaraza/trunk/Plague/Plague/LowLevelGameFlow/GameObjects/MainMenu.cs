@@ -190,6 +190,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.optionswindowtextx = optionswindowtextx;
             this.optionswindowtexty = optionswindowtexty;
             this.optionswindowregistered = false;
+
+            
         }        
         /****************************************************************************/
 

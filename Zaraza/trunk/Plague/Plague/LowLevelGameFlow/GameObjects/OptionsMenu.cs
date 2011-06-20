@@ -46,7 +46,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.ChooseLanguage = new ListComponent(new List<string> { "OptionsMenu.language_english", "OptionsMenu.language_polish" },
                                                          x + 150,
                                                          y + 80,
-                                                         100, 70, Nuclex.UserInterface.Controls.Desktop.ListSelectionMode.Single);
+                                                         200, 170, Nuclex.UserInterface.Controls.Desktop.ListSelectionMode.Single);
             this.LanguageChoiceLabel = new LabelComponent(languageLabelKey, x, y , 100, 70);
             this.BackButton          = new ButtonComponent(buttonLabelKey, x, y + height - 250, 80, 50, "");
             this.frame = frame;
