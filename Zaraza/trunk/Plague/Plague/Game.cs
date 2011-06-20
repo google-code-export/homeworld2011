@@ -37,7 +37,7 @@ namespace PlagueEngine
         internal Level                     Level              { get; private set; }
         
        // internal Pathfinder.Pathfinder pf;
-        private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false,1.0f);
+        private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false,0.0f,1.0f,false);
         
         public bool GameStopped { get;  set; }
 
@@ -260,6 +260,7 @@ namespace PlagueEngine
         {
             base.OnExiting(sender, args);
             ContentManager.SaveDefaultProfile();
+            ContentManager.SaveConfiguration(Renderer.CurrentConfiguration);
 
 #if DEBUG
             Diagnostics.PushLog("Exiting");

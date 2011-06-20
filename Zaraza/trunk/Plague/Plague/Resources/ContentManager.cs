@@ -398,11 +398,12 @@ namespace PlagueEngine.Resources
         {
             if (currentProfile.Length == 0) return;
 #if DEBUG
-            Diagnostics.PushLog("Saving default profile: " + currentProfile);
+
+                Diagnostics.PushLog("Saving default profile: " + currentProfile);
 #endif
-            TextWriter textWriter = new StreamWriter(defaultProfileFile);
-            textWriter.WriteLine(currentProfile);
-            textWriter.Close();            
+                TextWriter textWriter = new StreamWriter(defaultProfileFile);
+                textWriter.WriteLine(currentProfile);
+                textWriter.Close();
         }
         /****************************************************************************/
 

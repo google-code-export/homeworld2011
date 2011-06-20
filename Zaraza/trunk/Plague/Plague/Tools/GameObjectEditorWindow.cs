@@ -206,6 +206,8 @@ namespace PlagueEngine.Tools
 
             SSAOSampleRadius.Value = (decimal)renderer.sampleRadius;
             numericUpDown1.Value = (decimal)renderer.distanceScale;
+            numericUpDown2.Value = (decimal)renderer.Brightness;
+            numericUpDown3.Value = (decimal)renderer.Contrast;
         }
         /********************************************************************************/
 
@@ -1939,6 +1941,11 @@ namespace PlagueEngine.Tools
         private void numericUpDown2_ValueChanged(object sender, EventArgs e)
         {
             renderer.Brightness = (float)numericUpDown2.Value;
+        }
+
+        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+            renderer.Contrast = (float)numericUpDown3.Value;
         }
 
 

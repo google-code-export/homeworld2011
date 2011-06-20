@@ -10,7 +10,8 @@ sampler TextureSampler = sampler_state
     Mipfilter = POINT;
 };
 
-float Brightness = 1.0f;
+float Brightness = 0.0f;
+float Contrast   = 1.0f;
 
 struct VertexShaderInput
 {
@@ -37,8 +38,9 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
 	float3 output = tex2D(TextureSampler,input.UV);
-
-	output = pow(output,Brightness);
+	
+	output *= Contrast;
+	output += Brightness;
 
 	return float4(output, 1);
 }
