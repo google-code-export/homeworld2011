@@ -13,7 +13,7 @@ namespace PlagueEngine.Pathfinder
         private Node _previousNode;
         private Node _curentNode;
         private PathType _pathType;
-
+        private DateTime startTime;
         public PathType PathType
         {
             get { return _pathType; }
@@ -27,11 +27,12 @@ namespace PlagueEngine.Pathfinder
        public bool GetPath(Vector3 startPoint, Vector3 destinationPoint)
         {
             clear();
+            startTime = DateTime.Now;
             if (PathfinderManager.PM != null)
             {
                Node start = PathfinderManager.PM.getNode(startPoint);
                Diagnostics.PushLog(LoggingLevel.INFO, "Wezeł startowy: " + start);
-               if (start.NodeType != NodeType.NONE)
+               if (start.NodeType != NodeType.NONE || start.NodeType != NodeType.STATIC)
                {
                    Node end = PathfinderManager.PM.getNode(destinationPoint);
                    Diagnostics.PushLog(LoggingLevel.INFO, "Wezeł końcowy: " + end);
@@ -44,8 +45,14 @@ namespace PlagueEngine.Pathfinder
                        _tempNodes.Enqueue(start);
                        Node active;
                        H.ComputeNodeValue(start, end);
+                       
                        while (_tempNodes.Count > 0)
                        {
+                           if (DateTime.Now.Subtract(startTime).Seconds > 0)
+                           {
+                               clear();
+                               return false;
+                           }
                            active = _tempNodes.Dequeue();
                            _visited.Add(active);
                            if (_pathType == PathType.TOTARGET && active.Equals(end))
