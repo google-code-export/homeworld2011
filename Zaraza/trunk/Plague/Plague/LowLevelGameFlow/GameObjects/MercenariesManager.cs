@@ -328,8 +328,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     if (Mercenaries.ContainsKey(m))
                     {
                         var actions = Mercenaries[m];
-                        actions.RemoveAt(0);
-                        if (actions.Count != 0) SendEvent(actions.ElementAt(0), Priority.Normal, sender as Mercenary);
+
+                        if (actions.Count != 0)
+                        {
+                            actions.RemoveAt(0);
+                            if (actions.Count != 0) SendEvent(actions.ElementAt(0), Priority.Normal, sender as Mercenary);
+                        }
                     }
                 }
 

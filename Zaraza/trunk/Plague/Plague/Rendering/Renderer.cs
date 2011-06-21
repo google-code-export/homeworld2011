@@ -498,6 +498,8 @@ namespace PlagueEngine.Rendering
             fullScreenQuad.Draw();
 
             particleManager.DrawParticles(gameTime);
+            Device.BlendState = BlendState.Opaque;
+
 
             Device.SetRenderTarget(bloom);
             bloomEffect.Parameters["Texture"].SetValue(test);

@@ -408,15 +408,29 @@
       <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
       <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
       <ProcessorParameters_AnimationClip1Start>77</ProcessorParameters_AnimationClip1Start>
-      <ProcessorParameters_AnimationClip3>RunWithCarabine</ProcessorParameters_AnimationClip3>
       <ProcessorParameters_AnimationClip3Start>51</ProcessorParameters_AnimationClip3Start>
       <ProcessorParameters_AnimationClip3End>76</ProcessorParameters_AnimationClip3End>
       <ProcessorParameters_AnimationClip3Loop>True</ProcessorParameters_AnimationClip3Loop>
-      <ProcessorParameters_AnimationClip4>CarabineFireshot</ProcessorParameters_AnimationClip4>
       <ProcessorParameters_AnimationClip4Start>147</ProcessorParameters_AnimationClip4Start>
       <ProcessorParameters_AnimationClip4End>157</ProcessorParameters_AnimationClip4End>
       <ProcessorParameters_AnimationClip1>Run</ProcessorParameters_AnimationClip1>
       <ProcessorParameters_AnimationClip1Duration>0.8</ProcessorParameters_AnimationClip1Duration>
+      <ProcessorParameters_AnimationClip10>Run_Carabine</ProcessorParameters_AnimationClip10>
+      <ProcessorParameters_AnimationClip10Duration>0.8</ProcessorParameters_AnimationClip10Duration>
+      <ProcessorParameters_AnimationClip11>Run_Pistol</ProcessorParameters_AnimationClip11>
+      <ProcessorParameters_AnimationClip11Duration>0.8</ProcessorParameters_AnimationClip11Duration>
+      <ProcessorParameters_AnimationClip12>Walk_Carabine</ProcessorParameters_AnimationClip12>
+      <ProcessorParameters_AnimationClip12Duration>0.8</ProcessorParameters_AnimationClip12Duration>
+      <ProcessorParameters_AnimationClip13>Walk_Pistol</ProcessorParameters_AnimationClip13>
+      <ProcessorParameters_AnimationClip13Duration>0.8</ProcessorParameters_AnimationClip13Duration>
+      <ProcessorParameters_AnimationClip14>Idle</ProcessorParameters_AnimationClip14>
+      <ProcessorParameters_AnimationClip14Duration>2.1</ProcessorParameters_AnimationClip14Duration>
+      <ProcessorParameters_AnimationClip15>Dying</ProcessorParameters_AnimationClip15>
+      <ProcessorParameters_AnimationClip15Duration>0.6</ProcessorParameters_AnimationClip15Duration>
+      <ProcessorParameters_AnimationClip16>Fire_Carabine</ProcessorParameters_AnimationClip16>
+      <ProcessorParameters_AnimationClip16Duration>0.3</ProcessorParameters_AnimationClip16Duration>
+      <ProcessorParameters_AnimationClip17>Fire_Pistol</ProcessorParameters_AnimationClip17>
+      <ProcessorParameters_AnimationClip17Duration>0.3</ProcessorParameters_AnimationClip17Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -1455,6 +1469,22 @@
       <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
       <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
       <ProcessorParameters_AnimationClip1Duration>0.8</ProcessorParameters_AnimationClip1Duration>
+      <ProcessorParameters_AnimationClip10>Run_Carabine</ProcessorParameters_AnimationClip10>
+      <ProcessorParameters_AnimationClip10Duration>0.8</ProcessorParameters_AnimationClip10Duration>
+      <ProcessorParameters_AnimationClip11>Run_Pistol</ProcessorParameters_AnimationClip11>
+      <ProcessorParameters_AnimationClip11Duration>0.8</ProcessorParameters_AnimationClip11Duration>
+      <ProcessorParameters_AnimationClip12>Walk_Carabine</ProcessorParameters_AnimationClip12>
+      <ProcessorParameters_AnimationClip12Duration>0.8</ProcessorParameters_AnimationClip12Duration>
+      <ProcessorParameters_AnimationClip13>Walk_Pistol</ProcessorParameters_AnimationClip13>
+      <ProcessorParameters_AnimationClip13Duration>0.8</ProcessorParameters_AnimationClip13Duration>
+      <ProcessorParameters_AnimationClip14>Idle</ProcessorParameters_AnimationClip14>
+      <ProcessorParameters_AnimationClip14Duration>2.1</ProcessorParameters_AnimationClip14Duration>
+      <ProcessorParameters_AnimationClip15>Dying</ProcessorParameters_AnimationClip15>
+      <ProcessorParameters_AnimationClip15Duration>0.6</ProcessorParameters_AnimationClip15Duration>
+      <ProcessorParameters_AnimationClip16>Fire_Carabine</ProcessorParameters_AnimationClip16>
+      <ProcessorParameters_AnimationClip16Duration>0.3</ProcessorParameters_AnimationClip16Duration>
+      <ProcessorParameters_AnimationClip17>Fire_Pistol</ProcessorParameters_AnimationClip17>
+      <ProcessorParameters_AnimationClip17Duration>0.3</ProcessorParameters_AnimationClip17Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -1487,6 +1517,22 @@
       <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
       <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
       <ProcessorParameters_AnimationClip1Duration>0.8</ProcessorParameters_AnimationClip1Duration>
+      <ProcessorParameters_AnimationClip10>Run_Carabine</ProcessorParameters_AnimationClip10>
+      <ProcessorParameters_AnimationClip10Duration>0.8</ProcessorParameters_AnimationClip10Duration>
+      <ProcessorParameters_AnimationClip11>Run_Pistol</ProcessorParameters_AnimationClip11>
+      <ProcessorParameters_AnimationClip11Duration>0.8</ProcessorParameters_AnimationClip11Duration>
+      <ProcessorParameters_AnimationClip12>Walk_Carabine</ProcessorParameters_AnimationClip12>
+      <ProcessorParameters_AnimationClip12Duration>0.8</ProcessorParameters_AnimationClip12Duration>
+      <ProcessorParameters_AnimationClip13>Walk_Pistol</ProcessorParameters_AnimationClip13>
+      <ProcessorParameters_AnimationClip13Duration>0.8</ProcessorParameters_AnimationClip13Duration>
+      <ProcessorParameters_AnimationClip14>Idle</ProcessorParameters_AnimationClip14>
+      <ProcessorParameters_AnimationClip14Duration>2.1</ProcessorParameters_AnimationClip14Duration>
+      <ProcessorParameters_AnimationClip15>Dying</ProcessorParameters_AnimationClip15>
+      <ProcessorParameters_AnimationClip15Duration>0.6</ProcessorParameters_AnimationClip15Duration>
+      <ProcessorParameters_AnimationClip16>Fire_Carabine</ProcessorParameters_AnimationClip16>
+      <ProcessorParameters_AnimationClip16Duration>0.3</ProcessorParameters_AnimationClip16Duration>
+      <ProcessorParameters_AnimationClip17>Fire_Pistol</ProcessorParameters_AnimationClip17>
+      <ProcessorParameters_AnimationClip17Duration>0.3</ProcessorParameters_AnimationClip17Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -1828,13 +1874,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\InventorySe1t.png">
-      <Name>InventorySe1t</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\MainMenuWindow.png">
       <Name>MainMenuWindow</Name>
       <Importer>TextureImporter</Importer>
@@ -1959,6 +1998,27 @@
       <Name>BloomComposition</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Firearms\beretta.mag.fbx">
+      <Name>beretta.mag</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Characters\smith.BMP">
+      <Name>smith</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Particles\smoke.png">
+      <Name>smoke</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
