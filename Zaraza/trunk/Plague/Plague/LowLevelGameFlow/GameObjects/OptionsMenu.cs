@@ -209,7 +209,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (sender == BrightnessButton1.Control)
             {
-                if ((Math.Round(renderer.Brightness - 0.05f,2)) >= 0)
+                if ((Math.Round(renderer.Brightness - 0.05f,2)) >= -10)
                 {
                     renderer.Brightness -= 0.05f;
                     BrightnessLabel2.Text = (float.Parse(BrightnessLabel2.Text) - 0.05f).ToString();
@@ -217,7 +217,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             if (sender == BrightnessButton2.Control)
             {
-                if ((Math.Round(renderer.Brightness + 0.05f, 2)) <= 1)
+                if ((Math.Round(renderer.Brightness + 0.05f, 2)) <= 10)
                 {
                     renderer.Brightness += 0.05f;
                     BrightnessLabel2.Text = (float.Parse(BrightnessLabel2.Text) + 0.05f).ToString();
@@ -235,7 +235,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             if (sender == ContrastButton2.Control)
             {
-                if ((Math.Round(renderer.Contrast + 0.05f, 2)) <= 1)
+                if ((Math.Round(renderer.Contrast + 0.05f, 2)) <= 10)
                 {
                     renderer.Contrast += 0.05f;
                     ContrastLabel2.Text = (float.Parse(ContrastLabel2.Text) + 0.05f).ToString();
