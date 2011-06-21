@@ -63,9 +63,9 @@ namespace PlagueEngine.Tools
             this.currentObject = currentObject;
 
             int height = 0;
-            if (PropertyInfo.Count > 15) height = 465;
+            if (PropertyInfo.Count > 20) height = 600;
             else height = 90 + PropertyInfo.Count * 25;
-            int width = 300 * (int)Math.Ceiling((double)(PropertyInfo.Count/15.0f));
+            int width = 300 * (int)Math.Ceiling((double)(PropertyInfo.Count/25.0f));
 
 
 
@@ -99,7 +99,7 @@ namespace PlagueEngine.Tools
                     Field field = new Field();
 
                     field.label.Text = PropertyInfo[i].Name;
-                    field.label.Location = new Point(20 + (int)Math.Floor(i / 15.0f) * 300, 35 + 25 * (i%15));
+                    field.label.Location = new Point(20 + (int)Math.Floor(i / 20.0f) * 300, 35 + 25 * (i%20));
                     field.label.Size = new Size(130, 20);
 
                     try//nullReferenceExcepton? :O
@@ -112,10 +112,10 @@ namespace PlagueEngine.Tools
                     }
 
 
-                    field.value.Location = new Point(150 + (int)Math.Floor(i / 15.0f) * 300, 35 + 25 * (i%15));
+                    field.value.Location = new Point(150 + (int)Math.Floor(i / 20.0f) * 300, 35 + 25 * (i%20));
                     field.value.Size = new Size(120, 15);
 
-                    field.checkbox.Location = new Point(270 + (int)Math.Floor(i / 15.0f) * 300, 35 + 25 * (i%15));
+                    field.checkbox.Location = new Point(270 + (int)Math.Floor(i / 20.0f) * 300, 35 + 25 * (i%20));
                     field.checkbox.Checked = false;
                     field.checkbox.Size = new Size(20, 20);
                     field.checkbox.Checked = true;
