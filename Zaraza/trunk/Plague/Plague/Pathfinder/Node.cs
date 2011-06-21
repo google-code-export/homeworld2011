@@ -14,6 +14,7 @@ namespace PlagueEngine.Pathfinder
         public int y;
         public float Value;
         public float Distance;
+        static public int HASH_HELPER = 1500;
         public NodeType NodeType;
         public Node Parent;
         public Node()
@@ -72,49 +73,53 @@ namespace PlagueEngine.Pathfinder
                 int direction;
                 int xD = x - node.x;
                 int yD = y - node.y;
-                if (x < 0)
+                if (xD < 0)
                 {
-                    if (y < 0)
+                    if (yD < 0)
                     {
                         return 0;
                     }
-                    if (y == 0)
+                    if (yD == 0)
                     {
                         return 1;
                     }
-                    if (y > 0)
+                    if (yD > 0)
                     {
                         return 2;
                     }
                 }
-                if (x == 0)
+                if (xD == 0)
                 {
-                    if (y > 0)
+                    if (yD > 0)
                     {
                         return 3;
                     }
-                    if (y < 0)
+                    if (yD < 0)
                     {
                         return 4;
                     }
                 }
-                if (x > 0)
+                if (xD > 0)
                 {
-                    if (y < 0)
+                    if (yD < 0)
                     {
                         return 5;
                     }
-                    if (y == 0)
+                    if (yD == 0)
                     {
                         return 6;
                     }
-                    if (y > 0)
+                    if (yD > 0)
                     {
                         return 7;
                     }
                 }
             }
             return 9;
+        }
+        public override int GetHashCode()
+        {
+            return x + y * HASH_HELPER;
         }
         public override string ToString()
         {

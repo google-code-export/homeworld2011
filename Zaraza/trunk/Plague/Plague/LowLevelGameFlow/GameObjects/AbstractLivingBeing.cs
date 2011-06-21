@@ -28,6 +28,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public SkinnedMeshComponent mesh;
         public CapsuleBodyComponent body;
         public SoundEffectComponent SoundEffectComponent;
+        public Pathfinder.PathfinderComponent PathfinderComponent;
         public SkinnedMeshComponent Mesh { get { return this.mesh; } protected set { this.mesh = value; } }
         public CapsuleBodyComponent Body { get { return this.body; } protected set { this.body = value; } }
         public PhysicsController Controller { get; protected set; }

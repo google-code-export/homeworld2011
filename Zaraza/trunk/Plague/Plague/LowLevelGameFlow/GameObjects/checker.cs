@@ -107,10 +107,38 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 BinaryFormatter bFormatter = new BinaryFormatter();
                 PathfinderManager.PM = (PathfinderManager)bFormatter.Deserialize(stream);
                 stream.Close();
+                PathfinderManager.PM._factory = _factory;
+
+                //TimeControl.CreateFrameCounter(10, 0, generateBoxes);
+               
             }
             
         }
         /****************************************************************************/
+        public void generateBoxes()
+        {
+            Vector3 move;
+            foreach (Node n in PathfinderManager.PM._blockedNodes)
+            {
+                SquareBodyMeshData dddtata = new SquareBodyMeshData();
+                dddtata.Definition = "BrickWall";
+                dddtata.Type = (typeof(SquareBodyMesh));
+                dddtata.Diffuse = "Misc\\woodbox01.diff";
+                dddtata.Normals = "Misc\\woodbox01.norm";
+                dddtata.Model = "Misc\\Wall";
+                dddtata.Specular = "Misc\\woodbox01.spec";
+                dddtata.Immovable = true;
+                dddtata.EnabledPhysics = false;
+                dddtata.Width = PathfinderManager.PM.BoxWidth;
+                dddtata.Lenght = PathfinderManager.PM.BoxWidth;
+                dddtata.Height = PathfinderManager.PM.BoxHeight;
+                move = PathfinderManager.PM.BoxStartPosition;
+                move.X += (PathfinderManager.PM.BoxSpace) * n.x;
+                move.Z += (PathfinderManager.PM.BoxSpace) * n.y;
+                dddtata.World = Matrix.CreateTranslation(move);
+                _factory.Create(dddtata);
+            }
+        }
         public void destroyBoxes()
         {
             for (int i = 0; i < _pm.NumberOfBoxesInLength; i++)
