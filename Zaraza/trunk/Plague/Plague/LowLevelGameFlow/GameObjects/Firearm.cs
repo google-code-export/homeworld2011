@@ -371,7 +371,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         (skin.ExternalData as IShootable).OnShoot(bulletInfo.Damage        * DamageModulation, 
                                                                   bulletInfo.StoppingPower * StoppingPowerModulation,
                                                                   pos,
-                                                                  dispersion);
+                                                                  dispersion, (this.owner as Mercenary));
 
                         if (skin.ExternalData as IPenetrable != null)
                         {

@@ -154,7 +154,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*************************************/
             if (e.GetType().Equals(typeof(DropItemCommandEvent)))
             {
-              
                 DropItem();
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
@@ -980,9 +979,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             return 1;
         }
 
-        public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction)
+        public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction, Mercenary shooter)
         {
-            ObjectAIController.OnEvent(null, new ArtificialIntelligence.TakeDamage(damage, null));
+            ObjectAIController.OnEvent(null, new ArtificialIntelligence.TakeDamage(damage, shooter));
         }
     }
     /********************************************************************************/

@@ -15,6 +15,7 @@ using PlagueEngine.Input.Components;
 using PlagueEngine.Input;
 using PlagueEngine.ArtificialIntelligence.Controllers;
 using PlagueEngine.Audio.Components;
+using PlagueEngine.ArtificialIntelligence;
 
 
 /************************************************************************************/
@@ -26,7 +27,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     /// Creature
     /********************************************************************************/
-    class Creature : AbstractLivingBeing, IActiveGameObject
+    class Creature : AbstractLivingBeing, IActiveGameObject, IPenetrable
     {
 
         /****************************************************************************/
@@ -62,6 +63,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             //TODO: Fix HP => get from data
             this.ObjectAIController = new MobController(this, rotationSpeed, movingSpeed, distance, angle, 100, 90, AnimationMapping);
             this.RequiresUpdate = true;
+            Status = GameObjectStatus.Targetable;
         }
         /****************************************************************************/
 
@@ -281,6 +283,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             actions.Add("Attack");
 
             return actions.ToArray();
+        }
+
+        public float GetArmorClass()
+        {
+            return 1;
+        }
+
+        public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction, Mercenary shooter)
+        {
+            ObjectAIController.OnEvent(null, new ArtificialIntelligence.TakeDamage(damage, shooter));
         }
     }
     /********************************************************************************/
