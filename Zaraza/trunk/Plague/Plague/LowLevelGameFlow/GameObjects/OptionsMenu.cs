@@ -316,31 +316,38 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void ReleaseComponents()
         {
             frame.ReleaseMe();
-            //BackButton.ReleaseMe();
+            BackButton.ReleaseMe();
 
 
 
-            //BrightnessButton1.ReleaseMe();
-            //BrightnessLabel1.ReleaseMe();
-            //BrightnessButton2.ReleaseMe();
-            //BrightnessLabel2.ReleaseMe();
+            BrightnessButton1.ReleaseMe();
+            BrightnessLabel1.ReleaseMe();
+            BrightnessButton2.ReleaseMe();
+            BrightnessLabel2.ReleaseMe();
 
 
-            //ContrastButton1.ReleaseMe();
-            //ContrastLabel1.ReleaseMe();
-            //ContrastButton2.ReleaseMe();
-            //ContrastLabel2.ReleaseMe();
+            ContrastButton1.ReleaseMe();
+            ContrastLabel1.ReleaseMe();
+            ContrastButton2.ReleaseMe();
+            ContrastLabel2.ReleaseMe();
 
 
 
-            //SSAOButton1.ReleaseMe();
-            //SSAOLabel1.ReleaseMe();
-            //SSAOLabel2.ReleaseMe();
+            SSAOButton1.ReleaseMe();
+            SSAOLabel1.ReleaseMe();
+            SSAOLabel2.ReleaseMe();
 
 
-            //FullScreenButton1.ReleaseMe();
-            //FullScreenLabel1.ReleaseMe();
-            //FullScreenLabel2.ReleaseMe();
+            FullScreenButton1.ReleaseMe();
+            FullScreenLabel1.ReleaseMe();
+            FullScreenLabel2.ReleaseMe();
+
+
+
+            ScreenSizeButton1.ReleaseMe();
+            ScreenSizeLabel1.ReleaseMe();
+            ScreenSizeButton2.ReleaseMe();
+            ScreenSizeLabel2.ReleaseMe();
             //ChooseLanguage.ReleaseMe();
             //LanguageChoiceLabel.ReleaseMe();
         }
