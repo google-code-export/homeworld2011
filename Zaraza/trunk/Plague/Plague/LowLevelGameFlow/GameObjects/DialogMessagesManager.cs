@@ -45,6 +45,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         Vector2 iconPosition;
         uint timerID;
+
         /****************************************************************************/
 
 
@@ -70,7 +71,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             RequiresUpdate = true;
 
 
-            timerID= TimeControl.CreateTimer(TimeSpan.FromSeconds(4), -1, UpdateMessages);
         }
         /****************************************************************************/
 
@@ -79,13 +79,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if ((messages.Count - 1) == currentMessage)
             {
-                draw = false;
+                 draw = false;
                 text.Unregister();
                 TimeControl.ReleaseTimer(timerID);
 
             }
             if ((messages.Count - 1) > currentMessage)
             {
+                 
                 currentMessage++;
                 //window.Title = messages[currentMessage].name;
                 text.Text = messages[currentMessage].text;
