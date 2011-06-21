@@ -116,5 +116,9 @@ namespace PlagueEngine.Pathfinder
             }
             return 9;
         }
+        public override string ToString()
+        {
+            return "Node["+x+","+y+"] type "+ NodeType;
+        }
     }
 }

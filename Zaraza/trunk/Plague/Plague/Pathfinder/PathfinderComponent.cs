@@ -30,9 +30,11 @@ namespace PlagueEngine.Pathfinder
             if (PathfinderManager.PM != null)
             {
                Node start = PathfinderManager.PM.getNode(startPoint);
+               Diagnostics.PushLog(LoggingLevel.INFO, "Wezeł startowy: " + start);
                if (start.NodeType != NodeType.NONE)
                {
                    Node end = PathfinderManager.PM.getNode(destinationPoint);
+                   Diagnostics.PushLog(LoggingLevel.INFO, "Wezeł końcowy: " + end);
                    _pathType = (end.NodeType == NodeType.NAVIGATION)?PathType.TOTARGET:PathType.CLOSEST;
 
                    if (end.NodeType != NodeType.NONE)
@@ -53,7 +55,7 @@ namespace PlagueEngine.Pathfinder
                                    _nodes.Push(active);
                                    active = active.Parent;
                                }
-                               simplifiePath();
+                               //simplifiePath();
                                return true;
                            }
                            foreach (var child in active.GenerateChildren())
@@ -81,7 +83,7 @@ namespace PlagueEngine.Pathfinder
                                _nodes.Push(closest);
                                closest = closest.Parent;
                            }
-                           simplifiePath();
+                           //simplifiePath();
                            return true;
                        }
                        _visited = null;
@@ -100,9 +102,12 @@ namespace PlagueEngine.Pathfinder
                 int curentDirection=-1;
                 int nodeDirection;
                 tempNodes.Add(_nodes.Pop());
+                Diagnostics.PushLog(LoggingLevel.INFO, "Ścieżka przed uproszeczeniu:");
+                Diagnostics.PushLog(LoggingLevel.INFO,  tempNodes[0].ToString());
                 while (_nodes.Count > 0)
                 {
                     Node temp = _nodes.Pop();
+                    Diagnostics.PushLog(LoggingLevel.INFO, temp.ToString());
                     nodeDirection = tempNodes[tempNodes.Count - 1].directionToNode(temp);
                     if (nodeDirection == curentDirection)
                     {
@@ -116,6 +121,12 @@ namespace PlagueEngine.Pathfinder
                     
                 }
                 tempNodes.Reverse(0, tempNodes.Count);
+                Diagnostics.PushLog(LoggingLevel.INFO, "Ścieżka po uproszeczeniu:");
+                for (int i = 0; i < tempNodes.Count; i++)
+                {
+                    Diagnostics.PushLog(LoggingLevel.INFO, i + ": " + tempNodes[i]);
+                }
+                   
                 _nodes= new Stack<Node>(tempNodes);
             }
         }
@@ -135,6 +146,7 @@ namespace PlagueEngine.Pathfinder
             {
                 _previousNode = _curentNode;
                 _curentNode = _nodes.Pop();
+                Diagnostics.PushLog(LoggingLevel.INFO, "Zwrócono następny węzeł" + _curentNode);
                 return PathfinderManager.PM.NodeToVector(_curentNode);
             }
             return Vector3.Zero;
