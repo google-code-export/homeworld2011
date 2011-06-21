@@ -207,6 +207,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void click(object sender, EventArgs e)
         {
+            RenderConfig config = renderer.CurrentConfiguration;
+
             if (sender == BrightnessButton1.Control)
             {
                 if ((Math.Round(renderer.Brightness - 0.05f,2)) >= -10)
@@ -239,6 +241,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     renderer.Contrast += 0.05f;
                     ContrastLabel2.Text = (float.Parse(ContrastLabel2.Text) + 0.05f).ToString();
+                    
+                    contentManager.SaveConfiguration(config);
                 }
             }
 
@@ -247,12 +251,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (renderer.ssaoEnabled == true)
                 {
                     renderer.ssaoEnabled = false;
+                    config.SSAO = false;
                     SSAOLabel2.Text = "OFF";
                 }
                 else
                 {
                     renderer.ssaoEnabled = true;
+                    config.SSAO = true;
                     SSAOLabel2.Text = "ON";
+                    contentManager.SaveConfiguration(config);
                 }
             }
 
@@ -261,16 +268,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 Diagnostics.PushLog(renderer.CurrentConfiguration.FullScreen.ToString());
                 if (FullScreenLabel2.Text == "ON")
                 {
-                    RenderConfig config = renderer.CurrentConfiguration;
+                 
                     config.FullScreen = false;
-                    contentManager.SaveConfiguration(config);
                     FullScreenLabel2.Text = "OFF";
                 }
                 else
                 {
-                    RenderConfig config = renderer.CurrentConfiguration;
                     config.FullScreen = true;
-                    contentManager.SaveConfiguration(config);
                     FullScreenLabel2.Text = "ON";
                 }
             }
@@ -281,10 +285,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     current--;
                     this.ScreenSizeLabel2.Text = resolutions[current][0].ToString() + "X" + resolutions[current][1].ToString();
-                    RenderConfig config = renderer.CurrentConfiguration;
                     config.Width = resolutions[current][0];
                     config.Height = resolutions[current][1];
-                    contentManager.SaveConfiguration(config);
                 }
             }
 
@@ -294,12 +296,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     current++;
                     this.ScreenSizeLabel2.Text = resolutions[current][0].ToString() + "X" + resolutions[current][1].ToString();
-                    RenderConfig config = renderer.CurrentConfiguration;
-                    config.Width = resolutions[current][0];
+                   config.Width = resolutions[current][0];
                     config.Height = resolutions[current][1];
-                    contentManager.SaveConfiguration(config);
                 }
             }
+
+
+            contentManager.SaveConfiguration(config);
         }
         public void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
