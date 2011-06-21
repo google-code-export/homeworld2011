@@ -290,7 +290,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
             result.Init(renderingComponentsFactory.CreateFrontEndComponent(result, "MercenariesSet"),
                 guiComponentsFactory.CreateLabelComponent(" ", (int)data.TextPosition.X, (int)data.TextPosition.Y),
-                guiComponentsFactory.CreateWindowComponent("", (int)data.WindowPosition.X, (int)data.WindowPosition.Y, data.windowWidth, data.windowHeight, false),
+                new Rectangle(0,128,400,64),data.WindowPosition,data.windowHeight,data.windowWidth,
                 data.IconPosition);
             return true;
         }

@@ -38,9 +38,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         LabelComponent text;
-        WindowComponent window;
-        FrontEndComponent face;
-
+        FrontEndComponent texture;
+        Rectangle windowRect;
+        Vector2 windowPos;
+        int windowHeight, windowWidth;
 
         Vector2 iconPosition;
         uint timerID;
@@ -52,17 +53,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(FrontEndComponent face,LabelComponent text,WindowComponent window,Vector2 iconPos)
+        public void Init(FrontEndComponent face,LabelComponent text, Rectangle windowRect,Vector2 windowPos, int windowHeight, int windowWidth,Vector2 iconPos)
         {
             this.text = text;
-            this.face = face;
-            this.window = window;
-            window.AddControl(text.Control);
+            this.texture = face;
+            this.windowPos = windowPos;
+            this.windowRect = windowRect;
+
+            this.windowWidth = windowWidth;
+            this.windowHeight = windowHeight;
 
             face.Draw = OnDraw;
             sniffer.SetOnSniffedEvent(OnSniffedEvent);
             sniffer.SubscribeEvents(typeof(NewDialogMessageEvent));
-            window.Unregister();
             this.iconPosition = iconPos;
             RequiresUpdate = true;
 
@@ -77,14 +80,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if ((messages.Count - 1) == currentMessage)
             {
                 draw = false;
-                window.Unregister();
+                text.Unregister();
                 TimeControl.ReleaseTimer(timerID);
 
             }
             if ((messages.Count - 1) > currentMessage)
             {
                 currentMessage++;
-                window.Title = messages[currentMessage].name;
+                //window.Title = messages[currentMessage].name;
                 text.Text = messages[currentMessage].text;
             }
         }
@@ -105,7 +108,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             if (draw && messages.Count!=0)
             {
-                spriteBatch.Draw(face.Texture, iconPosition, messages[currentMessage].icon, Color.Wheat);
+                spriteBatch.Draw(texture.Texture, new Rectangle((int)windowPos.X, (int)windowPos.Y, windowWidth, windowHeight), windowRect, Color.Wheat);
+                spriteBatch.Draw(texture.Texture, iconPosition, messages[currentMessage].icon, Color.Wheat);
                 
             }
         }
@@ -137,9 +141,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     if (draw == false)
                     {
                         currentMessage++;
-                        window.Title = messages[currentMessage].name;
+                        //window.Title = messages[currentMessage].name;
                         text.Text = messages[currentMessage].text;
-                        window.Register();
+                        text.Register();
                         draw = true;
                         timerID = TimeControl.CreateTimer(TimeSpan.FromSeconds(4), -1, UpdateMessages);
                     }
@@ -154,9 +158,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public override void ReleaseComponents()
         {
             sniffer.ReleaseMe();
-            face.ReleaseMe();
+            texture.ReleaseMe();
             text.ReleaseMe();
-            window.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -171,9 +174,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             GetData(data);
 
             data.IconPosition = iconPosition;
-            data.windowHeight = window.Height;
-            data.windowWidth = window.Width;
-            data.WindowPosition = new Vector2(window.X, window.Y);
+            data.windowHeight = windowHeight;
+            data.windowWidth =  windowWidth;
+            data.WindowPosition = new Vector2(windowPos.X,windowPos.Y);
             data.TextPosition = new Vector2(text.X, text.Y);
 
             return data;
