@@ -271,9 +271,9 @@ namespace PlagueEngine.Rendering
             PointLightComponent.renderer  = this;
             SpotLightComponent.renderer   = this;
             FrontEndComponent.renderer    = this;
-            
+            OptionsMenu.renderer          = this;
             spriteBatch = new SpriteBatch(Device);
-
+            
             ExtendedMouseMovementState.Display = graphics.GraphicsDevice.DisplayMode;            
 
         }

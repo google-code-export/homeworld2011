@@ -300,6 +300,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             optionslabel.ReleaseMe();
 
             frame.ReleaseMe();
+
+            optionsMenu.ReleaseComponents();
         }
         /********************************************************************************/
 

@@ -11,7 +11,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using PlagueEngine.Rendering;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.HighLevelGameFlow;
-
+using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 /************************************************************************************/
 /// PlagueEngine.Resources
@@ -75,6 +75,8 @@ namespace PlagueEngine.Resources
             //gameObjectsDefinitions.Add(god.Name, god);
 
             //SaveGameObjectsDefinitions();
+
+            OptionsMenu.contentManager = this;
         }
         /****************************************************************************/
 
