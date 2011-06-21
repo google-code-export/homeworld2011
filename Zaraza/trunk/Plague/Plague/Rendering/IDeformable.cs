@@ -8,6 +8,6 @@ namespace PlagueEngine.Rendering.Components
 {
     interface IDeformable
     {
-        void deform(Vector3 dir, Vector3 point, double rad, double strength);
+        void deform(Vector3 point);
     }
 }

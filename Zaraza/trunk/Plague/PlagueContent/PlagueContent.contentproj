@@ -99,6 +99,7 @@
       <Name>Barrel</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlagueEngineModelProcessor</Processor>
+      <ProcessorParameters_ComputeAdjacency>True</ProcessorParameters_ComputeAdjacency>
     </Compile>
   </ItemGroup>
   <ItemGroup>

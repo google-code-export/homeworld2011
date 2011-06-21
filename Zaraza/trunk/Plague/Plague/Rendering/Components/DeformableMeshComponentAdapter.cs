@@ -29,9 +29,6 @@ namespace PlagueEngine.Rendering.Components
         public void deform()
         {
             List<Vector3> vertices = packedComponent.Model.VertexList;
-            //List<Vector3> normals;
-            Dictionary<uint, List<uint>> adjacency = packedComponent.Model.Adjacency;
-            List<uint> affectedPoints = new List<uint>();
             Random rnd = new Random();
             Vector3 point = vertices[rnd.Next(packedComponent.Model.VertexCount)];
             Vector3 middle = Vector3.Divide(packedComponent.BoundingBox.Max - packedComponent.BoundingBox.Min, 2);
@@ -42,47 +39,41 @@ namespace PlagueEngine.Rendering.Components
                 double currDist = Vector3.Distance(vertices[i], point);
                 if (currDist < 3)
                 {
-                    vertices[i] += Vector3.Multiply(dir, (float)0.1 * logistic(currDist));
-                    //affectedPoints.Add((uint) vertices.IndexOf(pt));
+                    vertices[i] += Vector3.Multiply(dir, 0.1f * logistic(currDist));
                 }
             }
             packedComponent.Model.VertexBuffer.SetData(0, vertices.ToArray(), 0, packedComponent.Model.VertexCount, packedComponent.Model.VertexBuffer.VertexDeclaration.VertexStride);
         }
-        public void deform(Vector3 dir, Vector3 point, double rad, double strength)
+
+        
+
+        public void deform(Vector3 hitPoint)
         {
-            if (dir == null)
-            {
-                //Teoretycznie powinno wyliczać wektor do środka
-                Vector3 middle = Vector3.Divide(packedComponent.BoundingBox.Max - packedComponent.BoundingBox.Min, 2);
-                dir = middle - point;
-            }
             List<Vector3> vertices = packedComponent.Model.VertexList;
-            //List<Vector3> normals;
-            Dictionary<uint, List<uint>> adjacency = packedComponent.Model.Adjacency;
-            List<uint> affectedPoints = new List<uint>();
+            Vector3 point = vertices[0];
+            double currDist = 0.0;
+            double smallestDist = Vector3.Distance(point, hitPoint);
+            foreach (Vector3 pt in vertices)
+            {
+                currDist = Vector3.Distance(pt, hitPoint);
+                if (currDist < smallestDist)
+                {
+                    smallestDist = currDist;
+                    point = pt;
+                }
+            }
+
+            Vector3 middle = Vector3.Divide(packedComponent.BoundingBox.Max - packedComponent.BoundingBox.Min, 2);
+            Vector3 direction = middle - point;
             for (int i = 0; i < packedComponent.Model.VertexCount; i++)
             {
-                double currDist = Vector3.Distance(vertices[i], point);
-                if (currDist < rad)
+                currDist = Vector3.Distance(vertices[i], point);
+                if (currDist < 3)
                 {
-                    vertices[i] += Vector3.Multiply(dir, (float)strength * logistic(currDist));
-                    //affectedPoints.Add((uint) vertices.IndexOf(pt));
+                    vertices[i] += Vector3.Multiply(direction, 0.1f * logistic(currDist));
                 }
             }
-            packedComponent.Model.VertexBuffer.SetData(vertices.ToArray());
-
-
-            /*foreach(Vector3 pt in packedComponent.Model.VertexList)
-            {
-                if (Vector3.Distance(pt, point) < rad)
-                {
-                    pt += Vector3.Multiply(dir, logistic(Vector3.Distance(pt, point)) );
-                    //affectedPoints.Add((uint) vertices.IndexOf(pt));
-                }
-            }*/
-            //VertexBuffer myBuf = new VertexBuffer(device, VertexPositionColorNormal.VertexDeclaration, packedComponent.Model.VertexCount, BufferUsage.WriteOnly);
-            //packedComponent.Model.VertexBuffer = 
-
+            packedComponent.Model.VertexBuffer.SetData(0, vertices.ToArray(), 0, packedComponent.Model.VertexCount, packedComponent.Model.VertexBuffer.VertexDeclaration.VertexStride);
         }
 
         /****************************************************************************/

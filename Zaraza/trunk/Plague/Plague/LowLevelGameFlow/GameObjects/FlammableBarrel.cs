@@ -12,6 +12,7 @@ using PlagueEngine.Rendering;
 using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Particles.Components;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
@@ -24,8 +25,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     /********************************************************************************/
     class FlammableBarrel : GameObjectInstance, IFlammable, IPenetrable
     {
-
-        MeshComponent            mesh    = null;
+        DeformableMeshComponentAdapter mesh = null;
+        //MeshComponent            mesh    = null;
         CylindricalBodyComponent body    = null;
         ParticleEmitterComponent emitter = null;
         PointLightComponent light = null;
@@ -38,7 +39,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          ParticleEmitterComponent emitter,
                          PointLightComponent light)
         {
-            this.mesh    = mesh;
+            this.mesh    = new DeformableMeshComponentAdapter(this, mesh);
             this.body    = body;
             this.emitter = emitter;
             this.light = light;
@@ -58,9 +59,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
         }
 
-        public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction)
+        public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction, Mercenary shooter)
         {
             body.Body.Velocity += direction * (stoppingPower * damage) / body.Mass;
+            //mesh.deform();
+            mesh.deform(position);
         }
 
         public float GetArmorClass()
