@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using System.Xml.Serialization;
+using PlagueEngine.LowLevelGameFlow;
+using PlagueEngine.LowLevelGameFlow.GameObjects;
 
 namespace PlagueEngine.Pathfinder
 {
@@ -19,9 +21,10 @@ namespace PlagueEngine.Pathfinder
         private int _numberOfBoxesInWidth;
         private float _distanceBeetwenBoxes;
         private Vector3 _boxStartPosition;
-        private HashSet<Node> _blockedNodes;
+        public HashSet<Node> _blockedNodes;
         private float _boxSpace;
-
+        [NonSerialized]
+        internal GameObjectsFactory _factory;
 
         public float BoxSpace
         {
@@ -41,7 +44,7 @@ namespace PlagueEngine.Pathfinder
         public int NumberOfBoxesInLength
         {
             get { return _numberOfBoxesInLength; }
-            set { _numberOfBoxesInLength = value; }
+            set { _numberOfBoxesInLength = value; Node.HASH_HELPER = value; }
         }
         public int NumberOfBoxesInWidth
         {
@@ -65,6 +68,7 @@ namespace PlagueEngine.Pathfinder
         }
         public PathfinderManager()
         {
+            
             BlockedNodes = new HashSet<Node>();
         }
         private void computeBoxSpace()
@@ -91,13 +95,14 @@ namespace PlagueEngine.Pathfinder
             }
             if (_blockedNodes.Contains(node))
             {
-                foreach (Node n in _blockedNodes)
-                {
-                    if (node.Equals(n))
-                    {
-                        return n;
-                    }
-                }
+                return new Node(0, 0, NodeType.STATIC);
+                //foreach (Node n in _blockedNodes)
+                //{
+                //    if (node.Equals(n))
+                //    {
+                //        return n;
+                //    }
+                //}
             }
             return node;
         }
@@ -105,6 +110,20 @@ namespace PlagueEngine.Pathfinder
         {
             if (node == null) return Vector3.Zero;
             return new Vector3(node.x * _boxSpace + _boxStartPosition.X, _boxStartPosition.Y, node.y * _boxSpace + _boxStartPosition.Z);
+        }
+        public  void generateBox(Node n)
+        {
+            Vector3 move;
+
+                SquareBodyMeshData dddtata = new SquareBodyMeshData();
+                dddtata.Definition = "PathNode";
+                dddtata.Type = (typeof(SquareBodyMesh));
+                move = PathfinderManager.PM.BoxStartPosition;
+                move.X += (PathfinderManager.PM.BoxSpace) * n.x;
+                move.Z += (PathfinderManager.PM.BoxSpace) * n.y;
+                dddtata.World = Matrix.CreateTranslation(move);
+                _factory.Create(dddtata);
+            
         }
 
     }

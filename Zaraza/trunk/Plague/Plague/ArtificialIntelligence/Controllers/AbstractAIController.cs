@@ -230,6 +230,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                 receiver = sender as IEventsReceiver;
                 target = moveToPointCommandEvent.point;
+                if (controlledObject.PathfinderComponent.GetPath(controlledObject.World.Translation, moveToPointCommandEvent.point))
+                {
+                    target = controlledObject.PathfinderComponent.NextNode();
+                }
+                Diagnostics.PushLog(LoggingLevel.WARN, "Position:" + controlledObject.World.Translation.ToString());
+                Diagnostics.PushLog(LoggingLevel.WARN, "Target:" + target.ToString());
                 action = Action.MOVE;
                 #endregion
             }
@@ -362,7 +368,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     HP -= BleedingIntensity;
                 }
             }
-            
+
             controlledObject.SoundEffectComponent.SetPosiotion(controlledObject.World.Translation);
             double currentDistance;
             
@@ -376,10 +382,15 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                                  target.Z)); 
                     if (currentDistance < DistancePrecision)
                     {
-                        action = Action.IDLE;
-                        controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
-                        controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
+                        if (controlledObject.PathfinderComponent.isEmpty)
+                        {
+                            action = Action.IDLE;
+                            controlledObject.Controller.StopMoving();
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                            controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
+                        }
+                        target = controlledObject.PathfinderComponent.NextNode();
+                        
                     }
                     else
                     {

@@ -95,6 +95,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Body = body;
             SoundEffectComponent = new SoundEffectComponent();
             SoundEffectComponent.LoadFolderTree("Mercenary", 1f, 0, 0, 2);
+            PathfinderComponent = new Pathfinder.PathfinderComponent();
             InventoryIcon = inventoryIcon;
             TinySlots = tinySlots;
             Slots = slots;

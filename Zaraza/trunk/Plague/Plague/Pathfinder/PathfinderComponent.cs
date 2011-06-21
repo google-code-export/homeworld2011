@@ -37,7 +37,7 @@ namespace PlagueEngine.Pathfinder
                    Diagnostics.PushLog(LoggingLevel.INFO, "Wezeł końcowy: " + end);
                    _pathType = (end.NodeType == NodeType.NAVIGATION)?PathType.TOTARGET:PathType.CLOSEST;
 
-                   if (end.NodeType != NodeType.NONE)
+                   if (end.NodeType != NodeType.NONE || end.NodeType != NodeType.STATIC)
                    {
                        HashSet<Node> _visited = new HashSet<Node>();
                        PriorityQueue<Node> _tempNodes = new PriorityQueue<Node>(_pathType==PathType.TOTARGET);
@@ -55,7 +55,7 @@ namespace PlagueEngine.Pathfinder
                                    _nodes.Push(active);
                                    active = active.Parent;
                                }
-                               //simplifiePath();
+                               simplifiePath();
                                return true;
                            }
                            foreach (var child in active.GenerateChildren())
@@ -83,7 +83,7 @@ namespace PlagueEngine.Pathfinder
                                _nodes.Push(closest);
                                closest = closest.Parent;
                            }
-                           //simplifiePath();
+                           simplifiePath();
                            return true;
                        }
                        _visited = null;
@@ -102,11 +102,12 @@ namespace PlagueEngine.Pathfinder
                 int curentDirection=-1;
                 int nodeDirection;
                 tempNodes.Add(_nodes.Pop());
-                Diagnostics.PushLog(LoggingLevel.INFO, "Ścieżka przed uproszeczeniu:");
+                Diagnostics.PushLog(LoggingLevel.INFO, "Ścieżka przed uproszeczeniem:");
                 Diagnostics.PushLog(LoggingLevel.INFO,  tempNodes[0].ToString());
                 while (_nodes.Count > 0)
                 {
                     Node temp = _nodes.Pop();
+                    //PathfinderManager.PM.generateBox(temp);
                     Diagnostics.PushLog(LoggingLevel.INFO, temp.ToString());
                     nodeDirection = tempNodes[tempNodes.Count - 1].directionToNode(temp);
                     if (nodeDirection == curentDirection)

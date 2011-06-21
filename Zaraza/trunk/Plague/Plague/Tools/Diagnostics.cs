@@ -116,19 +116,14 @@ namespace PlagueEngine
             {
                 case LoggingLevel.DEBUG:
                     return Color.Green;
-                    break;
                 case LoggingLevel.ERROR:
                     return Color.Red;
-                    break;
                 case LoggingLevel.WARN:
                     return Color.OrangeRed;
-                    break;
                 case LoggingLevel.INFO:
                     return Color.Blue;
-                    break;
                 default:
                     return Color.Green;
-                    break;
             }
         }
 
