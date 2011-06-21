@@ -407,7 +407,36 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
 
-                        if (controlledObject.Mesh.CurrentClip != this.AnimationToActionMapping[Action.MOVE])
+                        if (controlledObject as Mercenary != null)
+                        {
+                            Mercenary merc = controlledObject as Mercenary;
+                            if (merc.CurrentObject as Firearm != null)
+                            {
+                                if ((merc.CurrentObject as Firearm).SideArm)
+                                {
+                                    if (controlledObject.Mesh.CurrentClip != "Walk_Pistol")
+                                    {
+                                        controlledObject.Mesh.BlendTo("Walk_Pistol", TimeSpan.FromSeconds(0.5f));
+                                    }
+                                }
+                                else
+                                {
+                                    if (controlledObject.Mesh.CurrentClip != "Walk_Carabine")
+                                    {
+                                        controlledObject.Mesh.BlendTo("Walk_Carabine", TimeSpan.FromSeconds(0.5f));
+                                    }                                
+                                }
+                            }
+                            else
+                            {
+                                if (controlledObject.Mesh.CurrentClip != this.AnimationToActionMapping[Action.MOVE])
+                                {
+                                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.5f));
+                                }
+                            }
+
+                        }
+                        else if (controlledObject.Mesh.CurrentClip != this.AnimationToActionMapping[Action.MOVE])
                         {
                             controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.5f));
                         }

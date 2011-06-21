@@ -81,27 +81,27 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     }
                     #endregion
                     return;
-                case Action.ATTACK:
+                //case Action.ATTACK:
                     
-                    Mercenary merc = controlledObject as Mercenary;
-                    if ((merc.CurrentObject as Firearm) != null)
-                    {
-                        if ((merc.CurrentObject as Firearm).SureFire(attackTarget.World.Translation))
-                        {
-                            Vector3 direction = controlledObject.World.Translation - attackTarget.World.Translation;
-                            Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                            Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
-                            float det = v1.X * v2.Y - v1.Y * v2.X;
-                            float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-                            if (det < 0) angle = -angle;
-                            if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
-                            TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); });
-                        }
-                        else merc.Reload();
-                    }
-                    action = Action.ATTACK_IDLE;
-                    TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { if (action == Action.ATTACK_IDLE) { action = Action.ATTACK; } });
-                    return;
+                //    Mercenary merc = controlledObject as Mercenary;
+                //    if ((merc.CurrentObject as Firearm) != null)
+                //    {
+                //        if ((merc.CurrentObject as Firearm).SureFire(attackTarget.World.Translation))
+                //        {
+                //            Vector3 direction = controlledObject.World.Translation - attackTarget.World.Translation;
+                //            Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                //            Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                //            float det = v1.X * v2.Y - v1.Y * v2.X;
+                //            float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+                //            if (det < 0) angle = -angle;
+                //            if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
+                //            TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); });
+                //        }
+                //        else merc.Reload();
+                //    }
+                //    action = Action.ATTACK_IDLE;
+                //    TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { if (action == Action.ATTACK_IDLE) { action = Action.ATTACK; } });
+                //    return;
                 default:
                     base.Update(deltaTime);
                     return;
@@ -315,8 +315,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     }
                     else merc.Reload();
                 }
-                action = Action.ATTACK_IDLE;
-                TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { action = Action.ATTACK; });    
+                //action = Action.ATTACK_IDLE;
+                //TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { action = Action.ATTACK; });    
                 controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);            
             }
             else
