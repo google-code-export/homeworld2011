@@ -28,7 +28,7 @@ namespace PlagueEngine.GUI.Components
         public ButtonControl Control { get; protected set; }
         
         public String Tag            { get; protected set; }
-        public String Text           { get; protected set; }
+        private string text;
         /****************************************************************************/
 
         
@@ -90,6 +90,22 @@ namespace PlagueEngine.GUI.Components
             base.ReleaseMe();
         }
         /****************************************************************************/
+
+
+        /********************************************************************************/
+        public string Text
+        {
+            get
+            {
+                return text;
+            }
+            set
+            {
+                Control.Text = GlobalGameObjects.StringManager.Load<string>(value);
+                text = value;
+            }
+        }
+        /********************************************************************************/
     }
     /********************************************************************************/
 }
