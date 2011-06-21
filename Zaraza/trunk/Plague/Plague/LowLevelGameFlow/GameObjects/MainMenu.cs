@@ -110,6 +110,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         OptionsMenu optionsMenu;
 
+        FrontEndComponent splashScreen;
+        bool drawSplashScreen = false;
         /****************************************************************************/
 
         /****************************************************************************/
@@ -122,8 +124,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         FrontEndComponent window, int windowx, int windowy, int windowheight, int windowwidth,
                         LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext, int creditswindowtextx, int creditswindowtexty,
                         LabelComponent optionslabel, int optionswindowx, int optionswindowy, int optionswindowwidth, int optionswindowheight, String optionswindowtext, int optionswindowtextx, int optionswindowtexty,
-                        FrontEndComponent frame)
+                        FrontEndComponent frame,
+            FrontEndComponent splash)
         {
+            splashScreen = splash;
+            splashScreen.Draw = OnDraw;
+
             optionsMenu = new OptionsMenu("OptionsMenu.language_change","OptionsMenu.main","OptionsMenu.back",optionswindowx, optionswindowy, optionswindowwidth, optionswindowheight, frame);
             this.frame = frame;
             this.frame.Draw = OnDraw;
@@ -206,11 +212,33 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (levelToLoad != String.Empty)
             {
-                this.SendEvent(new ChangeLevelEvent(levelToLoad), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+                drawSplashScreen = true;
+                TimeControlSystem.TimeControl.CreateFrameCounter(1, 1, SendNextLevelEvent);
+                HideAll();
             }
         }
         /****************************************************************************/
 
+        private void SendNextLevelEvent()
+        {
+            this.SendEvent(new ChangeLevelEvent(levelToLoad), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+           
+        }
+
+        private void HideAll()
+        {
+        
+        
+        newGame.Unregister();
+
+        options.Unregister();
+        credits.Unregister();
+
+        exit.Unregister();
+        creditslabel.Unregister();
+        optionslabel.Unregister();
+        optionsMenu.Disable();
+        }
 
         /****************************************************************************/
         /// exitClick
@@ -273,14 +301,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
-            spriteBatch.Draw(window.Texture, new Rectangle(windowx, windowy, windowwidth, windowheight), Color.White);
-
-            optionsMenu.OnDraw(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
-
-            if (creditswindowregistered)
+            if (drawSplashScreen)
             {
-                spriteBatch.Draw(frame.Texture, new Rectangle(creditswindowx, creditswindowy, creditswindowwidth, creditswindowheight), Color.White);
+                spriteBatch.Draw(splashScreen.Texture, new Rectangle(0, 0, screenWidth, screenHeight), Color.Wheat);
+                
             }
+            if (drawSplashScreen==false)
+            {
+                spriteBatch.Draw(window.Texture, new Rectangle(windowx, windowy, windowwidth, windowheight), Color.White);
+
+                optionsMenu.OnDraw(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
+
+                if (creditswindowregistered)
+                {
+                    spriteBatch.Draw(frame.Texture, new Rectangle(creditswindowx, creditswindowy, creditswindowwidth, creditswindowheight), Color.White);
+                }
+            }
+
         }
 
 
@@ -302,6 +339,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             frame.ReleaseMe();
 
             optionsMenu.ReleaseComponents();
+            splashScreen.ReleaseMe();
         }
         /********************************************************************************/
 

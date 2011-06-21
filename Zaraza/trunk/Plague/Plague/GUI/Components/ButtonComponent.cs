@@ -86,7 +86,10 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            Control.Parent.Children.Remove(Control);
+            if (Control.Parent != null)
+            {
+                Control.Parent.Children.Remove(Control);
+            }
             base.ReleaseMe();
         }
         /****************************************************************************/

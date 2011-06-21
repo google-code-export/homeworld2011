@@ -1684,7 +1684,9 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.optionswindowtext,
                         data.optionswindowtextx,
                         data.optionswindowtexty,
-                        renderingComponentsFactory.CreateFrontEndComponent(result,"MainMenuFrame"));
+                        renderingComponentsFactory.CreateFrontEndComponent(result,"MainMenuFrame"),
+                        
+                        renderingComponentsFactory.CreateFrontEndComponent(result,"SplashScreen"));
 
 
             return true;

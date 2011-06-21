@@ -35,6 +35,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
 
 
+
+
         /****************************************************************************/
         /// On Event
         /****************************************************************************/
@@ -45,8 +47,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*************************************/
             if (e.GetType().Equals(typeof(ChangeLevelEvent)))
             {
+               
                 ChangeLevelEvent ChangeLevelEvent = e as ChangeLevelEvent;
                 game.Level.LoadLevel(ChangeLevelEvent.Level);
+             
             }
             /*************************************/
             /// CreateObjectEvent
