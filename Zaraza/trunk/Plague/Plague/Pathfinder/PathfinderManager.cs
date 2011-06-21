@@ -104,7 +104,7 @@ namespace PlagueEngine.Pathfinder
         public Vector3 NodeToVector(Node node)
         {
             if (node == null) return Vector3.Zero;
-            return new Vector3(node.x * _boxSpace + _boxStartPosition.X, _boxStartPosition.Y, node.y * _boxSpace + _boxStartPosition.Y);
+            return new Vector3(node.x * _boxSpace + _boxStartPosition.X, _boxStartPosition.Y, node.y * _boxSpace + _boxStartPosition.Z);
         }
 
     }
