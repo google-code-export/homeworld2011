@@ -2029,6 +2029,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\Particles\Fireshot.png">
+      <Name>Fireshot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Lang\English\ExamineDescription.lang">
       <Name>ExamineDescription</Name>
       <Importer>TextImporter</Importer>
