@@ -179,7 +179,27 @@ namespace PlagueEngine.LowLevelGameFlow
         }
     }
     /********************************************************************************/
-    
+
+
+    /********************************************************************************/
+    /// RunToPointCommandEvent
+    /********************************************************************************/
+    class RunToPointCommandEvent : EventArgs
+    {
+        public Vector3 point;
+
+        public RunToPointCommandEvent(Vector3 point)
+        {
+            this.point = point;
+        }
+
+        public override string ToString()
+        {
+            return point.ToString();
+        }
+    }
+    /********************************************************************************/
+
 
     /********************************************************************************/
     /// Open Fire Command Event

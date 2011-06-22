@@ -79,7 +79,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             keyboard.SubscibeKeys(OnKey, Keys.Tab, Keys.LeftControl, Keys.LeftAlt, Keys.OemTilde,
                                           Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5,
                                           Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0,
-                                          Keys.E, Keys.F);
+                                          Keys.E, Keys.F,Keys.Q);
 
             mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
             mouse.SubscribeKeys(OnMouseKey, MouseKeyAction.LeftClick,
@@ -189,7 +189,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         //finezja :D!
                         if (_selectedMercenaries.Count == 1)
                         {
-                            QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
+                            if (LinkedCamera.Run)
+                            {
+                                QueueEvent(new RunToPointCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
+                            }
+                            else
+                            {
+                                QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
+                            }
                         }
                         else
                         {
@@ -215,7 +222,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 foreach (var merc in _selectedMercenaries)
                                 {
                                     var target = commandOnObjectEvent.position + Vector3.Normalize(merc.World.Translation - center);
-                                    QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
+
+                                    if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent (target), !_leftControl, merc);
+                                    else                  QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
+                                    
                                 }
                             }
                             else
@@ -223,7 +233,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 foreach (var merc in _selectedMercenaries)
                                 {
                                     var target = (merc.World.Translation - center) + commandOnObjectEvent.position;
-                                    QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
+                                    if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(target), !_leftControl, merc);
+                                    else QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
                                 }
                             }
                         }
@@ -521,6 +532,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     LinkedCamera.FireMode = false;
                 }
             }
+            /************************************************************************/
+            // Q
+            /************************************************************************/
+            else if (key == Keys.Q)
+            {
+                LinkedCamera.Run = state.IsDown();
+            }            
             /************************************************************************/
             // 1,2,3,4,5,6,7,8,9,0
             /************************************************************************/
@@ -843,7 +861,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (actions.Count != 0 && clear)
                 {
-                    SendEvent(new StopActionEvent(), Priority.High, mercenary);
+                    //SendEvent(new StopActionEvent(), Priority.High, mercenary);
                     actions.Clear();
 
                     actions.Add(e);
