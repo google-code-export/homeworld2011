@@ -181,7 +181,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public virtual void OnOwnerPlacing()
         {
             mesh.Enabled = true;
-            body.EnableBody();
+            body.DisableBody();
         }
         /****************************************************************************/
 

@@ -547,7 +547,9 @@ namespace PlagueEngine.Input
                 }
 
                 spriteBatch.Begin();
-                spriteBatch.Draw(cursorTexture, cursorPosition, cursorRect, Color.White);
+
+                if (currentCursor == cursors["Targeting"]) spriteBatch.Draw(cursorTexture, cursorPosition + new Vector2(-16,-16), cursorRect, Color.White);
+                else spriteBatch.Draw(cursorTexture, cursorPosition, cursorRect, Color.White);                
                 spriteBatch.End();
             }
         }
