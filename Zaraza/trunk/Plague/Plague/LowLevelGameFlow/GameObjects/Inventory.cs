@@ -1080,7 +1080,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         mousePos.Y > FirearmAmmoClipIconPos.Y - pickedItemOffset.Y &&
                         mousePos.Y < FirearmAmmoClipIconPos.Y - pickedItemOffset.Y + 50)
                     {
-                        if (!CheckCompability(pickedItem as AmmoClip))
+                        if (!CheckCompability(pickedItem as AmmoClip) && !CheckAmmo(pickedItem as AmmoBox,CurrentFirearm.AmmoClip))
                         {
                             spriteBatch.Draw(frontEnd.Texture, localPosition + FirearmAmmoClipIconPos, new Rectangle(1450, 0, 50, 50), Color.White);
                         }
@@ -2185,7 +2185,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                             return;
                                         }
                                     }
-                                }
+                                }                                
                             }
                             PutBackPickedItem();
                         }
@@ -2355,6 +2355,34 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 CurrentFirearm.AttachClip(pickedItem as AmmoClip);
                                 pickedItem = null;
                                 mouse.CursorVisible = true;
+                            }
+                            else if ((pickedItem as AmmoBox) != null && CurrentFirearm.AmmoClip != null)
+                            {
+                                AmmoBox ammo = pickedItem as AmmoBox;
+                                if (ammo.AmmunitionInfo == CurrentFirearm.AmmoClip.AmmunitionInfo &&
+                                    CurrentFirearm.AmmoClip.Content.Count < CurrentFirearm.AmmoClip.Capacity)
+                                {
+                                    for (;ammo.Amount > 0 && CurrentFirearm.AmmoClip.Content.Count < CurrentFirearm.AmmoClip.Capacity; --ammo.Amount)
+                                    {
+                                        Bullet bullet = new Bullet();
+                                        bullet.Version = ammo.AmmunitionVersionInfo.Version;
+                                        bullet.PPP = ammo.PPP;
+                                        CurrentFirearm.AmmoClip.Content.Push(bullet);
+                                    }
+
+                                    if (ammo.Amount == 0)
+                                    {
+                                        SendEvent(new DestroyObjectEvent(ammo.ID), Priority.High, GlobalGameObjects.GameController);
+                                        UpdateInventory();
+                                    }
+                                    else
+                                    {
+                                        mercenary.FindPlaceForItem(ammo, true);
+                                    }
+
+                                    pickedItem = null;
+                                    mouse.CursorVisible = true;
+                                }
                             }
                             else PutBackPickedItem();
                         }
@@ -4043,6 +4071,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 ammunitionInfo = (item as AmmoBox).AmmunitionInfo;
                 return;
             }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// CheckAmmo
+        /****************************************************************************/
+        public bool CheckAmmo(AmmoBox ammoBox, AmmoClip ammoClip)
+        {
+            if (ammoBox == null || ammoClip == null) return false;
+
+            if (ammoBox.AmmunitionInfo == CurrentFirearm.AmmoClip.AmmunitionInfo &&
+                CurrentFirearm.AmmoClip.Content.Count < CurrentFirearm.AmmoClip.Capacity)
+                return true;
+            else return false;       
         }
         /****************************************************************************/
 
