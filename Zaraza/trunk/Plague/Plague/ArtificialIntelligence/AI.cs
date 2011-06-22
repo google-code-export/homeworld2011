@@ -7,6 +7,7 @@ using PlagueEngine.ArtificialIntelligence.Controllers;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.ArtificialIntelligence;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
+using Microsoft.Xna.Framework;
 
 namespace PlagueEngine.ArtificialIntelligence
 {
@@ -68,6 +69,18 @@ namespace PlagueEngine.ArtificialIntelligence
                 {
                     BadGuys.Remove(evt.DeadEnemy.ObjectAIController);
                     SendEvent(evt, Priority.Normal, GoodGuys.ToArray());
+                }
+            }
+            else if(e.GetType().Equals(typeof(SoundAt)))
+            {
+                SoundAt evt = e as SoundAt;
+                foreach(MobController mob in BadGuys)
+                {
+                    if (Vector3.Distance(mob.controlledObject.World.Translation, evt.position) < 30)
+                    {
+                        //EnemyNoticed noticed = new EnemyNoticed();
+                        //SendEvent(noticed, Priority.Normal, mob);
+                    }
                 }
             }
         }
