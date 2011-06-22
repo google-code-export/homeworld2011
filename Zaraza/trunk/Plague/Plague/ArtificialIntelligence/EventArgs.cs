@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
+using Microsoft.Xna.Framework;
 
 namespace PlagueEngine.ArtificialIntelligence
 {
@@ -52,6 +53,21 @@ namespace PlagueEngine.ArtificialIntelligence
     class EnemyOutOfSight : EventArgs
     {
 
+    }
+
+    class SoundAt : EventArgs
+    {
+        public Vector3 position;
+
+        public SoundAt(Vector3 position)
+        {
+            this.position = position;
+        }
+
+        public override string ToString()
+        {
+            return "Sound at " + position.ToString();
+        }
     }
 
     class TakeDamage : EventArgs

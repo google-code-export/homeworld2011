@@ -14,6 +14,7 @@ using PlagueEngine.TimeControlSystem;
 using PlagueEngine.Particles.Components;
 using PlagueEngine.Audio.Components;
 using JigLibX.Collision;
+using PlagueEngine.ArtificialIntelligence;
 
 
 /************************************************************************************/
@@ -317,6 +318,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 sounds.SetPosiotion(GetWorld().Translation);
                 sounds.PlaySound("Firearms", "Fireshot");
+
+                SoundAt evt = new SoundAt(this.owner.World.Translation);
+                (this.owner as Mercenary).SendEvent(evt, EventsSystem.Priority.Normal, AbstractAIController.ai);
+
                 light.Enabled = true;                                
                 
                 AmmunitionVersionInfo bulletInfo = AmmunitionVersionData[AmmoClip.Content.Pop().Version];
