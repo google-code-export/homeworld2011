@@ -2686,6 +2686,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         dump       = false;
                         dumpButton = false;
                         CloseDump();
+                        CloseAmmoLoader();
+                        CloseFirearm();
                         mercenary = mercenariesManager.GetNextMercenary(mercenary);
                         if (mercenary == mercenary2) mercenary = mercenariesManager.GetNextMercenary(mercenary);
                         SetupMercenary();
@@ -2702,6 +2704,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         dump       = false;
                         dumpButton = false;
                         CloseDump();
+                        CloseAmmoLoader();
+                        CloseFirearm(); 
                         mercenary = mercenariesManager.GetPrevMercenary(mercenary);
                         if (mercenary == mercenary2) mercenary = mercenariesManager.GetPrevMercenary(mercenary);
                         SetupMercenary();
@@ -3310,6 +3314,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     dump       = false;
                     dumpButton = false;
                     CloseDump();
+                    CloseAmmoLoader();
+                    CloseFirearm();
 
                     if (!leftControl)
                     {
