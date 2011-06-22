@@ -58,6 +58,65 @@ namespace PlagueEngine.Particles
 
 
         /********************************************************************************/
+        /// CreateTracerParticleComponent
+        /********************************************************************************/
+        public TracerParticleComponent CreateTracerParticleComponent(
+            GameObjectInstance gameObject,
+            int blendState,
+            Color maxColor,
+            float maxEndSize,
+            float maxStartSize,
+            Color minColor,
+            float minEndSize,
+            float minStartSize,
+            String particleTexture,
+            bool enabled,
+            int technique)
+        {
+            ParticleSettings settings = new ParticleSettings();
+            switch (blendState)
+            {
+                case 1:
+                    settings.BlendState = BlendState.Additive;
+                    break;
+                case 2:
+                    settings.BlendState = BlendState.AlphaBlend;
+                    break;
+                case 3:
+                    settings.BlendState = BlendState.NonPremultiplied;
+                    break;
+                case 4:
+                    settings.BlendState = BlendState.Opaque;
+                    break;
+            }
+
+
+            settings.MaxColor = maxColor;
+            settings.MaxEndSize = maxEndSize;
+            settings.MaxStartSize = maxStartSize;
+            settings.MinColor = minColor;
+            settings.MinEndSize = minEndSize;
+            settings.MinStartSize = minStartSize;
+            settings.TextureName = particleTexture;
+            settings.Technique = technique;
+
+            Effect particleEffect = content.LoadEffect("ParticleEffect");
+            particleEffect.Parameters["DepthTexture"].SetValue(renderer.depth);
+            ParticleSystem particleSystem = new ParticleSystem(renderer.Device, renderer, content.LoadTexture2D(particleTexture), particleEffect.Clone(), settings);
+            TracerParticleComponent result = new TracerParticleComponent(particleSystem, gameObject, enabled);
+            return result;
+
+
+
+
+        }
+        /********************************************************************************/
+
+
+
+
+
+        /********************************************************************************/
         /// CreateParticleEmitter
         /********************************************************************************/
         public ParticleEmitterComponent CreateParticleEmitterComponent(

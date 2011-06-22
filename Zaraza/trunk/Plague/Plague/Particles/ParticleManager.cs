@@ -30,6 +30,7 @@ namespace PlagueEngine.Particles
         public List<ParticleEmitterComponent> particleEmitters = new List<ParticleEmitterComponent>();
 
         public List<AreaParticleEmitterComponent> AreaparticleEmitters = new List<AreaParticleEmitterComponent>();
+        public List<TracerParticleComponent> TracerParticleComponents = new List<TracerParticleComponent>();
         public ParticleFactory particleFactory = null;
         /********************************************************************************/
 
@@ -41,6 +42,7 @@ namespace PlagueEngine.Particles
         {
             ParticleEmitterComponent.particleManager = this;
             AreaParticleEmitterComponent.particleManager = this;
+            TracerParticleComponent.particleManager = this;
         }
         /********************************************************************************/
 
@@ -76,6 +78,10 @@ namespace PlagueEngine.Particles
             {
                 emitter.Update(gameTime);
             }
+            foreach (TracerParticleComponent emitter in TracerParticleComponents )
+            {
+                emitter.Update(gameTime);
+            }
         }
         /********************************************************************************/
 
@@ -95,6 +101,10 @@ namespace PlagueEngine.Particles
             }
 
             foreach (AreaParticleEmitterComponent emmiter in AreaparticleEmitters)
+            {
+                emmiter.Draw(gameTime);
+            }
+            foreach (TracerParticleComponent emmiter in TracerParticleComponents)
             {
                 emmiter.Draw(gameTime);
             }

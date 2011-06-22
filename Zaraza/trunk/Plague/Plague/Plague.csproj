@@ -169,6 +169,7 @@
     <Compile Include="LowLevelGameFlow\IFlammable.cs" />
     <Compile Include="LowLevelGameFlow\IPenetrable.cs" />
     <Compile Include="LowLevelGameFlow\IShootable.cs" />
+    <Compile Include="Particles\Components\TracerParticleComponent.cs" />
     <Compile Include="Pathfinder\Heuristic.cs" />
     <Compile Include="Pathfinder\NodeComperer.cs" />
     <Compile Include="Pathfinder\HManhattan.cs" />

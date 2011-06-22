@@ -35,6 +35,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public MeshComponent                mesh    = null;
         public SquareBodyComponent          body    = null;
         public PointLightComponent          light   = null;
+
+        public TracerParticleComponent      tracerEmmiter = null;
         //public List<Attack>                 attacks = null;
         
         public AmmunitionInfo Ammunition { get; private set; }
@@ -86,6 +88,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(MeshComponent       mesh,
                          SquareBodyComponent body,
                          PointLightComponent light,
+                         TracerParticleComponent tracerEmmiter,
                          AttachedAccessory[] accessories,
                          Rectangle           icon,
                          Rectangle           slotsIcon,
@@ -118,6 +121,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.mesh = mesh;
             this.body = body;
             this.light = light;
+            this.tracerEmmiter = tracerEmmiter;
             //this.attacks = attacks;
             isOn = on;
             Condition               = condition;
@@ -307,7 +311,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             else
             {                
-
+               
                 sounds.SetPosiotion(GetWorld().Translation);
                 sounds.PlaySound("Firearms", "Fireshot");
 
@@ -378,7 +382,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         if (bulletInfo.Version == 7 && (skin.ExternalData as IFlammable) != null) 
                         {
                             (skin.ExternalData as IFlammable).SetOnFire();
-                        }                        
+                        }
+
+
+                        //if (bulletInfo.Version == 5)
+                        //{
+                        tracerEmmiter.SpawnNewParticle(position, pos);
+                        //}
                     }
 
                     //PointLightData data = new PointLightData();
@@ -502,6 +512,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.MaxDispersion = MathHelper.ToDegrees(MaxDispersion);
             data.FireOffset = FireOffset;
 
+            data.TBlendState = tracerEmmiter.particleSystem.settings.GetBlendState;
+            data.TColorMax = tracerEmmiter.particleSystem.settings.MaxColor;
+            data.TEndSizeMax = tracerEmmiter.particleSystem.settings.MaxEndSize;
+            data.TStartSizeMax = tracerEmmiter.particleSystem.settings.MaxStartSize;
+            data.TColorMin = tracerEmmiter.particleSystem.settings.MinColor;
+            data.TEndSizeMin = tracerEmmiter.particleSystem.settings.MinEndSize;
+            data.TStartSizeMin = tracerEmmiter.particleSystem.settings.MinStartSize;
+            data.TParticleTexture = tracerEmmiter.particleSystem.settings.TextureName;
+            data.TParticlesEnabled = tracerEmmiter.enabled;
+            data.TTechnique = tracerEmmiter.particleSystem.settings.Technique;
+
             return data;
         }
         /****************************************************************************/
@@ -551,7 +572,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 light.ReleaseMe();
                 light = null;
             }
-
+            if (tracerEmmiter != null)
+            {
+                tracerEmmiter.ReleaseMe();
+                tracerEmmiter = null;
+            }
             base.ReleaseComponents();
         }
         /****************************************************************************/
@@ -874,6 +899,44 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float QuadraticAttenuation { get; set; }
         [CategoryAttribute("Light")]
         public Vector3 LightLocalPoistion { get; set; }
+
+
+
+
+
+
+
+
+
+        [CategoryAttribute("TracerEmitter")]
+        public bool TParticlesEnabled { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Alpha blending settings.1 - Additive, 2 - AlphaBlend, 3 - NonPremultiplied, 4 - Opaque. ")]
+        public int TBlendState { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Name of the texture used by this particle system.")]
+        public String TParticleTexture { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Range of values controlling the particle color and alpha. Values for individual particles are randomly chosen from somewhere between min and max.")]
+        public Color TColorMin { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Range of values controlling the particle color and alpha. Values for individual particles are randomly chosen from somewhere between min and max.")]
+        public Color TColorMax { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Range of values controlling how big the particles are when first created. Values for individual particles are randomly chosen from somewhere between min and max.")]
+        public float TStartSizeMin { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Range of values controlling how big the particles are when first created. Values for individual particles are randomly chosen from somewhere between min and max.")]
+        public float TStartSizeMax { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Range of values controlling how big particles become at the end of their life. Values for individual particles are randomly chosen from somewhere between min and max.")]
+        public float TEndSizeMin { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Range of values controlling how big particles become at the end of their life. Values for individual particles are randomly chosen from somewhere between min and max.")]
+        public float TEndSizeMax { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("0 - FacedToScreen 1 - FacedUp")]
+        public int TTechnique { get; set; }
     }
     /********************************************************************************/
 

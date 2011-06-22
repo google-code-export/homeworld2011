@@ -124,8 +124,21 @@ namespace PlagueEngine.Particles
         /********************************************************************************/
 
 
+        public void SetGravity(Vector3 g)
+        {
+            settings.Gravity = g;
+            EffectParameterCollection parameters = particleEffect.Parameters;
+            parameters["Gravity"].SetValue(settings.Gravity);
+            
+        }
 
+        public void SetDuration(float sec)
+        {
+            settings.Duration = TimeSpan.FromSeconds(sec);
+            EffectParameterCollection parameters = particleEffect.Parameters;
+            parameters["Duration"].SetValue((float)settings.Duration.TotalSeconds);
 
+        }
 
 
         /********************************************************************************/
