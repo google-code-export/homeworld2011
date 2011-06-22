@@ -152,14 +152,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 body.SubscribeCollisionEvent(typeof(Terrain));
             }
                         
-            for (int i = 0; i < Accessories.Length; i++)
-            {
-                if (Accessories[i].Accessory != null)
-                {
-                    AddAccessoryModulation(Accessories[i].Accessory);
-                }
-            }
-
             sounds = new SoundEffectComponent();
             sounds.LoadFolder("Firearms", 0.6f, 0, 0,true);
             
@@ -473,10 +465,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 info.Genre       = Accessories[i].Genre;
                 info.Translation = Accessories[i].Translation;
                 AvailableAccessories.Add(info);
-                if (Accessories[i].Accessory != null)
-                {
-                    SubAccessoryModulation(Accessories[i].Accessory);
-                }
             }
 
             data.AvailableAccessories = AvailableAccessories;
@@ -493,14 +481,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.PenetrationModulation   = PenetrationModulation;
             data.RecoilModulation        = RecoilModulation;
             data.StoppingPowerModulation = StoppingPowerModulation;
-
-            for (int i = 0; i < Accessories.Length; i++)
-            {
-                if (Accessories[i].Accessory != null)
-                {
-                    AddAccessoryModulation(Accessories[i].Accessory);
-                }
-            }
 
             data.AmmoClip       = AmmoClip == null ? 0 : AmmoClip.ID;
             data.AmmunitionName = Ammunition == null ? String.Empty: Ammunition.Name;

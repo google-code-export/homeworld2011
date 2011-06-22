@@ -128,7 +128,7 @@ namespace PlagueEngine
             
             Renderer.InitHelpers();
             InitGUI();
-            Level.LoadLevel("Menu.lvl");
+            Level.LoadLevel("Level1.lvl");
             
             //Głośność dla podkładu muzycznego powinna być relatywnie niska 
             //AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);
@@ -165,7 +165,7 @@ namespace PlagueEngine
 
             Input.SetCursorTexture(ContentManager.LoadTexture2D("cursor"), 4, 4, 
                                    new[] { "Default","QuestionMark","Footsteps","Target",
-                                                  "Hand",   "Person",      "Targeting","0",
+                                                  "Hand",   "Person",      "Targeting","Run",
                                                   "1",      "2",            "3",       "4",
                                                   "Up",     "Down",         "Left",    "Right" });
 #if DEBUG

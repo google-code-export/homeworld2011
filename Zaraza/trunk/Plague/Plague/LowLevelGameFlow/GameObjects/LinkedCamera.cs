@@ -61,6 +61,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public bool StopScrolling   { get; set; }
         public bool FireMode        { get; set; }
+        public bool Run             { get; set; }
         /****************************************************************************/
 
 
@@ -86,13 +87,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             _rotationSpeed = rotationSpeed;
             _zoomSpeed = zoomSpeed;
             _position = position;
-            _target = target;
+            _target = target;            
 
             World = Matrix.CreateLookAt(_position, _target, Vector3.Up);
 
-            KeyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,
-                                                               Keys.D, Keys.Q, Keys.E,
-                                                               Keys.LeftControl, Keys.LeftAlt);
+            KeyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,Keys.D,
+                                                          Keys.LeftControl, 
+                                                          Keys.LeftAlt);
 
             MouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
             MouseListenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick, MouseKeyAction.RightClick, MouseKeyAction.LeftClick);
@@ -455,7 +456,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                     if (FireMode)
                                     {
                                         cursor = "Targeting";
-                                    }
+                                    }                                        
                                     else if (_useCommands)
                                     {
 
@@ -464,7 +465,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                             case GameObjectStatus.Interesting: cursor = "QuestionMark"; break;
                                             case GameObjectStatus.Pickable: cursor = "Hand"; break;
                                             case GameObjectStatus.Targetable: cursor = "Target"; break;
-                                            case GameObjectStatus.Passable: cursor = "Footsteps"; break;
+                                            case GameObjectStatus.Passable: cursor = Run ? "Run" : "Footsteps"; break;
                                             case GameObjectStatus.Mercenary: cursor = "Person"; break;
                                             default: cursor = "Default"; break;
                                         }
