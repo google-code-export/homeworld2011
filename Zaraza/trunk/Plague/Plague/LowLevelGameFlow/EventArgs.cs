@@ -182,6 +182,26 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
     /********************************************************************************/
+    /// LookAtPointEvent
+    /********************************************************************************/
+    class LookAtPointEvent : EventArgs
+    {
+        public Vector3 point;
+
+        public LookAtPointEvent(Vector3 point)
+        {
+            this.point = point;
+        }
+
+        public override string ToString()
+        {
+            return point.ToString();
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
     /// RunToPointCommandEvent
     /********************************************************************************/
     class RunToPointCommandEvent : EventArgs

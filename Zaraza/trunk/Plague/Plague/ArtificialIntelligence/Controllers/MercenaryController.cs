@@ -274,8 +274,22 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 this.attackTarget = evt.EnemyToAttack;
                 #endregion 
             }
+            else if (e.GetType().Equals(typeof(LookAtPointEvent)))
+            {
+                LookAtPointEvent LookAtPointEvent = e as LookAtPointEvent;
+                action = Action.IDLE;
+                controlledObject.mesh.BlendTo("Fire_Carabine",TimeSpan.FromSeconds(0.5f));
+                Vector3 direction = controlledObject.World.Translation - LookAtPointEvent.point;
+                Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                float det = v1.X * v2.Y - v1.Y * v2.X;
+                float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+                if (det < 0) angle = -angle;
+                if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
+                TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); });
+            }
             else if (e.GetType().Equals(typeof(OpenFireCommandEvent)))
-            { 
+            {
                 Mercenary merc = controlledObject as Mercenary;
                 if ((merc.CurrentObject as Firearm) != null)
                 {
@@ -305,7 +319,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 {
                     OpenFireToTargetCommandEvent = e as OpenFireToTargetCommandEvent;
                     attackTarget = OpenFireToTargetCommandEvent.target;
-                    canShoot = (merc.CurrentObject as Firearm).SureFire(OpenFireToTargetCommandEvent.target.World.Translation); 
+                    canShoot = (merc.CurrentObject as Firearm).SureFire(OpenFireToTargetCommandEvent.target.World.Translation);
                     if (canShoot)
                     {
                         Vector3 direction = controlledObject.World.Translation - OpenFireToTargetCommandEvent.target.World.Translation;
@@ -319,15 +333,15 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     }
                     else merc.Reload();
                 }
-                if( canShoot && OpenFireToTargetCommandEvent != null) 
+                if (canShoot && OpenFireToTargetCommandEvent != null)
                 {
                     if (OpenFireToTargetCommandEvent.target.GetType().Equals(typeof(Creature)))
                     {
                         action = Action.ATTACK_IDLE;
-                        TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { action = Action.ATTACK; });    
+                        TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { action = Action.ATTACK; });
                     }
                 }
-                controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);            
+                controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             else
             {

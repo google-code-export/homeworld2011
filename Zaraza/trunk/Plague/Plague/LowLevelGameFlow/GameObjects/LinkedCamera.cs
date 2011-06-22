@@ -55,6 +55,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int _maxTop, _minTop, _maxBottom, _minBottom, _maxLeft, _minLeft, _maxRight, _minRight;
 
         private float _mouseX, _mouseY;
+        private bool lookAt = false;
 
 
         public MercenariesManager MercenariesManager;
@@ -92,7 +93,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             World = Matrix.CreateLookAt(_position, _target, Vector3.Up);
 
             KeyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,Keys.D,
-                                                          Keys.LeftControl, 
+                                                          Keys.LeftControl,Keys.Space, 
                                                           Keys.LeftAlt);
 
             MouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
@@ -453,10 +454,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             {
                                 if (skin.ExternalData != null)
                                 {
+                                    if (lookAt)
+                                    {
+                                        SendEvent(new LookAtPointEvent(pos), Priority.Normal, MercenariesManager);
+                                        cursor = "Default";
+                                    }
                                     if (FireMode)
                                     {
                                         cursor = "Targeting";
-                                    }                                        
+                                    }
                                     else if (_useCommands)
                                     {
 
@@ -496,6 +502,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnKey(Keys key, ExtendedKeyState state)
         {
             if (key == Keys.LeftControl) _addToSelection = state.IsDown();
+
+            if (key == Keys.Space) lookAt = state.IsDown();
 
             if (key == Keys.LeftAlt)
             {

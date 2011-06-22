@@ -128,10 +128,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (sender == null) return;
             var argsType = e.GetType();
 
+            
+            /*****************************************/
+            // LookAtPointEvent 
+            /*****************************************/
+            if (argsType.Equals(typeof(LookAtPointEvent)))
+            {
+                SendEvent(e, Priority.Low, _selectedMercenaries.ToArray());
+            }
             /*****************************************/
             // SelectedObjectEvent 
             /*****************************************/
-            if (argsType.Equals(typeof(SelectedObjectEvent)))
+            else if (argsType.Equals(typeof(SelectedObjectEvent)))
             {
                 var selectedObjectEvent = e as SelectedObjectEvent;
                 if (selectedObjectEvent == null) return;
@@ -172,8 +180,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                     else
                     {
-                        QueueEvent(new OpenFireCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());                                            
-                    }                                      
+                        QueueEvent(new OpenFireCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
+                    }
                 }
                 else if (_commandMode)
                 {
@@ -223,9 +231,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 {
                                     var target = commandOnObjectEvent.position + Vector3.Normalize(merc.World.Translation - center);
 
-                                    if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent (target), !_leftControl, merc);
-                                    else                  QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
-                                    
+                                    if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(target), !_leftControl, merc);
+                                    else QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
+
                                 }
                             }
                             else
@@ -283,17 +291,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     switch (selectedActionEvent.Action)
                     {
-                        case "Attack":              QueueEvent(new AttackOrderEvent(_targetGameObject as AbstractLivingBeing), !_leftControl, _currentMercenary); break;
-                        case "Grab":                QueueEvent(new GrabObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
-                        case "Open":                QueueEvent(new OpenContainerCommandEvent(_targetGameObject as Container), !_leftControl, _currentMercenary); break;
-                        case "Activate":            QueueEvent(new ActivateObjectEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
-                        case "Examine":             QueueEvent(new ExamineObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
-                        case "Follow":              QueueEvent(new FollowObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
-                        case "Exchange Items":      QueueEvent(new ExchangeItemsCommandEvent(_targetGameObject as Mercenary), !_leftControl, _currentMercenary); break;
-                        case "Drop Item":           QueueEvent(new DropItemCommandEvent(), !_leftControl, _currentMercenary); break;
-                        case "Reload":              QueueEvent(new ReloadCommandEvent(), !_leftControl, _currentMercenary); break;
-                        case "Switch to Weapon":    QueueEvent(new SwitchToWeaponCommandEvent(), !_leftControl, _currentMercenary); break;
-                        case "Switch to Side Arm":  QueueEvent(new SwitchToSideArmCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Attack": QueueEvent(new AttackOrderEvent(_targetGameObject as AbstractLivingBeing), !_leftControl, _currentMercenary); break;
+                        case "Grab": QueueEvent(new GrabObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
+                        case "Open": QueueEvent(new OpenContainerCommandEvent(_targetGameObject as Container), !_leftControl, _currentMercenary); break;
+                        case "Activate": QueueEvent(new ActivateObjectEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
+                        case "Examine": QueueEvent(new ExamineObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
+                        case "Follow": QueueEvent(new FollowObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
+                        case "Exchange Items": QueueEvent(new ExchangeItemsCommandEvent(_targetGameObject as Mercenary), !_leftControl, _currentMercenary); break;
+                        case "Drop Item": QueueEvent(new DropItemCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Reload": QueueEvent(new ReloadCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Switch to Weapon": QueueEvent(new SwitchToWeaponCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Switch to Side Arm": QueueEvent(new SwitchToSideArmCommandEvent(), !_leftControl, _currentMercenary); break;
                         case "Inventory":
                             var data = new InventoryData
                                                 {
@@ -879,6 +887,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
         }
         /****************************************************************************/
+
 
         /****************************************************************************/
         /// GetActionRect
