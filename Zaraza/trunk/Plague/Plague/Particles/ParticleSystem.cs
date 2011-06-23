@@ -142,16 +142,27 @@ namespace PlagueEngine.Particles
 
         public void SetOrientation(Vector3 forward)
         {
+            forward.Normalize();
             Matrix m = Matrix.Identity;
 
-            Vector3 CamForward=Vector3.Normalize(( renderer.CurrentCamera.View).Forward);
+            //Vector3 CamForward = -Vector3.Normalize(renderer.CurrentCamera.Forward);
 
-            m.Forward = Vector3.Normalize(forward);
+            Vector2 v1 = Vector2.Normalize(new Vector2(forward.X, forward.Z));
+            Vector2 v2 = Vector2.Normalize(new Vector2(1, 0));
 
-            m.Up = CamForward;
+            float det = v1.X * v2.Y - v1.Y * v2.X;
 
-            m.Right = Vector3.Normalize(Vector3.Cross(Vector3.Normalize(forward), CamForward)) ;
+            float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
 
+            if (det < 0) angle = -angle;
+
+            if (Math.Abs(angle) > 0.01f) m = Matrix.CreateRotationZ(angle);
+            
+            //m.Up = forward; 
+            //m.Forward = Vector3.Normalize(Vector3.Cross(Vector3.Right, forward));
+            //m.Right = Vector3.Normalize(Vector3.Cross(Vector3.Normalize(forward), m.Up));
+            
+            
             EffectParameterCollection parameters = particleEffect.Parameters;
             parameters["Orientation"].SetValue(m);
         }

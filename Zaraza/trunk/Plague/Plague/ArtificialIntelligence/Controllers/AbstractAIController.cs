@@ -429,9 +429,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             }
                             else
                             {
-                                if (controlledObject.Mesh.CurrentClip != this.AnimationToActionMapping[Action.MOVE])
+                                if (controlledObject.Mesh.CurrentClip != "Wounded")
                                 {
-                                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.5f));
+                                    controlledObject.Mesh.BlendTo("Wounded", TimeSpan.FromSeconds(0.5f));
                                 }
                             }
 
