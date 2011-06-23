@@ -77,9 +77,9 @@ namespace PlagueEngine.Particles
 
 
             enabled = true;
-            technique = 0;
+            technique = 2;
 
-                speed = 100;
+                speed = 5;
 
             if (blendState == 0)
             {

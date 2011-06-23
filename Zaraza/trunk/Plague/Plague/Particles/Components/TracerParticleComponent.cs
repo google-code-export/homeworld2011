@@ -102,10 +102,15 @@ namespace PlagueEngine.Particles.Components
 
         public void SpawnNewParticle(Vector3 startPos, Vector3 endPos)
         {
-
+            Random r = new Random();
+            float randomNumber=(float)r.NextDouble();
+            startPos = startPos + (endPos - startPos) * 0.5f * randomNumber;
             float distance = Vector3.Distance(startPos, endPos);
-            //this.particleSystem.SetGravity(Vector3.Normalize(endPos - startPos) * maxSpeed);
+            
             this.particleSystem.SetDuration(distance / maxSpeed);
+
+            this.particleSystem.SetOrientation(endPos - startPos);
+
             particleSystem.AddParticle(startPos, Vector3.Normalize(endPos - startPos) * maxSpeed);
 
         }
