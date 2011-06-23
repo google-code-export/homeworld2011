@@ -23,7 +23,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         internal static Renderer renderer;
         internal static ContentManager contentManager;
- 
+
+        private MainMenu parent;
+
         public LabelComponent BrightnessLabel1;
         public LabelComponent BrightnessLabel2;
         public ButtonComponent BrightnessButton1;
@@ -34,6 +36,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public ButtonComponent ContrastButton1;
         public ButtonComponent ContrastButton2;
 
+        public LabelComponent LanguageLabel1;
+        public LabelComponent LanguageLabel2;
+        public ButtonComponent LanguageButton1;
+        public ButtonComponent LanguageButton2;
 
         public LabelComponent SSAOLabel1;
         public LabelComponent SSAOLabel2;
@@ -83,6 +89,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             ScreenSizeLabel1.Register();
             ScreenSizeButton2.Register();
             ScreenSizeLabel2.Register();
+
+            LanguageButton1.Register();
+            LanguageButton2.Register();
+            LanguageLabel1.Register();
+            LanguageLabel2.Register();
         }
 
         public void Disable()
@@ -114,7 +125,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             ScreenSizeButton2.Unregister();
             ScreenSizeLabel2.Unregister();
 
-
+            LanguageButton1.Unregister();
+            LanguageButton2.Unregister();
+            LanguageLabel1.Unregister();
+            LanguageLabel2.Unregister();
 
             //ChooseLanguage.Unregister();
             //LanguageChoiceLabel.Unregister();
@@ -126,7 +140,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public int Height { get; set; }
         FrontEndComponent frame;
 
-        public OptionsMenu(string languageLabelKey, string title, string buttonLabelKey, int x, int y, int width, int height, FrontEndComponent frame)
+        public OptionsMenu(MainMenu parent, string languageLabelKey, string title, string buttonLabelKey, int x, int y, int width, int height, FrontEndComponent frame)
         {
             //this.ChooseLanguage = new ListComponent(new List<string> { "OptionsMenu.language_english", "OptionsMenu.language_polish" },
             //                                             x + 150,
@@ -135,7 +149,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             //this.LanguageChoiceLabel = new LabelComponent(languageLabelKey, x, y , 100, 70);
             this.BackButton          = new ButtonComponent("Save", 400, 200 + height - 250, 120, 50, "");
 
-     
+            this.parent = parent;
 
             this.BrightnessLabel1 = new LabelComponent("Brightness", 300, 60, 50, 25);
             this.BrightnessLabel2 = new LabelComponent(Math.Round(renderer.Brightness, 2).ToString(), 550, 60, 50, 25);
@@ -143,8 +157,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.BrightnessButton2 = new ButtonComponent(">", 500, 65, 20, 25, "");
             this.BrightnessButton1.setDelegate(click);
             this.BrightnessButton2.setDelegate(click);
-           
 
+            this.LanguageButton1 = new ButtonComponent("<", 450, 315, 20, 25, "");
+            this.LanguageButton2 = new ButtonComponent(">", 500, 315, 20, 25, "");
+            this.LanguageButton1.setDelegate(click);
+            this.LanguageButton2.setDelegate(click);
+            this.LanguageLabel1 = new LabelComponent("Language:", 300, 310, 50, 25);
+            this.LanguageLabel2 = new LabelComponent(GlobalGameObjects.StringManager.Language, 550, 310, 50, 25);
 
             this.ContrastLabel1 = new LabelComponent("Contrast", 300, 110, 50, 25);
             this.ContrastLabel2 = new LabelComponent(Math.Round(renderer.Contrast, 2).ToString(), 550, 110, 50, 25);
@@ -186,7 +205,39 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.Height = height;
         }
 
+        public void refresh()
+        {
+            LanguageButton1.refresh();
+            LanguageButton2.refresh();
+            LanguageLabel1.refresh();
+            LanguageLabel2.refresh();
 
+            BackButton.refresh();
+
+            BrightnessButton1.refresh();
+            BrightnessLabel1.refresh();
+            BrightnessButton2.refresh();
+            BrightnessLabel2.refresh();
+
+            ContrastButton1.refresh();
+            ContrastLabel1.refresh();
+            ContrastButton2.refresh();
+            ContrastLabel2.refresh();
+
+
+            SSAOButton1.refresh();
+            SSAOLabel1.refresh();
+            SSAOLabel2.refresh();
+
+            FullScreenButton1.refresh();
+            FullScreenLabel1.refresh();
+            FullScreenLabel2.refresh();
+
+            ScreenSizeButton1.refresh();
+            ScreenSizeLabel1.refresh();
+            ScreenSizeButton2.refresh();
+            ScreenSizeLabel2.refresh();
+        }
 
         private void FindCurrentResolution()
         {
@@ -217,6 +268,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     BrightnessLabel2.Text = (float.Parse(BrightnessLabel2.Text) - 0.05f).ToString();
                 }
             }
+
+            //TODO: poprawić na poprawne wybieranie.
+            if (sender == LanguageButton2.Control || sender == LanguageButton1.Control)
+            {
+                if(GlobalGameObjects.StringManager.Language.Equals("English"))
+                {
+                    GlobalGameObjects.StringManager.Language="Polski";
+                }
+                else
+                {
+                    GlobalGameObjects.StringManager.Language="English";
+                }
+                LanguageLabel2.Text = GlobalGameObjects.StringManager.Language;
+                parent.refresh();
+            }
+
             if (sender == BrightnessButton2.Control)
             {
                 if ((Math.Round(renderer.Brightness + 0.05f, 2)) <= 10)
@@ -321,7 +388,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             frame.ReleaseMe();
             BackButton.ReleaseMe();
 
-
+            LanguageLabel2.ReleaseMe();
+            LanguageLabel1.ReleaseMe();
+            LanguageButton2.ReleaseMe();
+            LanguageButton1.ReleaseMe();
 
             BrightnessButton1.ReleaseMe();
             BrightnessLabel1.ReleaseMe();

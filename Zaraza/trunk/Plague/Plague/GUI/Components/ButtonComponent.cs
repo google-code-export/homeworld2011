@@ -39,15 +39,20 @@ namespace PlagueEngine.GUI.Components
             : base(x,y,width,height)
         {
             Control = new ButtonControl();
-            Control.Text = GlobalGameObjects.StringManager.Load<string> (text);
+            this.Text = text;
             Control.Bounds = new UniRectangle(new UniScalar(x),
                                               new UniScalar(y),
                                               new UniScalar(width),
                                               new UniScalar(height));
             Tag = tag;
+            
         }
         /****************************************************************************/
 
+        public void refresh()
+        {
+            Control.Text = GlobalGameObjects.StringManager.Load<string>(text);
+        }
 
         /****************************************************************************/
         /// register
