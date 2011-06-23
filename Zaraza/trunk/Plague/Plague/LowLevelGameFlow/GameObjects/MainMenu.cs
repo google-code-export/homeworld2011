@@ -114,6 +114,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         bool drawSplashScreen = false;
         /****************************************************************************/
 
+        public void refresh()
+        {
+            newGame.refresh();
+
+            options.refresh();
+            credits.refresh();
+
+            exit.refresh();
+            creditslabel.refresh();
+            optionslabel.refresh();
+            optionsMenu.refresh();
+        }
+
         /****************************************************************************/
         /// Init
         /****************************************************************************/
@@ -130,7 +143,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             splashScreen = splash;
             splashScreen.Draw = OnDraw;
 
-            optionsMenu = new OptionsMenu("OptionsMenu.language_change","OptionsMenu.main","OptionsMenu.back",optionswindowx, optionswindowy, optionswindowwidth, optionswindowheight, frame);
+            optionsMenu = new OptionsMenu(this, "OptionsMenu.language_change","OptionsMenu.main","OptionsMenu.back",optionswindowx, optionswindowy, optionswindowwidth, optionswindowheight, frame);
             this.frame = frame;
             this.frame.Draw = OnDraw;
             this.window = window;

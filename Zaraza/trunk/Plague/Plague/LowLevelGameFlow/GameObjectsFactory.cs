@@ -119,7 +119,7 @@ namespace PlagueEngine.LowLevelGameFlow
             }
             catch (Exception e)
             {
-                Diagnostics.PushLog(e.InnerException.Message);
+                //Diagnostics.PushLog(e.InnerException.Message);
                 return null;
             }
 

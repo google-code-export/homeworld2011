@@ -38,15 +38,16 @@ namespace PlagueEngine.GUI.Components
                                               new UniScalar(y),
                                               new UniScalar(width),
                                               new UniScalar(height));
-            Control.Text = GlobalGameObjects.StringManager.Load<string>(text) ;
             this.Text = text;
-            this.height = height;
-            this.width = width;
-            this.x = x;
-            this.y = y;
+            
+
         }
         /****************************************************************************/
 
+        public void refresh()
+        {
+            Control.Text = GlobalGameObjects.StringManager.Load<string>(text);
+        }
 
         /****************************************************************************/
         /// register

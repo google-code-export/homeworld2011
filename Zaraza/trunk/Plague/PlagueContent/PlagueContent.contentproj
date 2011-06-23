@@ -2040,6 +2040,24 @@
       <Name>ExamineDescription</Name>
       <Importer>TextImporter</Importer>
       <Processor>PlagueLangProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lang\Polski\ExamineDescription.lang">
+      <Name>ExamineDescription</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
+    </Compile>
+    <Compile Include="Lang\Polski\MainMenu.lang">
+      <Name>MainMenu</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
+    </Compile>
+    <Compile Include="Lang\Polski\OptionsMenu.lang">
+      <Name>OptionsMenu</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

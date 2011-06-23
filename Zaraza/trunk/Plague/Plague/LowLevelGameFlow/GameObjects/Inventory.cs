@@ -1048,7 +1048,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 // Draw Description
                 if (!String.IsNullOrEmpty(DescribedItem.Description))
                 {
-                    spriteBatch.DrawString(AmmoFont, DescribedItem.Description, localPosition + new Vector2(430, 440), Color.LightGray);
+                    spriteBatch.DrawString(AmmoFont, GlobalGameObjects.StringManager.Load<string>(DescribedItem.Description), localPosition + new Vector2(430, 440), Color.LightGray);
                 }
                 else
                 {
