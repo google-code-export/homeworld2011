@@ -314,7 +314,7 @@ namespace PlagueEngine.Rendering
                                                          String texture)
         {
             FrontEndComponent result = new FrontEndComponent(gameObject,
-                                                             content.LoadTexture2D(texture));
+                                                             String.IsNullOrEmpty(texture) ? null : content.LoadTexture2D(texture));
             return result;
         }
         /****************************************************************************/
