@@ -140,6 +140,21 @@ namespace PlagueEngine.Particles
 
         }
 
+        public void SetOrientation(Vector3 forward)
+        {
+            Matrix m = Matrix.Identity;
+
+            Vector3 CamForward=Vector3.Normalize(( renderer.CurrentCamera.View).Forward);
+
+            m.Forward = Vector3.Normalize(forward);
+
+            m.Up = CamForward;
+
+            m.Right = Vector3.Normalize(Vector3.Cross(Vector3.Normalize(forward), CamForward)) ;
+
+            EffectParameterCollection parameters = particleEffect.Parameters;
+            parameters["Orientation"].SetValue(m);
+        }
 
         /********************************************************************************/
         /// LoadParticleEffect
@@ -177,9 +192,13 @@ namespace PlagueEngine.Particles
             {
             particleEffect.CurrentTechnique = particleEffect.Techniques["Particles"];
             }
-            else
+            else if (settings.Technique == 1)
             {
             particleEffect.CurrentTechnique = particleEffect.Techniques["ParticlesFacedUp"];
+            }
+            else if (settings.Technique == 2)
+            {
+                particleEffect.CurrentTechnique = particleEffect.Techniques["CustomOriented"];
             }
         }
 
