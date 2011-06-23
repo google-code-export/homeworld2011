@@ -280,7 +280,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 FriendlyFire evt = e as FriendlyFire;
                 controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.ATTACK]);
                 attackTarget = null;
-                base.OnEvent(null, new MoveToPointCommandEvent(evt.friend.World.Translation + 2 * Vector3.Cross(controlledObject.World.Forward, Vector3.Up));
+                base.OnEvent(null, new MoveToPointCommandEvent(evt.friend.World.Translation + 2 * Vector3.Cross(controlledObject.World.Forward, Vector3.Up)));
                 #endregion
             }
             else if (e.GetType().Equals(typeof(TakeDamage)))
