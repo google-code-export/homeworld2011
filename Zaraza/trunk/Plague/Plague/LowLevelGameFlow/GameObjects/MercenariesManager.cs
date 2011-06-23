@@ -42,6 +42,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int _screenWidthOver2;
         private int _mouseX;
         private int _mouseOnMerc;
+        private Vector3 goTo;
 
         private int _iconsOffset;
         private FireSelector fireSelector = null;
@@ -134,7 +135,61 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*****************************************/
             if (argsType.Equals(typeof(LookAtPointEvent)))
             {
-                SendEvent(e, Priority.Low, _selectedMercenaries.ToArray());
+                if (sender.GetType().Equals(typeof(LinkedCamera)))
+                {
+                    SendEvent(e, Priority.Low, _selectedMercenaries.ToArray());
+                }
+                else
+                {
+                    if (_selectedMercenaries.Count == 1)
+                    {
+                        if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(goTo), !_leftControl, _selectedMercenaries.ToArray());
+                        else                  QueueEvent(new MoveToPointCommandEvent(goTo), !_leftControl, _selectedMercenaries.ToArray());
+                        if((e as LookAtPointEvent).point != Vector3.Zero) QueueEvent(e, false, _selectedMercenaries.ToArray());
+                    }
+                    else
+                    {
+                        //calculate center
+                        var center = Vector3.Zero;
+                        foreach (var merc in _selectedMercenaries)
+                        {
+                            center += merc.World.Translation;
+                        }
+                        center /= _selectedMercenaries.Count;
+                        //check if moving to center or to point
+                        var toCenter = false;
+                        foreach (var merc in _selectedMercenaries)
+                        {
+                            double distToCenter = Vector3.Distance(merc.World.Translation, center);
+                            double distToTarget = Vector3.Distance(merc.World.Translation, goTo);
+                            if (distToCenter <= distToTarget) continue;
+                            toCenter = true;
+                            break;
+                        }
+                        if (toCenter)
+                        {
+                            foreach (var merc in _selectedMercenaries)
+                            {
+                                var target = goTo + Vector3.Normalize(merc.World.Translation - center);
+
+                                if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(target), !_leftControl, merc);
+                                else QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
+                                if ((e as LookAtPointEvent).point != Vector3.Zero)  QueueEvent(e, false, _selectedMercenaries.ToArray());
+
+                            }
+                        }
+                        else
+                        {
+                            foreach (var merc in _selectedMercenaries)
+                            {
+                                var target = (merc.World.Translation - center) + goTo;
+                                if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(target), !_leftControl, merc);
+                                else QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
+                                if ((e as LookAtPointEvent).point != Vector3.Zero)  QueueEvent(e, false, _selectedMercenaries.ToArray());
+                            }
+                        }
+                    }
+                }
             }
             /*****************************************/
             // SelectedObjectEvent 
@@ -194,58 +249,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     }
                     else if (commandOnObjectEvent.gameObject.Status == GameObjectStatus.Passable)
                     {
-                        //finezja :D!
-                        if (_selectedMercenaries.Count == 1)
-                        {
-                            if (LinkedCamera.Run)
-                            {
-                                QueueEvent(new RunToPointCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
-                            }
-                            else
-                            {
-                                QueueEvent(new MoveToPointCommandEvent(commandOnObjectEvent.position), !_leftControl, _selectedMercenaries.ToArray());
-                            }
-                        }
-                        else
-                        {
-                            //calculate center
-                            var center = Vector3.Zero;
-                            foreach (var merc in _selectedMercenaries)
-                            {
-                                center += merc.World.Translation;
-                            }
-                            center /= _selectedMercenaries.Count;
-                            //check if moving to center or to point
-                            var toCenter = false;
-                            foreach (var merc in _selectedMercenaries)
-                            {
-                                double distToCenter = Vector3.Distance(merc.World.Translation, center);
-                                double distToTarget = Vector3.Distance(merc.World.Translation, commandOnObjectEvent.position);
-                                if (distToCenter <= distToTarget) continue;
-                                toCenter = true;
-                                break;
-                            }
-                            if (toCenter)
-                            {
-                                foreach (var merc in _selectedMercenaries)
-                                {
-                                    var target = commandOnObjectEvent.position + Vector3.Normalize(merc.World.Translation - center);
+                            DirectionData data = new DirectionData();
+                            data.Feedback = this.ID;
+                            data.World = Matrix.CreateTranslation(commandOnObjectEvent.position + new Vector3(0,0.5f,0));
+                            SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
 
-                                    if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(target), !_leftControl, merc);
-                                    else QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
-
-                                }
-                            }
-                            else
-                            {
-                                foreach (var merc in _selectedMercenaries)
-                                {
-                                    var target = (merc.World.Translation - center) + commandOnObjectEvent.position;
-                                    if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(target), !_leftControl, merc);
-                                    else QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
-                                }
-                            }
-                        }
+                            goTo = commandOnObjectEvent.position;                            
                     }
                     else if (commandOnObjectEvent.gameObject.Status != GameObjectStatus.Nothing)
                     {

@@ -1984,6 +1984,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\Particles\arrow.png">
+      <Name>arrow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\PlagueEngineModelPipeline\PlagueEngineModelPipeline.csproj">
       <Project>{24AD9B08-61F6-4761-BC82-FBB2B536D0CB}</Project>
       <Name>PlagueEngineModelPipeline</Name>

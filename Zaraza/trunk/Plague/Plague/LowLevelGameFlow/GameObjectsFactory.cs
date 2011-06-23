@@ -2265,6 +2265,48 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// CreateDirection
+        /****************************************************************************/
+        public bool CreateDirection(Direction result, DirectionData data)
+        {
+
+            result.Init(particleFactory.CreateParticleEmitterComponent(result,
+                                                                       1,
+                                                                       0.25f,
+                                                                       0,
+                                                                       0,
+                                                                       0,
+                                                                       Vector3.Zero,
+                                                                       Color.White,
+                                                                       3,
+                                                                       0,
+                                                                       50,
+                                                                       0,
+                                                                       3,
+                                                                       0,
+                                                                       Color.White,
+                                                                       3,
+                                                                       0,
+                                                                       0,
+                                                                       3,
+                                                                       0,
+                                                                       "Particles\\arrow",
+                                                                       5,
+                                                                       Vector3.Zero,
+                                                                       result.World,
+                                                                       true,
+                                                                       2),
+                    renderingComponentsFactory.CreateFrontEndComponent(result, null),
+                    inputComponentsFactory.CreateMouseListenerComponent(result, true),
+                    GetObject(data.Feedback));
+
+
+            return true;
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/    
 
