@@ -252,7 +252,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 else
                 {
                     HP -= (uint)evt.amount;
-                    if (attackTarget == null)
+                    if (evt.attacker !=null && attackTarget == null)
                     {
                         attackTarget = evt.attacker;
                         action = PlagueEngine.ArtificialIntelligence.Controllers.Action.ENGAGE;

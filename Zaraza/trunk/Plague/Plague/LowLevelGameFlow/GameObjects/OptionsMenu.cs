@@ -147,11 +147,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             //                                             y + 80,
             //                                             200, 170, Nuclex.UserInterface.Controls.Desktop.ListSelectionMode.Single);
             //this.LanguageChoiceLabel = new LabelComponent(languageLabelKey, x, y , 100, 70);
-            this.BackButton          = new ButtonComponent("Save", 400, 200 + height - 250, 120, 50, "");
+            this.BackButton          = new ButtonComponent("OptionsMenu.back", 400, 200 + height - 250, 120, 50, "");
 
             this.parent = parent;
 
-            this.BrightnessLabel1 = new LabelComponent("Brightness", 300, 60, 50, 25);
+            this.BrightnessLabel1 = new LabelComponent("OptionsMenu.brightness_change", 300, 60, 50, 25);
             this.BrightnessLabel2 = new LabelComponent(Math.Round(renderer.Brightness, 2).ToString(), 550, 60, 50, 25);
             this.BrightnessButton1 = new ButtonComponent("<", 450, 65, 20, 25,"");
             this.BrightnessButton2 = new ButtonComponent(">", 500, 65, 20, 25, "");
@@ -162,10 +162,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.LanguageButton2 = new ButtonComponent(">", 500, 315, 20, 25, "");
             this.LanguageButton1.setDelegate(click);
             this.LanguageButton2.setDelegate(click);
-            this.LanguageLabel1 = new LabelComponent("Language:", 300, 310, 50, 25);
+            this.LanguageLabel1 = new LabelComponent("OptionsMenu.language_change", 300, 310, 50, 25);
             this.LanguageLabel2 = new LabelComponent(GlobalGameObjects.StringManager.Language, 550, 310, 50, 25);
 
-            this.ContrastLabel1 = new LabelComponent("Contrast", 300, 110, 50, 25);
+            this.ContrastLabel1 = new LabelComponent("OptionsMenu.contrast_change", 300, 110, 50, 25);
             this.ContrastLabel2 = new LabelComponent(Math.Round(renderer.Contrast, 2).ToString(), 550, 110, 50, 25);
             this.ContrastButton1 = new ButtonComponent("<", 450, 115, 20, 25, "");
             this.ContrastButton2 = new ButtonComponent(">", 500, 115, 20, 25, "");
@@ -174,23 +174,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
           
-            this.SSAOLabel1 = new LabelComponent("SSAO", 300, 160, 50, 25);
-            this.SSAOLabel2 = new LabelComponent(renderer.ssaoEnabled ? "ON" : "OFF", 550, 160, 50, 25);
-            this.SSAOButton1 = new ButtonComponent("TOGGLE", 450, 165, 70, 25, "");
+            this.SSAOLabel1 = new LabelComponent("OptionsMenu.ssao", 300, 160, 50, 25);
+            this.SSAOLabel2 = new LabelComponent(renderer.ssaoEnabled ? "OptionsMenu.on" : "OptionsMenu.off", 550, 160, 50, 25);
+            this.SSAOButton1 = new ButtonComponent(renderer.ssaoEnabled ? "OptionsMenu.toggle_off" : "OptionsMenu.toggle_on", 450, 165, 70, 25, "");
             this.SSAOButton1.setDelegate(click);
 
 
 
-            this.FullScreenLabel1 = new LabelComponent("FullScreen", 300, 210, 50, 25);
-            this.FullScreenLabel2 = new LabelComponent(renderer.CurrentConfiguration.FullScreen ? "ON" : "OFF", 550, 210, 50, 25);
-            this.FullScreenButton1 = new ButtonComponent("TOGGLE", 450, 215, 70, 25, "");
+            this.FullScreenLabel1 = new LabelComponent("OptionsMenu.fullscreen", 300, 210, 50, 25);
+            this.FullScreenLabel2 = new LabelComponent(renderer.CurrentConfiguration.FullScreen ? "OptionsMenu.on" : "OptionsMenu.off", 550, 210, 50, 25);
+            this.FullScreenButton1 = new ButtonComponent(renderer.CurrentConfiguration.FullScreen ? "OptionsMenu.toggle_off" : "OptionsMenu.toggle_on", 450, 215, 70, 25, "");
             this.FullScreenButton1.setDelegate(click);
 
 
 
             FindCurrentResolution();
 
-            this.ScreenSizeLabel1 = new LabelComponent("ScreenSize", 300, 260, 50, 25);
+            this.ScreenSizeLabel1 = new LabelComponent("OptionsMenu.screen_size", 300, 260, 50, 25);
             this.ScreenSizeLabel2 = new LabelComponent(resolutions[current][0].ToString() + "X" + resolutions[current][1].ToString(), 550, 260, 50, 25);
             this.ScreenSizeButton1 = new ButtonComponent("<", 450, 265, 20, 25, "");
             this.ScreenSizeButton2 = new ButtonComponent(">", 500, 265, 20, 25, "");
@@ -319,13 +319,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     renderer.ssaoEnabled = false;
                     config.SSAO = false;
-                    SSAOLabel2.Text = "OFF";
+                    SSAOLabel2.Text = "OptionsMenu.off";
                 }
                 else
                 {
                     renderer.ssaoEnabled = true;
                     config.SSAO = true;
-                    SSAOLabel2.Text = "ON";
+                    SSAOLabel2.Text = "OptionsMenu.on";
                     contentManager.SaveConfiguration(config);
                 }
             }
@@ -333,16 +333,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (sender == FullScreenButton1.Control)
             {
                 Diagnostics.PushLog(renderer.CurrentConfiguration.FullScreen.ToString());
-                if (FullScreenLabel2.Text == "ON")
+                if (FullScreenLabel2.Text == "OptionsMenu.on")
                 {
-                 
                     config.FullScreen = false;
-                    FullScreenLabel2.Text = "OFF";
+                    FullScreenLabel2.Text = "OptionsMenu.off";
                 }
                 else
                 {
                     config.FullScreen = true;
-                    FullScreenLabel2.Text = "ON";
+                    FullScreenLabel2.Text = "OptionsMenu.on";
                 }
             }
 
