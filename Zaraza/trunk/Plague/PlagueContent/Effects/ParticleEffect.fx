@@ -10,7 +10,7 @@
 float4x4 View;
 float4x4 Projection;
 float2 ViewportScale;
-
+float4x4 Orientation;
 
 // The current time, in seconds.
 float CurrentTime;
@@ -231,6 +231,41 @@ VertexShaderOutput ParticleVertexShader2(VertexShaderInput input)
     return output;
 }
 
+// Custom vertex shader animates particles entirely on the GPU.
+VertexShaderOutput ParticleVertexShader3(VertexShaderInput input)
+{
+    VertexShaderOutput output;
+    
+    // Compute the age of the particle.
+    float age = CurrentTime - input.Time;
+    
+    // Apply a random factor to make different particles age at different rates.
+    age *= 1 + input.Random.x * DurationRandomness;
+    
+    // Normalize the age into the range zero to one.
+    float normalizedAge = saturate(age / Duration);
+
+    // Compute the particle position, size, color, and rotation.
+    output.Position = ComputeParticlePosition(input.Position, input.Velocity,
+                                              age, normalizedAge);
+
+    float size = ComputeParticleSize(input.Random.y, normalizedAge);
+    float2x2 rotation = ComputeParticleRotation(input.Random.w, age);
+
+    output.Position.xz += mul(input.Corner, rotation) * size * ViewportScale;	
+	
+	output.Position = mul(mul(mul(output.Position,Orientation), View), Projection);
+
+
+	output.ScreenPosition = output.Position;		
+	
+
+    output.Color = ComputeParticleColor(output.Position, input.Random.z, normalizedAge);
+    output.TextureCoordinate = (input.Corner + 1) / 2;
+    
+    return output;
+}
+
 // Pixel shader for drawing particles.
 float4 ParticlePixelShader(VertexShaderOutput input) : COLOR0
 {
@@ -265,6 +300,16 @@ technique ParticlesFacedUp
 	pass P0
     {
         VertexShader = compile vs_2_0 ParticleVertexShader2();
+        PixelShader = compile ps_2_0 ParticlePixelShader();
+    }
+}
+
+
+technique CustomOriented
+{
+	pass P0
+    {
+        VertexShader = compile vs_2_0 ParticleVertexShader3();
         PixelShader = compile ps_2_0 ParticlePixelShader();
     }
 }
