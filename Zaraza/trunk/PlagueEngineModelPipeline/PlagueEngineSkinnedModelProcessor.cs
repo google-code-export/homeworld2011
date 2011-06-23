@@ -57,7 +57,12 @@ namespace PlagueEngineModelPipeline
             //FlattenTransforms(skeleton);
             
             IList<BoneContent> bones = MeshHelper.FlattenSkeleton(skeleton);
-            
+
+            foreach (var x in bones)
+            {
+                context.Logger.LogWarning(null, null, x.Name);                
+            }
+
             if (bones.Count > MaxBones) 
                 throw new InvalidContentException(string.Format("Skeleton has {0} bones, but the maximum supported is {1}.",bones.Count, MaxBones));
             

@@ -397,43 +397,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Characters\Nigger.X">
-      <Name>Nigger</Name>
-      <Importer>XImporter</Importer>
-      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
-      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
-      <ProcessorParameters_AnimationClip1End>146</ProcessorParameters_AnimationClip1End>
-      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
-      <ProcessorParameters_AnimationClip2Start>26</ProcessorParameters_AnimationClip2Start>
-      <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
-      <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
-      <ProcessorParameters_AnimationClip1Start>77</ProcessorParameters_AnimationClip1Start>
-      <ProcessorParameters_AnimationClip3Start>51</ProcessorParameters_AnimationClip3Start>
-      <ProcessorParameters_AnimationClip3End>76</ProcessorParameters_AnimationClip3End>
-      <ProcessorParameters_AnimationClip3Loop>True</ProcessorParameters_AnimationClip3Loop>
-      <ProcessorParameters_AnimationClip4Start>147</ProcessorParameters_AnimationClip4Start>
-      <ProcessorParameters_AnimationClip4End>157</ProcessorParameters_AnimationClip4End>
-      <ProcessorParameters_AnimationClip1>Run</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1Duration>0.8</ProcessorParameters_AnimationClip1Duration>
-      <ProcessorParameters_AnimationClip10>Run_Carabine</ProcessorParameters_AnimationClip10>
-      <ProcessorParameters_AnimationClip10Duration>0.8</ProcessorParameters_AnimationClip10Duration>
-      <ProcessorParameters_AnimationClip11>Run_Pistol</ProcessorParameters_AnimationClip11>
-      <ProcessorParameters_AnimationClip11Duration>0.8</ProcessorParameters_AnimationClip11Duration>
-      <ProcessorParameters_AnimationClip12>Walk_Carabine</ProcessorParameters_AnimationClip12>
-      <ProcessorParameters_AnimationClip12Duration>0.8</ProcessorParameters_AnimationClip12Duration>
-      <ProcessorParameters_AnimationClip13>Walk_Pistol</ProcessorParameters_AnimationClip13>
-      <ProcessorParameters_AnimationClip13Duration>0.8</ProcessorParameters_AnimationClip13Duration>
-      <ProcessorParameters_AnimationClip14>Idle</ProcessorParameters_AnimationClip14>
-      <ProcessorParameters_AnimationClip14Duration>2.1</ProcessorParameters_AnimationClip14Duration>
-      <ProcessorParameters_AnimationClip15>Dying</ProcessorParameters_AnimationClip15>
-      <ProcessorParameters_AnimationClip15Duration>0.6</ProcessorParameters_AnimationClip15Duration>
-      <ProcessorParameters_AnimationClip16>Fire_Carabine</ProcessorParameters_AnimationClip16>
-      <ProcessorParameters_AnimationClip16Duration>0.3</ProcessorParameters_AnimationClip16Duration>
-      <ProcessorParameters_AnimationClip17>Fire_Pistol</ProcessorParameters_AnimationClip17>
-      <ProcessorParameters_AnimationClip17Duration>0.3</ProcessorParameters_AnimationClip17Duration>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\Firearms\DesertEagle.FBX">
       <Name>DesertEagle</Name>
       <Importer>FbxImporter</Importer>
@@ -1456,38 +1419,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Characters\Psycho.X">
-      <Name>Psycho</Name>
-      <Importer>XImporter</Importer>
-      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
-      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
-      <ProcessorParameters_AnimationClip1>Run</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1Start>77</ProcessorParameters_AnimationClip1Start>
-      <ProcessorParameters_AnimationClip1End>146</ProcessorParameters_AnimationClip1End>
-      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
-      <ProcessorParameters_AnimationClip2Start>26</ProcessorParameters_AnimationClip2Start>
-      <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
-      <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
-      <ProcessorParameters_AnimationClip1Duration>0.8</ProcessorParameters_AnimationClip1Duration>
-      <ProcessorParameters_AnimationClip10>Run_Carabine</ProcessorParameters_AnimationClip10>
-      <ProcessorParameters_AnimationClip10Duration>0.8</ProcessorParameters_AnimationClip10Duration>
-      <ProcessorParameters_AnimationClip11>Run_Pistol</ProcessorParameters_AnimationClip11>
-      <ProcessorParameters_AnimationClip11Duration>0.8</ProcessorParameters_AnimationClip11Duration>
-      <ProcessorParameters_AnimationClip12>Walk_Carabine</ProcessorParameters_AnimationClip12>
-      <ProcessorParameters_AnimationClip12Duration>0.8</ProcessorParameters_AnimationClip12Duration>
-      <ProcessorParameters_AnimationClip13>Walk_Pistol</ProcessorParameters_AnimationClip13>
-      <ProcessorParameters_AnimationClip13Duration>0.8</ProcessorParameters_AnimationClip13Duration>
-      <ProcessorParameters_AnimationClip14>Idle</ProcessorParameters_AnimationClip14>
-      <ProcessorParameters_AnimationClip14Duration>2.1</ProcessorParameters_AnimationClip14Duration>
-      <ProcessorParameters_AnimationClip15>Dying</ProcessorParameters_AnimationClip15>
-      <ProcessorParameters_AnimationClip15Duration>0.6</ProcessorParameters_AnimationClip15Duration>
-      <ProcessorParameters_AnimationClip16>Fire_Carabine</ProcessorParameters_AnimationClip16>
-      <ProcessorParameters_AnimationClip16Duration>0.3</ProcessorParameters_AnimationClip16Duration>
-      <ProcessorParameters_AnimationClip17>Fire_Pistol</ProcessorParameters_AnimationClip17>
-      <ProcessorParameters_AnimationClip17Duration>0.3</ProcessorParameters_AnimationClip17Duration>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Characters\Psycho.norm.bmp">
       <Name>Psycho.norm</Name>
       <Importer>TextureImporter</Importer>
@@ -1501,38 +1432,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\Characters\TonyHawk.X">
-      <Name>TonyHawk</Name>
-      <Importer>XImporter</Importer>
-      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
-      <ProcessorParameters_Framerate>30</ProcessorParameters_Framerate>
-      <ProcessorParameters_AnimationClip1>Run</ProcessorParameters_AnimationClip1>
-      <ProcessorParameters_AnimationClip1Start>77</ProcessorParameters_AnimationClip1Start>
-      <ProcessorParameters_AnimationClip1End>146</ProcessorParameters_AnimationClip1End>
-      <ProcessorParameters_AnimationClip1Loop>True</ProcessorParameters_AnimationClip1Loop>
-      <ProcessorParameters_AnimationClip2Start>26</ProcessorParameters_AnimationClip2Start>
-      <ProcessorParameters_AnimationClip2End>50</ProcessorParameters_AnimationClip2End>
-      <ProcessorParameters_AnimationClip2Loop>True</ProcessorParameters_AnimationClip2Loop>
-      <ProcessorParameters_AnimationClip1Duration>0.8</ProcessorParameters_AnimationClip1Duration>
-      <ProcessorParameters_AnimationClip10>Run_Carabine</ProcessorParameters_AnimationClip10>
-      <ProcessorParameters_AnimationClip10Duration>0.8</ProcessorParameters_AnimationClip10Duration>
-      <ProcessorParameters_AnimationClip11>Run_Pistol</ProcessorParameters_AnimationClip11>
-      <ProcessorParameters_AnimationClip11Duration>0.8</ProcessorParameters_AnimationClip11Duration>
-      <ProcessorParameters_AnimationClip12>Walk_Carabine</ProcessorParameters_AnimationClip12>
-      <ProcessorParameters_AnimationClip12Duration>0.8</ProcessorParameters_AnimationClip12Duration>
-      <ProcessorParameters_AnimationClip13>Walk_Pistol</ProcessorParameters_AnimationClip13>
-      <ProcessorParameters_AnimationClip13Duration>0.8</ProcessorParameters_AnimationClip13Duration>
-      <ProcessorParameters_AnimationClip14>Idle</ProcessorParameters_AnimationClip14>
-      <ProcessorParameters_AnimationClip14Duration>2.1</ProcessorParameters_AnimationClip14Duration>
-      <ProcessorParameters_AnimationClip15>Dying</ProcessorParameters_AnimationClip15>
-      <ProcessorParameters_AnimationClip15Duration>0.6</ProcessorParameters_AnimationClip15Duration>
-      <ProcessorParameters_AnimationClip16>Fire_Carabine</ProcessorParameters_AnimationClip16>
-      <ProcessorParameters_AnimationClip16Duration>0.3</ProcessorParameters_AnimationClip16Duration>
-      <ProcessorParameters_AnimationClip17>Fire_Pistol</ProcessorParameters_AnimationClip17>
-      <ProcessorParameters_AnimationClip17Duration>0.3</ProcessorParameters_AnimationClip17Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -1581,6 +1480,22 @@
       <ProcessorParameters_AnimationClip16Duration>0.3</ProcessorParameters_AnimationClip16Duration>
       <ProcessorParameters_AnimationClip17>Fire_Pistol</ProcessorParameters_AnimationClip17>
       <ProcessorParameters_AnimationClip17Duration>0.3</ProcessorParameters_AnimationClip17Duration>
+      <ProcessorParameters_AnimationClip18>Reload_Carabine</ProcessorParameters_AnimationClip18>
+      <ProcessorParameters_AnimationClip18Duration>0.57</ProcessorParameters_AnimationClip18Duration>
+      <ProcessorParameters_AnimationClip19>Reload_Pistol</ProcessorParameters_AnimationClip19>
+      <ProcessorParameters_AnimationClip19Duration>0.57</ProcessorParameters_AnimationClip19Duration>
+      <ProcessorParameters_AnimationClip2>Pick_Pistol</ProcessorParameters_AnimationClip2>
+      <ProcessorParameters_AnimationClip2Duration>0.57</ProcessorParameters_AnimationClip2Duration>
+      <ProcessorParameters_AnimationClip20>Pick_Carabine</ProcessorParameters_AnimationClip20>
+      <ProcessorParameters_AnimationClip20Duration>0.57</ProcessorParameters_AnimationClip20Duration>
+      <ProcessorParameters_AnimationClip21>Hide_Pistol</ProcessorParameters_AnimationClip21>
+      <ProcessorParameters_AnimationClip21Duration>0.57</ProcessorParameters_AnimationClip21Duration>
+      <ProcessorParameters_AnimationClip22>Hide_Carabine</ProcessorParameters_AnimationClip22>
+      <ProcessorParameters_AnimationClip22Duration>0.57</ProcessorParameters_AnimationClip22Duration>
+      <ProcessorParameters_AnimationClip23>Load_Ammo</ProcessorParameters_AnimationClip23>
+      <ProcessorParameters_AnimationClip23Duration>0.42</ProcessorParameters_AnimationClip23Duration>
+      <ProcessorParameters_AnimationClip24>Wounded</ProcessorParameters_AnimationClip24>
+      <ProcessorParameters_AnimationClip24Duration>1.17</ProcessorParameters_AnimationClip24Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -2058,6 +1973,23 @@
       <Name>OptionsMenu</Name>
       <Importer>TextImporter</Importer>
       <Processor>PlagueLangProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Characters\Nigger.X">
+      <Name>Nigger</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Characters\Psycho.X">
+      <Name>Psycho</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Characters\TonyHawk.X">
+      <Name>TonyHawk</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlagueEngineSkinnedModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

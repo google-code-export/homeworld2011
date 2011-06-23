@@ -252,10 +252,9 @@ VertexShaderOutput ParticleVertexShader3(VertexShaderInput input)
     float size = ComputeParticleSize(input.Random.y, normalizedAge);
     float2x2 rotation = ComputeParticleRotation(input.Random.w, age);
 
-    output.Position.xz += mul(input.Corner, rotation) * size * ViewportScale;	
-	
-	output.Position = mul(mul(mul(output.Position,Orientation), View), Projection);
+    output.Position.xz += mul(input.Corner,Orientation) * size * ViewportScale;		
 
+	output.Position = mul(mul(output.Position, View), Projection);
 
 	output.ScreenPosition = output.Position;		
 	
