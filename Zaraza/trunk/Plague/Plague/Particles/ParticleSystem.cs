@@ -363,6 +363,7 @@ namespace PlagueEngine.Particles
 
             firstNewParticle = firstFreeParticle;
         }
+
         /********************************************************************************/
 
 
