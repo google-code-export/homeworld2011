@@ -134,6 +134,10 @@ namespace PlagueEngine.Particles
 
         public void SetDuration(float sec)
         {
+            if (float.IsNaN(sec))
+            {
+                sec = 0.001f;
+            }
             settings.Duration = TimeSpan.FromSeconds(sec);
             EffectParameterCollection parameters = particleEffect.Parameters;
             parameters["Duration"].SetValue((float)settings.Duration.TotalSeconds);

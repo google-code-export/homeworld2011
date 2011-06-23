@@ -77,38 +77,33 @@ namespace PlagueEngine.Particles
 
 
             enabled = true;
+
             technique = 2;
 
-                
+            if(speed==0)speed = 250;
 
-            if (blendState == 0)
-            {
+
+           
                 blendState = 2;
-            }
-            if (maxColor == new Color(0, 0, 0, 0))
-            {
-                maxColor = new Color(255, 0, 0, 255);
-            }
-            if(minColor == new Color(0,0,0,0))
-            {
-                minColor=new Color(255,0,0,255);
-            }
-            if(maxEndSize==0)
-            {
-                maxEndSize=5;
-            }
-            if(minEndSize==0)
-            {
-                minEndSize=5;
-            }
-            if(maxStartSize==0)
-            {
-                maxStartSize=5;
-            }
-            if(minStartSize==0)
-            {
-                minStartSize=5;
-            }
+
+
+                if (maxColor == new Color(0, 0, 0, 0)) maxColor = new Color(255, 50, 50, 255);
+
+
+                if (minColor == new Color(0, 0, 0, 0)) minColor = new Color(255, 50, 50, 255);
+
+
+                if (maxEndSize == 0) maxEndSize = 7;
+
+
+                if (minEndSize == 0) minEndSize = 7;
+
+
+                if (maxStartSize == 0) maxStartSize = 7;
+
+
+                if (minStartSize == 0) minStartSize = 7;
+           
             if(String.IsNullOrEmpty(particleTexture))
             {
                 particleTexture=@"Particles\Fireshot";
