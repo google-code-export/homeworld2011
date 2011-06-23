@@ -274,11 +274,43 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 this.attackTarget = evt.EnemyToAttack;
                 #endregion 
             }
+            else if (e.GetType().Equals(typeof(FriendlyFire)))
+            {
+                #region Cease fire and move, idiot!
+                FriendlyFire evt = e as FriendlyFire;
+                controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.ATTACK]);
+                attackTarget = null;
+                base.OnEvent(null, new MoveToPointCommandEvent(evt.friend.World.Translation + 2 * Vector3.Cross(controlledObject.World.Forward, Vector3.Up));
+                #endregion
+            }
+            else if (e.GetType().Equals(typeof(TakeDamage)))
+            {
+                #region MercenaryHit broadcast
+                TakeDamage evt = e as TakeDamage;
+                MercenaryHit newEvt = new MercenaryHit((int)evt.amount);
+                this.controlledObject.Broadcast(newEvt);
+                if (evt.attacker.GetType().Equals(typeof(Mercenary)))
+                {
+                    //TODO: jakiś okrzyk
+                    FriendlyFire newEvent = new FriendlyFire(this.controlledObject);
+                    SendEvent(newEvent, Priority.Normal, evt.attacker.ObjectAIController);
+                    evt.attacker = null;
+
+                    base.OnEvent(sender, e);
+                }
+                else
+                {
+                    base.OnEvent(sender, e);
+                }
+                return;
+                #endregion
+            }
             else if (e.GetType().Equals(typeof(LookAtPointEvent)))
             {
+                #region LookAtPoint
                 LookAtPointEvent LookAtPointEvent = e as LookAtPointEvent;
                 action = Action.IDLE;
-                controlledObject.mesh.BlendTo("Fire_Carabine",TimeSpan.FromSeconds(0.5f));
+                controlledObject.mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.5f));
                 Vector3 direction = controlledObject.World.Translation - LookAtPointEvent.point;
                 Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
                 Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
@@ -287,6 +319,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 if (det < 0) angle = -angle;
                 if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
                 TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); });
+                #endregion
             }
             else if (e.GetType().Equals(typeof(OpenFireCommandEvent)))
             {

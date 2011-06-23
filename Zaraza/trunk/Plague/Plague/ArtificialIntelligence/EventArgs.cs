@@ -21,6 +21,33 @@ namespace PlagueEngine.ArtificialIntelligence
         }
     }
 
+    class FriendlyFire : EventArgs
+    {
+        public AbstractLivingBeing friend;
+        public FriendlyFire(AbstractLivingBeing friend)
+        {
+            this.friend = friend;
+        }
+        public override string ToString()
+        {
+            return "Attacked friendly mercenary" + friend.ToString();
+        }
+    }
+
+    class MercenaryHit : EventArgs
+    {
+        public int damage;
+        public MercenaryHit(int damage)
+        {
+            this.damage = damage;
+        }
+
+        public override string ToString()
+        {
+            return "Mercenary got " + damage + " damage.";
+        }
+    }
+
     /* Event rozkazu ataku */
     class AttackOrderEvent : EventArgs
     {
