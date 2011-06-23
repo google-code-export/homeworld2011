@@ -71,8 +71,49 @@ namespace PlagueEngine.Particles
             float minStartSize,
             String particleTexture,
             bool enabled,
-            int technique)
+            int technique,
+            float speed)
         {
+
+
+            enabled = true;
+            technique = 0;
+
+                speed = 100;
+
+            if (blendState == 0)
+            {
+                blendState = 2;
+            }
+            if (maxColor == new Color(0, 0, 0, 0))
+            {
+                maxColor = new Color(255, 0, 0, 255);
+            }
+            if(minColor == new Color(0,0,0,0))
+            {
+                minColor=new Color(255,0,0,255);
+            }
+            if(maxEndSize==0)
+            {
+                maxEndSize=5;
+            }
+            if(minEndSize==0)
+            {
+                minEndSize=5;
+            }
+            if(maxStartSize==0)
+            {
+                maxStartSize=5;
+            }
+            if(minStartSize==0)
+            {
+                minStartSize=5;
+            }
+            if(String.IsNullOrEmpty(particleTexture))
+            {
+                particleTexture=@"Particles\Fireshot";
+            }
+            
             ParticleSettings settings = new ParticleSettings();
             switch (blendState)
             {
@@ -100,10 +141,12 @@ namespace PlagueEngine.Particles
             settings.TextureName = particleTexture;
             settings.Technique = technique;
 
+
+
             Effect particleEffect = content.LoadEffect("ParticleEffect");
             particleEffect.Parameters["DepthTexture"].SetValue(renderer.depth);
             ParticleSystem particleSystem = new ParticleSystem(renderer.Device, renderer, content.LoadTexture2D(particleTexture), particleEffect.Clone(), settings);
-            TracerParticleComponent result = new TracerParticleComponent(particleSystem, gameObject, enabled);
+            TracerParticleComponent result = new TracerParticleComponent(particleSystem, gameObject, enabled,speed);
             return result;
 
 

@@ -27,20 +27,20 @@ namespace PlagueEngine.Particles.Components
         public bool enabled;
 
 
-        public float maxSpeed=100;
+        public float maxSpeed;
         /********************************************************************************/
 
 
         /********************************************************************************/
         /// Constructor
         /********************************************************************************/
-        public TracerParticleComponent(ParticleSystem particleSystem, GameObjectInstance gameObject,  bool enabled)
+        public TracerParticleComponent(ParticleSystem particleSystem, GameObjectInstance gameObject,  bool enabled,float speed)
             : base(gameObject)
         {
             this.particleSystem = particleSystem;
             this.enabled = enabled;
             this.gameObject = gameObject;
-
+            this.maxSpeed = speed;
             if (enabled)
             {
                 particleManager.TracerParticleComponents.Add(this);
