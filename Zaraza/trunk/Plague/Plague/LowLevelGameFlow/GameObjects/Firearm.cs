@@ -401,19 +401,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 }
 
-                if (skin != null)
+
+                if (bulletInfo.Version == 5)
                 {
-                    //if (bulletInfo.Version == 5)
-                    //{
-                    tracerEmmiter.SpawnNewParticle(position, pos);
-                    //}
-                }
-                else
-                {
-                    //if (bulletInfo.Version == 5)
-                    //{
-                    tracerEmmiter.SpawnNewParticle(position, position + bulletInfo.Range * RangeModulation * dispersion);
-                    //}
+                    if (skin != null)
+                    {
+
+                        tracerEmmiter.SpawnNewParticle(position, pos);
+
+                    }
+                    else
+                    {
+
+                        tracerEmmiter.SpawnNewParticle(position, position + bulletInfo.Range * RangeModulation * dispersion);
+
+                    }
                 }
 
                 TimeControl.CreateTimer(TimeSpan.FromSeconds(0.1f), 0, delegate() { light.Enabled = false; });

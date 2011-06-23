@@ -102,6 +102,7 @@ namespace PlagueEngine.Particles.Components
 
         public void SpawnNewParticle(Vector3 startPos, Vector3 endPos)
         {
+            
             Random r = new Random();
             float randomNumber=(float)r.NextDouble();
             startPos = startPos + (endPos - startPos) * 0.5f * randomNumber;
