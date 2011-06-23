@@ -413,6 +413,7 @@ namespace PlagueEngine.Particles
 
             firstFreeParticle = nextFreeParticle;
         }
+
         /********************************************************************************/
 
 
