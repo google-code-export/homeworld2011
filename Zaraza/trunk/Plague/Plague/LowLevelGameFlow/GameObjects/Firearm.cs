@@ -385,10 +385,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
 
 
-                        //if (bulletInfo.Version == 5)
-                        //{
-                        tracerEmmiter.SpawnNewParticle(position, pos);
-                        //}
+                    
                     }
 
                     //PointLightData data = new PointLightData();
@@ -402,6 +399,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     //data.World = Matrix.CreateTranslation(pos);
                     //CreateGameObject(data);
 
+                }
+
+                if (skin != null)
+                {
+                    //if (bulletInfo.Version == 5)
+                    //{
+                    tracerEmmiter.SpawnNewParticle(position, pos);
+                    //}
+                }
+                else
+                {
+                    //if (bulletInfo.Version == 5)
+                    //{
+                    tracerEmmiter.SpawnNewParticle(position, position + bulletInfo.Range * RangeModulation * dispersion);
+                    //}
                 }
 
                 TimeControl.CreateTimer(TimeSpan.FromSeconds(0.1f), 0, delegate() { light.Enabled = false; });
@@ -522,6 +534,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.TParticleTexture = tracerEmmiter.particleSystem.settings.TextureName;
             data.TParticlesEnabled = tracerEmmiter.enabled;
             data.TTechnique = tracerEmmiter.particleSystem.settings.Technique;
+            data.TSpeed = tracerEmmiter.maxSpeed;
 
             return data;
         }
@@ -937,6 +950,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("TracerEmitter"),
         DescriptionAttribute("0 - FacedToScreen 1 - FacedUp")]
         public int TTechnique { get; set; }
+        [CategoryAttribute("TracerEmitter"),
+        DescriptionAttribute("Speed")]
+        public float TSpeed { get; set; }
     }
     /********************************************************************************/
 
