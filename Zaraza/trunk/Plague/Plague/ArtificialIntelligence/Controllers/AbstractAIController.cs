@@ -146,26 +146,58 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 if (!value)
                 {
                     BleedingIntensity = 0;
-                    TimeControlSystem.TimeControl.ReleaseFrameCounter(bleedingTimerID);
+                    TimeControlSystem.TimeControl.ReleaseTimer(bleedingTimerID);
                 }
                 else
                 {
                     if (isBleeding)
                     {
                         BleedingIntensity++;
+                        
                     }
                     else
                     {
                         BleedingIntensity = 5;
-                        bleedingTimerID = TimeControl.CreateFrameCounter(35, -1, delegate() { bleed(); }); 
+                        bleedingTimerID = TimeControl.CreateTimer(new TimeSpan(0,0,0,1,750),-1, delegate() { bleed(); });
+                        
                     }
                 }
                 isBleeding = value;
             }
         }
-        protected uint bleedingTimerID;        
+        protected uint bleedingTimerID;
+        protected uint bleedingSlowDownTimerID;
         // TODO: rozjebałem system ;P obsłuz se jakoś zmniejszanie BleedingIntensity z zewnątrz.
-        public ushort BleedingIntensity { get; set; }
+        private ushort bleedingIntensity;
+        public ushort BleedingIntensity 
+        {
+            get
+            {
+                return bleedingIntensity;
+            }
+            set
+            {
+                TimeControl.ReleaseTimer(bleedingSlowDownTimerID);
+                if (value < 0)
+                {
+                }
+                else if (value == 0 && IsBleeding)
+                {
+                    isBleeding = false;
+                }
+                else
+                {
+                    bleedingIntensity = value;
+                    bleedingSlowDownTimerID = TimeControl.CreateTimer(
+                                new TimeSpan(0,
+                                             0,
+                                             20+(bleedingIntensity)),
+                                -1,
+                                delegate() { BleedingIntensity = (ushort)(bleedingIntensity / 2); });
+                }
+            }
+        }
+        
         public bool IsBlinded  { get; set; }
         public bool IsBlind    { get; protected set; }
 
