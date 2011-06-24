@@ -160,6 +160,7 @@
     <Compile Include="Audio\MusicFadeEffect.cs" />
     <Compile Include="Audio\SongCue.cs" />
     <Compile Include="Audio\SoundCue.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\MedKit.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DialogMessagesManager.cs" />
     <Compile Include="Audio\SoundCueInstance.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Bloom.cs" />
