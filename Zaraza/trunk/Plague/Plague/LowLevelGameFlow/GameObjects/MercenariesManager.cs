@@ -371,7 +371,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 SendEvent(actions.ElementAt(0), Priority.Normal, sender as Mercenary);
                                 if (actions.ElementAt(0) as LookAtPointEvent != null)
                                 {
-                                    actions.RemoveAt(0);        
+                                    actions.RemoveAt(0);
+                                    if (actions.Count != 0)
+                                    {
+                                        SendEvent(actions.ElementAt(0), Priority.Normal, sender as Mercenary);
+                                    }
                                 }
                             }
                         }

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
+using PlagueEngine.Physics;
 
 
 /************************************************************************************/
@@ -50,6 +51,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.body   = body;
             this.light1 = light1;
             this.light2 = light2;
+            
+            if (!body.Immovable)
+            {
+                body.SubscribeCollisionEvent(typeof(Terrain));
+            }
 
             Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight, emitter);
         }
@@ -166,7 +172,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mesh.Enabled = true;
             light1.Enabled = true;
             light2.Enabled = true;
-
+            body.Immovable = false;
+            body.SubscribeCollisionEvent(typeof(Terrain));
             base.OnDropping();
         }
         /****************************************************************************/
@@ -183,6 +190,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             light2.Enabled = true;
 
             base.OnPicking();
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Event
+        /****************************************************************************/
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {
+            if (e.GetType().Equals(typeof(CollisionEvent)))
+            {
+                CollisionEvent CollisionEvent = e as CollisionEvent;
+                if (CollisionEvent.gameObject.GetType().Equals(typeof(Terrain)))
+                {
+                    body.Immovable = true;
+                    body.CancelCollisionWithGameObjectsType(typeof(Terrain));
+                }
+            }
+            else
+            {
+                base.OnEvent(sender, e);
+            }
         }
         /****************************************************************************/
 

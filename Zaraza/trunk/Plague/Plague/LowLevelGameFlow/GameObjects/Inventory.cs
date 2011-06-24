@@ -1347,7 +1347,34 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState)
         {
-            if (mouseKeyAction == MouseKeyAction.LeftClick)
+            if (mouseKeyAction == MouseKeyAction.LeftClick && mouseKeyState.IsDoubleClick())
+            {
+                if (dump &&
+                    mousePos.X > DumpSlotsStartPos.X &&
+                    mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
+                    mousePos.Y > DumpSlotsStartPos.Y &&
+                    mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
+                {
+                    int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
+                    int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
+
+                    if (dumpContent[x, y].Item != null)
+                    {
+                        if (mercenary.FindPlaceForItem(dumpContent[x, y].Item, true))
+                        {
+                            StorableObject item = dumpContent[x, y].Item;
+                            List<int> slotsToClean = CalculateSlots(item, dumpItems[item].Slot, dumpItems[item].Orientation, true);
+                            dumpItems.Remove(item);
+                            foreach (int slot in slotsToClean)
+                            {
+                                dumpContent[slot % 11, slot / 11].Item = null;
+                            }
+                            UpdateInventory();
+                        }
+                    }
+                }
+            }
+            else if (mouseKeyAction == MouseKeyAction.LeftClick)
             {
                 if (mouseKeyState.WasPressed())
                 {
@@ -3139,7 +3166,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
                     }
                 }
-            }
+            }            
         }
         /****************************************************************************/
 
