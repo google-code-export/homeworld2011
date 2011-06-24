@@ -84,7 +84,7 @@ namespace PlagueEngine.Particles
 
 
            
-                blendState = 2;
+                blendState = 1;
 
 
                 if (maxColor == new Color(0, 0, 0, 0)) maxColor = new Color(255, 50, 50, 255);
