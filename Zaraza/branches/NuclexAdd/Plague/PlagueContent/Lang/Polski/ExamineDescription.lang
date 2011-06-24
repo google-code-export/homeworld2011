@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XNABabylonStringFile>
+  <version>1.0</version>
+  <revisionDate>15-06-2011</revisionDate>
+  <author>Bartosz Herman</author>
+  <language>English</language>
+
+  <package id="ExamineDescription">
+    <key id="glowstick" 
+     val="A glow stick is a single-use translucent plastic tube containing isolated substances which when combined make light through a chemical reaction-induced chemiluminescence which does not require an electrical power source. Although the glow stick is often used for recreation, it may also be relied upon for light during important military, police and fire, or EMS operations."/>
+	<key id="flashlight" 
+	 val="Weapon attachable source of directional light. Attachable flashlights are widely used in any type of military, police or EMS operations, allowing not only to lit the target, but to disturb enemy by irritating eyes with intense light."/>
+<key id="supplybox" 
+val="Standard military supplybox, that can carry 
+everything from ammunition and guns to medical 
+and food supplies. Ergonomic handles allow 
+for easy transportation, while hard metal 
+construction protects the load from 
+weather conditions and mechanical damage."/>
+	 
+<key id="hkmp5n" 
+val="Niemiecki półautomatyczny karabin kalibru 9 mm  
+opracowany w latach sześćdziesiątych przez Keckler&amp;Koch.
+Aktualnie MP5 jest jednym z najczęściej wykorzystywanych
+karabinów, będąc na wyposażeniu różnych armi, 
+sił policyjnych i ogranizacji. Prędkość wylotowa 
+jest różna w zależności od modelu i waha się od 285 m/s 
+do 425 m/s. Pozwala to na uzyskanie efektywnego zasięgu 
+od 50 do 200m. 
+"/>
+    
+<key id="hkmp5_cartridge" 
+val="Standard 2-row 30-round MP5 cartrige, uses 
+9x19mm Parabellum ammunition. Can be replaced by 
+100-round Beta C-Mag drum magazine.
+"/>
+	 
+<key id="ak74" 
+val="Następca jednego z najbardziej znanych karabinków
+świata, karabinku AK, potocznie nazywanego Kałasznikowem. 
+Zaprojektowany w 1974, AK-74 wykorzystuje inną amunicję
+(kaliber 5,45 zamiast 7,62) i lżejsze magazynki niż
+legendarny poprzednik. Jest to powszechne uzbrojenie w
+armiach większości państw byłego Związku Radzieckiego.
+Dzięki prędkości wylotowej dochodzącej w niektórych
+wersjach do 900m/s, w rękach profesjonalisty i przy 
+wyposażeniu w lunetę karabin oferuje efektywny zasięg 
+do 600, a nawet 1000 m."/>
+
+<key id="ak74cartridge" 
+val="Standardowy łukowy magazynek do AK-74 na 30 naboi
+kalibru 5,45 mm. Może być zastąpiony magazynkiem RPK-74
+na 45 naboi. Monstrualne magazynki na 100 naboi są
+również dostępne, lecz rzadko spotykane."/>
+	
+<key id="545x39m74_api" 
+val="Amunicja penetrująco-zapalająca kalibru 5,45 mm."/>
+<key id="545x39m74_ap" 
+val="Amunicja penetrująca kalibru 5,45 mm."/>
+	
+<key id="9x19parabellum_jhp" 
+val="Jacketed hollow point 9 mm expanding bullets maximize damage of non-armored targets. Causes heaviest tissue damage, leading to bleeding and shock."/>
+<key id="9x19parabellum_jhps" 
+val=""/>
+	
+	<key id="9x19parabellum_fmj" 
+	 val="Full metal jacket 9mm bullets allows good penetration. Is capable of piercing through armor."/>
+	<key id="9x19parabellum_fmjs" 
+	 val=""/>
+	<key id="762x39wp_jhp" 
+	 val="Jacketed hollow point 7,62 mm expanding bullets maximize damage of non-armored targets. Causes heaviest tissue damage, leading to bleeding and shock."/>
+	<key id="762x39wp_fmj" 
+	 val="Full metal jacket 7,62 mm bullets allows good penetration. Is capable of piercing through armor."/>
+	<key id="762x39wp_fmjs" 
+	 val=""/>
+	<key id="762x39wp_tfmj" 
+	 val="Total full metal jacket 7,62 mm bullet"/>
+	
+	<key id="beretta92f" 
+	 val="Semi-automatic pistol designed in 1972 by Italian Fabricca d'Armi Pietro Beretta. It is one of the most popular guns among police forces and civil users. US armed forces use military spec Beretta 92F, the M9, as a sidearm since 1985. Muzzle velocity is about 380 m/s, allowing effective range up to 50 m."/>
+	<key id="9x19parabellum_cartridge" 
+	 val="Standard 2 row 9x19 Parabellum cartridge. It holds up to 15 9x19 Parabellum bullets. Can be replaced by extended 17 bullet version or 20 bullet cartridge from M93R"/>
+	
+	<key id="scope_posp8x42" 
+	 val="Excellent solution for large-calibre sniper rifles for shooting during day time or in twilights (with reticle illumination)"/>
+  </package>
+</XNABabylonStringFile>
