@@ -7,7 +7,7 @@ using Nuclex.Input;
 using Nuclex.UserInterface;
 using PlagueEngine.Input.Components;
 using Microsoft.Xna.Framework.Graphics;
-
+using PlagueEngine.TimeControlSystem;
 
 // TODO: Rozwinąć input o mapowanie klawiszy
 
@@ -137,6 +137,12 @@ namespace PlagueEngine.Input
         private MouseState             oldMouseState;
         private int                    cursorLock;
         private bool                   enabled;
+        private Clock                  clock;
+        private TimeSpan               prevLeftButtonDown;
+        private TimeSpan               prevMiddleButtonDown;
+        private TimeSpan               prevRightButtonDown;
+        private TimeSpan               doubleClickTime = TimeSpan.FromSeconds(0.25);
+
 
         private SpriteBatch             spriteBatch   = null;
         private Dictionary<String, int> cursors       = new Dictionary<String,int>();
@@ -161,6 +167,9 @@ namespace PlagueEngine.Input
             componentsFactory    = new InputComponentsFactory(this);
             InputComponent.input = this;
             spriteBatch          = new SpriteBatch(device);
+            clock = TimeControl.CreateClock();
+            
+            
         }
         /****************************************************************************/
 
@@ -316,7 +325,7 @@ namespace PlagueEngine.Input
         private void CheckMouse()
         {
             MouseState state = Mouse.GetState();
-
+            
             cursorPosition.X = state.X;
             cursorPosition.Y = state.Y;
 
@@ -372,25 +381,69 @@ namespace PlagueEngine.Input
         {
             var down = false;
             var changed = false;
+            var doubleClick = false;
             switch (mouseKeyAction)
             {
 
                 case MouseKeyAction.LeftClick:
+                    
                     down = (state.LeftButton == ButtonState.Pressed ? true : false);
                     changed = (oldMouseState.LeftButton != state.LeftButton ? true : false);
+
+                    if (down && changed)
+                    {
+                        if ((clock.Time - prevLeftButtonDown)<doubleClickTime)
+                        {
+                            doubleClick = true;
+                        }
+                    }
+
+                    if (down)
+                    {
+                        prevLeftButtonDown = clock.Time;
+                    }
                     break;
 
                 case MouseKeyAction.RightClick:
+                    
                     down = (state.RightButton == ButtonState.Pressed ? true : false);
                     changed = (oldMouseState.RightButton != state.RightButton ? true : false);
+
+                    if (down && changed)
+                    {
+                        if ((clock.Time - prevRightButtonDown) < doubleClickTime)
+                        {
+                            doubleClick = true;
+                        }
+                    }
+
+
+                    if (down)
+                    {
+                        prevRightButtonDown = clock.Time;
+                    }
                     break;
 
                 case MouseKeyAction.MiddleClick:
+                    
                     down = (state.MiddleButton == ButtonState.Pressed ? true : false);
                     changed = (oldMouseState.MiddleButton != state.MiddleButton ? true : false);
+
+                    if (down && changed)
+                    {
+                        if ((clock.Time - prevMiddleButtonDown) < doubleClickTime)
+                        {
+                            doubleClick = true;
+                        }
+                    }
+
+                    if (down)
+                    {
+                        prevMiddleButtonDown = clock.Time;
+                    }
                     break;
             }
-            return new ExtendedMouseKeyState(down, changed);
+            return new ExtendedMouseKeyState(down, changed,doubleClick);
         }
 
         /****************************************************************************/
