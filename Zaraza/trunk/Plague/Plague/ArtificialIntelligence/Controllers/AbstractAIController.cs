@@ -738,6 +738,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.objectTarget = null;
             this.receiver = null;
             this.attack = null;
+            this.Action = Action.IDLE;
             this.AttackTarget = null;
             this.AnimationToActionMapping = null;
             this.objectTarget = null;
