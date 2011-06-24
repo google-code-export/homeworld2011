@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using PlagueEngine.TimeControlSystem;
 
 using PlagueEngine.EventsSystem;
 using PlagueEngine.Input.Components;
@@ -46,13 +47,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private int _iconsOffset;
         private FireSelector fireSelector = null;
+        private Clock clock = null;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public Dictionary<Mercenary, List<EventArgs>> Mercenaries { get; private set; }
+        public Dictionary<Mercenary, List<EventArgs>> Mercenaries        { get; private set; }
+        public Dictionary<Mercenary, uint>          WoundedMercenaries { get; private set; }
         public LinkedCamera LinkedCamera { get; set; }
         /****************************************************************************/
 
@@ -75,7 +78,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             _sniffer.SetOnSniffedEvent(OnSniffedEvent);
             _sniffer.SubscribeEvents(typeof(CreateEvent),
-                                    typeof(DestroyEvent));
+                                    typeof(DestroyEvent),
+                                    typeof(MercenaryHit));
 
             keyboard.SubscibeKeys(OnKey, Keys.Tab, Keys.LeftControl, Keys.LeftAlt, Keys.OemTilde,
                                           Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5,
@@ -88,6 +92,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                             MouseKeyAction.RightClick);
 
             Mercenaries = new Dictionary<Mercenary, List<EventArgs>>();
+            WoundedMercenaries = new Dictionary<Mercenary, uint>();
+            clock = TimeControl.CreateClock();
         }
         /****************************************************************************/
 
@@ -409,6 +415,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 if (m != null)
                 {
                     Mercenaries.Add(m, new List<EventArgs>());
+                    WoundedMercenaries.Add(m,0);
                     _iconsOffset = (66 * Mercenaries.Count) / 2;
                 }
             }
@@ -426,6 +433,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             _commandMode = false;
                         }
                         Mercenaries.Remove(m);
+                        WoundedMercenaries.Remove(m);
                         _iconsOffset = (66 * Mercenaries.Count) / 2;
                     }
                 }
@@ -433,6 +441,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     _inventory = null;
                 }
+            }
+            else if (e.GetType().Equals(typeof(MercenaryHit)))
+            {
+                Mercenary m = sender as Mercenary;
+
+                MercenaryHit MercenaryHit = e as MercenaryHit;
+
+                WoundedMercenaries[m] += (uint)MercenaryHit.damage;
+                TimeControlSystem.TimeControl.CreateTimer(TimeSpan.FromSeconds(0.05f), MercenaryHit.damage, delegate() 
+                                                                                            {
+                                                                                                if(WoundedMercenaries.ContainsKey(m)) --WoundedMercenaries[m];                                                                                                    
+                                                                                            });                
             }
             /*************************************/
 
@@ -783,6 +803,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i), 5), _selectedMercenaries.Contains(pair.Key) ? new Rectangle(196, 0, 64, 64) : new Rectangle(0, 0, 64, 64), Color.White);
                 spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i), 5), pair.Key.Icon, Color.White);
                 spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(64, 0, 64, 64), GetColor(pair.Key.ObjectAIController.HP, pair.Key.ObjectAIController.MaxHP));
+                if (WoundedMercenaries[pair.Key] >= 0)
+                {
+                    float colorFactor = MathHelper.Clamp((float)WoundedMercenaries[pair.Key] / 10.0f, 0, 1);                    
+                    spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i), 5), new Rectangle(128, 0, 64, 64), Color.FromNonPremultiplied(255,255,255,(int)(colorFactor*255)));                
+                }
+
+                if (pair.Key.ObjectAIController.IsBleeding)
+                {
+                    float timeOffset = (float)((clock.Time.TotalSeconds/5) * pair.Key.ObjectAIController.BleedingIntensity + i*0.25f)%1;                    
+                    spriteBatch.Draw(_frontEnd.Texture, new Vector2(offset + (66 * i) + 5, 5), new Rectangle(340 + (int)(54 * timeOffset), 0, 54, 64), GetColor(pair.Key.ObjectAIController.HP, pair.Key.ObjectAIController.MaxHP));
+                }
+
                 var j = 0;
                 foreach (var e in pair.Value)
                 {
