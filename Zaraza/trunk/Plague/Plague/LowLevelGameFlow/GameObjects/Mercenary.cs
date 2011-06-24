@@ -908,6 +908,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             var actions = new List<String> { "Inventory" };
 
+            if (ObjectAIController.IsBleeding 
+                //&& mercenary.Items.ContainsKey(APTECZKA)
+                )
+            {
+                actions.Add("Cure Bleeding");
+            }
             if (mercenary != null && mercenary != this)
             {
                 actions.Add("Follow");
