@@ -134,7 +134,7 @@ namespace PlagueEngine.ArtificialIntelligence
                 }
                
             }
-            else
+            /*else if(countr % 5 == 1)
             {
                 foreach (MercenaryController contr in GoodGuys)
                 {
@@ -153,7 +153,7 @@ namespace PlagueEngine.ArtificialIntelligence
 
                 }
               
-            }
+            }*/
 
             counter++;
         }
