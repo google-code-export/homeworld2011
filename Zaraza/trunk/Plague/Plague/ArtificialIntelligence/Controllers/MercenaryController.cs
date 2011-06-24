@@ -355,7 +355,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.ATTACK]);
                 Action = Action.MOVE;
                 AttackTarget = null;
-                base.OnEvent(null, new MoveToPointCommandEvent(evt.friend.World.Translation + 2 * Vector3.Cross(controlledObject.World.Forward, Vector3.Up)));
+                this.OnEvent(null, new MoveToPointCommandEvent(evt.friend.World.Translation + 2 * Vector3.Cross(controlledObject.World.Forward, Vector3.Up)));
                 #endregion
             }
             else if (e.GetType().Equals(typeof(TakeDamage)))
