@@ -81,9 +81,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                          pos2.Y = MathHelper.Clamp(1.0f - (0.5f * ((position.Y / Math.Abs(position.W)) + 1.0f)), 0.01f, 0.99f);
                                          pos2.Y *= screenSize.Y;
 
-                                         orientation = new Vector3(mousePosition.X, 1, mousePosition.Y) - new Vector3(pos2.X, 1, pos2.Y);
+
+
+                                         orientation = Vector3.Transform(new Vector3(mousePosition.X, -mousePosition.Y,1),Matrix.Invert(viewProjection)) -
+                                                       Vector3.Transform(new Vector3(pos2.X, -pos2.Y,1), Matrix.Invert(viewProjection));
                                          
-                                             emitter.particleSystem.SetOrientation(orientation); 
+                                         emitter.particleSystem.SetOrientation(orientation); 
                                      }, 
                                      MouseMoveAction.Move);
         }

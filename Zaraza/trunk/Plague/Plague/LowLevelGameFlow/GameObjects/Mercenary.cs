@@ -166,7 +166,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     var weapon = Weapon;
                     StoreItem(1);
-                    PlaceItem(weapon, 0);
+                    PlaceItem(weapon, 0);                   
                 }
                 else if (CurrentObject != null)
                 {
@@ -194,6 +194,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         }
                     }
                 }
+                mesh.BlendTo("Pick_Carabine", TimeSpan.FromSeconds(0.25f));
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             /*************************************/
@@ -205,7 +206,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     var weapon = SideArm;
                     StoreItem(2);
-                    PlaceItem(weapon, 0);
+                    PlaceItem(weapon, 0);                    
                 }
                 else if (CurrentObject != null)
                 {
@@ -220,7 +221,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             {
                                 StoreItem(2);
                                 PlaceItem(weapon, 0);
-                            }
+                            }                            
                             PlaceItem(firearm, 2);
                         }
                         else if (Weapon == null && SideArm != null)
@@ -229,10 +230,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             StoreItem(0);
                             StoreItem(2);
                             PlaceItem(weapon, 0);
-                            PlaceItem(firearm, 1);
+                            PlaceItem(firearm, 1);                            
                         }
                     }
                 }
+                mesh.BlendTo("Pick_Pistol", TimeSpan.FromSeconds(0.25f));
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             /*************************************/
@@ -952,9 +954,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         Items.Remove(item.Key);
                         Firearm firearm = CurrentObject as Firearm;
-                        AmmoClip ammoClip = firearm.DetachClip();
+                        if (firearm.AmmoClip != null)
+                        {
+                            AmmoClip ammoClip = firearm.DetachClip();                            
+                            FindPlaceForItem(ammoClip, true);
+                        }
                         firearm.AttachClip(item.Key as AmmoClip);
-                        FindPlaceForItem(ammoClip, true);
                         return;
                     }
                 }
