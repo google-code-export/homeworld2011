@@ -180,7 +180,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                                 if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(target), !_leftControl, merc);
                                 else QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
-                                if ((e as LookAtPointEvent).point != Vector3.Zero)  QueueEvent(e, false, _selectedMercenaries.ToArray());
+                                if ((e as LookAtPointEvent).point != Vector3.Zero)  QueueEvent(e, false, merc);
 
                             }
                         }
@@ -191,7 +191,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 var target = (merc.World.Translation - center) + goTo;
                                 if (LinkedCamera.Run) QueueEvent(new RunToPointCommandEvent(target), !_leftControl, merc);
                                 else QueueEvent(new MoveToPointCommandEvent(target), !_leftControl, merc);
-                                if ((e as LookAtPointEvent).point != Vector3.Zero)  QueueEvent(e, false, _selectedMercenaries.ToArray());
+                                if ((e as LookAtPointEvent).point != Vector3.Zero)  QueueEvent(e, false, merc);
                             }
                         }
                     }
@@ -366,7 +366,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         if (actions.Count != 0)
                         {
                             actions.RemoveAt(0);
-                            if (actions.Count != 0) SendEvent(actions.ElementAt(0), Priority.Normal, sender as Mercenary);
+                            if (actions.Count != 0)
+                            {
+                                SendEvent(actions.ElementAt(0), Priority.Normal, sender as Mercenary);
+                                if (actions.ElementAt(0) as LookAtPointEvent != null)
+                                {
+                                    actions.RemoveAt(0);        
+                                }
+                            }
                         }
                     }
                 }
