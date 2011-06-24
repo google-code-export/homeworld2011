@@ -41,7 +41,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         " controller tried to nullify attack target while in ATTACK or ATTACK_IDLE state");
 #endif
                     //TODO: zakomentować przed prezentacją.
-                    throw new NotSupportedException();
+                    //throw new NotSupportedException();
                 }
                 else
                 {
@@ -163,9 +163,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 isBleeding = value;
             }
         }
-        protected uint bleedingTimerID;
-        protected ushort BleedingIntensity = 0;
-
+        protected uint bleedingTimerID;        
+        public ushort BleedingIntensity { get; protected set; }
         public bool IsBlinded  { get; set; }
         public bool IsBlind    { get; protected set; }
 
