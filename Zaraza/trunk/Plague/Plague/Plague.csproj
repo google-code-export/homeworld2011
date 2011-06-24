@@ -167,6 +167,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\Fire.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FireSelector.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\FlammableBarrel.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\IUsable.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\PainKillers.cs" />
     <Compile Include="LowLevelGameFlow\IFlammable.cs" />
     <Compile Include="LowLevelGameFlow\IPenetrable.cs" />

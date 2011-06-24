@@ -8,14 +8,16 @@ using Microsoft.Xna.Framework;
 using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
+using PlagueEngine.Physics;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
-    class PainKillers : StorableObject
+    class PainKillers : StorableObject, IUsable
     {
         public MeshComponent mesh = null;
         public CylindricalBodyComponent body = null;
-
+        private ushort BleedingIntensity = 0;
+        public int Amount { get; private set; }
 
         /****************************************************************************/
         /// Init
@@ -27,12 +29,44 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          String description,
                          int descriptionWindowWidth,
                          int descriptionWindowHeight,
-                         Particles.Components.ParticleEmitterComponent emitter)
+                         Particles.Components.ParticleEmitterComponent emitter,
+                         ushort bleedingIntensity,
+                         int amount)
         {
             this.mesh = mesh;
             this.body = body;
 
+            Amount = amount;
+            BleedingIntensity = bleedingIntensity;
+
+            if (!body.Immovable)
+            {
+                body.SubscribeCollisionEvent(typeof(Terrain));
+            }
+
             Init(icon, slotsIcon, description, descriptionWindowWidth, descriptionWindowHeight, emitter);
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Event
+        /****************************************************************************/
+        public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
+        {
+            if (e.GetType().Equals(typeof(CollisionEvent)))
+            {
+                CollisionEvent CollisionEvent = e as CollisionEvent;
+                if (CollisionEvent.gameObject.GetType().Equals(typeof(Terrain)))
+                {
+                    body.Immovable = true;
+                    body.CancelCollisionWithGameObjectsType(typeof(Terrain));
+                }
+            }
+            else
+            {
+                base.OnEvent(sender, e);
+            }
         }
         /****************************************************************************/
 
@@ -111,6 +145,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.EnabledMesh = mesh.Enabled;
             data.Static = mesh.Static;
             data.EnabledPhysics = body.Enabled;
+
+            data.Amount = Amount;
+            data.BleedingIntensity = BleedingIntensity;
             return data;
         }
         /****************************************************************************/
@@ -153,6 +190,18 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             base.OnPicking();
         }
         /****************************************************************************/
+
+        public void Use(Mercenary mercenary)
+        {
+            mercenary.ObjectAIController.BleedingIntensity -= BleedingIntensity;
+            --Amount;
+        }
+
+
+        public int GetAmount()
+        {
+            return Amount;
+        }
     }
 
     [Serializable]
@@ -219,6 +268,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("EnabledMesh")]
         public bool EnabledMesh { get; set; }
+
+        [CategoryAttribute("Misc")]
+        public int Amount { get; set; }
+
+        [CategoryAttribute("Misc")]
+        public ushort BleedingIntensity { get; set; }
     }
 
 }

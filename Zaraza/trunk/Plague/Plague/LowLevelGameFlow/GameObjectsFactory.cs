@@ -2367,7 +2367,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.EmitterTranslation,
                                                                         data.World,
                                                                         data.ParticlesEnabled,
-                                                                        data.Technique));
+                                                                        data.Technique),data.BleedingIntensity,data.Amount
+                                                                       );
 
             return true;
         }

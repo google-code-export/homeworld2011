@@ -164,7 +164,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
         }
         protected uint bleedingTimerID;        
-        public ushort BleedingIntensity { get; protected set; }
+        // TODO: rozjebałem system ;P obsłuz se jakoś zmniejszanie BleedingIntensity z zewnątrz.
+        public ushort BleedingIntensity { get; set; }
         public bool IsBlinded  { get; set; }
         public bool IsBlind    { get; protected set; }
 

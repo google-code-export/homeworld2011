@@ -247,7 +247,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             keyboard.SubscibeKeys   (OnKey, Keys.Escape,Keys.Space,Keys.E,Keys.Tab,Keys.D,Keys.F);
             keyboard.SubscibeKeys   (delegate(Keys key, ExtendedKeyState state) { leftControl = state.IsDown(); }, Keys.LeftControl);
 
-            mouse.SubscribeKeys     (OnMouseKey, MouseKeyAction.LeftClick,MouseKeyAction.RightClick);
+            mouse.SubscribeKeys     (OnMouseKey, MouseKeyAction.LeftClick,MouseKeyAction.RightClick,MouseKeyAction.MiddleClick);
             mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move,MouseMoveAction.Scroll);
             
             frontEnd.Draw = OnDraw;
@@ -2930,6 +2930,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             SetupFirearm(mercenary.CurrentObject as Firearm);
                         }
+                        else if ((mercenary.CurrentObject as IUsable) != null)
+                        {
+                            IUsable usable = mercenary.CurrentObject as IUsable;
+                            usable.Use(mercenary);
+                            if (usable.GetAmount() == 0)
+                            {
+                                SendEvent(new DestroyObjectEvent(mercenary.CurrentObject.ID), Priority.High, GlobalGameObjects.GameController);
+                                mercenary.CurrentObject = null;
+                            }
+                        }
                         else ShowDescription(mercenary.CurrentObject);
                     }
                     else if (mousePos.X > WeaponIconPos.X &&
@@ -2969,6 +2979,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             else if ((Items[x, y].Item as Firearm) != null)
                             {
                                 SetupFirearm(Items[x, y].Item as Firearm);
+                            }
+                            else if ((Items[x, y].Item as IUsable) != null)
+                            {
+                                IUsable usable = Items[x, y].Item as IUsable;
+                                usable.Use(mercenary);
+                                if (usable.GetAmount() == 0)
+                                {
+                                    SendEvent(new DestroyObjectEvent(Items[x, y].Item.ID), Priority.High, GlobalGameObjects.GameController);
+                                    mercenary.Items.Remove(Items[x, y].Item);
+                                    UpdateInventory();
+                                }
                             }
                             else ShowDescription(Items[x, y].Item);
                         }
@@ -3029,6 +3050,90 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 mousePos.Y < AmmoSlotsIconPos.Y + 50)
                             {
                                 AmmoSlots[i] = null;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (mouseKeyAction == MouseKeyAction.MiddleClick)
+            {
+                if (mouseKeyState.WasReleased() && mercenary2 == null)
+                {
+                    if (mousePos.X > CurrItemIconPos.X &&
+                        mousePos.X < CurrItemIconPos.X + 50 &&
+                        mousePos.Y > CurrItemIconPos.Y &&
+                        mousePos.Y < CurrItemIconPos.Y + 50)
+                    {
+                        ShowDescription(mercenary.CurrentObject);
+                    }
+                    else if (mousePos.X > WeaponIconPos.X &&
+                             mousePos.X < WeaponIconPos.X + 50 &&
+                             mousePos.Y > WeaponIconPos.Y &&
+                             mousePos.Y < WeaponIconPos.Y + 50)
+                    {
+                        if (mercenary.Weapon != null)
+                        {
+                            ShowDescription(mercenary.Weapon);
+                        }
+                    }
+                    else if (mousePos.X > SideArmIconPos.X &&
+                             mousePos.X < SideArmIconPos.X + 50 &&
+                             mousePos.Y > SideArmIconPos.Y &&
+                             mousePos.Y < SideArmIconPos.Y + 50)
+                    {
+                        if (mercenary.SideArm != null)
+                        {
+                            ShowDescription(mercenary.SideArm);
+                        }
+                    }
+                    else if (mousePos.X > SlotsStartPos.X &&
+                             mousePos.X < SlotsStartPos.X + 11 * 32 &&
+                             mousePos.Y > SlotsStartPos.Y &&
+                             mousePos.Y < SlotsStartPos.Y + (Items.GetLength(1) < 15 ? Items.GetLength(1) : 15) * 32)
+                    {
+                        int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
+                        int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
+
+                        if (Items[x, y].Item != null)
+                        {
+                            ShowDescription(Items[x, y].Item);
+                        }
+                    }
+                    else if (dump &&
+                             mousePos.X > DumpSlotsStartPos.X &&
+                             mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
+                             mousePos.Y > DumpSlotsStartPos.Y &&
+                             mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
+                    {
+                        int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
+                        int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;
+
+                        if (dumpContent[x, y].Item != null)
+                        {
+                            ShowDescription(dumpContent[x, y].Item);
+                        }
+                    }
+                    else if (FirearmWindow &&
+                            mousePos.X > FirearmAmmoClipIconPos.X &&
+                            mousePos.X < FirearmAmmoClipIconPos.X + 50 &&
+                            mousePos.Y > FirearmAmmoClipIconPos.Y &&
+                            mousePos.Y < FirearmAmmoClipIconPos.Y + 50)
+                    {
+                        if (CurrentFirearm.AmmoClip != null) ShowDescription(CurrentFirearm.AmmoClip);
+                    }
+                    else if (FirearmWindow && mousePos.X > 420 && mousePos.Y > 310)
+                    {
+
+                        for (int i = 0; i < CurrentFirearm.Accessories.Length; i++)
+                        {
+                            if (CurrentFirearm.Accessories[i].Accessory != null &&
+                                mousePos.X > AccessoriesIconPos.X + (80 * i) &&
+                                mousePos.X < AccessoriesIconPos.X + 50 + (80 * i) &&
+                                mousePos.Y > AccessoriesIconPos.Y &&
+                                mousePos.Y < AccessoriesIconPos.Y + 50)
+                            {
+                                ShowDescription(CurrentFirearm.Accessories[i].Accessory);
                                 break;
                             }
                         }
@@ -3628,6 +3733,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 sb.Append("/");
                 sb.Append(firearm.AmmoClip.Capacity.ToString());
                 valueToDraw = sb.ToString();
+            }
+            else if (item as IUsable != null)
+            {
+                valueToDraw = (item as IUsable).GetAmount().ToString();
             }
 
             if (!String.IsNullOrEmpty(valueToDraw))
