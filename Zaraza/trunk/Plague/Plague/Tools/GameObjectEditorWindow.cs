@@ -607,6 +607,12 @@ namespace PlagueEngine.Tools
             Bloom.dataClassType = typeof(BloomData);
             gameObjectClassNames.Add(Bloom);
 
+
+            gameObjectsClassName PainKillers = new gameObjectsClassName();
+            PainKillers.className = "PainKillers";
+            PainKillers.ClassType = typeof(PainKillers);
+            PainKillers.dataClassType = typeof(PainKillersData);
+            gameObjectClassNames.Add(PainKillers);
         }
         /********************************************************************************/
 
