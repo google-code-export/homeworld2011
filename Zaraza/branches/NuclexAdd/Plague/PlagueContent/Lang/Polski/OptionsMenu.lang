@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XNABabylonStringFile>
+  <version>1.0</version>
+  <revisionDate>15-06-2011</revisionDate>
+  <author>Bartosz Herman</author>
+  <language>English</language>
+
+  <package id="OptionsMenu">
+    <key id="title" val="OPTIONS"/>
+
+    <key id="language_change" val="Język"/>
+
+    <key id="music_volume" val="Music Volume"/>
+    <key id="sounds_effects_volume" val="Sound Effects Volume"/>
+
+    <key id="ssao"              val="SSAO"/>
+    <key id="brightness_change" val="Jasność"/>
+    <key id="contrast_change"   val="Kontrast"/>
+    <key id="fullscreen"        val="Pełny Ekran"/>
+    <key id="screen_size"       val="Rozdzielczość"/>
+
+    <key id="back" val="Zapisz"/>
+    <key id="on" val="Włączony"/>
+    <key id="off" val="Wyłączony"/>
+    <key id="toggle_on" val="Włącz"/>
+    <key id="toggle_off" val="Wyłącz"/>
+
+
+    <key id="language_english" val="English"/>
+    <key id="language_polish"  val="Polski"/>
+    <key id="language_german"  val="Deutsch"/>
+
+  </package>
+</XNABabylonStringFile>
