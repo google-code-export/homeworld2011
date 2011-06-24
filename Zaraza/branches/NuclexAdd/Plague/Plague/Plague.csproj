@@ -71,7 +71,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JigLibX">
-      <HintPath>.\JigLibX.dll</HintPath>
+      <HintPath>..\..\References\physic\JigLibX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
@@ -102,27 +102,6 @@
     </Reference>
     <Reference Include="mscorlib">
       <Private>False</Private>
-    </Reference>
-    <Reference Include="NMock2">
-      <HintPath>.\NMock2.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.Input">
-      <HintPath>.\Nuclex.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.Support">
-      <HintPath>.\Nuclex.Support.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.Testing.Xna">
-      <HintPath>.\Nuclex.Testing.Xna.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.UserInterface">
-      <HintPath>.\Nuclex.UserInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>.\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX.DirectInput">
-      <HintPath>.\SlimDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -357,6 +336,14 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Nuclex.Input\Nuclex.Input %28xna-4.0-x86%29.csproj">
+      <Project>{4D9CD97B-289E-4519-A6F8-58C6DB8040D4}</Project>
+      <Name>Nuclex.Input %28xna-4.0-x86%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nuclex.UserInterface\Nuclex.UserInterface %28xna-4.0-x86%29.csproj">
+      <Project>{2CB08AB5-46B8-44A9-92AE-33790629696D}</Project>
+      <Name>Nuclex.UserInterface %28xna-4.0-x86%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\PlagueEngineSkinning\PlagueEngineSkinning.csproj">
       <Project>{1F938490-A946-4E1A-A1A2-51B61F8E2BC1}</Project>
       <Name>PlagueEngineSkinning</Name>
