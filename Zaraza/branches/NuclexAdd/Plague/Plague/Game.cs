@@ -13,6 +13,7 @@ using PlagueEngine.Physics;
 using PlagueEngine.Particles;
 using PlagueEngine.ArtificialIntelligence;
 using PlagueLocalizationExtension;
+using System.Windows.Forms;
 
 namespace PlagueEngine
 {
@@ -59,6 +60,10 @@ namespace PlagueEngine
             Title = title;
             Window.Title = title;
             IsMouseVisible = true;
+            Window.AllowUserResizing = false;
+            Form form = (Form)Form.FromHandle(Window.Handle);
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
             Diagnostics.Game = this;
 #if DEBUG
             Diagnostics.ShowDiagnostics     = true;
@@ -128,7 +133,7 @@ namespace PlagueEngine
             
             Renderer.InitHelpers();
             InitGUI();
-            Level.LoadLevel("Menu.lvl");
+            
             
             //Głośność dla podkładu muzycznego powinna być relatywnie niska 
             //AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);
@@ -159,6 +164,9 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void LoadContent()
         {
+
+            Level.LoadLevel("Menu.lvl");
+
             Renderer.LoadEffects();
 
             Renderer.LoadFonts("Courier New", "Courier New Bold","Arial");
@@ -171,7 +179,6 @@ namespace PlagueEngine
 #if DEBUG
             _gameObjectEditor.LoadIconTextures();
             Diagnostics.PushLog("Loading content complete");
-            
 #endif
             
         }
