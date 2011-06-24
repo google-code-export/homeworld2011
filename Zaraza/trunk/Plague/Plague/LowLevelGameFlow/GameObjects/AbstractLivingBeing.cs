@@ -80,8 +80,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     case PlagueEngine.ArtificialIntelligence.Controllers.Action.TO_IDLE:
                         AnimationMapping.Add(new AnimationBinding("TO_IDLE", pair.Value));
                         break;
+                    case ArtificialIntelligence.Controllers.Action.TACTICAL_MOVE_CARABINE:
+                        AnimationMapping.Add(new AnimationBinding("TACTICAL_MOVE_CARABINE", pair.Value));
+                        break;
+                    case ArtificialIntelligence.Controllers.Action.TACTICAL_MOVE_SIDEARM:
+                        AnimationMapping.Add(new AnimationBinding("TACTICAL_MOVE_SIDEARM", pair.Value));
+                        break;
+                    case ArtificialIntelligence.Controllers.Action.WOUNDED_MOVE:
+                        AnimationMapping.Add(new AnimationBinding("WOUNDED_MOVE", pair.Value));
+                        break;
                     default:
-                        AnimationMapping.Add(new AnimationBinding("IDLE", pair.Value));
                         break;
                 }
 

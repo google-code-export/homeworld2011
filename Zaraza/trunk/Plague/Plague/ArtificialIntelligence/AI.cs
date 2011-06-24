@@ -122,7 +122,7 @@ namespace PlagueEngine.ArtificialIntelligence
                     if (!contr.IsBlinded)
                     {
                         AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(GoodGuys, contr, contr.controlledObject.World.Backward, contr.SightAngle, contr.SightRange);
-                        if (found != null && found.controlledObject != contr.attackTarget)
+                        if (found != null && found.controlledObject != contr.AttackTarget)
                         {
                             Diagnostics.PushLog("=========================MOB SEES!=========================");
                             EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
@@ -142,7 +142,7 @@ namespace PlagueEngine.ArtificialIntelligence
                     if (!contr.IsBlinded)
                     {
                         AbstractAIController found = PlagueEngine.AItest.AI.FindClosestVisible(BadGuys, contr, contr.controlledObject.World.Forward, contr.SightAngle, contr.SightRange);
-                        if (found != null && found.controlledObject != contr.attackTarget)
+                        if (found != null && found.controlledObject != contr.AttackTarget)
                         {
                             Diagnostics.PushLog("=========================MERC SEES!=========================");
                             EnemyNoticed evt = new EnemyNoticed(found.controlledObject);
