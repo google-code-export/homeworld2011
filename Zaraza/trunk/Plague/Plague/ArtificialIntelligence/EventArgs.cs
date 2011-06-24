@@ -101,16 +101,23 @@ namespace PlagueEngine.ArtificialIntelligence
     {
         public double amount;
         public AbstractLivingBeing attacker;
+        public bool causesBleeding;
+        public bool causesBlindness;
 
-        public TakeDamage(double amount, AbstractLivingBeing attacker)
+        public TakeDamage(double amount, AbstractLivingBeing attacker, bool causesBleeding, bool causesBlindness)
         {
             this.amount = amount;
             this.attacker = attacker;
+            this.causesBlindness = causesBlindness;
+            this.causesBleeding = causesBleeding;
         }
 
         public override string ToString()
         {
-            return "HP: " + amount + " attacker: " + attacker == null ? "NULL" : attacker.ToString();
+            return "HP: " + amount + 
+                   " attacker: " + attacker == null ? "NULL" : attacker.ToString() +
+                   (causesBleeding ? " causes bleeding" : "") + 
+                   (causesBlindness ? " causes blindness" : "");
         }
     }
 
