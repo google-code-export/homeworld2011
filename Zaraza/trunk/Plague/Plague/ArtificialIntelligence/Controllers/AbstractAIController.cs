@@ -41,7 +41,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         " controller tried to nullify attack target while in ATTACK or ATTACK_IDLE state");
 #endif
                     //TODO: zakomentować przed prezentacją.
-                    //throw new NotSupportedException();
+                    throw new ArgumentException();
                 }
                 else
                 {
@@ -72,7 +72,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                 + "attackTarget was null");
 #endif
                             //TODO: zakomentować przed prezentacją.
-                            throw new NotSupportedException();
+                            throw new ArgumentException ();
                         }
                         break;
                     default:
