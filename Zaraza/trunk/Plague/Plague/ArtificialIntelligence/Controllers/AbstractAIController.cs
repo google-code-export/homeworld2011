@@ -126,7 +126,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         /// Properties
         /****************************************************************************/
         public uint MaxHP              { get; protected set; }
-        public uint HP                 { get; protected set; }
+        public uint HP                 { get; set; }
         /****************************************************************************/
 
         protected bool isDisposed = false;

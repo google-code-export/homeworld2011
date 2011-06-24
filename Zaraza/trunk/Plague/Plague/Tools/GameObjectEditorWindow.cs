@@ -613,6 +613,13 @@ namespace PlagueEngine.Tools
             PainKillers.ClassType = typeof(PainKillers);
             PainKillers.dataClassType = typeof(PainKillersData);
             gameObjectClassNames.Add(PainKillers);
+
+
+            gameObjectsClassName MedKit = new gameObjectsClassName();
+            MedKit.className = "MedKit";
+            MedKit.ClassType = typeof(MedKit);
+            MedKit.dataClassType = typeof(MedKitData);
+            gameObjectClassNames.Add(MedKit);
         }
         /********************************************************************************/
 
