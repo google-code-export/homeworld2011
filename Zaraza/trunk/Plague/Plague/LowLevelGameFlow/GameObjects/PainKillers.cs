@@ -160,7 +160,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             body.DisableBody();
             mesh.Enabled = false;
-
+            
             base.OnStoring();
         }
         /****************************************************************************/
@@ -173,7 +173,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             body.EnableBody();
             mesh.Enabled = true;
-
+            body.Immovable = false;
+            body.SubscribeCollisionEvent(typeof(Terrain));
             base.OnDropping();
         }
         /****************************************************************************/
