@@ -940,7 +940,6 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                    data.Vertical,
                                                                    data.Horizontal,
                                                                    data.Size));
-            //TODO: sprawdzić, czy to już wszystko dla panelu.
             return true;
         }
         /****************************************************************************/

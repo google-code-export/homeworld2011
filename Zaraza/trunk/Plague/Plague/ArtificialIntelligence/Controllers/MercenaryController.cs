@@ -19,8 +19,62 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public Rectangle InventoryIcon { get; protected set; }
         public uint TinySlots { get; protected set; }
         public uint Slots { get; protected set; }
-        
 
+        protected override Action Action
+        {
+            set
+            {
+                Mercenary merc = null;
+                switch (value)
+                {
+
+                    case Action.FOLLOW:
+                        merc = controlledObject as Mercenary;
+                        //TODO: dorobić test czy nie spełnia warunku wounded.
+                        if (merc.CurrentObject as Firearm != null)
+                        {
+                            Firearm firearm = merc.CurrentObject as Firearm;
+                            if (firearm.SideArm)
+                            {
+                                base.MoveAction = Action.TACTICAL_MOVE_SIDEARM;
+                            }
+                            else
+                            {
+                                base.MoveAction = Action.TACTICAL_MOVE_CARABINE;
+                            }
+                        }         
+                        base.Action = value;
+                        break;
+                    case Action.MOVE:
+                        merc = controlledObject as Mercenary;
+                        //TODO: dorobić test czy nie spełnia warunku wounded.
+                        if (merc.CurrentObject as Firearm != null)
+                        {
+                            Firearm firearm = merc.CurrentObject as Firearm;
+                            if (firearm.SideArm)
+                            {
+                                base.Action = Action.TACTICAL_MOVE_SIDEARM;
+                                base.MoveAction = Action.TACTICAL_MOVE_SIDEARM;
+                            }
+                            else
+                            {
+                                base.Action = Action.TACTICAL_MOVE_CARABINE;
+                                base.MoveAction = Action.TACTICAL_MOVE_CARABINE;
+                            }
+                        }
+                        else
+                        {
+                            base.Action = value;
+                            base.MoveAction = value;
+                        }
+                        break;
+                    default:
+                        base.Action = value;
+                        break;
+                }
+            }
+        }
+     
         public MercenaryController(AbstractLivingBeing lb,
                                    float rotationSpeed,
                                    float movingSpeed,
@@ -42,8 +96,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         /// <param name="deltaTime"></param>
         public override void Update(TimeSpan deltaTime)
         {
+            Mercenary merc;
             if (isDisposed) return;
-            switch (action)
+            switch (Action)
             {
                 case Action.EXCHANGE:
                 case Action.EXAMINE:
@@ -55,7 +110,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     {
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
                         objectTarget = null;
-                        action = Action.IDLE;
+                        Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
                         objectTarget = null;
@@ -83,13 +138,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     #endregion
                     return;
                 case Action.ATTACK:
-
-                    Mercenary merc = controlledObject as Mercenary;
-                    if ((merc.CurrentObject as Firearm) != null)
+                    merc = controlledObject as Mercenary;
+                    if ((merc.CurrentObject as Firearm) != null && AttackTarget != null)
                     {
-                        if ((merc.CurrentObject as Firearm).SureFire(attackTarget.World.Translation))
+                        if ((merc.CurrentObject as Firearm).SureFire(AttackTarget.World.Translation))
                         {
-                            Vector3 direction = controlledObject.World.Translation - attackTarget.World.Translation;
+                            Vector3 direction = controlledObject.World.Translation - AttackTarget.World.Translation;
                             Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
                             Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
                             float det = v1.X * v2.Y - v1.Y * v2.X;
@@ -100,8 +154,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
                         else merc.Reload();
                     }
-                    action = Action.ATTACK_IDLE;
-                    TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { if (action == Action.ATTACK_IDLE) { action = Action.ATTACK; } });
+                    Action = Action.ATTACK_IDLE;
+                    TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { if (Action == Action.ATTACK_IDLE) { Action = Action.ATTACK; } });
                     return;
                 default:
                     base.Update(deltaTime);
@@ -117,7 +171,27 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public override void OnEvent(EventsSystem.EventsSender sender, EventArgs e)
         {
             if (isDisposed) return;
-            if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
+            if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
+            {
+                #region MoveToPoint
+                if (!controlledObject.SoundEffectComponent.IsPlaying())
+                {
+                    controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
+                }
+                MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
+
+                receiver = sender as IEventsReceiver;
+                target = moveToPointCommandEvent.point;
+                if (controlledObject.PathfinderComponent.GetPath(controlledObject.World.Translation, moveToPointCommandEvent.point))
+                {
+                    target = controlledObject.PathfinderComponent.NextNode();
+                }
+                Diagnostics.PushLog(LoggingLevel.WARN, "Position:" + controlledObject.World.Translation.ToString());
+                Diagnostics.PushLog(LoggingLevel.WARN, "Target:" + target.ToString());
+                Action = Action.MOVE;
+                #endregion
+            }
+            else if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
             {
                 #region GrabEvent
                 GrabObjectCommandEvent moveToObjectCommandEvent = e as GrabObjectCommandEvent;
@@ -127,7 +201,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 if (moveToObjectCommandEvent.gameObject != this.controlledObject)
                 {
                     objectTarget = moveToObjectCommandEvent.gameObject;
-                    action = Action.PICK;
+                    Action = Action.PICK;
                     controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
                 }
                 #endregion
@@ -141,7 +215,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 if (exchangeEvent.mercenary != this.controlledObject)
                 {
                     objectTarget = exchangeEvent.mercenary;
-                    action = Action.EXCHANGE;
+                    Action = Action.EXCHANGE;
                     controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
                 }
                 #endregion
@@ -153,7 +227,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                 if (collisionEvent.gameObject == objectTarget)
                 {
-                    if (action == Action.PICK)
+                    if (Action == Action.PICK)
                     {
                         #region PICK Action
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
@@ -164,14 +238,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
 
                         objectTarget = null;
-                        action = Action.IDLE;
+                        Action = Action.IDLE;
                         controlledObject.Body.Immovable = true;
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                         #endregion
                     }
-                    else if (action == Action.EXAMINE)
+                    else if (Action == Action.EXAMINE)
                     {
                         #region EXAMINE Action
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
@@ -179,17 +253,17 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         controlledObject.SendEvent(new ExamineEvent(), EventsSystem.Priority.Normal, objectTarget);
 
                         objectTarget = null;
-                        action = Action.IDLE;
+                        Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                         #endregion
                     }
-                    else if (action == Action.EXCHANGE)
+                    else if (Action == Action.EXCHANGE)
                     {
                         #region EXCHANGE Action
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
-                        action = Action.IDLE;
+                        Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         
@@ -199,11 +273,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         
                         #endregion
                     }
-                    else if (action == Action.OPEN)
+                    else if (Action == Action.OPEN)
                     {
                         #region OPEN Action
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
-                        action = Action.IDLE;
+                        Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
 
@@ -213,11 +287,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         #endregion
                     }
-                    else if (action == Action.ACTIVATE)
+                    else if (Action == Action.ACTIVATE)
                     {
                         #region ACTIVATE Action
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
-                        action = Action.IDLE;
+                        Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
                         controlledObject.SendEvent(new ObjectActivatedEvent(), Priority.Normal, objectTarget);
@@ -237,7 +311,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 receiver = sender as IEventsReceiver;
 
                 objectTarget = ExamineObjectCommandEvent.gameObject;
-                action = Action.EXAMINE;
+                Action = Action.EXAMINE;
                 controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
                 #endregion
             }
@@ -249,7 +323,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 receiver = sender as IEventsReceiver;
 
                 objectTarget = OpenContainerCommandEvent.container;
-                action = Action.OPEN;
+                Action = Action.OPEN;
                 controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
                 #endregion
             }
@@ -261,7 +335,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
 
                 objectTarget = activateEvent.gameObject;
-                action = Action.ACTIVATE;
+                Action = Action.ACTIVATE;
                 controlledObject.Body.SubscribeCollisionEvent(objectTarget.ID);
 
                 #endregion
@@ -270,8 +344,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 #region Attack Order Event
                 AttackOrderEvent evt = e as AttackOrderEvent;
-                action = Action.ENGAGE;
-                this.attackTarget = evt.EnemyToAttack;
+                Action = Action.ENGAGE;
+                this.AttackTarget = evt.EnemyToAttack;
                 #endregion 
             }
             else if (e.GetType().Equals(typeof(FriendlyFire)))
@@ -279,7 +353,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 #region Cease fire and move, idiot!
                 FriendlyFire evt = e as FriendlyFire;
                 controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.ATTACK]);
-                attackTarget = null;
+                Action = Action.MOVE;
+                AttackTarget = null;
                 base.OnEvent(null, new MoveToPointCommandEvent(evt.friend.World.Translation + 2 * Vector3.Cross(controlledObject.World.Forward, Vector3.Up)));
                 #endregion
             }
@@ -309,7 +384,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 #region LookAtPoint
                 LookAtPointEvent LookAtPointEvent = e as LookAtPointEvent;
-                action = Action.IDLE;
+                Action = Action.IDLE;
                 controlledObject.mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.5f));
                 Vector3 direction = controlledObject.World.Translation - LookAtPointEvent.point;
                 Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
@@ -351,7 +426,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 if ((merc.CurrentObject as Firearm) != null)
                 {
                     OpenFireToTargetCommandEvent = e as OpenFireToTargetCommandEvent;
-                    attackTarget = OpenFireToTargetCommandEvent.target;
+                    AttackTarget = OpenFireToTargetCommandEvent.target;
                     canShoot = (merc.CurrentObject as Firearm).SureFire(OpenFireToTargetCommandEvent.target.World.Translation);
                     if (canShoot)
                     {
@@ -370,8 +445,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 {
                     if (OpenFireToTargetCommandEvent.target.GetType().Equals(typeof(Creature)))
                     {
-                        action = Action.ATTACK_IDLE;
-                        TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { action = Action.ATTACK; });
+                        Action = Action.ATTACK_IDLE;
+                        TimeControlSystem.TimeControl.CreateFrameCounter(60, 0, delegate() { if(Action == Action.ATTACK_IDLE) Action = Action.ATTACK; });
                     }
                 }
                 controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);

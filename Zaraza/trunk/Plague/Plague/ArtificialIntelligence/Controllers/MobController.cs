@@ -54,7 +54,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         /// <param name="deltaTime">Różnica czasu między Update'ami</param>
         public override void Update(System.TimeSpan deltaTime)
         {
-            switch (action)
+            switch (Action)
             {
                 default:
                     base.Update(deltaTime);
