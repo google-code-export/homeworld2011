@@ -125,7 +125,7 @@ namespace PlagueEngine.GUI.Components
 
 
         /********************************************************************************/
-        public int X
+       new public int X
         {
             get
             {
@@ -147,7 +147,7 @@ namespace PlagueEngine.GUI.Components
 
 
         /********************************************************************************/
-        public int Y
+        new public int Y
         {
             get
             {
@@ -168,7 +168,7 @@ namespace PlagueEngine.GUI.Components
 
 
         /********************************************************************************/
-        public int Width
+        new public int Width
         {
             get
             {
@@ -187,7 +187,7 @@ namespace PlagueEngine.GUI.Components
 
 
         /********************************************************************************/
-        public int Height
+       new public int Height
         {
             get
             {

@@ -95,7 +95,7 @@ namespace PlagueEngine.Particles.Components
         /********************************************************************************/
         /// ReleaseEmitter
         /********************************************************************************/
-        public void ReleaseMe()
+       override public void ReleaseMe()
         {
             //if (enabled)
             //{
