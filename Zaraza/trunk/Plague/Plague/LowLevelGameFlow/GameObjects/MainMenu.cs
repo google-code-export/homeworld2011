@@ -12,6 +12,8 @@ using PlagueEngine.HighLevelGameFlow;
 
 using System.ComponentModel.Design;
 using System.Drawing.Design;
+using PlagueEngine.Audio.Components;
+using PlagueEngine.Audio;
 
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
@@ -27,6 +29,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
+
+        BackgroundMusicComponent music = new BackgroundMusicComponent();
+        SoundEffectComponent waves = new SoundEffectComponent();
+        SoundEffectComponent wind = new SoundEffectComponent();
+
 
         FrontEndComponent frame;
 
@@ -140,6 +147,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         FrontEndComponent frame,
             FrontEndComponent splash)
         {
+            this.RequiresUpdate = true;
+
+
+            music.LoadFolder("Music", 1.0f); ;  //music.
+            music.AutomaticMode = false;
+            music.PlaySong("default", "cautious-path", true);
+
+            waves.LoadFolder("Menu", 0.7f, 0, 0, false);
+            waves.SetPosition(new Vector3(0,3,-60));
+            waves.PlaySound("Menu", "ocean-wave-2", true);
+
+            wind.LoadFolder("Menu", 0.5f, 0, 0, false);
+            wind.SetPosition(new Vector3(0, 3, -60));
+            wind.PlaySound("Menu", "windhowl", true);    
+            
+            //AudioManager.GetInstance.BackgroundMusicComponent.PlaySong("default", "cautious-path");
+            
             splashScreen = splash;
             splashScreen.Draw = OnDraw;
 
@@ -308,6 +332,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+        public override void Update(TimeSpan elapsed)
+        {
+            AudioManager.GetInstance.BackgroundMusicComponent.Update(elapsed);
+            
+            //waves.Emitter.Position = new Vector3(0,3,-60) + Vector3.Multiply(Vector3.Left, (float)(Math.Cos((double)elapsed.Milliseconds)));
+            //wind.Emitter.Position = new Vector3(0,3,-60) + 2 * Vector3.Left + Vector3.Multiply(Vector3.Left, (float)(Math.Cos((double)elapsed.Milliseconds)));
+        }
 
         /****************************************************************************/
         /// OnDraw
