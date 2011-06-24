@@ -166,7 +166,7 @@ namespace PlagueEngine.Audio.Components
 #endif
                 return;
             }
-            if (Songs[groupName].ContainsKey(songName))
+            if (!Songs[groupName].ContainsKey(songName))
             {
 #if DEBUG
                 Diagnostics.PushLog("Piosenka " + songName + " nie występuje w tej grupie:" + groupName);

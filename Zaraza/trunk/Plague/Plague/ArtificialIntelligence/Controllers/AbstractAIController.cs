@@ -507,7 +507,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
             
 
-            controlledObject.SoundEffectComponent.SetPosiotion(controlledObject.World.Translation);
+            controlledObject.SoundEffectComponent.SetPosition(controlledObject.World.Translation);
             double currentDistance;
             
             switch (Action)

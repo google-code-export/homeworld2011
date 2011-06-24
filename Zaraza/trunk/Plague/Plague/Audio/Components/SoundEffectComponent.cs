@@ -169,7 +169,7 @@ namespace PlagueEngine.Audio.Components
 
 
         }
-        public void SetPosiotion(Vector3 position)
+        public void SetPosition(Vector3 position)
         {
             _emitter.Position = position;
         }
