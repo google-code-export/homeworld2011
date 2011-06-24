@@ -115,6 +115,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public float SightRange        { get; protected set; }
         public float SightAngle        { get; protected set; }
 
+        
+
         protected IEventsReceiver receiver = null;
         
         public Dictionary<Action, String> AnimationToActionMapping{ get; protected set; }
@@ -144,18 +146,29 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 if (!value)
                 {
                     BleedingIntensity = 0;
+                    TimeControlSystem.TimeControl.ReleaseFrameCounter(bleedingTimerID);
                 }
                 else
                 {
-                    BleedingIntensity++;
+                    if (isBleeding)
+                    {
+                        BleedingIntensity++;
+                    }
+                    else
+                    {
+                        BleedingIntensity = 5;
+                        bleedingTimerID = TimeControl.CreateFrameCounter(35, -1, delegate() { bleed(); }); 
+                    }
                 }
                 isBleeding = value;
             }
         }
-
+        protected uint bleedingTimerID;
         protected ushort BleedingIntensity = 0;
+
         public bool IsBlinded  { get; set; }
         public bool IsBlind    { get; protected set; }
+
         
         /// <summary>
         /// Short Constructor, setting up current HP as MaxHP and using default precision values.
@@ -303,7 +316,25 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         }
 
-  
+        public void bleed()
+        {
+            if (IsDisposed()) return;
+            if (IsBleeding)
+            {
+                //TODO: tu jakiś particle effect
+                //TODO tu jakiś dźwięk
+                if (HP < BleedingIntensity)
+                {
+                    EnemyKilled evt = new EnemyKilled(controlledObject);
+                    SendEvent(evt, Priority.Normal, AbstractAIController.ai);
+                    Dispose();
+                }
+                else
+                {
+                    HP -= BleedingIntensity;
+                }
+            }
+        }
 
         /// <summary>
         /// 
@@ -317,6 +348,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                  #region Take Damage
                 TakeDamage evt = e as TakeDamage;
+
+                if (evt.causesBleeding)
+                {
+
+                    IsBleeding = true;
+                }                
+
                 if (HP <= evt.amount)
                 {
                     EnemyKilled args = new EnemyKilled(controlledObject);
@@ -435,19 +473,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             //Diagnostics.PushLog("AKCJA: " + Action.ToString());
             if (isDisposed) return;
 
-            if (IsBleeding)
-            {
-                if (HP < BleedingIntensity)
-                {
-                    EnemyKilled evt = new EnemyKilled(controlledObject);
-                    SendEvent(evt, Priority.Normal, AbstractAIController.ai);
-                    Dispose();
-                }
-                else
-                {
-                    HP -= BleedingIntensity;
-                }
-            }
+            
 
             controlledObject.SoundEffectComponent.SetPosiotion(controlledObject.World.Translation);
             double currentDistance;
@@ -631,7 +657,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         {
                             controlledObject.Mesh.StartClip(AnimationToActionMapping[Action.ATTACK]);
                             controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action.ATTACK]);
-                            controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject), Priority.Normal, this.AttackTarget);
+                            controlledObject.SendEvent(new TakeDamage(attack.maxInflictedDamage, this.controlledObject, true, false), Priority.Normal, this.AttackTarget);
                             Action = Action.ATTACK_IDLE;
                         }
                         else
