@@ -22,7 +22,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         FOLLOW, EXCHANGE,
         ENGAGE, ATTACK_IDLE, ATTACK,
         SWITCH_TO_SIDEARM, SWITCH_TO_CARABINE, SWITCH,
-        RELOAD, RELOAD_SIDEARM, RELOAD_CARABINE
+        RELOAD, RELOAD_SIDEARM, RELOAD_CARABINE, LOAD_CARTRIDGE
     };
     abstract class AbstractAIController : EventsSender, IAIController, IAttackable, IEventsReceiver
     {
