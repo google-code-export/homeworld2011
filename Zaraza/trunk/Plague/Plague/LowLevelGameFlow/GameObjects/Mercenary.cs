@@ -992,10 +992,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction, Mercenary shooter)
         {
-            if (shooter != this)
-            {
+
                 ObjectAIController.OnEvent(null, new ArtificialIntelligence.TakeDamage(damage, shooter, true, false));
-            }
+            
         }
     }
     /********************************************************************************/
