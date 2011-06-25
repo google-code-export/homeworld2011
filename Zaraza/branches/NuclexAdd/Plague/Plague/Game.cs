@@ -66,6 +66,7 @@ namespace PlagueEngine
             form.MaximizeBox = false;
             Diagnostics.Game = this;
 #if DEBUG
+            Diagnostics.Level = LoggingLevel.FATAL;
             Diagnostics.ShowDiagnostics     = true;
             Diagnostics.ForceGCOnUpdate     = false;
             Diagnostics.ShowLogWindow       = true;
