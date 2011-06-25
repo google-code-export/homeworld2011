@@ -117,6 +117,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.AnimationToActionMapping.Add(Action.RELOAD_SIDEARM, "Reload_Pistol");
             this.AnimationToActionMapping.Add(Action.WOUNDED_MOVE, "Wounded");
             this.AnimationToActionMapping.Add(Action.WOUNDED_IDLE, "Wounded_Idle");
+            this.AnimationToActionMapping.Add(Action.LOAD_CARTRIDGE, "Load_Ammo");
             //this.AnimationToActionMapping.Add(Action.RELOAD, "Reload_Pistol");
 
         }
@@ -188,23 +189,43 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         else
                         {
                             #region Przeładuj
-                            Action = Action.RELOAD;
-                            if (attackTimerID != -1)
+                            
+                            if (merc.Reload())
                             {
-                                TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
-                                attackTimerID = -1;
-                            }
-                            if ((merc.CurrentObject as Firearm).SideArm)
-                            {
-                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_SIDEARM];
+                                #region Przeładuj magazynek
+                                //Animacja przeładowania, subskrypcja końca animacji.
+                                Action = Action.RELOAD;
+                                if (attackTimerID != -1)
+                                {
+                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                    attackTimerID = -1;
+                                }
+                                if ((merc.CurrentObject as Firearm).SideArm)
+                                {
+                                    AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_SIDEARM];
+                                }
+                                else
+                                {
+                                    AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
+                                }
+
+                                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                #endregion
                             }
                             else
                             {
-                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
+                                Action = Action.RELOAD;
+                                if (attackTimerID != -1)
+                                {
+                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                    attackTimerID = -1;
+                                }
+                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE];
+
+                                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
                             }
-                            controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
-                            merc.Reload();
                             #endregion
                         }
                     }
@@ -539,25 +560,40 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         else
                         {
                             #region Przeładuj
-                            //Animacja przeładowania, subskrypcja końca animacji.
-                            Action = Action.RELOAD;
-                            if (attackTimerID != -1)
+                            if (merc.Reload())
                             {
-                                TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
-                                attackTimerID = -1;
-                            }
-                            if ((merc.CurrentObject as Firearm).SideArm)
-                            {
-                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_SIDEARM];
+                                //Animacja przeładowania, subskrypcja końca animacji.
+                                Action = Action.RELOAD;
+                                if (attackTimerID != -1)
+                                {
+                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                    attackTimerID = -1;
+                                }
+                                if ((merc.CurrentObject as Firearm).SideArm)
+                                {
+                                    AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_SIDEARM];
+                                }
+                                else
+                                {
+                                    AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
+                                }
+
+                                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
                             }
                             else
                             {
-                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
+                                Action = Action.RELOAD;
+                                if (attackTimerID != -1)
+                                {
+                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                    attackTimerID = -1;
+                                }
+                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE];
+
+                                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
                             }
-                            
-                            controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
-                            merc.Reload();
                             #endregion
                         }
                         #endregion
@@ -572,7 +608,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 #region Zakończ przeładunek
                 AnimationEndEvent evt = e as AnimationEndEvent;
-                if (evt.animation == AnimationToActionMapping[Action.RELOAD])
+                if (evt.animation == AnimationToActionMapping[Action.RELOAD_SIDEARM] || evt.animation == AnimationToActionMapping[Action.RELOAD_CARABINE])
                 {
                     controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.RELOAD]);
                     if (AttackTarget != null)
@@ -598,6 +634,117 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         Action = Action.IDLE;
                     }
                 }
+                else if (evt.animation == AnimationToActionMapping[Action.LOAD_CARTRIDGE])
+                {
+                    Mercenary merc = controlledObject as Mercenary;
+                    Firearm firearm = merc.CurrentObject as Firearm;
+                    AmmoClip clip = firearm.AmmoClip; 
+                    if (clip.Content.Count < clip.Capacity )
+                    {
+                        //tu ladowanie po naboju.
+                        //controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.LOAD_CARTRIDGE], TimeSpan.FromSeconds(0.3));
+                        foreach (var item in merc.Items)
+                        {
+                            AmmoBox box = item.Key as AmmoBox; 
+                            if (box != null && item.Value.Slot < merc.TinySlots)
+                            {
+                                #region mamy pudełko które jest w kieszeni
+                                //zgadza sie typ amunicji z typem broni
+                                if (box.AmmunitionInfo == clip.AmmunitionInfo)
+                                {
+                                    //ilosc w pudle wieksza niz 0
+                                    if (box.Amount > 0)
+                                    {
+                                        //wyjmij z pudła
+                                        box.Amount--;
+                                        Bullet bullet = new Bullet();
+                                        bullet.Version = box.AmmunitionVersionInfo.Version;
+                                        bullet.PPP = box.PPP;
+                                        //wetknij w magazynek
+                                        clip.Content.Push(bullet);
+
+                                        //jesli puste pudlo to je wywal
+                                        if (box.Amount == 0)
+                                        {
+                                            //AmmoSlots[ammoSlot] = null;
+                                            merc.Items.Remove(box);
+                                            SendEvent(new DestroyObjectEvent(box.ID), Priority.High, GlobalGameObjects.GameController);
+                                        }
+                                        //animacja i jeszcze raz.
+                                        controlledObject.Mesh.PlayClip(AnimationToActionMapping[Action.LOAD_CARTRIDGE]);
+                                        return;
+                                    }
+                                }
+                                #endregion
+                            }
+                            
+                        }
+
+                        //jeśli tu dotarło, to znaczy, że nie ma amunicji.
+
+                        controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.LOAD_CARTRIDGE]);
+
+                        if (clip.Content.Count > 0)
+                        {
+                            if (AttackTarget != null)
+                            {
+                                Action = Action.ATTACK;
+                                #region Włacz Timer Ataku.
+                                attackTimerID = TimeControlSystem.TimeControl.CreateTimer(new TimeSpan(0, 0, 1), -1, delegate()
+                                {
+                                    if (Action == Action.ATTACK_IDLE)
+                                    {
+                                        Action = Action.ATTACK;
+                                    }
+                                    else if (Action != Action.RELOAD)
+                                    {
+                                        TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                        attackTimerID = -1;
+                                    }
+                                });
+                                #endregion
+                            }
+                            else
+                            {
+                                Action = Action.IDLE;
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                            }
+                        }
+                        else
+                        {
+                            Action = Action.IDLE;//WHAT TO DO!?!?
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                            AttackTarget = null;
+
+                        }
+                    }
+                    else
+                    {
+                        controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.LOAD_CARTRIDGE]);
+                        if (AttackTarget != null)
+                        {
+                            Action = Action.ATTACK;
+                            #region Włacz Timer Ataku.
+                            attackTimerID = TimeControlSystem.TimeControl.CreateTimer(new TimeSpan(0, 0, 1), -1, delegate()
+                            {
+                                if (Action == Action.ATTACK_IDLE)
+                                {
+                                    Action = Action.ATTACK;
+                                }
+                                else if (Action != Action.RELOAD)
+                                {
+                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                    attackTimerID = -1;
+                                }
+                            });
+                            #endregion
+                        }
+                        else
+                        {
+                            Action = Action.IDLE;
+                        }
+                    }
+                }
                 else
                 {
                     base.OnEvent(sender, e);
@@ -606,10 +753,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
             else if (e.GetType().Equals(typeof(EnemyKilled)))
             {
+                #region Enemy killed
                 if ((e as EnemyKilled).DeadEnemy == AttackTarget)
                 {
                     controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                 }
+                #endregion
                 base.OnEvent(sender, e);
             }
             else

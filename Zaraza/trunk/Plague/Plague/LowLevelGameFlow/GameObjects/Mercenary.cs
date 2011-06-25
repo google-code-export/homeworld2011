@@ -948,9 +948,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Reload
         /****************************************************************************/
-        public void Reload()
+        public bool Reload()
         {
-            if (CurrentObject as Firearm == null) return;
+            if (CurrentObject as Firearm == null) return false;
             foreach (var item in Items)
             {
                 if (item.Key as AmmoClip != null && item.Value.Slot < TinySlots)
@@ -966,10 +966,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             FindPlaceForItem(ammoClip, true);
                         }
                         firearm.AttachClip(item.Key as AmmoClip);
-                        return;
+                        return true;
                     }
                 }
             }
+            return false;
         }
         /****************************************************************************/
 
