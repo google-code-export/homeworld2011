@@ -161,6 +161,7 @@
     <Compile Include="Pathfinder\PathfinderComponent.cs" />
     <Compile Include="Pathfinder\PathfinderManager.cs" />
     <Compile Include="Pathfinder\PriorityQueue.cs" />
+    <Compile Include="TimeControlSystem\ExpireClock.cs" />
     <Compile Include="Tools\EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />
     <Compile Include="EventsSystem\EventsSniffer.cs" />
@@ -353,8 +354,9 @@
       <Name>PlagueLocalizationExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\PlagueContent\PlagueContent.contentproj">
-      <Name>PlagueContent</Name>
+      <Name>PlagueContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{E07FDDBC-B37E-49AE-9588-C6E269FF34C7}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
