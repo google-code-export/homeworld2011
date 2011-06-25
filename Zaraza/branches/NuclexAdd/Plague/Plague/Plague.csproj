@@ -139,6 +139,56 @@
     <Compile Include="Audio\MusicFadeEffect.cs" />
     <Compile Include="Audio\SongCue.cs" />
     <Compile Include="Audio\SoundCue.cs" />
+    <Compile Include="Editor\Controls\BetterComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\EditPropertyGridControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\EditPropertyGridControl.Designer.cs">
+      <DependentUpon>EditPropertyGridControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\NewPropertyGridControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\NewPropertyGridControl.Designer.cs">
+      <DependentUpon>NewPropertyGridControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\ObjectTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\ObjectTree.Designer.cs">
+      <DependentUpon>ObjectTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\DefinitionCounter.cs" />
+    <Compile Include="Editor\DynamicClass.cs" />
+    <Compile Include="Editor\EditorData.cs" />
+    <Compile Include="Editor\EditorSniffer.cs" />
+    <Compile Include="Editor\GameObjectEditorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editor\GameObjectEditorWindow.Designer.cs">
+      <DependentUpon>GameObjectEditorWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\GameObjectClassName.cs" />
+    <Compile Include="Editor\MessageBoxs\DeleteDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editor\MessageBoxs\DeleteDefinition.Designer.cs">
+      <DependentUpon>DeleteDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\TabPages\EditTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\TabPages\EditTab.Designer.cs">
+      <DependentUpon>EditTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\TabPages\NewTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\TabPages\NewTab.Designer.cs">
+      <DependentUpon>NewTab.cs</DependentUpon>
+    </Compile>
     <Compile Include="LowLevelGameFlow\GameObjects\MedKit.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DialogMessagesManager.cs" />
     <Compile Include="Audio\SoundCueInstance.cs" />
@@ -387,6 +437,21 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Editor\Controls\EditPropertyGridControl.resx">
+      <DependentUpon>EditPropertyGridControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\NewPropertyGridControl.resx">
+      <DependentUpon>NewPropertyGridControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\ObjectTree.resx">
+      <DependentUpon>ObjectTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Editor\GameObjectEditorWindow.resx">
+      <DependentUpon>GameObjectEditorWindow.cs</DependentUpon>
+    </None>
+    <EmbeddedResource Include="Editor\MessageBoxs\DeleteDefinition.resx">
+      <DependentUpon>DeleteDefinition.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\LogWindow.resx">
       <DependentUpon>LogWindow.cs</DependentUpon>
       <SubType>Designer</SubType>

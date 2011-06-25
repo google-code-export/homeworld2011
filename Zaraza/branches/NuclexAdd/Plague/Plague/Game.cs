@@ -14,6 +14,7 @@ using PlagueEngine.Particles;
 using PlagueEngine.ArtificialIntelligence;
 using PlagueLocalizationExtension;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace PlagueEngine
 {
@@ -36,8 +37,7 @@ namespace PlagueEngine
         internal PhysicsManager            PhysicsManager     { get; private set; }
         internal AudioManager              AudioManager       { get; private set; }
         internal Level                     Level              { get; private set; }
-        
-       // internal Pathfinder.Pathfinder pf;
+        private Thread _editorThread;
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false,0.0f,1.0f,false,1,1,0.25f,1,0.25f);
         
         public bool GameStopped { get;  set; }
@@ -141,20 +141,26 @@ namespace PlagueEngine
             
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
+            _editorThread = new Thread(EditorStart);
+            _editorThread.Start();
+            _editorThread.Priority = ThreadPriority.AboveNormal;
 #endif
             
             Input.Enabled = true;
-            //pf = new Pathfinder.Pathfinder(PhysicsManager,Renderer);
-            //pf.Generate();
             base.Initialize();              
             
-            #if DEBUG
+#if DEBUG
             Diagnostics.PushLog("Initialization complete");
-            #endif
+#endif
         }
         /****************************************************************************/
 
-
+        private void EditorStart()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Editor.GameObjectEditorWindow(this));
+        }
 
         /****************************************************************************/
         /// Load Content
@@ -255,7 +261,6 @@ namespace PlagueEngine
             Renderer.Draw(RendererClock.DeltaTime,gameTime);
             GUI.Draw(gameTime);
             Input.Draw();
-            //pf.Draw(Renderer.CurrentCamera.View,Renderer.CurrentCamera.ViewProjection);
             base.Draw(gameTime);
         }
         /****************************************************************************/
