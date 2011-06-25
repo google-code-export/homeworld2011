@@ -9,7 +9,7 @@ namespace PlagueEngine
 {
     public enum LoggingLevel : int
     {
-        NONE= 150,
+        NONE = 150,
         OFF = 125,
         INFO = 100,
         DEBUG = 75,
@@ -24,23 +24,23 @@ namespace PlagueEngine
     {
 
         /****************************************************************************/
-        private static long         _frames;
-        private static TimeSpan     _elapsedTime         = TimeSpan.Zero;
-        private static TimeSpan     _totalElapsedTime    = TimeSpan.Zero;
-        
-        private static bool         _forceGCOnUpdate;
-        private static int          _level = 125;
-        private static Game         _game;
-        private static bool         _showDiagnostics     = true;
-        private static TextWriter   _textWriter;
-        private static String       _logFile             = String.Empty;
-        private static LogWindow    _logWindow;
-        private static bool         _showLogWindow;
-        private static long         _allocatedMemory     = -1;
-        private static ExpireClock  _memoryClock = ExpireClock.FromSeconds(10);
-        private static string       _lineBrake           = "-------------------------";
-        private static uint         _timerId;
+        private static long _frames;
+        private static TimeSpan _elapsedTime = TimeSpan.Zero;
+        private static TimeSpan _totalElapsedTime = TimeSpan.Zero;
 
+        private static bool _forceGCOnUpdate;
+        private static int _level = 125;
+        private static Game _game;
+        private static bool _showDiagnostics = true;
+        private static TextWriter _textWriter;
+        private static String _logFile = String.Empty;
+        private static LogWindow _logWindow;
+        private static bool _showLogWindow;
+        private static long _allocatedMemory = -1;
+        private static ExpireClock _memoryClock = ExpireClock.FromSeconds(10);
+        private static string _lineBrake = "-------------------------";
+        private static uint _timerId;
+        private delegate void UpdaterDelegate();
         /****************************************************************************/
 
 
@@ -103,7 +103,7 @@ namespace PlagueEngine
                 }
                 catch (IOException)
                 {
-                    PushLog(LoggingLevel.ERROR, "Nie udało się utworzyć pliku logu o nazwie "+_logFile);
+                    PushLog(LoggingLevel.ERROR, "Nie udało się utworzyć pliku logu o nazwie " + _logFile);
                 }
                 if (_textWriter != null)
                 {
@@ -111,7 +111,8 @@ namespace PlagueEngine
                 }
                 return (_logWindow != null && !_logWindow.TextBox.IsDisposed) || _textWriter != null;
             }
-            else{
+            else
+            {
                 PushLog(LoggingLevel.WARN, "Próba utworzenia nowego pliku logu w czasie gdy jest używany inny plik.");
             }
             return false;
@@ -197,12 +198,13 @@ namespace PlagueEngine
 
                 if (_logWindow != null && !_logWindow.TextBox.IsDisposed)
                 {
-                    lock (_logWindow.TextBox)
+                    if (_logWindow.TextBox.InvokeRequired)
                     {
-                        _logWindow.TextBox.SuspendLayout();
-                        _logWindow.TextBox.SelectionColor = LogColor(logginglevel);
-                        _logWindow.TextBox.AppendText(sb.ToString());
-                        _logWindow.TextBox.ResumeLayout();
+                        _logWindow.TextBox.Invoke(new UpdaterDelegate(delegate { UpdateTextBox(logginglevel, sb.ToString()); }));
+                    }
+                    else
+                    {
+                        UpdateTextBox(logginglevel, sb.ToString());
                     }
 
                 }
@@ -214,9 +216,18 @@ namespace PlagueEngine
                     }
                 }
             }
-            
-        }
 
+        }
+        private static void UpdateTextBox(LoggingLevel logginglevel, string text)
+        {
+            lock (_logWindow.TextBox)
+            {
+                _logWindow.TextBox.SuspendLayout();
+                _logWindow.TextBox.SelectionColor = LogColor(logginglevel);
+                _logWindow.TextBox.AppendText(text);
+                _logWindow.TextBox.ResumeLayout();
+            }
+        }
         public static void PushLog(LoggingLevel logginglevel, Object obj, String text)
         {
             var sb = new StringBuilder();
@@ -241,14 +252,14 @@ namespace PlagueEngine
                 _textWriter.Close();
             }
             if (_logWindow != null)
-                {
-                    _logWindow.Close();
-                    _logWindow       = null;
-                    _showLogWindow   = false;
-                }
+            {
+                _logWindow.Close();
+                _logWindow = null;
+                _showLogWindow = false;
+            }
         }
         /****************************************************************************/
-                     
+
 
         /****************************************************************************/
 
@@ -266,7 +277,7 @@ namespace PlagueEngine
         /****************************************************************************/
         /// Run Time
         /****************************************************************************/
-        public static TimeSpan RunTime 
+        public static TimeSpan RunTime
         {
             get
             {
@@ -316,7 +327,7 @@ namespace PlagueEngine
         /****************************************************************************/
         public static Game Game
         {
-            set 
+            set
             {
                 _game = value;
             }
@@ -364,7 +375,7 @@ namespace PlagueEngine
             set
             {
                 _showLogWindow = value;
-                
+
                 if (_showLogWindow && _logWindow == null && _textWriter != null)
                 {
                     _logWindow = new LogWindow();
@@ -376,12 +387,12 @@ namespace PlagueEngine
                         _logWindow.TextBox.Text += textReader.ReadToEnd();
                     }
 
-                    _textWriter = new StreamWriter(_logFile,true);
+                    _textWriter = new StreamWriter(_logFile, true);
                 }
                 else if (_showLogWindow && _logWindow == null && _textWriter == null)
                 {
                     _logWindow = new LogWindow();
-                    _logWindow.Show();                
+                    _logWindow.Show();
                 }
                 else if (!_showLogWindow && _logWindow != null)
                 {
@@ -397,10 +408,10 @@ namespace PlagueEngine
         /// Diagnostic Snapshot
         /****************************************************************************/
         public static void DiagnosticSnapshot()
-        { 
-            #if DEBUG
-                PushLog(string.Format("FPS: {0} | Allocated Managed Memory: {1} kb", FPS, _allocatedMemory));  
-            #endif 
+        {
+#if DEBUG
+            PushLog(string.Format("FPS: {0} | Allocated Managed Memory: {1} kb", FPS, _allocatedMemory));
+#endif
         }
         /****************************************************************************/
 
@@ -411,7 +422,7 @@ namespace PlagueEngine
         public static void StartDiagnosticSnapshots(TimeSpan time)
         {
             if (_timerId == 0) _timerId = TimeControl.CreateTimer(time, -1, TimerCallback);
-            else TimeControl.ResetTimer(_timerId,time,-1);
+            else TimeControl.ResetTimer(_timerId, time, -1);
         }
         /****************************************************************************/
 
@@ -442,7 +453,7 @@ namespace PlagueEngine
         /****************************************************************************/
         private static void AllocatedManagedMemoryUpdate()
         {
-            _allocatedMemory=Process.GetCurrentProcess().PrivateMemorySize64 / 1024;
+            _allocatedMemory = Process.GetCurrentProcess().PrivateMemorySize64 / 1024;
         }
         /****************************************************************************/
 
@@ -459,6 +470,6 @@ namespace PlagueEngine
 
     }
     /********************************************************************************/
-    
+
 }
 /************************************************************************************/
