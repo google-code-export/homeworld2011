@@ -11,6 +11,7 @@ using PlagueEngine.EventsSystem;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.ArtificialIntelligence;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -94,6 +95,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mercenaries = new Dictionary<Mercenary, List<EventArgs>>();
             WoundedMercenaries = new Dictionary<Mercenary, uint>();
             clock = TimeControl.CreateClock();
+
+            MercenaryController.MercManager = this;
         }
         /****************************************************************************/
 
