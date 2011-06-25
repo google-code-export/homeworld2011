@@ -150,12 +150,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.RequiresUpdate = true;
 
 
-            music.LoadFolder("Music", 1.0f); ;  //music.
-            music.AutomaticMode = false;
-            music.PlaySong("default", "cautious-path", true);
+            //music.LoadFolder("Music", 0.4f); ;  //music.
+            //music.AutomaticMode = false;
+            //music.PlaySong("default", "cautious-path", true);
 
-            waves.LoadFolder("Menu", 0.7f, 0, 0, false);
-            waves.SetPosition(new Vector3(0,3,-60));
+            waves.LoadFolder("Menu",1, 0, 0, false);
+            waves.SetPosition(new Vector3(0, 3, -60));
             waves.PlaySound("Menu", "ocean-wave-2", true);
 
             wind.LoadFolder("Menu", 0.5f, 0, 0, false);

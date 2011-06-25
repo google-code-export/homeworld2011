@@ -143,7 +143,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (sender.GetType().Equals(typeof(LinkedCamera)))
                 {
-                    SendEvent(e, Priority.Low, _selectedMercenaries.ToArray());
+                    foreach (var m in _selectedMercenaries)
+                    {
+                        if (Mercenaries[m].Count == 0) SendEvent(e, Priority.High, m);
+                    }                    
                 }
                 else
                 {

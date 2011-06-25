@@ -1349,11 +1349,61 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (mouseKeyAction == MouseKeyAction.LeftClick && mouseKeyState.IsDoubleClick())
             {
-                if (dump &&
-                    mousePos.X > DumpSlotsStartPos.X &&
-                    mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
-                    mousePos.Y > DumpSlotsStartPos.Y &&
-                    mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
+                if (mercenary2 != null)
+                {
+                    if (mousePos.X > SlotsStartPos.X &&
+                        mousePos.X < SlotsStartPos.X + 11 * 32 &&
+                        mousePos.Y > SlotsStartPos.Y &&
+                        mousePos.Y < SlotsStartPos.Y + (Items.GetLength(1) < 15 ? Items.GetLength(1) : 15) * 32)
+                    {
+                        int x = (int)((mousePos.X - SlotsStartPos.X) / 32);
+                        int y = (int)((mousePos.Y - SlotsStartPos.Y) / 32) + scrollCurrentOffset;
+
+                        if (Items[x, y].Item != null)
+                        {
+                            if (mercenary2.FindPlaceForItem(Items[x, y].Item, true))
+                            {
+                                StorableObject item = Items[x, y].Item;
+                                List<int> slotsToClean = CalculateSlots(item, mercenary.Items[item].Slot, mercenary.Items[item].Orientation, true);
+                                mercenary.Items.Remove(item);
+                                foreach (int slot in slotsToClean)
+                                {
+                                    Items[slot % 11, slot / 11].Item = null;
+                                }
+                                UpdateInventory();
+                            }
+                        }
+                    }
+                    else if (mousePos.X > SlotsStartPos2.X &&
+                             mousePos.X < SlotsStartPos2.X + 11 * 32 &&
+                             mousePos.Y > SlotsStartPos2.Y &&
+                             mousePos.Y < SlotsStartPos2.Y + (Items2.GetLength(1) < 15 ? Items2.GetLength(1) : 15) * 32)
+                  { 
+                        int x = (int)((mousePos.X - SlotsStartPos2.X) / 32);
+                        int y = (int)((mousePos.Y - SlotsStartPos2.Y) / 32) + scrollCurrentOffset2;
+
+                        if (Items2[x, y].Item != null)
+                        {
+                            if (mercenary.FindPlaceForItem(Items2[x, y].Item, true))
+                            {
+                                StorableObject item = Items2[x, y].Item;
+                                List<int> slotsToClean = CalculateSlots(item, mercenary2.Items[item].Slot, mercenary2.Items[item].Orientation, true);
+                                mercenary2.Items.Remove(item);
+                                foreach (int slot in slotsToClean)
+                                {
+                                    Items2[slot % 11, slot / 11].Item = null;
+                                }
+                                UpdateInventory();
+                            }
+                        }
+              
+                    }
+                }
+                else if (dump &&
+                        mousePos.X > DumpSlotsStartPos.X &&
+                        mousePos.X < DumpSlotsStartPos.X + 11 * 32 &&
+                        mousePos.Y > DumpSlotsStartPos.Y &&
+                        mousePos.Y < DumpSlotsStartPos.Y + (dumpContent.GetLength(1) < 8 ? dumpContent.GetLength(1) : 8) * 32)
                 {
                     int x = (int)((mousePos.X - DumpSlotsStartPos.X) / 32);
                     int y = (int)((mousePos.Y - DumpSlotsStartPos.Y) / 32) + dumpScrollCurrentOffset;

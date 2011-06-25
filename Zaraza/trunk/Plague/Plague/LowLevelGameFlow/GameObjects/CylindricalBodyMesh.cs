@@ -32,7 +32,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         DeformableMeshComponentAdapter mesh = null;
         CylindricalBodyComponent body = null;
-        KeyboardListenerComponent listener = null;
         /********************************************************************************/
 
 
@@ -41,30 +40,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(MeshComponent meshComponent, CylindricalBodyComponent physcisComponent, KeyboardListenerComponent listener)
+        public void Init(MeshComponent meshComponent, CylindricalBodyComponent physcisComponent)
         {
             this.mesh = new DeformableMeshComponentAdapter(this, meshComponent);
             this.body = physcisComponent;
-            this.listener = listener;
-
-            this.listener.SubscibeKeys(this.onKey, Keys.P);
             //this.mesh.deform();
             //this.mesh.deform();
             
         }
         /********************************************************************************/
-
-
-
-        public void onKey(Keys keys, ExtendedKeyState extKS)
-        {
-            if (keys == Keys.P && extKS.WasPressed())
-            {
-                this.mesh.deform();
-            }
-        }
-
-
 
 
         /********************************************************************************/
@@ -76,8 +60,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             body.ReleaseMe();
         }
         /********************************************************************************/
-
-
 
 
         /********************************************************************************/
