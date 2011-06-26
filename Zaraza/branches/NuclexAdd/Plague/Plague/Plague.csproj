@@ -206,7 +206,6 @@
     <Compile Include="Pathfinder\Heuristic.cs" />
     <Compile Include="Pathfinder\NodeComperer.cs" />
     <Compile Include="Pathfinder\HManhattan.cs" />
-    <Compile Include="Pathfinder\MyExtensions.cs" />
     <Compile Include="Pathfinder\Node.cs" />
     <Compile Include="Pathfinder\PathfinderComponent.cs" />
     <Compile Include="Pathfinder\PathfinderManager.cs" />

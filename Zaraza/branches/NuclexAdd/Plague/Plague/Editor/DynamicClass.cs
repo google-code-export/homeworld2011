@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
-using System.Collections;
 
 namespace PlagueEngine.Editor
 {
     public class DynamicClass
     {
+        public static Dictionary<Type, DynaClassInfo> ClassReferences = new Dictionary<Type, DynaClassInfo>();
+
         public class DynaClassInfo
         {
-            public Type type;
+            public Type Type;
             public Object ClassObject;
 
             public DynaClassInfo()
@@ -20,21 +19,19 @@ namespace PlagueEngine.Editor
 
             public DynaClassInfo(Type t, Object c)
             {
-                type = t;
+                Type = t;
                 ClassObject = c;
             }
         }
 
-        public static Dictionary<Type, DynaClassInfo> ClassReferences = new Dictionary<Type, DynaClassInfo>();
-
-        public static DynaClassInfo GetClassReference(string NameSpace, string ClassName)
+        public static DynaClassInfo GetClassReference(string nameSpace, string className)
         {
-            Type classType = Type.GetType(NameSpace + "." + ClassName);
-            if (classType.IsClass == true)
+            var classType = Type.GetType(nameSpace + "." + className);
+            if (classType != null && classType.IsClass)
             {
                 if (!ClassReferences.ContainsKey(classType))
                 {
-                    DynaClassInfo ci = new DynaClassInfo(classType, Activator.CreateInstance(classType));
+                    var ci = new DynaClassInfo(classType, Activator.CreateInstance(classType));
                     ClassReferences.Add(classType, ci);
                     return (ci);
                 }
@@ -43,20 +40,20 @@ namespace PlagueEngine.Editor
             return null;
         }
 
-        public static Object InvokeMethod(DynaClassInfo ci, string MethodName, Object[] args)
+        public static Object InvokeMethod(DynaClassInfo ci, string methodName, Object[] args)
         {
-            Object Result = ci.type.InvokeMember(MethodName,
+            var result = ci.Type.InvokeMember(methodName,
                 BindingFlags.Default | BindingFlags.InvokeMethod,
                    null,
                    ci.ClassObject,
                    args);
-            return Result;
+            return result;
         }
 
-        public static Object InvokeMethod(string NameSpace, string ClassName, string MethodName, Object[] args)
+        public static Object InvokeMethod(string nameSpace, string className, string methodName, Object[] args)
         {
-            DynaClassInfo ci = GetClassReference(NameSpace, ClassName);
-            return ci != null ? (InvokeMethod(ci, MethodName, args)) : null;
+            var ci = GetClassReference(nameSpace, className);
+            return ci != null ? (InvokeMethod(ci, methodName, args)) : null;
 
         }
     }

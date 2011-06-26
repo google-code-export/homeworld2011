@@ -82,8 +82,8 @@ namespace PlagueEngine.Audio.Components
                 LoadSound(dir.Name, soundName, folderName + "\\" + soundName, volume, pitch, pan, allowMultiInstancing);
             }
 #if DEBUG
-            if (xbnFiles.Length == 0)
-                Diagnostics.PushLog(LoggingLevel.WARN, "W folderze " + folderName + " nie ma plików .xba");
+            if (xbnFiles.Length == 0 && dirFiles.Count() == 0)
+                Diagnostics.Warn("There was no files with .xba extension in folder: " + folderName);
 #endif
         }
 
@@ -107,21 +107,14 @@ namespace PlagueEngine.Audio.Components
             if (!_sounds.ContainsKey(soundGroup) || !_sounds[soundGroup].TryGetValue(soundName, out sound))
             {
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.ERROR, "Dźwięk " + soundName + " lub grupa " + soundGroup + " nie istnieje.");
+                Diagnostics.Warn("Sound " + soundName + " or group " + soundGroup + " does not exists.");
 #endif
                 return;
             }
             PlaySound(sound, soundName, isLooped, maxDistance);
         }
-        private void PlaySound(SoundCue sound, string soundName)
-        {
-            PlaySound(sound, soundName, false, 0);
-        }
-        private void PlaySound(SoundCue sound, string soundName, bool isLooped)
-        {
-            PlaySound(sound, soundName, isLooped, 0);
-        }
-        private void PlaySound(SoundCue sound, string soundName, bool isLooped, float maxDistance)
+
+        private void PlaySound(SoundCue sound, string soundName, bool isLooped, float maxDistance = 0f)
         {
             if (!sound.AllowMultiInstancing && _playingSounds.ContainsKey(soundName))
             {
@@ -135,7 +128,7 @@ namespace PlagueEngine.Audio.Components
                     else
                     {
 #if DEBUG
-                        Diagnostics.PushLog(LoggingLevel.INFO, "Dźwięk " + soundName + " nie pozwala na tworzenie jego wielu instacji.");
+                        Diagnostics.Info("Sound " + soundName + "won't be played. It has AllowMultiInstacing set to false.");
 #endif
                         return;
                     }
@@ -156,7 +149,7 @@ namespace PlagueEngine.Audio.Components
             if (!_sounds.ContainsKey(soundGroup) || _sounds[soundGroup].Values.Count == 0)
             {
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.ERROR, "Grupa " + soundGroup + " nie istnieje lub nie zawiera dźwięków");
+                Diagnostics.Warn("There is no group of song called " + soundGroup + " in this component.");
 #endif
                 return;
             }
@@ -180,7 +173,7 @@ namespace PlagueEngine.Audio.Components
             if (!_playingSounds.TryGetValue(soundName,out soundEffectInstance))
             {
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.INFO,"Obecnie dźwięk " + soundName + " nie jest odtwarzany");
+                Diagnostics.Info("Sound " + soundName + " could not be stoped. Song is not playing right now.");
 #endif
                 return;
             }

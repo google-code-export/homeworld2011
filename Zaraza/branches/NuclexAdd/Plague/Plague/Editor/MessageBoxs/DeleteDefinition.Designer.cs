@@ -81,7 +81,7 @@
             this.buttonYes.TabIndex = 3;
             this.buttonYes.Text = "Yes";
             this.buttonYes.UseVisualStyleBackColor = true;
-            this.buttonYes.Click += new System.EventHandler(this.buttonYes_Click);
+            this.buttonYes.Click += new System.EventHandler(this.ButtonYesClick);
             // 
             // buttonNo
             // 
@@ -91,7 +91,7 @@
             this.buttonNo.TabIndex = 4;
             this.buttonNo.Text = "No";
             this.buttonNo.UseVisualStyleBackColor = true;
-            this.buttonNo.Click += new System.EventHandler(this.buttonNo_Click);
+            this.buttonNo.Click += new System.EventHandler(this.ButtonNoClick);
             // 
             // LevelName
             // 

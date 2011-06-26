@@ -94,7 +94,7 @@
             this.buttonDeleteDefinition.TabIndex = 13;
             this.buttonDeleteDefinition.Text = "X";
             this.buttonDeleteDefinition.UseVisualStyleBackColor = true;
-            this.buttonDeleteDefinition.Click += new System.EventHandler(this.buttonDeleteDefinition_Click);
+            this.buttonDeleteDefinition.Click += new System.EventHandler(this.ButtonDeleteDefinitionClick);
             // 
             // comboBoxDefinitions
             // 
@@ -104,7 +104,7 @@
             this.comboBoxDefinitions.Size = new System.Drawing.Size(255, 21);
             this.comboBoxDefinitions.Sorted = true;
             this.comboBoxDefinitions.TabIndex = 10;
-            this.comboBoxDefinitions.SelectedIndexChanged += new System.EventHandler(this.comboBoxDefinitions_SelectedIndexChanged);
+            this.comboBoxDefinitions.SelectedIndexChanged += new System.EventHandler(this.ComboBoxDefinitionsSelectedIndexChanged);
             // 
             // comboBoxObjectsNames
             // 
@@ -114,7 +114,7 @@
             this.comboBoxObjectsNames.Size = new System.Drawing.Size(285, 21);
             this.comboBoxObjectsNames.Sorted = true;
             this.comboBoxObjectsNames.TabIndex = 3;
-            this.comboBoxObjectsNames.SelectedIndexChanged += new System.EventHandler(this.comboBoxObjectsNames_SelectedIndexChanged);
+            this.comboBoxObjectsNames.SelectedIndexChanged += new System.EventHandler(this.ComboBoxObjectsNamesSelectedIndexChanged);
             // 
             // NewPropertyGridControl
             // 

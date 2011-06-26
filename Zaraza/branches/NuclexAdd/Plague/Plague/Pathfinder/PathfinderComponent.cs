@@ -1,84 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace PlagueEngine.Pathfinder
 {
-    public enum PathType { TOTARGET, CLOSEST, EMPTY }
+    public enum PathType { Totarget, Closest, Empty }
     class PathfinderComponent
     {
         private Stack<Node> _nodes;
         private Node _previousNode;
         private Node _curentNode;
         private PathType _pathType;
-        private DateTime startTime;
+        private DateTime _startTime;
         public PathType PathType
         {
             get { return _pathType; }
             set { _pathType = value; }
         }
-        private static Heuristic H = new HManhattan();
+        private static readonly Heuristic H = new HManhattan();
         public PathfinderComponent()
         {
             _nodes = new Stack<Node>();
         }
        public bool GetPath(Vector3 startPoint, Vector3 destinationPoint)
         {
-            clear();
-            startTime = DateTime.Now;
-            if (PathfinderManager.PM != null)
+            Clear();
+            _startTime = DateTime.Now;
+            if (PathfinderManager.Pm != null)
             {
-               Node start = PathfinderManager.PM.getNode(startPoint);
-               Diagnostics.PushLog(LoggingLevel.INFO, "Wezeł startowy: " + start);
-               if (start.NodeType != NodeType.NONE || start.NodeType != NodeType.STATIC)
-               {
-                   Node end = PathfinderManager.PM.getNode(destinationPoint);
-                   Diagnostics.PushLog(LoggingLevel.INFO, "Wezeł końcowy: " + end);
-                   _pathType = (end.NodeType == NodeType.NAVIGATION)?PathType.TOTARGET:PathType.CLOSEST;
+               var start = PathfinderManager.Pm.GetNode(startPoint);
 
-                   if (end.NodeType != NodeType.NONE || end.NodeType != NodeType.STATIC)
+               if (start.NodeType != NodeType.None || start.NodeType != NodeType.Static)
+               {
+                   var end = PathfinderManager.Pm.GetNode(destinationPoint);
+#if DEBUG
+                   Diagnostics.PushLog(LoggingLevel.INFO, this, "Start node: " + start);
+                   Diagnostics.PushLog(LoggingLevel.INFO, this, "End node: " + end);
+#endif
+                   _pathType = (end.NodeType == NodeType.Navigation)?PathType.Totarget:PathType.Closest;
+
+                   if (end.NodeType != NodeType.None || end.NodeType != NodeType.Static)
                    {
-                       HashSet<Node> _visited = new HashSet<Node>();
-                       PriorityQueue<Node> _tempNodes = new PriorityQueue<Node>(_pathType==PathType.TOTARGET);
-                       _tempNodes.Enqueue(start);
-                       Node active;
+                       var visited = new HashSet<Node>();
+                       var tempNodes = new PriorityQueue<Node>(_pathType==PathType.Totarget);
+                       tempNodes.Enqueue(start);
                        H.ComputeNodeValue(start, end);
                        
-                       while (_tempNodes.Count > 0)
+                       while (tempNodes.Count > 0)
                        {
-                           if (DateTime.Now.Subtract(startTime).Seconds > 0)
+                           if (DateTime.Now.Subtract(_startTime).Seconds > 0)
                            {
-                               clear();
+                               Clear();
                                return false;
                            }
-                           active = _tempNodes.Dequeue();
-                           _visited.Add(active);
-                           if (_pathType == PathType.TOTARGET && active.Equals(end))
+                           var active = tempNodes.Dequeue();
+                           visited.Add(active);
+                           if (_pathType == PathType.Totarget && active.Equals(end))
                            {
                                while (active.Parent != null)
                                {
                                    _nodes.Push(active);
                                    active = active.Parent;
                                }
-                               simplifiePath();
+                               SimplifiePath();
                                return true;
                            }
                            foreach (var child in active.GenerateChildren())
                            {
-                               if (!_visited.Contains(child))
-                               {
-                                    H.ComputeNodeValue(child,end);
-                                    child.Distance = active.Distance + 1;
-                                   _tempNodes.Enqueue(child);
-                               }
+                               if (visited.Contains(child)) continue;
+                               H.ComputeNodeValue(child,end);
+                               child.Distance = active.Distance + 1;
+                               tempNodes.Enqueue(child);
                            }
                        }
-                       if (_pathType == PathType.CLOSEST)
+                       if (_pathType == PathType.Closest)
                        {
-                           Node closest = start;
-                           foreach (Node node in _visited)
+                           var closest = start;
+                           foreach (var node in visited)
                            {
                                if (node.CompareTo(closest) <0)
                                {
@@ -90,33 +88,34 @@ namespace PlagueEngine.Pathfinder
                                _nodes.Push(closest);
                                closest = closest.Parent;
                            }
-                           simplifiePath();
+                           SimplifiePath();
                            return true;
                        }
-                       _visited = null;
-                       _tempNodes = null;
                    }
                }
             
             }
             return false;
         }
-        private void simplifiePath()
+        private void SimplifiePath()
         {
             if (_nodes != null && _nodes.Count > 0)
             {
-                List<Node> tempNodes = new List<Node>();
-                int curentDirection=-1;
-                int nodeDirection;
+                var tempNodes = new List<Node>();
+                var curentDirection=-1;
                 tempNodes.Add(_nodes.Pop());
-                Diagnostics.PushLog(LoggingLevel.INFO, "Ścieżka przed uproszeczeniem:");
-                Diagnostics.PushLog(LoggingLevel.INFO,  tempNodes[0].ToString());
+#if DEBUG
+                Diagnostics.PushLog(LoggingLevel.INFO, this, "Path before simplification: ");
+                Diagnostics.PushLog(LoggingLevel.INFO, this, tempNodes[0].ToString());
+#endif
                 while (_nodes.Count > 0)
                 {
-                    Node temp = _nodes.Pop();
+                    var temp = _nodes.Pop();
+#if DEBUG
                     //PathfinderManager.PM.generateBox(temp);
-                    Diagnostics.PushLog(LoggingLevel.INFO, temp.ToString());
-                    nodeDirection = tempNodes[tempNodes.Count - 1].directionToNode(temp);
+                    Diagnostics.PushLog(LoggingLevel.INFO,this, temp.ToString());
+#endif
+                    var nodeDirection = tempNodes[tempNodes.Count - 1].DirectionToNode(temp);
                     if (nodeDirection == curentDirection)
                     {
                         tempNodes[tempNodes.Count - 1] = temp;
@@ -129,52 +128,48 @@ namespace PlagueEngine.Pathfinder
                     
                 }
                 tempNodes.Reverse(0, tempNodes.Count);
-                Diagnostics.PushLog(LoggingLevel.INFO, "Ścieżka po uproszeczeniu:");
-                for (int i = 0; i < tempNodes.Count; i++)
+#if DEBUG
+                Diagnostics.PushLog(LoggingLevel.INFO, this, "Path after simplification:");
+
+                for (var i = 0; i < tempNodes.Count; i++)
                 {
-                    Diagnostics.PushLog(LoggingLevel.INFO, i + ": " + tempNodes[i]);
+                    Diagnostics.PushLog(LoggingLevel.INFO,this, i + ": " + tempNodes[i]);
                 }
-                   
+#endif                  
                 _nodes= new Stack<Node>(tempNodes);
             }
         }
-        public bool isEmpty{
+        public bool IsEmpty{
             get { return _nodes.Count == 0; }
         }
-        private void clear()
+        private void Clear()
         {
-            _pathType = PathType.EMPTY;
+            _pathType = PathType.Empty;
             _nodes = new Stack<Node>();
             _curentNode = null;
             _previousNode = null;
         }
         public Vector3 NextNode()
         {
-            if (_nodes.Count > 0)
+            if (_nodes.Count <= 0)
             {
-                _previousNode = _curentNode;
-                _curentNode = _nodes.Pop();
-                Diagnostics.PushLog(LoggingLevel.INFO, "Zwrócono następny węzeł" + _curentNode);
-                return PathfinderManager.PM.NodeToVector(_curentNode);
+                return Vector3.Zero;
             }
-            return Vector3.Zero;
+            _previousNode = _curentNode;
+            _curentNode = _nodes.Pop();
+#if DEBUG
+            Diagnostics.PushLog(LoggingLevel.INFO, this, "Next node was returned:" + _curentNode);
+#endif
+            return PathfinderManager.Pm.NodeToVector(_curentNode);
         }
         public Vector3 CurentNode()
         {
-            if (_curentNode != null)
-            {
-                return PathfinderManager.PM.NodeToVector(_curentNode);
-            }
-            return Vector3.Zero;
+            return _curentNode != null ? PathfinderManager.Pm.NodeToVector(_curentNode) : Vector3.Zero;
         }
+
         public Vector3 PreviousNode()
         {
-            if (_previousNode != null)
-            {
-                return PathfinderManager.PM.NodeToVector(_previousNode);
-            }
-            return Vector3.Zero;
+            return _previousNode != null ? PathfinderManager.Pm.NodeToVector(_previousNode) : Vector3.Zero;
         }
-        
     }
 }

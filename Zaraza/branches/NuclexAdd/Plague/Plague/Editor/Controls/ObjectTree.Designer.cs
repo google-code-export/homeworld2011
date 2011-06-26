@@ -40,7 +40,7 @@
             this.treeViewObjects.Name = "treeViewObjects";
             this.treeViewObjects.Size = new System.Drawing.Size(183, 597);
             this.treeViewObjects.TabIndex = 0;
-            this.treeViewObjects.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewObjects_AfterSelect);
+            this.treeViewObjects.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewObjectsAfterSelect);
             // 
             // ObjectTree
             // 
