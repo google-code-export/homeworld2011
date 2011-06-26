@@ -118,6 +118,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.AnimationToActionMapping.Add(Action.WOUNDED_MOVE, "Wounded");
             this.AnimationToActionMapping.Add(Action.WOUNDED_IDLE, "Wounded_Idle");
             this.AnimationToActionMapping.Add(Action.LOAD_CARTRIDGE, "Load_Ammo");
+            this.AnimationToActionMapping.Add(Action.DIE, "Dying");
             //this.AnimationToActionMapping.Add(Action.RELOAD, "Reload_Pistol");
 
         }
@@ -447,18 +448,37 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 TakeDamage evt = e as TakeDamage;
                 MercenaryHit newEvt = new MercenaryHit((int)evt.amount);
                 this.controlledObject.Broadcast(newEvt);
-                if (evt.attacker.GetType().Equals(typeof(Mercenary)))
+                
+                if (evt.causesBleeding)
                 {
-                    //TODO: jakiś okrzyk
-                    FriendlyFire newEvent = new FriendlyFire(this.controlledObject);
-                    SendEvent(newEvent, Priority.Normal, evt.attacker.ObjectAIController);
-                    evt.attacker = null;
+                    IsBleeding = true;
+                }
 
-                    base.OnEvent(sender, e);
+                if (HP <= evt.amount)
+                {
+                    EnemyKilled args = new EnemyKilled(controlledObject);
+                    SendEvent(args, Priority.Normal, AbstractAIController.ai);
+                    //Dispose();
+                    //controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.DIE], TimeSpan.FromSeconds(0.3f));
+                    TimeControl.CreateTimer(TimeSpan.FromSeconds(0.6f), 0, delegate() { ai.MercernaryDied((Mercenary)this.controlledObject); });
                 }
                 else
                 {
-                    base.OnEvent(sender, e);
+                    HP -= (uint)evt.amount;
+                    if (evt.attacker != null && AttackTarget == null)
+                    {
+                        if (evt.attacker.GetType().Equals(typeof(Mercenary)))
+                        {
+                            //TODO: jakiś okrzyk
+                            FriendlyFire newEvent = new FriendlyFire(this.controlledObject);
+                            SendEvent(newEvent, Priority.Normal, evt.attacker.ObjectAIController);
+                            evt.attacker = null;
+                        }
+                        else
+                        {
+                            this.OnEvent(null, new OpenFireToTargetCommandEvent(evt.attacker));
+                        }
+                    }
                 }
                 return;
                 #endregion
@@ -510,11 +530,16 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 #region Atakuj cel
                 Mercenary merc = controlledObject as Mercenary;
                 OpenFireToTargetCommandEvent OpenFireToTargetCommandEvent = null;
+                
 
                 #region Jeśli najemnik jest uzbrojony...
                 if ((merc.CurrentObject as Firearm) != null)
                 {
                     OpenFireToTargetCommandEvent = e as OpenFireToTargetCommandEvent;
+                    //AttackTarget = OpenFireToTargetCommandEvent.target;
+                    //jeśli attack taget to mob to timer ataku on
+                    //stan w atak i juz
+
                     //( było, ale chyba zbędne. attackTimerID == -1)
                     #region ...i nie atakuje już podanego celu...
                     if (attackTimerID == -1 || OpenFireToTargetCommandEvent.target != AttackTarget)
@@ -590,6 +615,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                                 controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                (merc.CurrentObject as Firearm).Freeze();
                             }
                             else
                             {
@@ -603,6 +629,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                                 controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                (merc.CurrentObject as Firearm).Freeze();
                             }
                             #endregion
                         }
@@ -647,7 +674,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 }
                 else if (evt.animation == AnimationToActionMapping[Action.LOAD_CARTRIDGE])
                 {
-                    ((controlledObject as Mercenary).CurrentObject as Firearm).Unfreeze();
                     Mercenary merc = controlledObject as Mercenary;
                     Firearm firearm = merc.CurrentObject as Firearm;
                     AmmoClip clip = firearm.AmmoClip; 
@@ -698,6 +724,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         if (clip.Content.Count > 0)
                         {
+                            firearm.Unfreeze();
                             if (AttackTarget != null)
                             {
                                 Action = Action.ATTACK;
@@ -724,6 +751,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
                         else
                         {
+                            firearm.Unfreeze();
                             Action = Action.IDLE;//WHAT TO DO!?!?
                             controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
                             AttackTarget = null;
@@ -732,6 +760,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     }
                     else
                     {
+                        firearm.Unfreeze();
                         controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.LOAD_CARTRIDGE]);
                         if (AttackTarget != null)
                         {
@@ -754,6 +783,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         else
                         {
                             Action = Action.IDLE;
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
                         }
                     }
                 }

@@ -113,7 +113,7 @@ namespace PlagueEngine.LowLevelGameFlow
             catch (Exception e)
             {
 #if DEBUG
-                Diagnostics.Fatal("There was an error when object "+ data.ID +" was creting: " +e.InnerException.Message);
+                Diagnostics.Fatal("There was an error when object "+ data.ID +" was creting: " + e.InnerException.Message);
 #endif
                 return null;
             }
@@ -2326,7 +2326,53 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+        /****************************************************************************/
+        /// CreateDirection
+        /****************************************************************************/
+        public bool CreateDeadBody(DeadBody result, DeadBodyData data)
+        {
+            var items = new Dictionary<StorableObject, ItemPosition>();
+            if (data.Items != null)
+            {
+                foreach (var itemData in data.Items)
+                {
+                    var storable = GetObject(itemData[0]) as StorableObject;
 
+                    if (storable == null)
+                    {
+                        PushToWaitingRoom(result, data);
+                        return false;
+                    }
+
+                    items.Add(storable, new ItemPosition(itemData[1], itemData[2]));
+                }
+            }
+            result.Init(_renderingComponentsFactory.CreateSkinnedMeshComponent(result,
+                                                                              data.Model,
+                                                                              data.Diffuse,
+                                                                              data.Specular,
+                                                                              data.Normals),
+                        _physicsComponentFactory.CreateCapsuleBodyComponent(data.EnabledPhysics, result,
+                                                                           data.Mass,
+                                                                           data.Radius,
+                                                                           data.Length,
+                                                                           data.Elasticity,
+                                                                           data.StaticRoughness,
+                                                                           data.DynamicRoughness,
+                                                                           data.Immovable,
+                                                                           data.World,
+                                                                           data.Translation,
+                                                                           data.SkinYaw,
+                                                                           data.SkinPitch,
+                                                                           data.SkinRoll),
+                        data.Description,
+                        data.DescriptionWindowWidth,
+                        data.DescriptionWindowHeight,
+                        data.Slots,
+                        items);
+
+            return true;
+        }
         /****************************************************************************/
         // CreatePainKillers
         /****************************************************************************/
