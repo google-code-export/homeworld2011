@@ -83,8 +83,7 @@ namespace PlagueEngine
 
             GUI = new GUI.GUI(Services, Input.ComponentsFactory.CreateMouseListenerComponent(null, true));
 
-            AI = new AI();
-
+            
             ParticleManager.CreateFactory(ContentManager, Renderer);
 
             PhysicsManager = new PhysicsManager(ContentManager);
@@ -97,6 +96,8 @@ namespace PlagueEngine
                                           PhysicsManager.physicsComponentFactory,
                                           ParticleManager.particleFactory,
                                           this);
+            AI = new AI(Level.GameObjectsFactory);
+
             Level.Init();
 
             EventsHistorian = new EventsHistorian(20);

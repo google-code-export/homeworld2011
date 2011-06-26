@@ -22,7 +22,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         FOLLOW, EXCHANGE,
         ENGAGE, ATTACK_IDLE, ATTACK,
         SWITCH_TO_SIDEARM, SWITCH_TO_CARABINE, SWITCH,
-        RELOAD, RELOAD_SIDEARM, RELOAD_CARABINE, LOAD_CARTRIDGE
+        RELOAD, RELOAD_SIDEARM, RELOAD_CARABINE, LOAD_CARTRIDGE,
+        DIE
     };
     abstract class AbstractAIController : EventsSender, IAIController, IAttackable, IEventsReceiver
     {
@@ -360,9 +361,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 //TODO tu jakiś dźwięk
                 if (HP < BleedingIntensity)
                 {
-                    EnemyKilled evt = new EnemyKilled(controlledObject);
-                    SendEvent(evt, Priority.Normal, AbstractAIController.ai);
-                    Dispose();
+                    OnEvent(null, new TakeDamage(HP, null, true, false));
                 }
                 else
                 {
@@ -386,7 +385,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                 if (evt.causesBleeding)
                 {
-
                     IsBleeding = true;
                 }                
 
