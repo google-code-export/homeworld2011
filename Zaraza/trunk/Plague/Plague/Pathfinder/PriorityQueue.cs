@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace PlagueEngine.Pathfinder
 {
@@ -22,8 +20,6 @@ namespace PlagueEngine.Pathfinder
             {
                 StoredValues2 = new Queue<T>();
             }
-
-
         }
 
         public int Count
@@ -71,11 +67,19 @@ namespace PlagueEngine.Pathfinder
 
         private void SortUp(int listIndex)
         {
+            if (!_prioritized) return;
             while (listIndex != 0 && StoredValues[listIndex].CompareTo(StoredValues[listIndex - 1]) == -1)
             {
-                StoredValues.Swap(listIndex, listIndex - 1);
+                Swap(listIndex, listIndex - 1);
                 listIndex--;
             }
         }
+        public void Swap(int index1, int index2)
+        {
+            var temp = StoredValues[index1];
+            StoredValues[index1] = StoredValues[index2];
+            StoredValues[index2] = temp;
+        }
     }
+    
 }

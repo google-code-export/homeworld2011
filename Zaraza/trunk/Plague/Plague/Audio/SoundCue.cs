@@ -38,7 +38,7 @@ namespace PlagueEngine.Audio
             Pan = pan;
             SoundEffect = soundEffect;
             AllowMultiInstancing = allowMultiInstancing;
-            //SoundEffect.DistanceScale = distaceScale;
+            SoundEffect.DistanceScale = distaceScale;
         }
     }
 }

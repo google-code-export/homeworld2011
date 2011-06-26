@@ -1,45 +1,38 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Nuclex.Input;
 using Nuclex.UserInterface.Controls.Desktop;
 using Nuclex.UserInterface;
-
-using PlagueEngine.Input.Components;
 using PlagueEngine.LowLevelGameFlow;
 
 
 /************************************************************************************/
-/// PlagueEngine.GUI.Components
+// PlagueEngine.GUI.Components
 /************************************************************************************/
 namespace PlagueEngine.GUI.Components
 {
 
     /********************************************************************************/
-    /// GUI Button Component
+    // GUI Button Component
     /********************************************************************************/
     class ButtonComponent : GUIComponent
     {
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
-        //TODO: sprawdzić czemu tu public
         public ButtonControl Control { get; protected set; }
         
         public String Tag            { get; protected set; }
-        private string text;
+        private string _text;
         /****************************************************************************/
 
         
         /****************************************************************************/
-        /// Constructor
+        // Constructor
         /****************************************************************************/
         public ButtonComponent(String text, int x, int y, int width, int height, String tag)
             : base(x,y,width,height)
         {
             Control = new ButtonControl();
-            this.Text = text;
+            Text = text;
             Control.Bounds = new UniRectangle(new UniScalar(x),
                                               new UniScalar(y),
                                               new UniScalar(width),
@@ -49,36 +42,36 @@ namespace PlagueEngine.GUI.Components
         }
         /****************************************************************************/
 
-        public void refresh()
+        public void Refresh()
         {
-            Control.Text = GlobalGameObjects.StringManager.Load<string>(text);
+            Control.Text = GlobalGameObjects.StringManager.Load<string>(_text);
         }
 
         /****************************************************************************/
-        /// register
+        // register
         /****************************************************************************/
         public override void Register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.Control);
+            GUI.Manager.Screen.Desktop.Children.Add(Control);
             
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Unregister
+        // Unregister
         /****************************************************************************/
         public  void Unregister()
         {
-            gui.Manager.Screen.Desktop.Children.Remove(this.Control);
+            GUI.Manager.Screen.Desktop.Children.Remove(Control);
 
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// setDelegate
+        // setDelegate
         /****************************************************************************/
-        public void setDelegate(EventHandler handler)
+        public void SetDelegate(EventHandler handler)
         {
             Control.Pressed += handler;            
         }
@@ -87,7 +80,7 @@ namespace PlagueEngine.GUI.Components
 
 
         /****************************************************************************/
-        /// Release Me 
+        // Release Me 
         /****************************************************************************/
         public override void ReleaseMe()
         {
@@ -105,12 +98,12 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return text;
+                return _text;
             }
             set
             {
                 Control.Text = GlobalGameObjects.StringManager.Load<string>(value);
-                text = value;
+                _text = value;
             }
         }
         /********************************************************************************/

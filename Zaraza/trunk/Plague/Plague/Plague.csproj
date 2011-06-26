@@ -71,7 +71,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JigLibX">
-      <HintPath>.\JigLibX.dll</HintPath>
+      <HintPath>..\..\References\physic\JigLibX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
@@ -102,27 +102,6 @@
     </Reference>
     <Reference Include="mscorlib">
       <Private>False</Private>
-    </Reference>
-    <Reference Include="NMock2">
-      <HintPath>.\NMock2.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.Input">
-      <HintPath>.\Nuclex.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.Support">
-      <HintPath>.\Nuclex.Support.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.Testing.Xna">
-      <HintPath>.\Nuclex.Testing.Xna.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.UserInterface">
-      <HintPath>.\Nuclex.UserInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>.\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX.DirectInput">
-      <HintPath>.\SlimDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -163,6 +142,56 @@
     <Compile Include="Audio\MusicFadeEffect.cs" />
     <Compile Include="Audio\SongCue.cs" />
     <Compile Include="Audio\SoundCue.cs" />
+    <Compile Include="Editor\Controls\BetterComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\EditPropertyGridControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\EditPropertyGridControl.Designer.cs">
+      <DependentUpon>EditPropertyGridControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\NewPropertyGridControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\NewPropertyGridControl.Designer.cs">
+      <DependentUpon>NewPropertyGridControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\ObjectTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\ObjectTree.Designer.cs">
+      <DependentUpon>ObjectTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\DefinitionCounter.cs" />
+    <Compile Include="Editor\DynamicClass.cs" />
+    <Compile Include="Editor\EditorData.cs" />
+    <Compile Include="Editor\EditorSniffer.cs" />
+    <Compile Include="Editor\GameObjectEditorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editor\GameObjectEditorWindow.Designer.cs">
+      <DependentUpon>GameObjectEditorWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\GameObjectClassName.cs" />
+    <Compile Include="Editor\MessageBoxs\DeleteDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editor\MessageBoxs\DeleteDefinition.Designer.cs">
+      <DependentUpon>DeleteDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\TabPages\EditTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\TabPages\EditTab.Designer.cs">
+      <DependentUpon>EditTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\TabPages\NewTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\TabPages\NewTab.Designer.cs">
+      <DependentUpon>NewTab.cs</DependentUpon>
+    </Compile>
     <Compile Include="LowLevelGameFlow\GameObjects\MedKit.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DialogMessagesManager.cs" />
     <Compile Include="Audio\SoundCueInstance.cs" />
@@ -180,11 +209,11 @@
     <Compile Include="Pathfinder\Heuristic.cs" />
     <Compile Include="Pathfinder\NodeComperer.cs" />
     <Compile Include="Pathfinder\HManhattan.cs" />
-    <Compile Include="Pathfinder\MyExtensions.cs" />
     <Compile Include="Pathfinder\Node.cs" />
     <Compile Include="Pathfinder\PathfinderComponent.cs" />
     <Compile Include="Pathfinder\PathfinderManager.cs" />
     <Compile Include="Pathfinder\PriorityQueue.cs" />
+    <Compile Include="TimeControlSystem\ExpireClock.cs" />
     <Compile Include="Tools\EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />
     <Compile Include="EventsSystem\EventsSniffer.cs" />
@@ -213,6 +242,7 @@
     <Compile Include="Input\InputComponentsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectComponent.cs" />
     <Compile Include="Tools\Diagnostics.cs" />
+    <Compile Include="Tools\FormHelper.cs" />
     <Compile Include="Tools\LogWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -360,6 +390,14 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Nuclex.Input\Nuclex.Input %28xna-4.0-x86%29.csproj">
+      <Project>{4D9CD97B-289E-4519-A6F8-58C6DB8040D4}</Project>
+      <Name>Nuclex.Input %28xna-4.0-x86%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nuclex.UserInterface\Nuclex.UserInterface %28xna-4.0-x86%29.csproj">
+      <Project>{2CB08AB5-46B8-44A9-92AE-33790629696D}</Project>
+      <Name>Nuclex.UserInterface %28xna-4.0-x86%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\PlagueEngineSkinning\PlagueEngineSkinning.csproj">
       <Project>{1F938490-A946-4E1A-A1A2-51B61F8E2BC1}</Project>
       <Name>PlagueEngineSkinning</Name>
@@ -369,8 +407,9 @@
       <Name>PlagueLocalizationExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\PlagueContent\PlagueContent.contentproj">
-      <Name>PlagueContent</Name>
+      <Name>PlagueContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{E07FDDBC-B37E-49AE-9588-C6E269FF34C7}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -401,6 +440,21 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Editor\Controls\EditPropertyGridControl.resx">
+      <DependentUpon>EditPropertyGridControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\NewPropertyGridControl.resx">
+      <DependentUpon>NewPropertyGridControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\ObjectTree.resx">
+      <DependentUpon>ObjectTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Editor\GameObjectEditorWindow.resx">
+      <DependentUpon>GameObjectEditorWindow.cs</DependentUpon>
+    </None>
+    <EmbeddedResource Include="Editor\MessageBoxs\DeleteDefinition.resx">
+      <DependentUpon>DeleteDefinition.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\LogWindow.resx">
       <DependentUpon>LogWindow.cs</DependentUpon>
       <SubType>Designer</SubType>

@@ -123,14 +123,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void refresh()
         {
-            newGame.refresh();
+            newGame.Refresh();
 
-            options.refresh();
-            credits.refresh();
+            options.Refresh();
+            credits.Refresh();
 
-            exit.refresh();
-            creditslabel.refresh();
-            optionslabel.refresh();
+            exit.Refresh();
+            creditslabel.Refresh();
+            optionslabel.Refresh();
             optionsMenu.refresh();
         }
 
@@ -149,10 +149,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             this.RequiresUpdate = true;
 
-
-            //music.LoadFolder("Music", 0.4f); ;  //music.
-            //music.AutomaticMode = false;
-            //music.PlaySong("default", "cautious-path", true);
+            
+            AudioManager.GetInstance.BackgroundMusicComponent = music;
+            music.LoadFolder("Music", 0.4f); 
+            music.AutomaticMode = false;
+            music.PlaySong("default", "cautious-path", true);
 
             waves.LoadFolder("Menu",1, 0, 0, false);
             waves.SetPosition(new Vector3(0, 3, -60));
@@ -161,8 +162,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             wind.LoadFolder("Menu", 0.5f, 0, 0, false);
             wind.SetPosition(new Vector3(0, 3, -60));
             wind.PlaySound("Menu", "windhowl", true);    
-            
-            //AudioManager.GetInstance.BackgroundMusicComponent.PlaySong("default", "cautious-path");
             
             splashScreen = splash;
             splashScreen.Draw = OnDraw;
@@ -184,7 +183,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.newGametag = newGametag;
             this.levelToLoad = levelToLoad;
             this.newGame.Register();
-            this.newGame.setDelegate(newGameClick);
+            this.newGame.SetDelegate(newGameClick);
 
             this.options = options;
 
@@ -192,7 +191,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.optionstag = optionstag;
 
             this.options.Register();
-            this.options.setDelegate(optionsClick);
+            this.options.SetDelegate(optionsClick);
 
 
             this.credits = credits;
@@ -201,7 +200,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.creditstag = creditstag;
 
             this.credits.Register();
-            this.credits.setDelegate(creditsClick);
+            this.credits.SetDelegate(creditsClick);
 
             this.exit = exit;
 
@@ -210,7 +209,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.exit.Register();
 
-            this.exit.setDelegate(exitClick);
+            this.exit.SetDelegate(exitClick);
 
             this.creditslabel = creditslabel;
             this.creditswindowx = creditswindowx;
@@ -249,6 +248,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (levelToLoad != String.Empty)
             {
+                AudioManager.GetInstance.PauseSong();
+                AudioManager.GetInstance.BackgroundMusicComponent = null;
+                waves.StopAllSounds();
+                wind.StopAllSounds();
                 drawSplashScreen = true;
                 TimeControlSystem.TimeControl.CreateFrameCounter(1, 1, SendNextLevelEvent);
                 HideAll();
@@ -334,7 +337,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public override void Update(TimeSpan elapsed)
         {
-            AudioManager.GetInstance.BackgroundMusicComponent.Update(elapsed);
             
             //waves.Emitter.Position = new Vector3(0,3,-60) + Vector3.Multiply(Vector3.Left, (float)(Math.Cos((double)elapsed.Milliseconds)));
             //wind.Emitter.Position = new Vector3(0,3,-60) + 2 * Vector3.Left + Vector3.Multiply(Vector3.Left, (float)(Math.Cos((double)elapsed.Milliseconds)));

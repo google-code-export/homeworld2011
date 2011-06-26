@@ -351,7 +351,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Type = typeof(ActionSwitch);
         }
 
-        public Vector3  Position   { get; set; }
+        new public Vector3  Position   { get; set; }
         public String[] Actions    { get; set; }
         public String   ObjectName { get; set; }
         public int      Feedback   { get; set; }

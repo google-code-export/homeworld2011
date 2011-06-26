@@ -550,15 +550,11 @@ namespace PlagueEngine.Input
             set
             {
                 enabled = value;
-
-                if (inputManager != null)
-                {
-                    inputManager.Enable = value;
-                }
-                if (value) return;
+                game.IsMouseVisible = !value;
                 if (inputManager == null) return;
+                inputManager.Enable = value;
+                if (value) return;
                 var state = inputManager.GetKeyboard().GetState();
-
                 foreach (var key in state.GetPressedKeys())
                 {
                     if (GuiScreen != null) GuiScreen.InjectKeyRelease(key);

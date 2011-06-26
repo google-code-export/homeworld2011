@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Audio;
 using PlagueEngine.Audio.Components;
 using PlagueEngine.TimeControlSystem;
@@ -13,6 +12,8 @@ using PlagueEngine.Physics;
 using PlagueEngine.Particles;
 using PlagueEngine.ArtificialIntelligence;
 using PlagueLocalizationExtension;
+using System.Windows.Forms;
+using System.Threading;
 
 namespace PlagueEngine
 {
@@ -35,8 +36,8 @@ namespace PlagueEngine
         internal PhysicsManager            PhysicsManager     { get; private set; }
         internal AudioManager              AudioManager       { get; private set; }
         internal Level                     Level              { get; private set; }
-        
-       // internal Pathfinder.Pathfinder pf;
+        private Thread _editorThread;
+        private Editor.GameObjectEditorWindow _newGameObjectEditor;
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false,0.0f,1.0f,false,1,1,0.25f,1,0.25f);
         
         public bool GameStopped { get;  set; }
@@ -59,8 +60,13 @@ namespace PlagueEngine
             Title = title;
             Window.Title = title;
             IsMouseVisible = true;
+            Window.AllowUserResizing = false;
+            var form = (Form)Control.FromHandle(Window.Handle);
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
             Diagnostics.Game = this;
 #if DEBUG
+            Diagnostics.Level = LoggingLevel.FATAL;
             Diagnostics.ShowDiagnostics     = true;
             Diagnostics.ForceGCOnUpdate     = false;
             Diagnostics.ShowLogWindow       = true;
@@ -107,10 +113,9 @@ namespace PlagueEngine
             RendererClock = TimeControl.CreateClock();
             PhysicsClock  = TimeControl.CreateClock();
 
-            GlobalGameObjects.StringManager = new LangContent(Content.ServiceProvider, Content.RootDirectory);
-            GlobalGameObjects.StringManager.Language = "English";
-            GlobalGameObjects.StringManager.LangDir = "Lang";
-            
+            GlobalGameObjects.StringManager = new LangContent(Content.ServiceProvider, Content.RootDirectory)
+                                                  {Language = "English", LangDir = "Lang"};
+
         }
         /****************************************************************************/
 
@@ -129,27 +134,32 @@ namespace PlagueEngine
             
             Renderer.InitHelpers();
             InitGUI();
-            Level.LoadLevel("Menu.lvl");
+            
             
             //Głośność dla podkładu muzycznego powinna być relatywnie niska 
             //AudioManager.BackgroundMusicComponent.LoadFolder("Sting", 0.05f);
             
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
+            _editorThread = new Thread(EditorStart) {Priority = ThreadPriority.AboveNormal};
+            //_editorThread.Start();
 #endif
             
             Input.Enabled = true;
-            //pf = new Pathfinder.Pathfinder(PhysicsManager,Renderer);
-            //pf.Generate();
             base.Initialize();              
             
-            #if DEBUG
+#if DEBUG
             Diagnostics.PushLog("Initialization complete");
-            #endif
+#endif
         }
         /****************************************************************************/
 
-
+        private void EditorStart()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(_newGameObjectEditor= new Editor.GameObjectEditorWindow(this));
+        }
 
         /****************************************************************************/
         /// Load Content
@@ -160,6 +170,9 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void LoadContent()
         {
+
+            Level.LoadLevel("Menu.lvl");
+
             Renderer.LoadEffects();
 
             Renderer.LoadFonts("Courier New", "Courier New Bold","Arial");
@@ -172,7 +185,6 @@ namespace PlagueEngine
 #if DEBUG
             _gameObjectEditor.LoadIconTextures();
             Diagnostics.PushLog("Loading content complete");
-            
 #endif
             
         }
@@ -190,6 +202,11 @@ namespace PlagueEngine
         {
             ContentManager.Unload();
 #if DEBUG
+            if (_editorThread.IsAlive)
+            {
+                FormHelper.CloseForm(_newGameObjectEditor);
+                _editorThread.Abort();
+            }
             Diagnostics.PushLog("Unloading content complete");
             Diagnostics.CloseLogFile(); 
 #endif
@@ -248,7 +265,6 @@ namespace PlagueEngine
             Renderer.Draw(RendererClock.DeltaTime,gameTime);
             GUI.Draw(gameTime);
             Input.Draw();
-            //pf.Draw(Renderer.CurrentCamera.View,Renderer.CurrentCamera.ViewProjection);
             base.Draw(gameTime);
         }
         /****************************************************************************/
