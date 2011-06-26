@@ -9,26 +9,26 @@ using PlagueEngine.Physics.Components;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
-    class DeadBody : GameObjectInstance, IActiveGameObject
+    class DeadBody : Container, IActiveGameObject
     {  /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        protected SkinnedMeshComponent mesh = null;
-        protected CapsuleBodyComponent body = null;
+        //protected SkinnedMeshComponent mesh = null;
+         new protected  CapsuleBodyComponent body = null;
 
-        private bool open = false;
+        //private bool open = false;
 
-        private int DescriptionWindowWidth = 0;
-        private int DescriptionWindowHeight = 0;
+        //private int DescriptionWindowWidth = 0;
+        //private int DescriptionWindowHeight = 0;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public uint Slots { get; private set; }
-        public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
-        public String Description { get; private set; }
+        //public uint Slots { get; private set; }
+        //public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
+        //public String Description { get; private set; }
         /****************************************************************************/
 
 
@@ -65,7 +65,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// GetActions
         /****************************************************************************/
-        public string[] GetActions()
+        public override string[] GetActions()
         {
             return new string[0];
         }
@@ -75,7 +75,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// GetActions
         /****************************************************************************/
-        public string[] GetActions(Mercenary mercenary)
+        public override string[] GetActions(Mercenary mercenary)
         {
             return new string[] { "Get Items", "Examine" };
         }

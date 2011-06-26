@@ -24,28 +24,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         protected SkinnedMeshComponent mesh = null;
-        protected SquareBodyComponent  body = null;
+        private SquareBodyComponent  body = null;
 
-        private bool open = false;
+        protected bool open = false;
 
-        private int DescriptionWindowWidth  = 0;
-        private int DescriptionWindowHeight = 0;
+        protected int DescriptionWindowWidth = 0;
+        protected int DescriptionWindowHeight = 0;
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public uint Slots { get; private set; }
-        public Dictionary<StorableObject, ItemPosition> Items { get; private set; }
-        public String Description { get; private set; }
+        public uint Slots { get; protected set; }
+        public Dictionary<StorableObject, ItemPosition> Items { get; protected set; }
+        public String Description { get; protected set; }
         /****************************************************************************/
 
 
         /****************************************************************************/
         /// Init
         /****************************************************************************/
-        public void Init(SkinnedMeshComponent mesh, 
+        public virtual void Init(SkinnedMeshComponent mesh, 
                          SquareBodyComponent body, 
                          String description,
                          int descriptionWindowWidth,
@@ -73,7 +73,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// GetActions
         /****************************************************************************/
-        public string[] GetActions()
+        public virtual string[] GetActions()
         {
             return new string[0];
         }
@@ -83,7 +83,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// GetActions
         /****************************************************************************/
-        public string[] GetActions(Mercenary mercenary)
+        public virtual string[] GetActions(Mercenary mercenary)
         {
             if (open)
             {

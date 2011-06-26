@@ -48,7 +48,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float movingSpeed,
                          float distance,
                          float angle,
-                         List<AnimationBinding> AnimationMapping
+                         Dictionary<PlagueEngine.ArtificialIntelligence.Controllers.Action, string> AnimationMapping
             )
         {
             this.mesh = mesh;
