@@ -609,6 +609,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                                 controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                (merc.CurrentObject as Firearm).Freeze();
                             }
                             else
                             {
@@ -622,6 +623,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                                 controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                (merc.CurrentObject as Firearm).Freeze();
                             }
                             #endregion
                         }
@@ -666,7 +668,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 }
                 else if (evt.animation == AnimationToActionMapping[Action.LOAD_CARTRIDGE])
                 {
-                    ((controlledObject as Mercenary).CurrentObject as Firearm).Unfreeze();
                     Mercenary merc = controlledObject as Mercenary;
                     Firearm firearm = merc.CurrentObject as Firearm;
                     AmmoClip clip = firearm.AmmoClip; 
@@ -717,6 +718,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         if (clip.Content.Count > 0)
                         {
+                            firearm.Unfreeze();
                             if (AttackTarget != null)
                             {
                                 Action = Action.ATTACK;
@@ -743,6 +745,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
                         else
                         {
+                            firearm.Unfreeze();
                             Action = Action.IDLE;//WHAT TO DO!?!?
                             controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
                             AttackTarget = null;
@@ -751,6 +754,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     }
                     else
                     {
+                        firearm.Unfreeze();
                         controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.LOAD_CARTRIDGE]);
                         if (AttackTarget != null)
                         {
