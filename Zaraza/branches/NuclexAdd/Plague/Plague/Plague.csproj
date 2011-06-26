@@ -239,6 +239,7 @@
     <Compile Include="Input\InputComponentsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectComponent.cs" />
     <Compile Include="Tools\Diagnostics.cs" />
+    <Compile Include="Tools\FormHelper.cs" />
     <Compile Include="Tools\LogWindow.cs">
       <SubType>Form</SubType>
     </Compile>
