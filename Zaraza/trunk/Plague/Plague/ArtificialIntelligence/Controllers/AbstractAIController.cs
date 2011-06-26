@@ -204,7 +204,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                     uint MaxHP,
                                     float RotationSpeed,
                                     float MovingSpeed,
-                                    List<AnimationBinding> AnimationMapping
+                                    Dictionary<Action, string> AnimationMapping
                                     )
             :this(being,
                   MaxHP,
@@ -247,96 +247,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                     float MovingSpeed,
                                     float DistancePrecision,
                                     float AnglePrecision,
-                                    List<AnimationBinding> AnimationMapping
+                                    Dictionary<Action, string> AnimationMapping
                                     ):this()
         {
+            this.AnimationToActionMapping = AnimationMapping;
             
-            #region CREATE Actions FROM STRINGS
-            
-            this.AnimationToActionMapping = new Dictionary<Action, string>();
-            if(AnimationMapping != null){
-                foreach (AnimationBinding pair in AnimationMapping)
-                {
-                    try
-                    {
-                        switch (pair.Action)
-                        {
-
-                            case "ACTIVATE":
-                                this.AnimationToActionMapping.Add(Action.ACTIVATE, pair.Animation);
-                                break;
-                            case "ATTACK":
-                                this.AnimationToActionMapping.Add(Action.ATTACK, pair.Animation);
-                                break;
-                            case "ATTACK_IDLE":
-                                this.AnimationToActionMapping.Add(Action.ATTACK_IDLE, pair.Animation);
-                                break;
-                            case "ENGAGE":
-                                this.AnimationToActionMapping.Add(Action.ENGAGE, pair.Animation);
-                                break;
-                            case "EXAMINE":
-                                this.AnimationToActionMapping.Add(Action.EXAMINE, pair.Animation);
-                                break;
-                            case "EXCHANGE":
-                                this.AnimationToActionMapping.Add(Action.EXCHANGE, pair.Animation);
-                                break;
-                            case "FOLLOW":
-                                this.AnimationToActionMapping.Add(Action.FOLLOW, pair.Animation);
-                                break;
-                            case "IDLE":
-                                this.AnimationToActionMapping.Add(Action.IDLE, pair.Animation);
-                                break;
-                            case "WOUNDED_IDLE":
-                                this.AnimationToActionMapping.Add(Action.WOUNDED_IDLE, pair.Animation);
-                                break;
-                            case "MOVE":
-                                this.AnimationToActionMapping.Add(Action.MOVE, pair.Animation);
-                                break;
-                            case "WOUNDED_MOVE":
-                                this.AnimationToActionMapping.Add(Action.WOUNDED_MOVE, pair.Animation);
-                                break;
-                            case "TACTICAL_MOVE_SIDEARM":
-                                this.AnimationToActionMapping.Add(Action.TACTICAL_MOVE_SIDEARM, pair.Animation);
-                                break;
-                            case "TACTICAL_MOVE_CARABINE":
-                                this.AnimationToActionMapping.Add(Action.TACTICAL_MOVE_CARABINE, pair.Animation);
-                                break;
-                            case "SWITCH_TO_PISTOL":
-                                //this.AnimationToActionMapping.Add(Action.OPEN, pair.Animation);
-                                break;
-                            case "SWITCH_TO_SIDEARM":
-                                //this.AnimationToActionMapping.Add(Action.OPEN, pair.Animation);
-                                break;
-                            case "RELOAD_SIDEARM":
-                                this.AnimationToActionMapping.Add(Action.RELOAD_SIDEARM, pair.Animation);
-                                break;
-                            case "RELOAD_CARABINE":
-                                this.AnimationToActionMapping.Add(Action.RELOAD_CARABINE, pair.Animation);
-                                break;
-                            case "OPEN":
-                                this.AnimationToActionMapping.Add(Action.OPEN, pair.Animation);
-                                break;
-                            case "PICK":
-                                this.AnimationToActionMapping.Add(Action.PICK, pair.Animation);
-                                break;
-                            case "TO_IDLE":
-                                this.AnimationToActionMapping.Add(Action.TO_IDLE, pair.Animation);
-                                break;
-                            default:
-                                //this.AnimationToActionMapping.Add(Action.IDLE, pair.Animation);
-#if DEBUG
-                                Diagnostics.PushLog(LoggingLevel.ERROR, "Unknown action: " + pair.Action + " encountered during binding animation " + pair.Animation);
-#endif
-                                break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-        }
-
-            }
-            #endregion
             this.HP = HP;
             this.MaxHP = MaxHP;
 
