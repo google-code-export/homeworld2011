@@ -211,6 +211,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                                 controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                (merc.CurrentObject as Firearm).Freeze();
                                 #endregion
                             }
                             else
@@ -225,6 +226,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                                 controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                (merc.CurrentObject as Firearm).Freeze();
                             }
                             #endregion
                         }
@@ -458,9 +460,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             else if (e.GetType().Equals(typeof(LookAtPointEvent)))
             {
                 #region LookAtPoint
+                if ((controlledObject as Mercenary).CurrentObject == null) return;
                 LookAtPointEvent LookAtPointEvent = e as LookAtPointEvent;
-                Action = Action.IDLE;
-                controlledObject.mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.5f));
+                Action = Action.IDLE;              
+                if(!((controlledObject as Mercenary).CurrentObject as Firearm).SideArm) controlledObject.mesh.BlendTo("LookAt_Carabine", TimeSpan.FromSeconds(0.5f));
+                else controlledObject.mesh.BlendTo("LookAt_Pistol", TimeSpan.FromSeconds(0.5f));
                 Vector3 direction = controlledObject.World.Translation - LookAtPointEvent.point;
                 Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
                 Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
@@ -610,6 +614,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 AnimationEndEvent evt = e as AnimationEndEvent;
                 if (evt.animation == AnimationToActionMapping[Action.RELOAD_SIDEARM] || evt.animation == AnimationToActionMapping[Action.RELOAD_CARABINE])
                 {
+                    ((controlledObject as Mercenary).CurrentObject as Firearm).Unfreeze();
                     controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.RELOAD]);
                     if (AttackTarget != null)
                     {
@@ -636,6 +641,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 }
                 else if (evt.animation == AnimationToActionMapping[Action.LOAD_CARTRIDGE])
                 {
+                    ((controlledObject as Mercenary).CurrentObject as Firearm).Unfreeze();
                     Mercenary merc = controlledObject as Mercenary;
                     Firearm firearm = merc.CurrentObject as Firearm;
                     AmmoClip clip = firearm.AmmoClip; 
