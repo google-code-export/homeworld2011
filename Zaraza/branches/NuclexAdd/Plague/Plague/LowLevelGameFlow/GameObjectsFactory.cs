@@ -244,15 +244,15 @@ namespace PlagueEngine.LowLevelGameFlow
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
 
             result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
-                                                                       data.Model,
-                                                                       data.Diffuse,
-                                                                       data.Specular,
-                                                                       data.Normals,
-                                                                       instancingMode,
-                                                                       data.EnabledMesh,
-                                                                       data.Static),
+                                                                        data.Model,
+                                                                        data.Diffuse,
+                                                                        data.Specular,
+                                                                        data.Normals,
+                                                                        instancingMode,
+                                                                        data.EnabledMesh,
+                                                                        data.Static),
 
-                        _physicsComponentFactory.CreateCylindricalBodyComponent( data.EnabledPhysics, result,
+                        _physicsComponentFactory.CreateCylindricalBodyComponent(data.EnabledPhysics, result,
                                                                                 data.Mass,
                                                                                 data.Radius,
                                                                                 data.Lenght,
@@ -264,8 +264,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                                 data.Translation,
                                                                                 data.SkinYaw,
                                                                                 data.SkinPitch,
-                                                                                data.SkinRoll),
-                        _inputComponentsFactory.CreateKeyboardListenerComponent(result, true));
+                                                                                data.SkinRoll));
 
             return true;
         }

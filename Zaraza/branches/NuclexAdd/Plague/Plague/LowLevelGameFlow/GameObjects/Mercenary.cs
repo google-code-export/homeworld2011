@@ -261,21 +261,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// </returns>
         public bool HasItemType(Type itemType)
         {
-            if (CurrentObject != null && CurrentObject.GetType().Assembly.Equals(itemType))
+            if (CurrentObject != null && CurrentObject.GetType().Equals(itemType))
             {
                 return true;
             }
-            if (Weapon != null && Weapon.GetType().Assembly.Equals(itemType))
+            if (Weapon != null && Weapon.GetType().Equals(itemType))
             {
                 return true;
             }
-            if (SideArm != null && SideArm.GetType().Assembly.Equals(itemType))
+            if (SideArm != null && SideArm.GetType().Equals(itemType))
             {
                 return true;
             }
             foreach (var item in Items.Keys)
             {
-                if (item.GetType().Assembly.Equals(itemType))
+                if (item.GetType().Equals(itemType))
                 {
                     return true;
                 }
@@ -896,6 +896,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public String[] GetActions()
         {
+            if (ObjectAIController.IsBleeding &&
+                (HasItemType(typeof(PainKillers)) ||
+                HasItemType(typeof(MedKit))))
+            {
+                return new[] { "Inventory", "Follow", "Exchange Items", "Heal" };
+            }
+
             return new[] { "Inventory", "Follow", "Exchange Items" };
         }
         /****************************************************************************/
@@ -908,10 +915,24 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             var actions = new List<String> { "Inventory" };
 
+            if (ObjectAIController.IsBleeding &&
+                (HasItemType(typeof(PainKillers)) ||
+                 HasItemType(typeof(MedKit)))) 
+            {                
+                actions.Add("Heal");
+            }
+
             if (mercenary != null && mercenary != this)
             {
+                if (ObjectAIController.IsBleeding &&
+                   (mercenary.HasItemType(typeof(PainKillers)) ||
+                    mercenary.HasItemType(typeof(MedKit))))
+                {
+                    actions.Add("Heal Him");
+                }
+
                 actions.Add("Follow");
-                actions.Add("Exchange Items");
+                actions.Add("Exchange Items");                
             }
             else
             {
@@ -942,9 +963,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         /// Reload
         /****************************************************************************/
-        public void Reload()
+        public bool Reload()
         {
-            if (CurrentObject as Firearm == null) return;
+            if (CurrentObject as Firearm == null) return false;
             foreach (var item in Items)
             {
                 if (item.Key as AmmoClip != null && item.Value.Slot < TinySlots)
@@ -960,17 +981,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             FindPlaceForItem(ammoClip, true);
                         }
                         firearm.AttachClip(item.Key as AmmoClip);
-                        return;
+                        return true;
                     }
                 }
             }
+            return false;
         }
         /****************************************************************************/
 
         public void Recoil(float recoil)
         { 
             // TODO: Efekt na odrzut
-            Mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.1f));
+            if ((CurrentObject as Firearm).SideArm) Mesh.BlendTo("Fire_Pistol", TimeSpan.FromSeconds(0.1f));
+            else Mesh.BlendTo("Fire_Carabine", TimeSpan.FromSeconds(0.1f));            
         }
 
         public float GetAccuracyModulation(Firearm firearm)
@@ -986,7 +1009,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void OnShoot(float damage, float stoppingPower, Vector3 position, Vector3 direction, Mercenary shooter)
         {
-            ObjectAIController.OnEvent(null, new ArtificialIntelligence.TakeDamage(damage, shooter, true, false));
+
+            //TODO: odkomentować przed prezentacją
+            //if (shooter != this)
+            //{
+                ObjectAIController.OnEvent(null, new ArtificialIntelligence.TakeDamage(damage, shooter, true, false));
+
+            //}
         }
     }
     /********************************************************************************/

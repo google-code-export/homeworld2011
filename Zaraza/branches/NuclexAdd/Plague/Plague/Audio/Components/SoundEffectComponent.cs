@@ -11,12 +11,8 @@ namespace PlagueEngine.Audio.Components
     {
         private Dictionary<string, Dictionary<string, SoundCue>> _sounds = new Dictionary<string, Dictionary<string, SoundCue>>();
         private Dictionary<string, SoundEffectInstance> _playingSounds;
-        private AudioEmitter _emitter;
 
-        public AudioEmitter Emitter
-        {
-            get { return _emitter; }
-        } 
+        public AudioEmitter Emitter { get; private set; }
 
         private AudioManager _audioManager;
         private Random _random;
@@ -25,7 +21,7 @@ namespace PlagueEngine.Audio.Components
         {
             _random = new Random();
             _audioManager = AudioManager.GetInstance;
-            _emitter = new AudioEmitter();
+            Emitter = new AudioEmitter();
             _playingSounds = new Dictionary<string, SoundEffectInstance>();
         }
 
@@ -134,7 +130,7 @@ namespace PlagueEngine.Audio.Components
                     }
                 }
             }
-            var sei = _audioManager.PlaySound(this, sound, _emitter, isLooped, maxDistance);
+            var sei = _audioManager.PlaySound(this, sound, Emitter, isLooped, maxDistance);
             if (!sound.AllowMultiInstancing && sei != null)
             {
                 _playingSounds.Add(soundName, sei);
@@ -162,9 +158,9 @@ namespace PlagueEngine.Audio.Components
 
 
         }
-        public void SetPosiotion(Vector3 position)
+        public void SetPosition(Vector3 position)
         {
-            _emitter.Position = position;
+            Emitter.Position = position;
         }
 
         public void StopSound(string soundName)
@@ -202,7 +198,7 @@ namespace PlagueEngine.Audio.Components
         }
         public void  ReleaseMe(){
             StopAllSounds();
-            _emitter = null;
+            Emitter = null;
             _random = null;
             _playingSounds = null;
             _audioManager = null;

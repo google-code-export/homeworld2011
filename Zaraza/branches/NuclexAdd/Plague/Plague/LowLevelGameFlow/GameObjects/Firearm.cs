@@ -72,6 +72,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private bool openFire = false;
         private int ticks = 0;
         private uint autoFireTimer;
+        private Matrix frozenWorld;
+        private GetWorldDelegate previousGetWorld;
         /****************************************************************************/
 
 
@@ -299,20 +301,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             if (AmmoClip == null)
             {
-                sounds.SetPosiotion(GetWorld().Translation);
+                sounds.SetPosition(GetWorld().Translation);
                 sounds.PlaySound("Firearms", "DryFire");
                 return false;
             }
             else if (AmmoClip.Content.Count == 0)
             {
-                sounds.SetPosiotion(GetWorld().Translation);
+                sounds.SetPosition(GetWorld().Translation);
                 sounds.PlaySound("Firearms", "DryFire");
                 return false;
             }
             else
             {                
                
-                sounds.SetPosiotion(GetWorld().Translation);
+                sounds.SetPosition(GetWorld().Translation);
                 sounds.PlaySound("Firearms", "Fireshot");
 
                 SoundAt evt = new SoundAt(this.owner.World.Translation);
@@ -651,6 +653,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Freeze 
+        /****************************************************************************/
+        public void Freeze()
+        {
+            frozenWorld = GetWorld();
+            previousGetWorld = getWorld;
+            getWorld = delegate(int bone) { return frozenWorld; };
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Unfreeze
+        /****************************************************************************/
+        public void Unfreeze()
+        {
+            getWorld = previousGetWorld;
+        }
+        /****************************************************************************/
 
         /****************************************************************************/
         /// On Placing

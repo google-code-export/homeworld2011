@@ -140,9 +140,8 @@ namespace PlagueEngine
             
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
-            _editorThread = new Thread(EditorStart);
-            _editorThread.Start();
-            _editorThread.Priority = ThreadPriority.AboveNormal;
+            _editorThread = new Thread(EditorStart) {Priority = ThreadPriority.AboveNormal};
+            //_editorThread.Start();
 #endif
             
             Input.Enabled = true;
