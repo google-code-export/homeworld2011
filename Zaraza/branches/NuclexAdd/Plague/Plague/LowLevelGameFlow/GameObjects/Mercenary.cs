@@ -166,7 +166,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     var weapon = Weapon;
                     StoreItem(1);
-                    PlaceItem(weapon, 0);                   
+                    PlaceItem(weapon, 0);
+                    mesh.BlendTo("Pick_Carabine", TimeSpan.FromSeconds(0.25f));
                 }
                 else if (CurrentObject != null)
                 {
@@ -181,7 +182,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             {
                                 StoreItem(1);
                                 PlaceItem(weapon, 0);
+                                mesh.BlendTo("Pick_Carabine", TimeSpan.FromSeconds(0.25f));
                             }
+                            else
+                            {
+                                mesh.BlendTo("Hide_Carabine", TimeSpan.FromSeconds(0.25f));
+                            }
+                            
                             PlaceItem(firearm, 1);
                         }
                         else if (SideArm == null && Weapon != null)
@@ -191,10 +198,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             StoreItem(1);
                             PlaceItem(weapon, 0);
                             PlaceItem(firearm, 2);
+                            mesh.BlendTo("Pick_Carabine", TimeSpan.FromSeconds(0.25f));
                         }
                     }
                 }
-                mesh.BlendTo("Pick_Carabine", TimeSpan.FromSeconds(0.25f));
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             /*************************************/
@@ -206,7 +213,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 {
                     var weapon = SideArm;
                     StoreItem(2);
-                    PlaceItem(weapon, 0);                    
+                    PlaceItem(weapon, 0);
+                    mesh.BlendTo("Pick_Pistol", TimeSpan.FromSeconds(0.25f));
                 }
                 else if (CurrentObject != null)
                 {
@@ -221,7 +229,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             {
                                 StoreItem(2);
                                 PlaceItem(weapon, 0);
-                            }                            
+                                mesh.BlendTo("Pick_Pistol", TimeSpan.FromSeconds(0.25f));
+                            }
+                            {
+                                mesh.BlendTo("Hide_Pistol", TimeSpan.FromSeconds(0.25f));
+                            }
                             PlaceItem(firearm, 2);
                         }
                         else if (Weapon == null && SideArm != null)
@@ -230,11 +242,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             StoreItem(0);
                             StoreItem(2);
                             PlaceItem(weapon, 0);
-                            PlaceItem(firearm, 1);                            
+                            PlaceItem(firearm, 1);
+                            mesh.BlendTo("Pick_Pistol", TimeSpan.FromSeconds(0.25f));
                         }
                     }
                 }
-                mesh.BlendTo("Pick_Pistol", TimeSpan.FromSeconds(0.25f));
                 SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
             }
             /*************************************/
@@ -426,7 +438,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else if (CurrentObject != null)
             {
 
-                CurrentObject.World = Matrix.Identity;
+                //CurrentObject.World = Matrix.Identity;
                 CurrentObject.World.Translation = World.Translation +
                                                   Vector3.Normalize(World.Backward) * 2 +
                                                   Vector3.Normalize(World.Up) * 2;
@@ -1017,6 +1029,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             //}
         }
+
+        /****************************************************************************/
+
+        /****************************************************************************/
+        public void Die()
+        {
+            
+        }
+        /********************************************************************************/
+
     }
     /********************************************************************************/
 

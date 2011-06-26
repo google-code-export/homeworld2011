@@ -315,6 +315,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         case "Attack": QueueEvent(new AttackOrderEvent(_targetGameObject as AbstractLivingBeing), !_leftControl, _currentMercenary); break;
                         case "Grab": QueueEvent(new GrabObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
                         case "Open": QueueEvent(new OpenContainerCommandEvent(_targetGameObject as Container), !_leftControl, _currentMercenary); break;
+                        // TODO: odkomentowac jak DeadBody bezie dziedziczyć po Container
+                        //case "Get Items": QueueEvent(new OpenContainerCommandEvent(_targetGameObject as DeadBody), !_leftControl, _currentMercenary); break;
                         case "Activate": QueueEvent(new ActivateObjectEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
                         case "Examine": QueueEvent(new ExamineObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;
                         case "Follow": QueueEvent(new FollowObjectCommandEvent(_targetGameObject), !_leftControl, _currentMercenary); break;

@@ -353,6 +353,7 @@ namespace PlagueEngine.Physics
         public override bool Apply(float dt)
         {
             Body.AngularVelocity *= Vector3.Up;
+            Body.Velocity *= new Vector3(1, 0, 1);
             return true;
         }
 
