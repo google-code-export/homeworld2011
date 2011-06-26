@@ -72,6 +72,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private bool openFire = false;
         private int ticks = 0;
         private uint autoFireTimer;
+        private Matrix frozenWorld;
+        private GetWorldDelegate previousGetWorld;
         /****************************************************************************/
 
 
@@ -651,6 +653,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// Freeze 
+        /****************************************************************************/
+        public void Freeze()
+        {
+            frozenWorld = GetWorld();
+            previousGetWorld = getWorld;
+            getWorld = delegate(int bone) { return frozenWorld; };
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// Unfreeze
+        /****************************************************************************/
+        public void Unfreeze()
+        {
+            getWorld = previousGetWorld;
+        }
+        /****************************************************************************/
 
         /****************************************************************************/
         /// On Placing

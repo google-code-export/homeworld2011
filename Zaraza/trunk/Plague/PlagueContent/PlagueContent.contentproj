@@ -1500,6 +1500,10 @@
       <ProcessorParameters_AnimationClip24Duration>1.17</ProcessorParameters_AnimationClip24Duration>
       <ProcessorParameters_AnimationClip25>Idle_Wounded</ProcessorParameters_AnimationClip25>
       <ProcessorParameters_AnimationClip25Duration>2.37</ProcessorParameters_AnimationClip25Duration>
+      <ProcessorParameters_AnimationClip26>LookAt_Pistol</ProcessorParameters_AnimationClip26>
+      <ProcessorParameters_AnimationClip26Duration>0.03</ProcessorParameters_AnimationClip26Duration>
+      <ProcessorParameters_AnimationClip27>LookAt_Carabine</ProcessorParameters_AnimationClip27>
+      <ProcessorParameters_AnimationClip27Duration>0.03</ProcessorParameters_AnimationClip27Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -2020,6 +2024,10 @@
       <ProcessorParameters_AnimationClip24Duration>1.17</ProcessorParameters_AnimationClip24Duration>
       <ProcessorParameters_AnimationClip25>Idle_Wounded</ProcessorParameters_AnimationClip25>
       <ProcessorParameters_AnimationClip25Duration>2.37</ProcessorParameters_AnimationClip25Duration>
+      <ProcessorParameters_AnimationClip26>LookAt_Pistol</ProcessorParameters_AnimationClip26>
+      <ProcessorParameters_AnimationClip26Duration>0.03</ProcessorParameters_AnimationClip26Duration>
+      <ProcessorParameters_AnimationClip27>LookAt_Carabine</ProcessorParameters_AnimationClip27>
+      <ProcessorParameters_AnimationClip27Duration>0.03</ProcessorParameters_AnimationClip27Duration>
     </Compile>
     <Compile Include="Models\Characters\Psycho.X">
       <Name>Psycho</Name>
@@ -2067,6 +2075,10 @@
       <ProcessorParameters_AnimationClip24Duration>1.17</ProcessorParameters_AnimationClip24Duration>
       <ProcessorParameters_AnimationClip25>Idle_Wounded</ProcessorParameters_AnimationClip25>
       <ProcessorParameters_AnimationClip25Duration>2.37</ProcessorParameters_AnimationClip25Duration>
+      <ProcessorParameters_AnimationClip26>LookAt_Pistol</ProcessorParameters_AnimationClip26>
+      <ProcessorParameters_AnimationClip26Duration>0.03</ProcessorParameters_AnimationClip26Duration>
+      <ProcessorParameters_AnimationClip27>LookAt_Carabine</ProcessorParameters_AnimationClip27>
+      <ProcessorParameters_AnimationClip27Duration>0.03</ProcessorParameters_AnimationClip27Duration>
     </Compile>
     <Compile Include="Models\Characters\TonyHawk.X">
       <Name>TonyHawk</Name>
@@ -2114,6 +2126,10 @@
       <ProcessorParameters_AnimationClip24Duration>1.17</ProcessorParameters_AnimationClip24Duration>
       <ProcessorParameters_AnimationClip25>Idle_Wounded</ProcessorParameters_AnimationClip25>
       <ProcessorParameters_AnimationClip25Duration>2.37</ProcessorParameters_AnimationClip25Duration>
+      <ProcessorParameters_AnimationClip26>LookAt_Pistol</ProcessorParameters_AnimationClip26>
+      <ProcessorParameters_AnimationClip26Duration>0.03</ProcessorParameters_AnimationClip26Duration>
+      <ProcessorParameters_AnimationClip27>LookAt_Carabine</ProcessorParameters_AnimationClip27>
+      <ProcessorParameters_AnimationClip27Duration>0.03</ProcessorParameters_AnimationClip27Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>

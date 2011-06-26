@@ -1001,6 +1001,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 return new Rectangle(144, 384, 16, 16);
             }
+            else if (argsType.Equals(typeof(LookAtPointEvent)))
+            {
+                return new Rectangle(176, 384, 16, 16);
+            }
+            else if (argsType.Equals(typeof(OpenFireCommandEvent)) || argsType.Equals(typeof(OpenFireToTargetCommandEvent)))
+            {
+                return new Rectangle(192, 384, 16, 16);
+            }
             return new Rectangle();
         }
 
