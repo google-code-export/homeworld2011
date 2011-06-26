@@ -289,6 +289,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case "Switch to Side Arm"   : rect.X =  96; rect.Y = 32; break;
                 case "Drop Item"            : rect.X = 128; rect.Y = 32; break;
                 case "Reload"               : rect.X = 160; rect.Y = 32; break;
+                case "Get Items"            : rect.X = 192; rect.Y = 0; break;
                 case "Heal"                 : rect.X = 192; rect.Y = 32; break;
                 case "Heal Him"             : rect.X = 224; rect.Y = 32; break;
             }

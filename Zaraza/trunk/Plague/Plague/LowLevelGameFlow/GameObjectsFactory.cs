@@ -2305,6 +2305,59 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+        /****************************************************************************/
+        /// CreateDirection
+        /****************************************************************************/
+        public bool CreateDeadBody(DeadBody result, DeadBodyData data)
+        {
+
+            Dictionary<StorableObject, ItemPosition> Items = new Dictionary<StorableObject, ItemPosition>();
+
+            if (data.Items != null)
+            {
+
+                foreach (int[] itemData in data.Items)
+                {
+                    StorableObject storable = GetObject(itemData[0]) as StorableObject;
+
+                    if (storable == null)
+                    {
+                        PushToWaitingRoom(result, data);
+                        return false;
+                    }
+
+                    Items.Add(storable, new ItemPosition(itemData[1], itemData[2]));
+                }
+            }
+
+            result.Init(renderingComponentsFactory.CreateSkinnedMeshComponent(result,
+                                                                              data.Model,
+                                                                              data.Diffuse,
+                                                                              data.Specular,
+                                                                              data.Normals),
+                        physicsComponentFactory.CreateCapsuleBodyComponent(data.EnabledPhysics, result,
+                                                                           data.Mass,
+                                                                           data.Radius,
+                                                                           data.Length,
+                                                                           data.Elasticity,
+                                                                           data.StaticRoughness,
+                                                                           data.DynamicRoughness,
+                                                                           data.Immovable,
+                                                                           data.World,
+                                                                           data.Translation,
+                                                                           data.SkinYaw,
+                                                                           data.SkinPitch,
+                                                                           data.SkinRoll),
+                        data.Description,
+                        data.DescriptionWindowWidth,
+                        data.DescriptionWindowHeight,
+                        data.Slots,
+                        Items);
+
+            return true;
+        }
+        /****************************************************************************/
+        
 
         /****************************************************************************/
         /// CreatePainKillers
