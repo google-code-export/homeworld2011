@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using PlagueEngine.TimeControlSystem;
 
 namespace PlagueEngine.Audio.Components
 {
@@ -11,7 +12,7 @@ namespace PlagueEngine.Audio.Components
     {
         private Dictionary<string, Dictionary<string, SoundCue>> _sounds = new Dictionary<string, Dictionary<string, SoundCue>>();
         private Dictionary<string, SoundEffectInstance> _playingSounds;
-
+        private ExpireClock _timeLimiter;
         public AudioEmitter Emitter { get; private set; }
 
         private AudioManager _audioManager;
@@ -24,7 +25,14 @@ namespace PlagueEngine.Audio.Components
             Emitter = new AudioEmitter();
             _playingSounds = new Dictionary<string, SoundEffectInstance>();
         }
-
+        public void SetTimeLimit(double time)
+        {
+            _timeLimiter = ExpireClock.FromSeconds(time);
+        }
+        public void RemoveTimeLimit()
+        {
+            _timeLimiter = null;
+        }
         public void LoadSound(string soundEffectGroup, string soundEffectName, string soundName, float volume, float pitch, float pan)
         {
             LoadSound(soundEffectGroup, soundEffectName, soundName, volume, pitch, pan, false);
@@ -112,29 +120,36 @@ namespace PlagueEngine.Audio.Components
 
         private void PlaySound(SoundCue sound, string soundName, bool isLooped, float maxDistance = 0f)
         {
-            if (!sound.AllowMultiInstancing && _playingSounds.ContainsKey(soundName))
+            if ((_timeLimiter == null || _timeLimiter.isExpired()))
             {
-                var playedSound = _playingSounds[soundName];
-                if (playedSound != null)
+                if (!sound.AllowMultiInstancing && _playingSounds.ContainsKey(soundName))
                 {
-                    if (playedSound.IsDisposed)
+                    var playedSound = _playingSounds[soundName];
+                    if (playedSound != null)
                     {
-                        _playingSounds.Remove(soundName);
-                    }
-                    else
-                    {
+                        if (playedSound.IsDisposed)
+                        {
+                            _playingSounds.Remove(soundName);
+                        }
+                        else
+                        {
 #if DEBUG
-                        Diagnostics.Info("Sound " + soundName + "won't be played. It has AllowMultiInstacing set to false.");
+                            Diagnostics.Info("Sound " + soundName + " won't be played. It has AllowMultiInstacing set to false.");
 #endif
-                        return;
+                            return;
+                        }
                     }
                 }
+                var sei = _audioManager.PlaySound(this, sound, Emitter, isLooped, maxDistance);
+                if (!sound.AllowMultiInstancing && sei != null)
+                {
+                    _playingSounds.Add(soundName, sei);
+                }
             }
-            var sei = _audioManager.PlaySound(this, sound, Emitter, isLooped, maxDistance);
-            if (!sound.AllowMultiInstancing && sei != null)
-            {
-                _playingSounds.Add(soundName, sei);
-            }
+            else
+#if DEBUG
+                Diagnostics.Info("Sound " + soundName + " won't be played. Time limit for this component not expired yet.");
+#endif
         }
         public void PlayRandomSound(string soundGroup)
         {
