@@ -123,14 +123,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void refresh()
         {
-            newGame.refresh();
+            newGame.Refresh();
 
-            options.refresh();
-            credits.refresh();
+            options.Refresh();
+            credits.Refresh();
 
-            exit.refresh();
-            creditslabel.refresh();
-            optionslabel.refresh();
+            exit.Refresh();
+            creditslabel.Refresh();
+            optionslabel.Refresh();
             optionsMenu.refresh();
         }
 
@@ -183,7 +183,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.newGametag = newGametag;
             this.levelToLoad = levelToLoad;
             this.newGame.Register();
-            this.newGame.setDelegate(newGameClick);
+            this.newGame.SetDelegate(newGameClick);
 
             this.options = options;
 
@@ -191,7 +191,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.optionstag = optionstag;
 
             this.options.Register();
-            this.options.setDelegate(optionsClick);
+            this.options.SetDelegate(optionsClick);
 
 
             this.credits = credits;
@@ -200,7 +200,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.creditstag = creditstag;
 
             this.credits.Register();
-            this.credits.setDelegate(creditsClick);
+            this.credits.SetDelegate(creditsClick);
 
             this.exit = exit;
 
@@ -209,7 +209,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             this.exit.Register();
 
-            this.exit.setDelegate(exitClick);
+            this.exit.SetDelegate(exitClick);
 
             this.creditslabel = creditslabel;
             this.creditswindowx = creditswindowx;

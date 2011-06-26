@@ -28,7 +28,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             _button = button;
             _label  = label;
   
-            button.setDelegate(OnButtonClick);
+            button.SetDelegate(OnButtonClick);
             window.AddControl(button.Control);
             window.AddControl(label.Control);
         }

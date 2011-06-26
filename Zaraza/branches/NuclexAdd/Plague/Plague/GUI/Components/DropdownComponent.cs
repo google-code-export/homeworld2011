@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Nuclex.UserInterface.Controls.Desktop;
-using Nuclex.UserInterface.Controls;
 using Nuclex.UserInterface;
 using PlagueEngine.LowLevelGameFlow;
 
@@ -13,13 +10,11 @@ namespace PlagueEngine.GUI.Components
     {
         public ListControl List { get; set; }
 
-        
-         
-        public ListComponent(List<string> Items,  int x, int y, int width, int height, ListSelectionMode mode)
+        public ListComponent(IEnumerable<string> items,  int x, int y, int width, int height, ListSelectionMode mode)
         {
             List = new ListControl();
             
-            foreach(string item in Items)
+            foreach(var item in items)
             {
                 List.Items.Add(GlobalGameObjects.StringManager.Load<string>(item) );
             }
@@ -31,38 +26,38 @@ namespace PlagueEngine.GUI.Components
         }
 
         /****************************************************************************/
-        /// register
+        // register
         /****************************************************************************/
         public override void Register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.List);
+            GUI.Manager.Screen.Desktop.Children.Add(List);
 
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Unregister
+        // Unregister
         /****************************************************************************/
         public void Unregister()
         {
-            gui.Manager.Screen.Desktop.Children.Remove(this.List);
+            GUI.Manager.Screen.Desktop.Children.Remove(List);
 
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// setDelegate
+        // setDelegate
         /****************************************************************************/
-        public void setDelegate(EventHandler handler)
+        public void SetDelegate(EventHandler handler)
         {
             List.SelectionChanged += handler;
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// Release Me 
+        // Release Me 
         /****************************************************************************/
         public override void ReleaseMe()
         {
