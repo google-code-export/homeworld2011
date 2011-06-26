@@ -166,6 +166,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private AmmunitionInfo ammunitionInfo = null;
 
         private bool highlights = false;
+
+        private EventsSnifferComponent sniffer;
         /****************************************************************************/
 
 
@@ -257,6 +259,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
  
             mouse.SetCursor("Default");
 
+            sniffer = new EventsSnifferComponent();
+            sniffer.SubscribeEvents(typeof(DestroyEvent));
+            sniffer.SetOnSniffedEvent(OnSniffedEvent);
+
+
             SetupMercenary();
             if (mercenary2 != null) SetupMercenary2();
 
@@ -264,6 +271,29 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 PrepareDump(container.Slots, container.Name, container.Items);
                 dump = true;
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Sniffed Event
+        /****************************************************************************/
+        public void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
+        {
+            if (sender as Mercenary == null) return;
+
+            if (mercenary2 == sender) mercenary2 = null;
+            else if (mercenary == sender)
+            {
+                CloseDump();
+                SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+                mouse.Modal = false;
+                keyboard.Modal = false;
+                mercenary.UpdateInventory = null;
+                mercenary = null;
+                mercenary2 = null;
+                if (container != null) SendEvent(new CloseEvent(), EventsSystem.Priority.Normal, container);
             }
         }
         /****************************************************************************/
@@ -3560,6 +3590,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             mouse = null;
             keyboard.ReleaseMe();
             keyboard = null;
+            sniffer.ReleaseMe();
+            sniffer = null;
         }
         /****************************************************************************/
 
