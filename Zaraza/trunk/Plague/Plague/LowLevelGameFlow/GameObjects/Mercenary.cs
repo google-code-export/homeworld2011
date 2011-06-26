@@ -426,7 +426,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else if (CurrentObject != null)
             {
 
-                CurrentObject.World = Matrix.Identity;
+                //CurrentObject.World = Matrix.Identity;
                 CurrentObject.World.Translation = World.Translation +
                                                   Vector3.Normalize(World.Backward) * 2 +
                                                   Vector3.Normalize(World.Up) * 2;
