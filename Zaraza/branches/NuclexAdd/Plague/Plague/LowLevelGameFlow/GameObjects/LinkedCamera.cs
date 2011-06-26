@@ -57,6 +57,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float _mouseX, _mouseY;
         private bool lookAt = false;
 
+        private Vector2 HeightRange;
 
         public MercenariesManager MercenariesManager;
 
@@ -78,12 +79,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Vector3 position,
                          Vector3 target,
                          GameObjectInstance mercenariesManager,
-                         bool current)
+                         bool current,
+                         Vector2 heightRange)
         {
             CameraComponent = cameraComponent;
             KeyboardListenerComponent = keyboardListenerComponent;
             MouseListenerComponent = mouseListenerComponent;
 
+            HeightRange = heightRange;
             _movementSpeed = movementSpeed;
             _rotationSpeed = rotationSpeed;
             _zoomSpeed = zoomSpeed;
@@ -397,6 +400,17 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 case MouseMoveAction.Scroll:
                     if (!StopScrolling)
                     {
+                        //if (_position.Y < HeightRange.X)
+                        //{
+                        //    _position.Y = HeightRange.X;
+                        //    return;
+                        //}
+                        //else if (_position.Y > HeightRange.Y)
+                        //{
+                        //    _position.Y = HeightRange.Y;
+                        //    return;
+                        //}
+
                         var testPosition = _position + direction * _zoomSpeed * mouseMoveState.ScrollDifference;
 
                         var distance = Vector3.Distance(_target, testPosition);
@@ -628,8 +642,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         // Update
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
-        {            
-
+        {         
             if (_movingToPoint)  MoveToPoint();
             if (_tracing)        TraceTarget();
             if (_selectionRect) CameraComponent.Renderer.DrawSelectionRect(_rect);
@@ -727,6 +740,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 /***************************************/
             }
 
+
             CameraComponent.LookAt(_position, _target, Vector3.Up);
         }
         /****************************************************************************/
@@ -819,6 +833,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public int MercenariesManager { get; set; }
         [CategoryAttribute("Misc")]
         public bool CurrentCamera { set; get; }
+
+        public Vector2 HeightRange { get; set; }
     }
     /********************************************************************************/
 

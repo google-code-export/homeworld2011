@@ -618,7 +618,8 @@ namespace PlagueEngine.LowLevelGameFlow
                          data.position,
                          data.Target,
                          mercMan,
-                         data.CurrentCamera);
+                         data.CurrentCamera,
+                         data.HeightRange);
 
             return true;
         }
