@@ -303,7 +303,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// OnDraw
         /****************************************************************************/
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
-        {            
+        {
+            if (mercenary == null) return;
+
             localPosition = new Vector2((screenWidth/2) - 420,100);
             
             Vector2 pickedItemOffset = Vector2.Zero;
@@ -3584,6 +3586,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
+            mouse.Modal = false;
+            keyboard.Modal = false;
+
             frontEnd.ReleaseMe();
             frontEnd = null;
             mouse.ReleaseMe();
