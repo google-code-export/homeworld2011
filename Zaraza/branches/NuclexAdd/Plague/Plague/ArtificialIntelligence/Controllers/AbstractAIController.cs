@@ -14,20 +14,29 @@ using PlagueEngine.Rendering;
 
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
-    public enum Action { IDLE, MOVE, TACTICAL_MOVE_SIDEARM, TACTICAL_MOVE_CARABINE, WOUNDED_MOVE, TO_IDLE, PICK, EXAMINE, OPEN, FOLLOW, ATTACK_IDLE, ENGAGE, EXCHANGE, ATTACK, ACTIVATE };
+    public enum Action { 
+        IDLE, WOUNDED_IDLE,
+        MOVE, TACTICAL_MOVE_SIDEARM, TACTICAL_MOVE_CARABINE, WOUNDED_MOVE,
+        TO_IDLE,
+        PICK, EXAMINE, OPEN, ACTIVATE,
+        FOLLOW, EXCHANGE,
+        ENGAGE, ATTACK_IDLE, ATTACK,
+        SWITCH_TO_SIDEARM, SWITCH_TO_CARABINE, SWITCH,
+        RELOAD, RELOAD_SIDEARM, RELOAD_CARABINE, LOAD_CARTRIDGE
+    };
     abstract class AbstractAIController : EventsSender, IAIController, IAttackable, IEventsReceiver
     {
+        /****************************************************************************/
+        /// STATIC
+        /****************************************************************************/
         public static AI ai;
-        
-        public AbstractLivingBeing controlledObject;
         /****************************************************************************/
-        /// Fields
-        /****************************************************************************/
-        protected Vector3 target;
-        protected GameObjectInstance objectTarget;
 
-        public    GameObjectInstance AttackTarget 
-        { 
+        /****************************************************************************/
+        /// PROPERTIES
+        /****************************************************************************/
+        public GameObjectInstance AttackTarget
+        {
             get
             {
                 return attackTarget;
@@ -41,18 +50,19 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         " controller tried to nullify attack target while in ATTACK or ATTACK_IDLE state");
 #endif
                     //TODO: zakomentować przed prezentacją.
-                    //throw new NotSupportedException();
+                    throw new ArgumentException("Ustawianie NULL na celu ataku w trakcie ataku lub oczekiwania ataku");
                 }
                 else
                 {
                     attackTarget = value;
                 }
-                
+
             }
         }
-        private GameObjectInstance attackTarget;
 
-        protected virtual Action Action
+
+        /***ACTION*******************************************************************/
+        protected virtual Action            Action
         {
             get
             {
@@ -72,7 +82,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                 + "attackTarget was null");
 #endif
                             //TODO: zakomentować przed prezentacją.
-                            throw new NotSupportedException();
+                            throw new ArgumentException("Przejście w atak/oczekiwanie ataku z celem ataku ustawionym na NULL");
                         }
                         break;
                     default:
@@ -81,11 +91,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 action = value;
             }
         }
-
-        private Action action = Action.IDLE;
-        private Action moveAction = Action.MOVE;
-
-        protected Action MoveAction 
+        protected Action                    MoveAction
         {
             get
             {
@@ -104,71 +110,86 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 }
             }
         }
-
-        protected Attack attack;
-
-        public float RotationSpeed     { get; protected set; }
-        public float MovingSpeed       { get; protected set; }
-        public float DistancePrecision { get; protected set; }
-        public float AnglePrecision    { get; protected set; }
-
-        public float SightRange        { get; protected set; }
-        public float SightAngle        { get; protected set; }
-
         
+        /***MOVEMENT*****************************************************************/
+        public float                        RotationSpeed { get; protected set; }
+        public float                        MovingSpeed { get; protected set; }
+        public float                        DistancePrecision { get; protected set; }
+        public float                        AnglePrecision { get; protected set; }
 
-        protected IEventsReceiver receiver = null;
-        
-        public Dictionary<Action, String> AnimationToActionMapping{ get; protected set; }
-        /****************************************************************************/
+        /***BLEEDING*****************************************************************/
+        public float                        SightRange { get; protected set; }
+        public float                        SightAngle { get; protected set; }
+        public Dictionary<Action, String>   AnimationToActionMapping { get; protected set; }
 
-        /****************************************************************************/
-        /// Properties
-        /****************************************************************************/
-        public uint MaxHP              { get; protected set; }
-        public uint HP                 { get; set; }
-        /****************************************************************************/
+        /***HP***********************************************************************/
+        public uint                         MaxHP { get; protected set; }
+        public uint                         HP { get; set; }
 
-        protected bool isDisposed = false;
-        
-        /// <summary>
-        /// Bleeding flag
-        /// </summary>
-        protected bool isBleeding;
-        public bool IsBleeding
+        /***BLEEDING*****************************************************************/
+        public bool                         IsBleeding
         {
             get
             {
-                return isBleeding; 
+                return isBleeding;
             }
             set
             {
                 if (!value)
                 {
                     BleedingIntensity = 0;
-                    TimeControlSystem.TimeControl.ReleaseFrameCounter(bleedingTimerID);
+                    TimeControlSystem.TimeControl.ReleaseTimer(bleedingTimerID);
                 }
                 else
                 {
                     if (isBleeding)
                     {
                         BleedingIntensity++;
+
                     }
                     else
                     {
                         BleedingIntensity = 5;
-                        bleedingTimerID = TimeControl.CreateFrameCounter(35, -1, delegate() { bleed(); }); 
+                        bleedingTimerID = TimeControl.CreateTimer(new TimeSpan(0, 0, 0, 1, 750), -1, delegate() { bleed(); });
+
                     }
                 }
                 isBleeding = value;
             }
         }
-        protected uint bleedingTimerID;        
-        // TODO: rozjebałem system ;P obsłuz se jakoś zmniejszanie BleedingIntensity z zewnątrz.
-        public ushort BleedingIntensity { get; set; }
-        public bool IsBlinded  { get; set; }
-        public bool IsBlind    { get; protected set; }
+        public ushort                       BleedingIntensity
+        {
+            get
+            {
+                return bleedingIntensity;
+            }
+            set
+            {
+                TimeControl.ReleaseTimer(bleedingSlowDownTimerID);
+                if (value < 0)
+                {
+                }
+                else if (value == 0 && IsBleeding)
+                {
+                    isBleeding = false;
+                }
+                else
+                {
+                    bleedingIntensity = value;
+                    bleedingSlowDownTimerID = TimeControl.CreateTimer(
+                                new TimeSpan(0,
+                                             0,
+                                             20 + (bleedingIntensity)),
+                                -1,
+                                delegate() { BleedingIntensity = (ushort)(bleedingIntensity / 2); });
+                }
+            }
+        }
 
+        /***BLINDING*****************************************************************/
+        public bool IsBlinded { get; set; }
+        public bool IsBlind { get; protected set; }
+        /****************************************************************************/
         
         /// <summary>
         /// Short Constructor, setting up current HP as MaxHP and using default precision values.
@@ -229,7 +250,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                     ):this()
         {
             
-            #region CREATE ActionS FROM STRINGS
+            #region CREATE Actions FROM STRINGS
             
             this.AnimationToActionMapping = new Dictionary<Action, string>();
             if(AnimationMapping != null){
@@ -264,6 +285,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             case "IDLE":
                                 this.AnimationToActionMapping.Add(Action.IDLE, pair.Animation);
                                 break;
+                            case "WOUNDED_IDLE":
+                                this.AnimationToActionMapping.Add(Action.WOUNDED_IDLE, pair.Animation);
+                                break;
                             case "MOVE":
                                 this.AnimationToActionMapping.Add(Action.MOVE, pair.Animation);
                                 break;
@@ -276,7 +300,18 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             case "TACTICAL_MOVE_CARABINE":
                                 this.AnimationToActionMapping.Add(Action.TACTICAL_MOVE_CARABINE, pair.Animation);
                                 break;
-                           
+                            case "SWITCH_TO_PISTOL":
+                                //this.AnimationToActionMapping.Add(Action.OPEN, pair.Animation);
+                                break;
+                            case "SWITCH_TO_SIDEARM":
+                                //this.AnimationToActionMapping.Add(Action.OPEN, pair.Animation);
+                                break;
+                            case "RELOAD_SIDEARM":
+                                this.AnimationToActionMapping.Add(Action.RELOAD_SIDEARM, pair.Animation);
+                                break;
+                            case "RELOAD_CARABINE":
+                                this.AnimationToActionMapping.Add(Action.RELOAD_CARABINE, pair.Animation);
+                                break;
                             case "OPEN":
                                 this.AnimationToActionMapping.Add(Action.OPEN, pair.Animation);
                                 break;
@@ -337,7 +372,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Processes Events
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -421,7 +456,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
             else if (e.GetType().Equals(typeof(AnimationEndEvent)))
             {
-               
                 #region Attack or Chase or Idle
                if (Action == Action.ATTACK_IDLE)
                 {
@@ -458,25 +492,23 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         
 
         /// <summary>
-        /// 
+        /// Update
         /// </summary>
         /// <param name="deltaTime"></param>
         public virtual void Update(TimeSpan deltaTime)
         {
+            if (isDisposed) return;
+
+            #region LOCALS
             Vector3 direction;
             Vector2 v1;
             Vector2 v2;
-
             float det;
             float angle;
-                        
-            //Diagnostics.PushLog("AKCJA: " + Action.ToString());
-            if (isDisposed) return;
-
-            
-
-            controlledObject.SoundEffectComponent.SetPosiotion(controlledObject.World.Translation);
             double currentDistance;
+            #endregion
+
+            controlledObject.SoundEffectComponent.SetPosition(controlledObject.World.Translation);
             
             switch (Action)
             {
@@ -668,6 +700,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     #endregion
                     return;
                 case Action.ATTACK_IDLE:
+                    #region Attack Idle - rotate towards enemy
                     direction = controlledObject.World.Translation - AttackTarget.World.Translation;
                     v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
                     v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
@@ -681,7 +714,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle)); 
                         
                     TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { controlledObject.Controller.StopMoving(); }); 
-                        
+                    #endregion
                     return;
                 default:
                     break;
@@ -690,7 +723,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Informs if the object was disposed
         /// </summary>
         /// <returns></returns>
         public bool IsDisposed()
@@ -706,11 +739,38 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.objectTarget = null;
             this.receiver = null;
             this.attack = null;
+            this.Action = Action.IDLE;
             this.AttackTarget = null;
             this.AnimationToActionMapping = null;
             this.objectTarget = null;
-            this.controlledObject.SendEvent(new DestroyObjectEvent(this.controlledObject.ID),Priority.Normal, GlobalGameObjects.GameController);
+            this.controlledObject.SendEvent
+                (
+                new DestroyObjectEvent(this.controlledObject.ID),
+                Priority.Normal, 
+                GlobalGameObjects.GameController
+                );
             this.isDisposed = true;
         }
+
+
+        /****************************************************************************/
+        /// Fields
+        /****************************************************************************/
+        protected Vector3 target;
+        protected GameObjectInstance objectTarget;
+        private GameObjectInstance attackTarget;
+        private Action action = Action.IDLE;
+        private Action moveAction = Action.MOVE;
+        protected Attack attack;
+        public AbstractLivingBeing controlledObject;
+        protected IEventsReceiver receiver = null;
+        protected bool isDisposed = false;
+        protected bool isBleeding;
+        protected uint bleedingTimerID;
+        protected uint bleedingSlowDownTimerID;
+        private ushort bleedingIntensity;
+        /****************************************************************************/
+
     }
+    /********************************************************************************/
 }

@@ -194,7 +194,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void Use(Mercenary mercenary)
         {
-            mercenary.ObjectAIController.BleedingIntensity -= BleedingIntensity;
+            mercenary.ObjectAIController.BleedingIntensity /= 2;
             --Amount;
         }
 

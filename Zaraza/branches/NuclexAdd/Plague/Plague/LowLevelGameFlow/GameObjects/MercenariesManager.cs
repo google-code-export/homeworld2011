@@ -11,6 +11,7 @@ using PlagueEngine.EventsSystem;
 using PlagueEngine.Input.Components;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.ArtificialIntelligence;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -94,6 +95,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mercenaries = new Dictionary<Mercenary, List<EventArgs>>();
             WoundedMercenaries = new Dictionary<Mercenary, uint>();
             clock = TimeControl.CreateClock();
+
+            MercenaryController.MercManager = this;
         }
         /****************************************************************************/
 
@@ -143,7 +146,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (sender.GetType().Equals(typeof(LinkedCamera)))
                 {
-                    SendEvent(e, Priority.Low, _selectedMercenaries.ToArray());
+                    foreach (var m in _selectedMercenaries)
+                    {
+                        if (Mercenaries[m].Count == 0) SendEvent(e, Priority.High, m);
+                    }                    
                 }
                 else
                 {
@@ -994,6 +1000,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             else if (argsType.Equals(typeof(SwitchToSideArmCommandEvent)))
             {
                 return new Rectangle(144, 384, 16, 16);
+            }
+            else if (argsType.Equals(typeof(LookAtPointEvent)))
+            {
+                return new Rectangle(176, 384, 16, 16);
+            }
+            else if (argsType.Equals(typeof(OpenFireCommandEvent)) || argsType.Equals(typeof(OpenFireToTargetCommandEvent)))
+            {
+                return new Rectangle(192, 384, 16, 16);
             }
             return new Rectangle();
         }

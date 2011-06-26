@@ -30,17 +30,18 @@ namespace PlagueEngine.Pathfinder
             {
                var start = PathfinderManager.Pm.GetNode(startPoint);
 
-               if (start.NodeType != NodeType.None || start.NodeType != NodeType.Static)
+               if (start.NodeType.Equals(NodeType.Navigation))
                {
                    var end = PathfinderManager.Pm.GetNode(destinationPoint);
-#if DEBUG
-                   Diagnostics.PushLog(LoggingLevel.INFO, this, "Start node: " + start);
-                   Diagnostics.PushLog(LoggingLevel.INFO, this, "End node: " + end);
-#endif
+
                    _pathType = (end.NodeType == NodeType.Navigation)?PathType.Totarget:PathType.Closest;
 
-                   if (end.NodeType != NodeType.None || end.NodeType != NodeType.Static)
+                   if (end.NodeType.Equals(NodeType.Navigation))
                    {
+#if DEBUG
+                       Diagnostics.PushLog(LoggingLevel.INFO, this, "Start node: " + start);
+                       Diagnostics.PushLog(LoggingLevel.INFO, this, "End node: " + end);
+#endif
                        var visited = new HashSet<Node>();
                        var tempNodes = new PriorityQueue<Node>(_pathType==PathType.Totarget);
                        tempNodes.Enqueue(start);

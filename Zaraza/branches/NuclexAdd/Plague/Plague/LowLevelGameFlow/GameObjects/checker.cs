@@ -51,10 +51,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 #if DEBUG
                 Diagnostics.PushLog(LoggingLevel.ERROR,
                                     !File.Exists(Path + levelName + "." + LevelExtension)
-                                        ? "Nie znaleziono pliku levelu dla którego ma być generwowany jest pathfinder."
-                                        : "Nie podano nazwy levelu dla którego generowny jest pathfinder.");
+                                        ? "There is not such level Name as given: "+levelName
+                                        : "The name of level was not given.");
 
-                Diagnostics.PushLog(LoggingLevel.ERROR, "Niszczę utworzoną instancję obiektu Checker.");
+                Diagnostics.PushLog(LoggingLevel.ERROR, "Checker will be destroyed.");
 #endif
                 factory.RemoveGameObject(ID);
                 SendEvent(new DestroyObjectEvent(ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
@@ -65,8 +65,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                       {
                           BoxHeight = boxHeight,
                           BoxWidth = boxWidth,
-                          DistanceBeetwenBoxes =
-                              (Math.Abs(distanceBeetwenBoxes - 0) < Math.E ? 0.01f : distanceBeetwenBoxes),
+                          DistanceBeetwenBoxes = (Math.Abs(distanceBeetwenBoxes - 0) < Math.E ? 0.01f : distanceBeetwenBoxes),
                           NumberOfBoxesInLength = numberOfBoxesInLength,
                           NumberOfBoxesInWidth = numberOfBoxesInWidth,
                           BoxStartPosition = boxStartPosition
@@ -78,14 +77,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (!File.Exists(_fileName))
             {
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.INFO, "Brak pliku pathfindera dla tego levelu, tworze nowy. Może to zająć dużo czasu");
+                Diagnostics.PushLog(LoggingLevel.INFO, "There is no PathFinder file for this Level. It will be generated right now. This could take a while.");
 #endif
                 Generate();
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.INFO, "Utworzono plik pathfindera.");
+                Diagnostics.PushLog(LoggingLevel.INFO, "PathFinder file was successfully created.");
 #endif
+                PathfinderManager.Pm = _pm;
+                _pm.Factory = Factory;
+                return;
             }
-            if (!File.Exists(_fileName)) return;
             Stream stream = File.Open(_fileName, FileMode.Open);
             var bFormatter = new BinaryFormatter();
             PathfinderManager.Pm = (PathfinderManager)bFormatter.Deserialize(stream);
