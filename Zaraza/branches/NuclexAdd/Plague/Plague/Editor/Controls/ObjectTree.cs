@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using PlagueEngine.LowLevelGameFlow;
 
@@ -16,7 +10,7 @@ namespace PlagueEngine.Editor.Controls
         public SelectedObject SelectedObjectCallback;
 
         private delegate void UpdaterDelegate();
-        private EditorData _editorData;
+        private readonly EditorData _editorData;
 
         public ObjectTree(EditorData editorData)
         {
@@ -31,7 +25,7 @@ namespace PlagueEngine.Editor.Controls
             {
                 if (treeViewObjects.InvokeRequired)
                 {
-                    treeViewObjects.Invoke(new UpdaterDelegate(delegate { UpdateTreeView(); }));
+                    treeViewObjects.Invoke(new UpdaterDelegate(UpdateTreeView));
                     return;
                 }
                 UpdateTreeView();
@@ -45,27 +39,29 @@ namespace PlagueEngine.Editor.Controls
             treeViewObjects.Nodes.Clear();
             lock (_editorData.GameObjectClassNames)
             {
-                TreeNode GameObjectClassTreeNode;
-                TreeNode GameObjectTreeNode;
-                foreach (var GameObjectClassName in _editorData.GameObjectClassNames)
+                foreach (var gameObjectClassName in _editorData.GameObjectClassNames)
                 {
-                    GameObjectClassTreeNode = new TreeNode();
-                    GameObjectClassTreeNode.Text = GameObjectClassName.ClassName;
-                    GameObjectClassTreeNode.Tag = GameObjectClassName.ClassName;
+                    var gameObjectClassTreeNode = new TreeNode
+                                                      {
+                                                          Text = gameObjectClassName.ClassName,
+                                                          Tag = gameObjectClassName.ClassName
+                                                      };
                     lock (_editorData.Level.GameObjects)
                     {
                         foreach (var gameObject in _editorData.Level.GameObjects.Values)
                         {
-                            if (gameObject.GetType().Name.Equals(GameObjectClassName.ClassName))
+                            if (gameObject.GetType().Name.Equals(gameObjectClassName.ClassName))
                             {
-                                GameObjectTreeNode = new TreeNode();
-                                GameObjectTreeNode.Tag = gameObject.ID;
-                                GameObjectTreeNode.Text = "[" + String.Format("{0:0000}", gameObject.ID) + "] " + gameObject.Name;
-                                GameObjectClassTreeNode.Nodes.Add(GameObjectTreeNode);
+                                var gameObjectTreeNode = new TreeNode
+                                                                  {
+                                                                      Tag = gameObject.ID,
+                                                                      Text =@"[" + String.Format("{0:0000}", gameObject.ID) +@"] " + gameObject.Name
+                                                                  };
+                                gameObjectClassTreeNode.Nodes.Add(gameObjectTreeNode);
                             }
                         }
                     }
-                    treeViewObjects.Nodes.Add(GameObjectClassTreeNode);
+                    treeViewObjects.Nodes.Add(gameObjectClassTreeNode);
                 }
             }
 
@@ -74,23 +70,16 @@ namespace PlagueEngine.Editor.Controls
             treeViewObjects.ResumeLayout();
         }
 
-        private void treeViewObjects_AfterSelect(object sender, TreeViewEventArgs e)
+        private void TreeViewObjectsAfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Parent != null)
+            if (e.Node.Parent == null) return;
+            var result = e.Node.Text.Split(']');
+            if (result.Length <= 0) return;
+            int id;
+            if (!int.TryParse(result[0].Substring(1, result[0].Length - 1), out id)) return;
+            if (SelectedObjectCallback != null)
             {
-                int id;
-                string[] result = e.Node.Text.Split(']');
-                if (result.Length > 0)
-                {
-                    if (int.TryParse(result[0].Substring(1, result[0].Length - 1), out id))
-                    {
-                        if (SelectedObjectCallback != null)
-                        {
-                            SelectedObjectCallback(_editorData.Level.GameObjects[id].GetData());
-                        }
-                    }
-                }
-
+                SelectedObjectCallback(_editorData.Level.GameObjects[id].GetData());
             }
         }
     }

@@ -31,7 +31,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public SquareBodyComponent body = null;
         public bool isCollision;
-        public NodeType nodeType = NodeType.STATIC;
+        public NodeType nodeType = NodeType.Static;
         int posX, posY;
         /********************************************************************************/
 

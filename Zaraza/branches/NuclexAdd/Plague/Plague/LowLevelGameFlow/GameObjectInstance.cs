@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
@@ -9,34 +8,33 @@ using PlagueEngine.EventsSystem;
 using PlagueLocalizationExtension;
 
 /************************************************************************************/
-/// PlagueEngine.LowLevelGameFlow
+// PlagueEngine.LowLevelGameFlow
 /************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow
 {
 
     /********************************************************************************/
-    /// Game Object Instance
+    // Game Object Instance
     /********************************************************************************/
     abstract class GameObjectInstance : EventsSender, IEventsReceiver
     {
 
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
         internal Matrix World;
 
-        private  int    id         = 0;        
-        private  String definition = String.Empty;
-        private  bool   isDisposed = false;
+        private  String _definition = String.Empty;
+        private  bool   _isDisposed;
                 
-        private static int       lastID    = 0;
-        private static List<int> freeIDs   = new List<int>();
-        public static GameObjectsFactory factory = null;
+        private static int       _lastId;
+        private static readonly List<int> FreeIDs   = new List<int>();
+        public static GameObjectsFactory Factory;
 
-        protected GameObjectInstance owner     = null;        
+        protected GameObjectInstance owner;        
         
         protected delegate Matrix GetWorldDelegate(int bone);
-        protected GetWorldDelegate getWorld = null;
+        protected GetWorldDelegate getWorld;
         /****************************************************************************/
 
 
@@ -46,7 +44,7 @@ namespace PlagueEngine.LowLevelGameFlow
         }
 
         /****************************************************************************/
-        /// Get World
+        // Get World
         /****************************************************************************/
         public Matrix GetWorld(int bone)
         {
@@ -92,20 +90,20 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             if (id == 0)
             {
-                this.id = GenerateID();
+                ID = GenerateID();
             }
             else if (id > 0)
             {
-                if (PickID(id)) this.id = id;
+                if (PickID(id)) this.ID = id;
                 else return false;
             }
             else
             {
-                this.id = id;
+                ID = id;
             }
 
-            this.definition = definition;
-            this.World      = world;
+            _definition = definition;
+            World      = world;
 
             Owner     = owner;
             OwnerBone = ownerBone;
@@ -121,20 +119,16 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Generate ID
         /****************************************************************************/
         private static int GenerateID()
-        {                    
-
-            if (freeIDs.Count != 0)
+        {
+            if (FreeIDs.Count == 0)
             {
-                int id = freeIDs[freeIDs.Count - 1];
-                freeIDs.RemoveAt(freeIDs.Count - 1);
-                return id;
+                return ++_lastId;
             }
-            else
-            {
-                return ++lastID;
-            }
-
+            var id = FreeIDs[FreeIDs.Count - 1];
+            FreeIDs.RemoveAt(FreeIDs.Count - 1);
+            return id;
         }
+
         /****************************************************************************/
 
 
@@ -143,25 +137,23 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         private static bool PickID(int id)
         {
-            if (freeIDs.Contains(id))
+            if (FreeIDs.Contains(id))
             {
-                freeIDs.Remove(id);
+                FreeIDs.Remove(id);
                 return true;
             }
-            else if (id < lastID)
+            if (id < _lastId)
             {
                 return false;
             }
-            else
+            for (var i = _lastId + 1; i < id; i++)
             {
-                for (int i = lastID + 1; i < id; i++)
-                {
-                    freeIDs.Add(i);
-                }
-                lastID = id;
-                return true;
+                FreeIDs.Add(i);
             }
+            _lastId = id;
+            return true;
         }
+
         /****************************************************************************/
 
 
@@ -170,16 +162,16 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         private static void ReleaseID(int id)
         {
-            if (freeIDs.Contains(id)) return;
+            if (FreeIDs.Contains(id)) return;
 
-            if (id > lastID) return;
-            else if (id == lastID)
+            if (id > _lastId) return;
+            if (id == _lastId)
             {
-                --lastID;
+                --_lastId;
                 return;
             }
 
-            freeIDs.Add(id);
+            FreeIDs.Add(id);
         }
         /****************************************************************************/
 
@@ -188,17 +180,17 @@ namespace PlagueEngine.LowLevelGameFlow
         /// Get Data
         /****************************************************************************/
         public virtual GameObjectInstanceData GetData()
-        { 
-            GameObjectInstanceData data = new GameObjectInstanceData();
-            
-            data.ID            = this.id;
-            data.Type          = this.GetType();
-            data.World         = this.World;
-            data.Definition    = this.definition;
-            data.Owner         = (this.Owner == null ? 0 : this.Owner.ID);
-            data.OwnerBone     = this.OwnerBone;
-            data.Name          = this.Name;
-                
+        {
+            var data = new GameObjectInstanceData
+                           {
+                               ID = ID,
+                               Type = GetType(),
+                               World = World,
+                               Definition = _definition,
+                               Owner = (Owner == null ? 0 : Owner.ID),
+                               OwnerBone = OwnerBone,
+                               Name = Name
+                           };
             return data;
         }
         /****************************************************************************/
@@ -209,14 +201,14 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public void GetData(GameObjectInstanceData data)
         {
-            data.ID            = this.id;
-            data.Type          = this.GetType();
-            data.World         = this.World;
-            data.Definition    = this.definition;
-            data.Owner         = (this.Owner == null ? 0 : this.Owner.ID);
-            data.Status        = GameObjectInstance.StatusToUint(this.Status);
-            data.OwnerBone     = this.OwnerBone;
-            data.Name          = this.Name;
+            data.ID            = ID;
+            data.Type          = GetType();
+            data.World         = World;
+            data.Definition    = _definition;
+            data.Owner         = (Owner == null ? 0 : Owner.ID);
+            data.Status        = StatusToUint(Status);
+            data.OwnerBone     = OwnerBone;
+            data.Name          = Name;
         }
         /****************************************************************************/
 
@@ -224,8 +216,8 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
-        public String Definition { get { return definition; } }        
-        public int    ID         { get { return id; } }
+        public String Definition { get { return _definition; } }
+        public int ID { get; private set; }
         public String Name       { get; protected set; }
         public int    OwnerBone  { get; set; }
         
@@ -243,8 +235,7 @@ namespace PlagueEngine.LowLevelGameFlow
             set
             {
                 OnOwning(value);
-                if (value == null) getWorld = this.GetMyWorld;
-                else getWorld = this.GetOwnerWorld;
+                getWorld = value == null ? (GetWorldDelegate) GetMyWorld : GetOwnerWorld;
                 owner = value;                
             }
         }
@@ -252,7 +243,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
         /****************************************************************************/
-        /// Release Components
+        // Release Components
         /****************************************************************************/
         public virtual void ReleaseComponents()
         { 
@@ -262,15 +253,15 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
         /****************************************************************************/
-        /// Dispose
+        // Dispose
         /****************************************************************************/
         public void Dispose()
         {
-            if (isDisposed) return;
+            if (_isDisposed) return;
 
-            ReleaseID(this.id);
+            ReleaseID(ID);
             ReleaseComponents();
-            isDisposed = true;
+            _isDisposed = true;
             Broadcast(new DestroyEvent());
         }
         /****************************************************************************/
@@ -281,7 +272,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool IsDisposed()
         {
-            return isDisposed;
+            return _isDisposed;
         }
         /****************************************************************************/
 
@@ -321,10 +312,10 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public override String ToString()
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(this.GetType().Name);
+            var builder = new StringBuilder();
+            builder.Append(GetType().Name);
             builder.Append(" - ");
-            builder.Append(id);
+            builder.Append(ID);
 
             return builder.ToString();
         } 
@@ -343,7 +334,7 @@ namespace PlagueEngine.LowLevelGameFlow
                 case GameObjectStatus.Pickable:     return 2;
                 case GameObjectStatus.Mercenary:    return 3;
                 case GameObjectStatus.Targetable:   return 4;
-                case GameObjectStatus.Passable:         return 5;
+                case GameObjectStatus.Passable:     return 5;
                 default: return 0;
             }
         }
@@ -355,7 +346,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public static GameObjectInstance CreateGameObject(GameObjectInstanceData data)
         {
-            return factory.Create(data);
+            return Factory.Create(data);
         }
         /****************************************************************************/
 
@@ -403,8 +394,8 @@ namespace PlagueEngine.LowLevelGameFlow
     [Serializable]
     public class GameObjectInstanceData
     {
-        public int      ID              = 0;
-        public Type     Type            = null;
+        public int      ID;
+        public Type     Type;
         public Matrix   World           = Matrix.Identity;
 
             [CategoryAttribute("Name")]
@@ -414,7 +405,7 @@ namespace PlagueEngine.LowLevelGameFlow
         public String Definition { get; set; }
 
         [CategoryAttribute("Position")]        
-        public Vector3 Position { get { return this.World.Translation; } set { this.World.Translation = value; } }
+        public Vector3 Position { get { return World.Translation; } set { World.Translation = value; } }
         
         [CategoryAttribute("Rotation")]
         public float Roll  { set { Rotate(World.Forward, value); } get { return 0; } }
@@ -443,7 +434,7 @@ namespace PlagueEngine.LowLevelGameFlow
         private void Rotate(Vector3 vector, float angle)
         {
             angle = MathHelper.ToRadians(angle);
-            Quaternion quaternion = Quaternion.CreateFromAxisAngle(vector, angle);
+            var quaternion        = Quaternion.CreateFromAxisAngle(vector, angle);
             World.Forward         = Vector3.Transform(World.Forward, quaternion);
             World.Right           = Vector3.Transform(World.Right, quaternion);
             World.Up              = Vector3.Transform(World.Up, quaternion);
@@ -461,7 +452,7 @@ namespace PlagueEngine.LowLevelGameFlow
     {
         public static int GameController        = -1;
         public static int Ammunition            = -2;
-        public static LangContent StringManager = null;
+        public static LangContent StringManager;
     }
     /********************************************************************************/
 

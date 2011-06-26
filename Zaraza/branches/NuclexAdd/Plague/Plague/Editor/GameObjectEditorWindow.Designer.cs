@@ -79,7 +79,7 @@
             this.MinimumSize = new System.Drawing.Size(700, 600);
             this.Name = "GameObjectEditorWindow";
             this.Text = "Game-Object-Editor";
-            this.Resize += new System.EventHandler(this.GameObjectEditorWindow_Resize);
+            this.Resize += new System.EventHandler(this.GameObjectEditorWindowResize);
             this.MainPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -91,6 +91,12 @@
         private System.Windows.Forms.Panel TreePanel;
         private System.Windows.Forms.Panel MainPanel;
 
-
+        private void WindowResize(){
+            var height = Size.Height;
+            var width = Size.Width;
+            if (width <= 240 || height <= 10) return;
+            MainPanel.Width = width - TreePanel.MinimumSize.Width;
+            TreePanel.Location = new System.Drawing.Point(width - TreePanel.MinimumSize.Width, 0);
+        }
     }
 }

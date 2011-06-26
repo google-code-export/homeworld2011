@@ -62,7 +62,7 @@ namespace PlagueEngine.Audio.Components
             }
 #if DEBUG
             if (xbnFiles.Length == 0)
-                Diagnostics.PushLog("W folderze " + folderName + " nie ma plików .xba");
+                Diagnostics.Warn("There was no files with .xba extension in folder: " + folderName);
 #endif
         }
         /// <summary>
@@ -90,8 +90,8 @@ namespace PlagueEngine.Audio.Components
                 LoadSong(songName, folderName + "\\" + songName, groupName, volume);
             }
 #if DEBUG
-            if (xbnFiles.Length == 0)
-                Diagnostics.PushLog("W folderze " + folderName + " nie ma plików .xba");
+            if (xbnFiles.Length == 0 && dirFiles.Count() == 0)
+                Diagnostics.Warn("There was no files with .xba extension in folder: " + folderName);
 #endif
         }
         /// <summary>
@@ -118,8 +118,8 @@ namespace PlagueEngine.Audio.Components
                 LoadSong(songName, folderName + "\\" + songName, dir.Name, volume);
             }
 #if DEBUG
-            if (xbnFiles.Length == 0)
-                Diagnostics.PushLog("W folderze " + folderName + " nie ma plików .xba");
+            if (xbnFiles.Length == 0 && dirFiles.Count()==0)
+                Diagnostics.Warn("There was no files with .xba extension in folder: " + folderName);
 #endif
         }
 
@@ -140,7 +140,7 @@ namespace PlagueEngine.Audio.Components
             if (Songs[groupName].ContainsKey(songName))
             {
 #if DEBUG
-                Diagnostics.PushLog("Piosenka " + songName + " została już załadowana");
+                Diagnostics.PushLog("Song " + songName + " has been loaded already.");
 #endif
                 return;
             }
@@ -162,14 +162,14 @@ namespace PlagueEngine.Audio.Components
             if (!Songs.ContainsKey(groupName))
             {
 #if DEBUG
-                Diagnostics.PushLog("Grupa piosenk o nazwie " + groupName + " nie występuje w tym komponencie");
+                Diagnostics.Warn("There is no group of song called " + groupName + " in this component.");
 #endif
                 return;
             }
             if (Songs[groupName].ContainsKey(songName))
             {
 #if DEBUG
-                Diagnostics.PushLog("Piosenka " + songName + " nie występuje w tej grupie:" + groupName);
+                Diagnostics.Warn("There is no " + songName + " in group: " + groupName);
 #endif
                 return;
             }
@@ -203,7 +203,7 @@ namespace PlagueEngine.Audio.Components
             if (!_changeAllowed && _changeTimer < ChangeTime)
             {
                 //jeśli nie to zwiększamy czas
-                _changeTimer.Add(elapsedGameTime);
+                _changeTimer = _changeTimer.Add(elapsedGameTime);
                 return;
             }
 
@@ -228,7 +228,7 @@ namespace PlagueEngine.Audio.Components
             }
             _audioManager.PlaySong(_lastSongCue);
 #if DEBUG
-            Diagnostics.PushLog("Start nowej piosenki:" + _lastSongCue.Song.Name + " z grupy " + CurrentGroup);
+            Diagnostics.Debug("Playing now song:" + _lastSongCue.Song.Name + " from group: " + CurrentGroup);
 #endif
             _changeAllowed = false;
         }

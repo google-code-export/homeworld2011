@@ -11,10 +11,14 @@ namespace PlagueEngine.Audio
 
         public SongCue(Song song, float volume)
         {
-#if DEBUG
-            Diagnostics.PushLog("Nowy SongCue " + song.Name + ", głośność "+ volume);
-#endif
             Volume = MathHelper.Clamp(volume, 0.0f, 1.0f);
+#if DEBUG
+            Diagnostics.Debug("New SongCue " + song.Name + ", volume " + volume);
+            if (!Equals(Volume, volume))
+            {
+                Diagnostics.Info("Volum of SongCue " + song.Name + " was claped to " + Volume);
+            }
+#endif
             Song = song;
         }
 

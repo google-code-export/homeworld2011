@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.IO;
 using PlagueEngine.Resources;
@@ -12,123 +11,95 @@ namespace PlagueEngine.Editor
 {
     class EditorData
     {
-        private static string GAME_OBJECT_NAMESPACE = "PlagueEngine.LowLevelGameFlow.GameObjects";
-        private static string LEVEL_DIRECTIORY = @"Data\Levels";
-        private static string LEVEL_EXTENSION = ".lvl";
-        private List<GameObjectClassName> _gameObjectClassNames = new List<GameObjectClassName>();
-        private List<FileInfo> _levels = new List<FileInfo>();
-        private Game _game;
-        private ContentManager _contentManager;
-        private Renderer _renderer;
-        private Level _level;
-        private Input.Input _input;
+        private const string GameObjectNamespace = "PlagueEngine.LowLevelGameFlow.GameObjects";
+        private const string GameObjectFactory = "GameObjectsFactory";
+        private const string LevelDirectiory = @"Data\Levels";
+        private const string LevelExtension = ".lvl";
 
-        public Level Level
-        {
-            get { return _level; }
-            set { _level = value; }
-        }
-        public Input.Input Input
-        {
-            get { return _input; }
-            set { _input = value; }
-        }
-        public Renderer Renderer
-        {
-            get { return _renderer; }
-            set { _renderer = value; }
-        }
-        public ContentManager ContentManager
-        {
-            get { return _contentManager; }
-            set { _contentManager = value; }
-        }
-        public Game Game
-        {
-            get { return _game; }
-            set { _game = value; }
-        }
-        public List<FileInfo> Levels
-        {
-            get { return _levels; }
-            set { _levels = value; }
-        }
-        public List<GameObjectClassName> GameObjectClassNames
-        {
-            get { return _gameObjectClassNames; }
-            set { _gameObjectClassNames = value; }
-        }
+        public Level Level { get; set; }
+
+        public Input.Input Input { get; set; }
+
+        public Renderer Renderer { get; set; }
+
+        public ContentManager ContentManager { get; set; }
+
+        public Game Game { get; set; }
+
+        public List<FileInfo> Levels { get; set; }
+
+        public List<GameObjectClassName> GameObjectClassNames { get; set; }
 
         public EditorData(Game game)
         {
-            _game = game;
-            _input = game.Input;
-            _level = game.Level;
-            _renderer = game.Renderer;
-            _contentManager = game.ContentManager;
+            GameObjectClassNames = new List<GameObjectClassName>();
+            Levels = new List<FileInfo>();
+            Game = game;
+            Input = game.Input;
+            Level = game.Level;
+            Renderer = game.Renderer;
+            ContentManager = game.ContentManager;
             FillClassNames();
             FillLevelNames();
         }
         public void FillClassNames()
         {
-            _gameObjectClassNames.Clear();
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            GameObjectClassNames.Clear();
+            var assembly = Assembly.GetExecutingAssembly();
             var gameObjectClassName = new List<Type>();
             var gameObjectDataClass = new List<Type>();
-            foreach (Type type in assembly.GetTypes())
+            Type factory = null;
+            foreach (var type in assembly.GetTypes())
             {
-                if (!String.IsNullOrWhiteSpace(type.Namespace) && type.Namespace.Equals(GAME_OBJECT_NAMESPACE))
+                if (type.Name.Equals(GameObjectFactory))
                 {
-                    if (type.Name.EndsWith("Data"))
-                    {
-                        gameObjectDataClass.Add(type);
-                    }
-                    else
-                    {
-                        gameObjectClassName.Add(type);
-                    }
-                } 
+                    factory = type;
+                    continue;
+                }
+                if (String.IsNullOrWhiteSpace(type.Namespace) || !type.Namespace.Equals(GameObjectNamespace)) continue;
+                
+                if (type.Name.EndsWith("Data"))
+                {
+                    gameObjectDataClass.Add(type);
+                }
+                else
+                {
+                    gameObjectClassName.Add(type);
+                }
             }
-            foreach (Type type in gameObjectClassName)
+            if (factory == null)
             {
-                foreach (Type dataType in gameObjectDataClass)
+#if DEBUG
+                Diagnostics.Fatal("There is no class " + GameObjectFactory +" !!!");
+#endif
+                return;
+            }
+            foreach (var type in gameObjectClassName)
+            {
+                foreach (var dataType in gameObjectDataClass)
                 {
-                    if (dataType.Name.Equals(type.Name + "Data"))
-                    {
-                        _gameObjectClassNames.Add(new GameObjectClassName(type.Name, type, dataType));
-                        break;
-                    }
+                    if (!dataType.Name.Equals(type.Name + "Data")) continue;
+                    GameObjectClassNames.Add(new GameObjectClassName(type.Name, type, dataType, factory.GetMethod("Create" + type.Name) != null));
+                    break;
                 }
             }
         }
 
         public GameObjectClassName GetClass(string name)
         {
-            if (String.IsNullOrWhiteSpace(name)) return null;
-            foreach (var gameobject in _gameObjectClassNames)
-            {
-                if (name.Equals(gameobject.ClassName))
-                {
-                    return gameobject;
-                }
-            }
-            return null;
+            return String.IsNullOrWhiteSpace(name) ? null : GameObjectClassNames.FirstOrDefault(gameobject => name.Equals(gameobject.ClassName));
         }
 
         public void FillLevelNames()
         {
-            _levels.Clear();
-
-            DirectoryInfo dir = new DirectoryInfo(LEVEL_DIRECTIORY);
-            if (dir.Exists)
+            Levels.Clear();
+            var dir = new DirectoryInfo(LevelDirectiory);
+            if (!dir.Exists) return;
+            var fileNames = dir.GetFiles("*" + LevelExtension);
+            foreach (var fileInfo in fileNames)
             {
-                FileInfo[] fileNames = dir.GetFiles("*" + LEVEL_EXTENSION);
-                foreach (FileInfo fileInfo in fileNames)
-                {
-                    _levels.Add(fileInfo);
-                }
+                Levels.Add(fileInfo);
             }
-
         }
     }
 }

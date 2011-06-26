@@ -1,30 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
 
 namespace PlagueEngine.Pathfinder
 {
-    public enum NodeType {STATIC, DYNAMIC, NONE, NAVIGATION}
-    [Serializable()]
+    public enum NodeType {Static, Dynamic, None, Navigation}
+    [Serializable]
     public class Node : IComparable
     {
-        public int x;
-        public int y;
+
+        public readonly int X;
+        public readonly int Y;
         public float Value;
         public float Distance;
-        static public int HASH_HELPER = 1500;
         public NodeType NodeType;
         public Node Parent;
-        public Node()
-        {
 
-        }
+        public Node(){}
+
         public Node(int x, int y, NodeType nodeType)
         {
-            this.x = x;
-            this.y = y;
+            X = x;
+            Y = y;
             NodeType = nodeType;
         }
         public override bool Equals(object obj)
@@ -33,23 +29,21 @@ namespace PlagueEngine.Pathfinder
             {
                 return false;
             }
-            Node other = obj as Node;
-            return other != null ? (other.x == x && other.y == y) : base.Equals(obj);
+            var other = obj as Node;
+            return other != null && (other.X == X && other.Y == Y);
         }
         public List<Node> GenerateChildren()
         {
-            List<Node> result = new List<Node>();
-            for (int newX = x - 1; newX <= x + 1; newX++)
+            var result = new List<Node>();
+            for (var newX = X - 1; newX <= X + 1; newX++)
             {
-                for (int newY = y - 1; newY <= y + 1; newY++)
+                for (var newY = Y - 1; newY <= Y + 1; newY++)
                 {
-                    if (newX == x && newY == y) continue;
-                    Node child = PathfinderManager.PM.checkNode(new Node(newX, newY, Pathfinder.NodeType.NAVIGATION));
-                    if (child.NodeType == Pathfinder.NodeType.NAVIGATION)
-                    {
-                        child.Parent = this;
-                        result.Add(child);
-                    }
+                    if (newX == X && newY == Y) continue;
+                    var child = PathfinderManager.Pm.CheckNode(new Node(newX, newY, NodeType.Navigation));
+                    if (child.NodeType != NodeType.Navigation) continue;
+                    child.Parent = this;
+                    result.Add(child);
                 }
             }
             return result;
@@ -66,13 +60,20 @@ namespace PlagueEngine.Pathfinder
             return (object)n == null ? 0 : (Value + Distance).CompareTo((n.Value + n.Distance));
         }
 
-        public int directionToNode(Node node)
+        public override int GetHashCode()
+        {
+            var hashCode = 397;
+            hashCode = (hashCode * 7) + X;
+            hashCode = (hashCode * 7) + Y;
+            return hashCode;
+        }
+
+        public int DirectionToNode(Node node)
         {
             if (node != null && !node.Equals(this))
             {
-                int direction;
-                int xD = x - node.x;
-                int yD = y - node.y;
+                var xD = X - node.X;
+                var yD = Y - node.Y;
                 if (xD < 0)
                 {
                     if (yD < 0)
@@ -117,13 +118,10 @@ namespace PlagueEngine.Pathfinder
             }
             return 9;
         }
-        public override int GetHashCode()
-        {
-            return x + y * HASH_HELPER;
-        }
+        
         public override string ToString()
         {
-            return "Node["+x+","+y+"] type "+ NodeType;
+            return "Node["+X+","+Y+"] type "+ NodeType;
         }
     }
 }
