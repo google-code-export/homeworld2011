@@ -7,7 +7,16 @@ using System.Drawing;
 
 namespace PlagueEngine
 {
-    public enum LoggingLevel{INFO, DEBUG, WARN, ERROR};
+    public enum LoggingLevel
+    {
+        OFF = 150,
+        NONE = 125,
+        INFO = 100,
+        DEBUG = 75,
+        WARN = 50,
+        ERROR = 25,
+        FATAL = 0
+    };
     /********************************************************************************/
     /// Diagnostics
     /********************************************************************************/
@@ -15,22 +24,23 @@ namespace PlagueEngine
     {
 
         /****************************************************************************/
-        private static long         _frames;
-        private static TimeSpan     _elapsedTime         = TimeSpan.Zero;
-        private static TimeSpan     _totalElapsedTime    = TimeSpan.Zero;
-        
-        private static bool         _forceGCOnUpdate;
-        
-        private static Game         _game;
-        private static bool         _showDiagnostics     = true;
-        private static TextWriter   _textWriter;
-        private static String       _logFile             = String.Empty;
-        private static LogWindow    _logWindow;
-        private static bool         _showLogWindow;
-        private static long         _allocatedMemory     = -1;
-        private static TimeSpan     _memoryElapsedTime   = TimeSpan.Zero;
-        private static string       _lineBrake           = "-------------------------";
-        private static uint         _timerId;
+        private static long _frames;
+        private static TimeSpan _elapsedTime = TimeSpan.Zero;
+        private static TimeSpan _totalElapsedTime = TimeSpan.Zero;
+
+        private static bool _forceGCOnUpdate;
+        private static int _level = 150;
+        private static Game _game;
+        private static bool _showDiagnostics = true;
+        private static TextWriter _textWriter;
+        private static String _logFile = String.Empty;
+        private static LogWindow _logWindow;
+        private static bool _showLogWindow;
+        private static long _allocatedMemory = -1;
+        private static readonly ExpireClock MemoryClock = ExpireClock.FromSeconds(10);
+        private const string LineBrake = "-------------------------";
+        private static uint _timerId;
+        private delegate void UpdaterDelegate();
         /****************************************************************************/
 
 
@@ -47,7 +57,6 @@ namespace PlagueEngine
 
             _elapsedTime += deltaTime;
             _totalElapsedTime += deltaTime;
-            _memoryElapsedTime += deltaTime;
 
             if (_elapsedTime.Seconds >= 1)
             {
@@ -56,10 +65,9 @@ namespace PlagueEngine
                 _elapsedTime = TimeSpan.Zero;
             }
 
-            if (_memoryElapsedTime.Seconds >= 10)
+            if (MemoryClock.isExpired())
             {
                 AllocatedManagedMemoryUpdate();
-                _memoryElapsedTime = TimeSpan.Zero;
             }
 
             if (_forceGCOnUpdate) GC.Collect();
@@ -78,10 +86,10 @@ namespace PlagueEngine
                 var sb = new StringBuilder();
                 sb.AppendLine(_game.Title);
                 sb.AppendLine(DateTime.Now.ToString());
-                sb.AppendLine(_lineBrake);
+                sb.AppendLine(LineBrake);
                 if (_logWindow != null && !_logWindow.TextBox.IsDisposed)
                 {
-                    _logWindow.TextBox.AppendText(sb.ToString());
+                    PushLog(LoggingLevel.NONE, sb.ToString());
                 }
                 if (!String.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
                 {
@@ -93,27 +101,52 @@ namespace PlagueEngine
                 {
                     _textWriter = new StreamWriter(_logFile);
                 }
-                catch (IOException)
+                catch (IOException e)
                 {
-                    PushLog(LoggingLevel.ERROR, "Nie udało się utworzyć pliku logu o nazwie "+_logFile);
+                    PushLog(LoggingLevel.ERROR, "There was an error while crating log file " + _logFile + ". Exception:"+ e.InnerException.Message);
                 }
                 if (_textWriter != null)
                 {
                     _textWriter.Write(sb.ToString());
-                    _textWriter.Flush();
                 }
                 return (_logWindow != null && !_logWindow.TextBox.IsDisposed) || _textWriter != null;
             }
-            else{
-                PushLog(LoggingLevel.WARN, "Próba utworzenia nowego pliku logu w czasie gdy jest używany inny plik.");
-            }
+            PushLog(LoggingLevel.WARN, "You can not create new log file while the old one is in use.");
             return false;
         }
         /****************************************************************************/
+
+        public static void Debug(String message)
+        {
+            PushLog(LoggingLevel.DEBUG, message);
+        }
+
+        public static void Info(String message)
+        {
+            PushLog(LoggingLevel.INFO, message);
+        }
+
+        public static void Warn(String message)
+        {
+            PushLog(LoggingLevel.WARN, message);
+        }
+
+        public static void Error(String message)
+        {
+            PushLog(LoggingLevel.ERROR, message);
+        }
+
+        public static void Fatal(String message)
+        {
+            PushLog(LoggingLevel.FATAL, message);
+        }
+
         private static Color LogColor(LoggingLevel logginglevel)
         {
             switch (logginglevel)
             {
+                case LoggingLevel.NONE:
+                    return Color.Black;
                 case LoggingLevel.DEBUG:
                     return Color.Green;
                 case LoggingLevel.ERROR:
@@ -122,11 +155,16 @@ namespace PlagueEngine
                     return Color.OrangeRed;
                 case LoggingLevel.INFO:
                     return Color.Blue;
+                case LoggingLevel.FATAL:
+                    return Color.DarkRed;
                 default:
                     return Color.Green;
             }
         }
-
+        public static void PushMessage(String text)
+        {
+            PushLog(LoggingLevel.NONE, text);
+        }
         /****************************************************************************/
         /// Push Log
         /****************************************************************************/
@@ -141,37 +179,54 @@ namespace PlagueEngine
         }
         public static void PushLog(LoggingLevel logginglevel, String text)
         {
-            if (_textWriter == null && _logWindow == null) return;
- 
-            var sb = new StringBuilder();
-            sb.Append(">> ");
-            sb.Append(DateTime.Now.ToString(@"HH\:mm\:ss"));
-            sb.Append(" | ");
-            sb.Append(_totalElapsedTime.ToString(@"hh\:mm\:ss"));
-            sb.Append(" >> ");
-            sb.Append("[");
-            sb.Append(logginglevel.ToString());
-            sb.Append("] ");
-            sb.Append(text);
-            sb.AppendLine();
-
-            if (_logWindow != null && !_logWindow.TextBox.IsDisposed)
+            if ((int)logginglevel >= _level)
             {
-                lock(_logWindow.TextBox){
-                    _logWindow.TextBox.SuspendLayout();
-                _logWindow.TextBox.SelectionColor = LogColor(logginglevel);
-                _logWindow.TextBox.AppendText(sb.ToString());
-                _logWindow.TextBox.ResumeLayout();
+                if (_textWriter == null && _logWindow == null) return;
+
+                var sb = new StringBuilder();
+                sb.Append(">> ");
+                sb.Append(DateTime.Now.ToString(@"HH\:mm\:ss"));
+                sb.Append(" | ");
+                sb.Append(_totalElapsedTime.ToString(@"hh\:mm\:ss"));
+                sb.Append(" >> ");
+                sb.Append("[");
+                sb.Append(logginglevel.ToString());
+                sb.Append("] ");
+                sb.Append(text);
+                sb.AppendLine();
+
+                if (_logWindow != null && !_logWindow.TextBox.IsDisposed)
+                {
+                    if (_logWindow.TextBox.InvokeRequired)
+                    {
+                        _logWindow.TextBox.Invoke(new UpdaterDelegate(() => UpdateTextBox(logginglevel, sb.ToString())));
+                    }
+                    else
+                    {
+                        UpdateTextBox(logginglevel, sb.ToString());
+                    }
+
                 }
+                if (_textWriter != null)
+                {
+                    lock (_textWriter)
+                    {
+                        _textWriter.Write(sb.ToString());
+                    }
+                }
+            }
 
-            }
-            if (_textWriter != null) 
-            {
-                _textWriter.Write(sb.ToString());
-            }
-            
         }
-
+        private static void UpdateTextBox(LoggingLevel logginglevel, string text)
+        {
+            lock (_logWindow.TextBox)
+            {
+                _logWindow.TextBox.SuspendLayout();
+                _logWindow.TextBox.SelectionColor = LogColor(logginglevel);
+                _logWindow.TextBox.AppendText(text);
+                _logWindow.TextBox.ResumeLayout();
+            }
+        }
         public static void PushLog(LoggingLevel logginglevel, Object obj, String text)
         {
             var sb = new StringBuilder();
@@ -190,20 +245,20 @@ namespace PlagueEngine
         {
             if (_textWriter != null)
             {
-                _textWriter.WriteLine(_lineBrake);
+                _textWriter.WriteLine(LineBrake);
                 _textWriter.WriteLine("Run Time: " + _totalElapsedTime.ToString(@"hh\:mm\:ss"));
                 _textWriter.Flush();
                 _textWriter.Close();
             }
             if (_logWindow != null)
-                {
-                    _logWindow.Close();
-                    _logWindow       = null;
-                    _showLogWindow   = false;
-                }
+            {
+                _logWindow.Close();
+                _logWindow = null;
+                _showLogWindow = false;
+            }
         }
         /****************************************************************************/
-                     
+
 
         /****************************************************************************/
 
@@ -212,12 +267,16 @@ namespace PlagueEngine
         public static long FPS { get; private set; }
 
         /****************************************************************************/
-
+        public static LoggingLevel Level
+        {
+            get { return (LoggingLevel)_level; }
+            set { _level = (int)value; }
+        }
 
         /****************************************************************************/
         /// Run Time
         /****************************************************************************/
-        public static TimeSpan RunTime 
+        public static TimeSpan RunTime
         {
             get
             {
@@ -267,7 +326,7 @@ namespace PlagueEngine
         /****************************************************************************/
         public static Game Game
         {
-            set 
+            set
             {
                 _game = value;
             }
@@ -315,7 +374,7 @@ namespace PlagueEngine
             set
             {
                 _showLogWindow = value;
-                
+
                 if (_showLogWindow && _logWindow == null && _textWriter != null)
                 {
                     _logWindow = new LogWindow();
@@ -327,12 +386,12 @@ namespace PlagueEngine
                         _logWindow.TextBox.Text += textReader.ReadToEnd();
                     }
 
-                    _textWriter = new StreamWriter(_logFile,true);
+                    _textWriter = new StreamWriter(_logFile, true);
                 }
                 else if (_showLogWindow && _logWindow == null && _textWriter == null)
                 {
                     _logWindow = new LogWindow();
-                    _logWindow.Show();                
+                    _logWindow.Show();
                 }
                 else if (!_showLogWindow && _logWindow != null)
                 {
@@ -348,10 +407,10 @@ namespace PlagueEngine
         /// Diagnostic Snapshot
         /****************************************************************************/
         public static void DiagnosticSnapshot()
-        { 
-            #if DEBUG
-                PushLog(string.Format("FPS: {0} | Allocated Managed Memory: {1} kb", FPS, _allocatedMemory));  
-            #endif 
+        {
+#if DEBUG
+            PushLog(string.Format("FPS: {0} | Allocated Managed Memory: {1} kb", FPS, _allocatedMemory));
+#endif
         }
         /****************************************************************************/
 
@@ -362,7 +421,7 @@ namespace PlagueEngine
         public static void StartDiagnosticSnapshots(TimeSpan time)
         {
             if (_timerId == 0) _timerId = TimeControl.CreateTimer(time, -1, TimerCallback);
-            else TimeControl.ResetTimer(_timerId,time,-1);
+            else TimeControl.ResetTimer(_timerId, time, -1);
         }
         /****************************************************************************/
 
@@ -393,7 +452,7 @@ namespace PlagueEngine
         /****************************************************************************/
         private static void AllocatedManagedMemoryUpdate()
         {
-            _allocatedMemory=Process.GetCurrentProcess().PrivateMemorySize64 / 1024;
+            _allocatedMemory = Process.GetCurrentProcess().PrivateMemorySize64 / 1024;
         }
         /****************************************************************************/
 
@@ -410,6 +469,6 @@ namespace PlagueEngine
 
     }
     /********************************************************************************/
-    
+
 }
 /************************************************************************************/

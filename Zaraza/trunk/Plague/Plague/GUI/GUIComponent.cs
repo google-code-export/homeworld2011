@@ -1,22 +1,21 @@
 ﻿using PlagueEngine.LowLevelGameFlow;
-using Nuclex.UserInterface;
 
 /************************************************************************************/
-///PlagueEngine.GUI
+//PlagueEngine.GUI
 /************************************************************************************/
 namespace PlagueEngine.GUI
 {
     
     /********************************************************************************/
-    ///GUIComponent
+    //GUIComponent
     /********************************************************************************/
     abstract class GUIComponent : GameObjectComponent
     {
 
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
-        internal static GUI gui = null;
+        internal static GUI GUI;
         /****************************************************************************/
 
         public int X { get; protected set; }
@@ -25,27 +24,28 @@ namespace PlagueEngine.GUI
         public int Height { get; protected set; }
         
         /****************************************************************************/
-        /// Constructor
+        // Constructor
         /****************************************************************************/
-        public GUIComponent() : base(null)
+
+        protected GUIComponent() : base(null)
         {
-            this.X = 0;
-            this.Y = 0;
-            this.Width  = 0;
-            this.Height = 0;
+            X = 0;
+            Y = 0;
+            Width  = 0;
+            Height = 0;
         }
         /****************************************************************************/
 
-        public GUIComponent(int X, int Y, int Width, int Height) : base(null)
+        protected GUIComponent(int x, int y, int width, int height) : base(null)
         {
-            this.X = X;
-            this.Y = Y;
-            this.Width  = Width;
-            this.Height = Height;
+            X = x;
+            Y = y;
+            Width  = width;
+            Height = height;
         }
 
         /****************************************************************************/
-        /// Register
+        // Register
         /****************************************************************************/
         public abstract void Register();
         /****************************************************************************/

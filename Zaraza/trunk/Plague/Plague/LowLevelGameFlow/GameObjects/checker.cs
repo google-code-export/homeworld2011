@@ -1,54 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
-using System.Xml;
-
-using PlagueEngine.LowLevelGameFlow;
-using PlagueEngine.Rendering.Components;
-using PlagueEngine.Rendering;
-using PlagueEngine.Physics;
-using PlagueEngine.Physics.Components;
 using PlagueEngine.TimeControlSystem;
-using System.Threading;
 using System.IO;
-using PlagueEngine.Tools;
-using System.Windows.Forms;
 using PlagueEngine.Pathfinder;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
 
 /************************************************************************************/
-/// Plague.LowLevelGameFlow.GameObjects
+// Plague.LowLevelGameFlow.GameObjects
 /************************************************************************************/
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
 
     /********************************************************************************/
-    /// Checker
+    // Checker
     /********************************************************************************/
     class Checker : GameObjectInstance
     {
 
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
         private PathfinderManager _pm;
         private string _levelName;
-        private GameObjectsFactory _factory;
         private int _frameToTest;
         private CheckerBox[,] _boxes;
-        private string _path = "Data\\Levels\\";
-        private string _extension = "pf";
-        private string _levelExtension = "lvl";
+        private const string Path = "Data\\Levels\\";
+        private const string Extension = "pf";
+        private const string LevelExtension = "lvl";
         private string _fileName;
         /****************************************************************************/
 
         
         /****************************************************************************/
-        /// Initialization
+        // Initialization
         /****************************************************************************/
         public void Init(string levelName,
         float boxWidth,
@@ -60,149 +45,142 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
          Vector3 boxStartPosition,
             int framesToTest)
         {
-            
-            if (String.IsNullOrWhiteSpace(levelName) || !File.Exists(_path + levelName + "." + _levelExtension))
+
+            if (String.IsNullOrWhiteSpace(levelName) || !File.Exists(Path + levelName + "." + LevelExtension))
             {
 #if DEBUG
-                if (!File.Exists(_path + levelName + "." + _levelExtension))
-                {
-                    Diagnostics.PushLog(LoggingLevel.ERROR, "Nie znaleziono pliku levelu dla którego ma być generwowany jest pathfinder.");
-                }
-                else
-                {
-                    Diagnostics.PushLog(LoggingLevel.ERROR, "Nie podano nazwy levelu dla którego generowny jest pathfinder.");
-                }
-                
-                Diagnostics.PushLog(LoggingLevel.ERROR, "Niszczę utworzoną instancję obiektu Checker.");
+                Diagnostics.PushLog(LoggingLevel.ERROR,
+                                    !File.Exists(Path + levelName + "." + LevelExtension)
+                                        ? "There is not such level Name as given: "+levelName
+                                        : "The name of level was not given.");
+
+                Diagnostics.PushLog(LoggingLevel.ERROR, "Checker will be destroyed.");
 #endif
                 factory.RemoveGameObject(ID);
-                this.SendEvent(new DestroyObjectEvent(ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
+                SendEvent(new DestroyObjectEvent(ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
                 return;
             }
-            _fileName = _path + levelName + "." + _extension;
-            _pm = new PathfinderManager();
-            _pm.BoxHeight = boxHeight;
-            _pm.BoxWidth = boxWidth;
-            _pm.DistanceBeetwenBoxes = distanceBeetwenBoxes==0?0.01f:distanceBeetwenBoxes;
-            _pm.NumberOfBoxesInLength = numberOfBoxesInLength;
-            _pm.NumberOfBoxesInWidth = numberOfBoxesInWidth;
-            _pm.BoxStartPosition = boxStartPosition;
+            _fileName = Path + levelName + "." + Extension;
+            _pm = new PathfinderManager
+                      {
+                          BoxHeight = boxHeight,
+                          BoxWidth = boxWidth,
+                          DistanceBeetwenBoxes = (Math.Abs(distanceBeetwenBoxes - 0) < Math.E ? 0.01f : distanceBeetwenBoxes),
+                          NumberOfBoxesInLength = numberOfBoxesInLength,
+                          NumberOfBoxesInWidth = numberOfBoxesInWidth,
+                          BoxStartPosition = boxStartPosition
+                      };
             _levelName = levelName;
-            _factory = factory;
+            Factory = factory;
             _frameToTest =framesToTest < 5? 5:framesToTest;
             _boxes = new CheckerBox[numberOfBoxesInLength, numberOfBoxesInWidth];
             if (!File.Exists(_fileName))
             {
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.INFO, "Brak pliku pathfindera dla tego levelu, tworze nowy. Może to zająć dużo czasu");
+                Diagnostics.PushLog(LoggingLevel.INFO, "There is no PathFinder file for this Level. It will be generated right now. This could take a while.");
 #endif
-                generate();
+                Generate();
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.INFO, "Utworzono plik pathfindera.");
+                Diagnostics.PushLog(LoggingLevel.INFO, "PathFinder file was successfully created.");
 #endif
+                PathfinderManager.Pm = _pm;
+                _pm.Factory = Factory;
+                return;
             }
-            if (File.Exists(_fileName))
-            {
-                Stream stream = File.Open(_fileName, FileMode.Open);
-                BinaryFormatter bFormatter = new BinaryFormatter();
-                PathfinderManager.PM = (PathfinderManager)bFormatter.Deserialize(stream);
-                stream.Close();
-                PathfinderManager.PM._factory = _factory;
+            Stream stream = File.Open(_fileName, FileMode.Open);
+            var bFormatter = new BinaryFormatter();
+            PathfinderManager.Pm = (PathfinderManager)bFormatter.Deserialize(stream);
+            stream.Close();
+            PathfinderManager.Pm.Factory = Factory;
 
-                //TimeControl.CreateFrameCounter(10, 0, generateBoxes);
-               
-            }
-            
+            //TimeControl.CreateFrameCounter(10, 0, generateBoxes);
         }
         /****************************************************************************/
-        public void generateBoxes()
+        public void GenerateBoxes()
         {
-            Vector3 move;
-            foreach (Node n in PathfinderManager.PM._blockedNodes)
+            foreach (var n in PathfinderManager.Pm.BlockedNodes)
             {
-                SquareBodyMeshData dddtata = new SquareBodyMeshData();
-                dddtata.Definition = "BrickWall";
-                dddtata.Type = (typeof(SquareBodyMesh));
-                dddtata.Diffuse = "Misc\\woodbox01.diff";
-                dddtata.Normals = "Misc\\woodbox01.norm";
-                dddtata.Model = "Misc\\Wall";
-                dddtata.Specular = "Misc\\woodbox01.spec";
-                dddtata.Immovable = true;
-                dddtata.EnabledPhysics = false;
-                dddtata.Width = PathfinderManager.PM.BoxWidth;
-                dddtata.Lenght = PathfinderManager.PM.BoxWidth;
-                dddtata.Height = PathfinderManager.PM.BoxHeight;
-                move = PathfinderManager.PM.BoxStartPosition;
-                move.X += (PathfinderManager.PM.BoxSpace) * n.x;
-                move.Z += (PathfinderManager.PM.BoxSpace) * n.y;
-                dddtata.World = Matrix.CreateTranslation(move);
-                _factory.Create(dddtata);
+                Vector3 move = PathfinderManager.Pm.BoxStartPosition;
+                move.X += (PathfinderManager.Pm.BoxSpace) * n.X;
+                move.Z += (PathfinderManager.Pm.BoxSpace) * n.Y;
+                var dddtata = new SquareBodyMeshData
+                                  {
+                                      Definition = "BrickWall",
+                                      Type = (typeof (SquareBodyMesh)),
+                                      Diffuse = "Misc\\woodbox01.diff",
+                                      Normals = "Misc\\woodbox01.norm",
+                                      Model = "Misc\\Wall",
+                                      Specular = "Misc\\woodbox01.spec",
+                                      Immovable = true,
+                                      EnabledPhysics = false,
+                                      Width = PathfinderManager.Pm.BoxWidth,
+                                      Lenght = PathfinderManager.Pm.BoxWidth,
+                                      Height = PathfinderManager.Pm.BoxHeight,
+                                      World = Matrix.CreateTranslation(move)
+                                  };
+                Factory.Create(dddtata);
             }
         }
-        public void destroyBoxes()
+        public void DestroyBoxes()
         {
-            for (int i = 0; i < _pm.NumberOfBoxesInLength; i++)
+            for (var i = 0; i < _pm.NumberOfBoxesInLength; i++)
             {
-                for (int j = 0; j < _pm.NumberOfBoxesInWidth; j++)
+                for (var j = 0; j < _pm.NumberOfBoxesInWidth; j++)
                 {
-
-                    if (_boxes[i, j] != null)
+                    if (_boxes[i, j] == null) continue;
+                    if (_boxes[i, j].isCollision)
                     {
-                        if (_boxes[i, j].isCollision)
-                        {
-                            _pm.BlockedNodes.Add(new Node(i, j, _boxes[i, j].nodeType));
-                        }
-                        _factory.RemoveGameObject(_boxes[i, j].ID);
+                        _pm.BlockedNodes.Add(new Node(i, j, _boxes[i, j].nodeType));
                     }
+                    Factory.RemoveGameObject(_boxes[i, j].ID);
                 }
             }
-            writeData();
+            WriteData();
             //_factory.RemoveGameObject(ID);
             //this.SendEvent(new DestroyObjectEvent(ID), EventsSystem.Priority.High, GlobalGameObjects.GameController);
         }
 
 
-        private void writeData()
+        private void WriteData()
         {
-            if (_pm != null)
-            {
-                Stream stream = File.Open(_fileName, FileMode.Create);
-                BinaryFormatter bFormatter = new BinaryFormatter();
-                bFormatter.Serialize(stream, _pm);
-                stream.Close();
-            }
+            if (_pm == null) return;
+            Stream stream = File.Open(_fileName, FileMode.Create);
+            var bFormatter = new BinaryFormatter();
+            bFormatter.Serialize(stream, _pm);
+            stream.Close();
         }
 
-        private void generate()
+        private void Generate()
         {
-            CheckerBoxData dddtata = new CheckerBoxData();
-            dddtata.Type = (typeof(CheckerBox));
-            dddtata.DynamicRoughness = 0.5f;
-            dddtata.Elasticity = 0.5f;
-            dddtata.StaticRoughness = 0.5f;
-            dddtata.Mass = 1;
-            dddtata.Immovable = true;
-            dddtata.EnabledPhysics = true;
-            dddtata.Width = _pm.BoxWidth;
-            dddtata.Height = _pm.BoxHeight;
-            Vector3 move;
-            for (int i = 0; i < _pm.NumberOfBoxesInLength; i++)
+            var dddtata = new CheckerBoxData
+                              {
+                                  Type = (typeof (CheckerBox)),
+                                  DynamicRoughness = 0.5f,
+                                  Elasticity = 0.5f,
+                                  StaticRoughness = 0.5f,
+                                  Mass = 1,
+                                  Immovable = true,
+                                  EnabledPhysics = true,
+                                  Width = _pm.BoxWidth,
+                                  Height = _pm.BoxHeight
+                              };
+            for (var i = 0; i < _pm.NumberOfBoxesInLength; i++)
             {
-                for (int j = 0; j < _pm.NumberOfBoxesInWidth; j++)
+                for (var j = 0; j < _pm.NumberOfBoxesInWidth; j++)
                 {
-                    move = _pm.BoxStartPosition;
+                    var move = _pm.BoxStartPosition;
                     move.X += (_pm.BoxSpace) * i;
                     move.Z += (_pm.BoxSpace) * j;
                     dddtata.World = Matrix.CreateTranslation(move);
                     dddtata.posX = i;
                     dddtata.posY = j;
-                    _boxes[i, j] = (CheckerBox)_factory.Create(dddtata);
+                    _boxes[i, j] = (CheckerBox)Factory.Create(dddtata);
                 }
             }
-            TimeControl.CreateFrameCounter(_frameToTest, 0, destroyBoxes);
+            TimeControl.CreateFrameCounter(_frameToTest, 0, DestroyBoxes);
         }
         /****************************************************************************/
-        /// Release Components
+        // Release Components
         /****************************************************************************/
         public override void ReleaseComponents()
         {
@@ -212,20 +190,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
-        /// Get Data
+        // Get Data
         /****************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            CheckerData data = new CheckerData();
+            var data = new CheckerData();
             GetData(data);
-            data.levelName = _levelName;
-            data.boxHeight = _pm.BoxHeight;
-            data.boxWidth = _pm.BoxWidth;
-            data.distanceBeetwenBoxes = _pm.DistanceBeetwenBoxes;
-            data.numberOfBoxesInLength = _pm.NumberOfBoxesInLength;
-            data.numberOfBoxesInWidth = _pm.NumberOfBoxesInWidth;
-            data.boxStartPosition = _pm.BoxStartPosition;
-            data.framesToTest = _frameToTest;
+            data.LevelName = _levelName;
+            data.BoxHeight = _pm.BoxHeight;
+            data.BoxWidth = _pm.BoxWidth;
+            data.DistanceBeetwenBoxes = _pm.DistanceBeetwenBoxes;
+            data.NumberOfBoxesInLength = _pm.NumberOfBoxesInLength;
+            data.NumberOfBoxesInWidth = _pm.NumberOfBoxesInWidth;
+            data.BoxStartPosition = _pm.BoxStartPosition;
+            data.FramesToTest = _frameToTest;
             return data;
         }
         /****************************************************************************/
@@ -237,27 +215,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
     /********************************************************************************/
-    /// StaticMeshData
+    // StaticMeshData
     /********************************************************************************/
     [Serializable]
     public class CheckerData : GameObjectInstanceData
     {
         [CategoryAttribute("Checker properties")]
-        public string levelName { get; set; }
+        public string LevelName { get; set; }
         [CategoryAttribute("Checker properties")]
-        public float boxWidth { get; set; }
+        public float BoxWidth { get; set; }
         [CategoryAttribute("Checker properties")]
-        public float boxHeight { get; set; }
+        public float BoxHeight { get; set; }
         [CategoryAttribute("Checker properties")]
-        public int numberOfBoxesInLength { get; set; }
+        public int NumberOfBoxesInLength { get; set; }
         [CategoryAttribute("Checker properties")]
-        public int numberOfBoxesInWidth { get; set; }
+        public int NumberOfBoxesInWidth { get; set; }
         [CategoryAttribute("Checker properties")]
-        public float distanceBeetwenBoxes { get; set; }
+        public float DistanceBeetwenBoxes { get; set; }
         [CategoryAttribute("Checker properties")]
-        public Vector3 boxStartPosition { get; set; }
+        public Vector3 BoxStartPosition { get; set; }
         [CategoryAttribute("Checker properties")]
-        public int framesToTest { get; set; }
+        public int FramesToTest { get; set; }
     }
     /********************************************************************************/
 

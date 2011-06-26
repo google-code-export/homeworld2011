@@ -15,7 +15,7 @@ namespace PlagueEngine.Audio
         static private AudioManager _audioManager;
 
 
-        #region Prywatne pola
+        #region Private filds
 
         private readonly ContentManager _contentManager;
         public readonly String ContentFolder;
@@ -25,10 +25,8 @@ namespace PlagueEngine.Audio
 
         private SoundCueInstance[] _playingSounds;
         private bool _enabled = true;
-        private bool _isLooped;
-        private bool _isPlaying;
         private bool _isFading;
-        private AudioListener[] _listeners;
+        private readonly AudioListener[] _listeners;
         // Maksymalna ilość dźwięków która będzie odtwarzana jednocześnie standardowo 64.
         private int _maxSounds = 64;
 
@@ -51,7 +49,7 @@ namespace PlagueEngine.Audio
                 if (_audioManager == null)
                 {
 #if DEBUG
-                    Diagnostics.PushLog(LoggingLevel.ERROR,"AudioMenager nie został odpowiednio zainicjalizowany.");
+                    Diagnostics.Error("AudioMenager was not properly initialized.");
 #endif
                 }
                 return _audioManager;
@@ -85,8 +83,6 @@ namespace PlagueEngine.Audio
             if (cameraComponent == null) return;
             LeftListener.Position = cameraComponent.Position - new Vector3(0.2f, 0f, 0f);
             RightListener.Position = cameraComponent.Position + new Vector3(0.2f, 0f, 0f);
-            //LeftListener.Forward = cameraComponent.Forward;
-            //LeftListener.Up = cameraComponent.Up;
         }
         public AudioListener LeftListener { get; private set; }
         public AudioListener RightListener { get; private set; }
@@ -101,11 +97,11 @@ namespace PlagueEngine.Audio
             set { 
                 if(_maxSounds!=value)
                 {
-                    var index = 0;
+                    int[] index = {0};
                     var tempSei = new SoundCueInstance[value];
-                    foreach (var sei in _playingSounds.Where(sei => sei != null).TakeWhile(sei => index < value))
+                    foreach (var sei in _playingSounds.Where(sei => sei != null).TakeWhile(sei => index[0] < value))
                     {
-                        tempSei[index++] = sei;
+                        tempSei[index[0]++] = sei;
                     }
                     _playingSounds = tempSei;
                 }
@@ -129,7 +125,7 @@ namespace PlagueEngine.Audio
             RightListener = new AudioListener();
             _contentManager = game.ContentManager;
             _playingSounds = new SoundCueInstance[_maxSounds];
-            _listeners = new AudioListener[] { LeftListener, RightListener };
+            _listeners = new[] { LeftListener, RightListener };
         }
         public Song LoadSong(string songName)
         {
@@ -142,7 +138,7 @@ namespace PlagueEngine.Audio
             if (_songs.ContainsKey(songName))
             {
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.INFO,"Piosenka " + songName + " została już załadowana. Zwrócono poprzednią instancje.");
+                Diagnostics.Info("Song " + songName + " has been loaded before. Old references was returned.");
 #endif
                 song = _songs[songName];
             }
@@ -165,7 +161,7 @@ namespace PlagueEngine.Audio
             if (_sounds.ContainsKey(soundName))
             {
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.INFO, "Dźwięk " + soundName + " został już załadowany. Zwrócono poprzednią instancje.");
+                Diagnostics.Info("Sound " + soundName + " has been loaded before. Old references was returned.");
 #endif
                 soundEffect = _sounds[soundName];
             }
@@ -179,7 +175,7 @@ namespace PlagueEngine.Audio
                 catch(Exception e)
                 {
 #if DEBUG
-                    Diagnostics.PushLog(LoggingLevel.ERROR,"Problem z załadowaniem dźwięku. " + e.Message);
+                    Diagnostics.Error("There was en error while loading sound. Exception:" + e.InnerException.Message);
 #endif
                     
                     soundEffect =null;
@@ -200,7 +196,12 @@ namespace PlagueEngine.Audio
         public void PlaySong(SongCue songCue, bool loop)
         {
             MediaPlayer.Stop();
-            Diagnostics.PushLog(LoggingLevel.INFO, "Głośność playera:" + MediaPlayer.Volume + " Ustawiam na " + songCue.Volume);
+#if DEBUG
+            if (Math.Abs(MediaPlayer.Volume - songCue.Volume) > Math.E)
+            {
+                Diagnostics.Info("Volume of player was:" + MediaPlayer.Volume + ". Now set to:" + songCue.Volume);
+            }
+#endif
             MediaPlayer.Volume = songCue.Volume;
             
             MediaPlayer.IsRepeating = loop;

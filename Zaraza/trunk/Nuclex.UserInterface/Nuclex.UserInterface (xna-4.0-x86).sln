@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuclex.UserInterface (xna-4.0-x86)", "Nuclex.UserInterface (xna-4.0-x86).csproj", "{2CB08AB5-46B8-44A9-92AE-33790629696D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuclex.UserInterface.EmbeddedContent", "EmbeddedContent\Nuclex.UserInterface.EmbeddedContent.contentproj", "{FD57D556-4449-4C04-A0F8-763AA510B705}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2CB08AB5-46B8-44A9-92AE-33790629696D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2CB08AB5-46B8-44A9-92AE-33790629696D}.Debug|x86.ActiveCfg = Debug|x86
+		{2CB08AB5-46B8-44A9-92AE-33790629696D}.Debug|x86.Build.0 = Debug|x86
+		{2CB08AB5-46B8-44A9-92AE-33790629696D}.Release|Any CPU.ActiveCfg = Release|x86
+		{2CB08AB5-46B8-44A9-92AE-33790629696D}.Release|x86.ActiveCfg = Release|x86
+		{2CB08AB5-46B8-44A9-92AE-33790629696D}.Release|x86.Build.0 = Release|x86
+		{FD57D556-4449-4C04-A0F8-763AA510B705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD57D556-4449-4C04-A0F8-763AA510B705}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FD57D556-4449-4C04-A0F8-763AA510B705}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD57D556-4449-4C04-A0F8-763AA510B705}.Release|x86.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

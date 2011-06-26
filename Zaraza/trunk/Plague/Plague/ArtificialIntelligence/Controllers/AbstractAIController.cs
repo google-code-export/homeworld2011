@@ -436,7 +436,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                                  target.Z)); 
                     if (currentDistance < DistancePrecision)
                     {
-                        if (controlledObject.PathfinderComponent.isEmpty)
+                        if (controlledObject.PathfinderComponent.IsEmpty)
                         {
                             Action = Action.IDLE;
                             controlledObject.Controller.StopMoving();

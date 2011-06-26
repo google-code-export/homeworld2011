@@ -1,44 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Nuclex.UserInterface.Controls.Arcade;
+﻿using Nuclex.UserInterface.Controls.Arcade;
 using Nuclex.UserInterface;
 using Nuclex.UserInterface.Controls;
 
 /************************************************************************************/
-/// PlagueEngine.GUI.Components
+// PlagueEngine.GUI.Components
 /************************************************************************************/
 namespace PlagueEngine.GUI.Components
 {
     /********************************************************************************/
-    /// GUI Panel Component
+    // GUI Panel Component
     /********************************************************************************/
     class PanelComponent : GUIComponent
     {
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
-        public PanelControl panel { get; private set; }
+        public PanelControl Panel { get; private set; }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// Constructor
+        // Constructor
         /****************************************************************************/
-        public PanelComponent() : base()
+        public PanelComponent()
         {
-            panel = new PanelControl();
+            Panel = new PanelControl();
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// initialize
+        // initialize
         /****************************************************************************/
         public bool Initialize(UniRectangle bounds)
         {
-            if (panel != null && gui != null)
+            if (Panel != null && GUI != null)
             {
-                panel.Bounds = bounds;
+                Panel.Bounds = bounds;
 #if DEBUG
                 Diagnostics.PushLog("Label component initialized successfully");
 #endif
@@ -52,40 +48,40 @@ namespace PlagueEngine.GUI.Components
         /****************************************************************************/
 
         /****************************************************************************/
-        /// register
+        // register
         /****************************************************************************/
         public override void Register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.panel);
+            GUI.Manager.Screen.Desktop.Children.Add(Panel);
         }
         /****************************************************************************/
 
 
 
         /****************************************************************************/
-        /// add
+        // add
         /****************************************************************************/
-        public void add(Control control)
+        public void Add(Control control)
         {
-            this.panel.Children.Add(control);
+            Panel.Children.Add(control);
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// dispose
+        // dispose
         /****************************************************************************/
-        public void dispose()
+        public void Dispose()
         {
-            this.panel.Children.Clear();
+            Panel.Children.Clear();
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// Release Me 
+        // Release Me 
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            gui.Manager.Screen.Desktop.Children.Remove(this.panel);
+            GUI.Manager.Screen.Desktop.Children.Remove(Panel);
             base.ReleaseMe();
         }
         /****************************************************************************/

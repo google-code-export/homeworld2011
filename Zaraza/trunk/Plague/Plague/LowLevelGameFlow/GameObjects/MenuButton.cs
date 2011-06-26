@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
-
-using PlagueEngine.LowLevelGameFlow;
-using PlagueEngine.Rendering.Components;
-using PlagueEngine.Rendering;
-using PlagueEngine.GUI;
 using PlagueEngine.GUI.Components;
-using Microsoft.Xna.Framework.Input;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -19,9 +10,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
-        ButtonComponent buttonComponent = null;
-        //TODO: wywalić zbedne komenty
-
+        ButtonComponent _buttonComponent;
         /********************************************************************************/
 
 
@@ -32,18 +21,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public void Init(ButtonComponent buttonComponent)
         {
-            this.buttonComponent = buttonComponent;
-            EventHandler handler = new EventHandler(handle);
-            buttonComponent.setDelegate(handler);
+            _buttonComponent = buttonComponent;
+            EventHandler handler = Handle;
+            buttonComponent.SetDelegate(handler);
         }
         /********************************************************************************/
 
         /****************************************************************************/
         /// Handle - sending event here
         /****************************************************************************/
-        public void handle(object oSender, EventArgs oEventArgs)
+        public void Handle(object oSender, EventArgs oEventArgs)
         {
-            Diagnostics.PushLog("BUTTON " + this.buttonComponent.Tag + " PRESSED");
+#if DEBUG
+            Diagnostics.PushLog(LoggingLevel.INFO, this, "Button " + _buttonComponent.Tag + " was pressed.");
+#endif
         }
         /****************************************************************************/
         
@@ -54,7 +45,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override void ReleaseComponents()
         {
-            this.buttonComponent.ReleaseMe();
+            _buttonComponent.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -66,10 +57,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            MenuButtonData data = new MenuButtonData();
+            var data = new MenuButtonData();
             GetData(data);
             //TODO: uzupełnić GO buttona
-            data.Text = this.buttonComponent.Control.Text;
+            data.Text = _buttonComponent.Control.Text;
             return data;
         }
         /********************************************************************************/

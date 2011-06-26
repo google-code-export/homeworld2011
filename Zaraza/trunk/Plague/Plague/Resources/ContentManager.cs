@@ -239,7 +239,18 @@ namespace PlagueEngine.Resources
             Stream stream = new FileStream(dataDirectory + "\\" + levelsDirectory + "\\" + levelName, System.IO.FileMode.Open);
 
             IFormatter formatter = new BinaryFormatter();
-            LevelData levelData  = (LevelData)formatter.Deserialize(stream);
+            LevelData levelData = null;
+            try
+            {
+                levelData = (LevelData)formatter.Deserialize(stream);
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                Diagnostics.Error("Exception while loading level: "+ e.Message);
+#endif
+            }
+            
 
             stream.Close();
 

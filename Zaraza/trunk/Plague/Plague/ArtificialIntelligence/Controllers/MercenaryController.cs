@@ -266,16 +266,22 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 {
                     controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
                 }
-                MoveToPointCommandEvent moveToPointCommandEvent = e as MoveToPointCommandEvent;
+                var moveToPointCommandEvent = e as MoveToPointCommandEvent;
 
                 receiver = sender as IEventsReceiver;
-                target = moveToPointCommandEvent.point;
-                if (controlledObject.PathfinderComponent.GetPath(controlledObject.World.Translation, moveToPointCommandEvent.point))
+                if (moveToPointCommandEvent != null)
                 {
-                    target = controlledObject.PathfinderComponent.NextNode();
+                    target = moveToPointCommandEvent.point;
+                    if (controlledObject.PathfinderComponent.GetPath(controlledObject.World.Translation, moveToPointCommandEvent.point))
+                    {
+
+                        target = controlledObject.PathfinderComponent.NextNode();
+#if DEBUG
+                        Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Position:" + controlledObject.World.Translation);
+                        Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Target:" + target);
+#endif
+                    }
                 }
-                Diagnostics.PushLog(LoggingLevel.WARN, "Position:" + controlledObject.World.Translation.ToString());
-                Diagnostics.PushLog(LoggingLevel.WARN, "Target:" + target.ToString());
                 Action = Action.MOVE;
                 #endregion
             }

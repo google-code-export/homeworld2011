@@ -155,13 +155,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.BrightnessLabel2 = new LabelComponent(Math.Round(renderer.Brightness, 2).ToString(), 550, 60, 50, 25);
             this.BrightnessButton1 = new ButtonComponent("<", 450, 65, 20, 25,"");
             this.BrightnessButton2 = new ButtonComponent(">", 500, 65, 20, 25, "");
-            this.BrightnessButton1.setDelegate(click);
-            this.BrightnessButton2.setDelegate(click);
+            this.BrightnessButton1.SetDelegate(click);
+            this.BrightnessButton2.SetDelegate(click);
 
             this.LanguageButton1 = new ButtonComponent("<", 450, 315, 20, 25, "");
             this.LanguageButton2 = new ButtonComponent(">", 500, 315, 20, 25, "");
-            this.LanguageButton1.setDelegate(click);
-            this.LanguageButton2.setDelegate(click);
+            this.LanguageButton1.SetDelegate(click);
+            this.LanguageButton2.SetDelegate(click);
             this.LanguageLabel1 = new LabelComponent("OptionsMenu.language_change", 300, 310, 50, 25);
             this.LanguageLabel2 = new LabelComponent(GlobalGameObjects.StringManager.Language, 550, 310, 50, 25);
 
@@ -169,22 +169,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.ContrastLabel2 = new LabelComponent(Math.Round(renderer.Contrast, 2).ToString(), 550, 110, 50, 25);
             this.ContrastButton1 = new ButtonComponent("<", 450, 115, 20, 25, "");
             this.ContrastButton2 = new ButtonComponent(">", 500, 115, 20, 25, "");
-            this.ContrastButton1.setDelegate(click);
-            this.ContrastButton2.setDelegate(click);
+            this.ContrastButton1.SetDelegate(click);
+            this.ContrastButton2.SetDelegate(click);
 
 
           
             this.SSAOLabel1 = new LabelComponent("OptionsMenu.ssao", 300, 160, 50, 25);
             this.SSAOLabel2 = new LabelComponent(renderer.ssaoEnabled ? "OptionsMenu.on" : "OptionsMenu.off", 550, 160, 50, 25);
             this.SSAOButton1 = new ButtonComponent(renderer.ssaoEnabled ? "OptionsMenu.toggle_off" : "OptionsMenu.toggle_on", 450, 165, 70, 25, "");
-            this.SSAOButton1.setDelegate(click);
+            this.SSAOButton1.SetDelegate(click);
 
 
 
             this.FullScreenLabel1 = new LabelComponent("OptionsMenu.fullscreen", 300, 210, 50, 25);
             this.FullScreenLabel2 = new LabelComponent(renderer.CurrentConfiguration.FullScreen ? "OptionsMenu.on" : "OptionsMenu.off", 550, 210, 50, 25);
             this.FullScreenButton1 = new ButtonComponent(renderer.CurrentConfiguration.FullScreen ? "OptionsMenu.toggle_off" : "OptionsMenu.toggle_on", 450, 215, 70, 25, "");
-            this.FullScreenButton1.setDelegate(click);
+            this.FullScreenButton1.SetDelegate(click);
 
 
 
@@ -194,8 +194,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.ScreenSizeLabel2 = new LabelComponent(resolutions[current][0].ToString() + "X" + resolutions[current][1].ToString(), 550, 260, 50, 25);
             this.ScreenSizeButton1 = new ButtonComponent("<", 450, 265, 20, 25, "");
             this.ScreenSizeButton2 = new ButtonComponent(">", 500, 265, 20, 25, "");
-            this.ScreenSizeButton1.setDelegate(click);
-            this.ScreenSizeButton2.setDelegate(click);
+            this.ScreenSizeButton1.SetDelegate(click);
+            this.ScreenSizeButton2.SetDelegate(click);
 
             this.frame = frame;
             
@@ -207,36 +207,36 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public void refresh()
         {
-            LanguageButton1.refresh();
-            LanguageButton2.refresh();
-            LanguageLabel1.refresh();
-            LanguageLabel2.refresh();
+            LanguageButton1.Refresh();
+            LanguageButton2.Refresh();
+            LanguageLabel1.Refresh();
+            LanguageLabel2.Refresh();
 
-            BackButton.refresh();
+            BackButton.Refresh();
 
-            BrightnessButton1.refresh();
-            BrightnessLabel1.refresh();
-            BrightnessButton2.refresh();
-            BrightnessLabel2.refresh();
+            BrightnessButton1.Refresh();
+            BrightnessLabel1.Refresh();
+            BrightnessButton2.Refresh();
+            BrightnessLabel2.Refresh();
 
-            ContrastButton1.refresh();
-            ContrastLabel1.refresh();
-            ContrastButton2.refresh();
-            ContrastLabel2.refresh();
+            ContrastButton1.Refresh();
+            ContrastLabel1.Refresh();
+            ContrastButton2.Refresh();
+            ContrastLabel2.Refresh();
 
 
-            SSAOButton1.refresh();
-            SSAOLabel1.refresh();
-            SSAOLabel2.refresh();
+            SSAOButton1.Refresh();
+            SSAOLabel1.Refresh();
+            SSAOLabel2.Refresh();
 
-            FullScreenButton1.refresh();
-            FullScreenLabel1.refresh();
-            FullScreenLabel2.refresh();
+            FullScreenButton1.Refresh();
+            FullScreenLabel1.Refresh();
+            FullScreenLabel2.Refresh();
 
-            ScreenSizeButton1.refresh();
-            ScreenSizeLabel1.refresh();
-            ScreenSizeButton2.refresh();
-            ScreenSizeLabel2.refresh();
+            ScreenSizeButton1.Refresh();
+            ScreenSizeLabel1.Refresh();
+            ScreenSizeButton2.Refresh();
+            ScreenSizeLabel2.Refresh();
         }
 
         private void FindCurrentResolution()

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework.Audio;
 using PlagueEngine.Audio.Components;
 using Microsoft.Xna.Framework;
 
@@ -13,7 +9,7 @@ namespace PlagueEngine.Audio
         public SoundEffectInstance Instance;
         public SoundEffectComponent SoundEffectComponent;
         public float MaxDistance;
-        private float _instanceVolume;
+        private readonly float _instanceVolume;
         public bool IsDisposed;
         public SoundCueInstance(SoundEffectComponent soundEffectComponent, SoundEffectInstance instance, float maxDistance)
         {
@@ -24,16 +20,16 @@ namespace PlagueEngine.Audio
         }
         public void Update(AudioListener[] listeners)
         {
-            if(SoundEffectComponent!= null && SoundEffectComponent.Emitter!=null);
+            if(Instance == null || SoundEffectComponent== null || SoundEffectComponent.Emitter==null) return;
             float distance;
-            Vector3 lp = listeners[0].Position;
-            Vector3 ep = SoundEffectComponent.Emitter.Position; 
+            var lp = listeners[0].Position;
+            var ep = SoundEffectComponent.Emitter.Position; 
             Vector3.Distance(ref lp, ref ep, out distance);
             if (MaxDistance > 0 && distance >= MaxDistance)
             {
                 Instance.Volume = 0.0f;
             }
-            else if (Instance.Volume != _instanceVolume)
+            else if (!Equals(Instance.Volume, _instanceVolume))
             {
                 Instance.Volume = _instanceVolume;
             }

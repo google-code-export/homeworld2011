@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace PlagueEngine.Pathfinder
 {
@@ -10,9 +7,10 @@ namespace PlagueEngine.Pathfinder
 
         public override void ComputeNodeValue(Node node, Node endNode)
         {
-
-            node.Value = Math.Abs(node.x - endNode.x) + Math.Abs(node.y - endNode.y);
-
+            if (node != null && endNode != null)
+            {
+                node.Value = Math.Abs(node.X - endNode.X) + Math.Abs(node.Y - endNode.Y);
+            }   
         }
     }
 }
