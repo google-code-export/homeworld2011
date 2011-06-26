@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.Audio;
 using PlagueEngine.Audio.Components;
 using PlagueEngine.TimeControlSystem;
@@ -38,6 +37,7 @@ namespace PlagueEngine
         internal AudioManager              AudioManager       { get; private set; }
         internal Level                     Level              { get; private set; }
         private Thread _editorThread;
+        private Editor.GameObjectEditorWindow _newGameObjectEditor;
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false,0.0f,1.0f,false,1,1,0.25f,1,0.25f);
         
         public bool GameStopped { get;  set; }
@@ -61,7 +61,7 @@ namespace PlagueEngine
             Window.Title = title;
             IsMouseVisible = true;
             Window.AllowUserResizing = false;
-            Form form = (Form)Form.FromHandle(Window.Handle);
+            var form = (Form)Control.FromHandle(Window.Handle);
             form.MinimizeBox = false;
             form.MaximizeBox = false;
             Diagnostics.Game = this;
@@ -112,10 +112,9 @@ namespace PlagueEngine
             RendererClock = TimeControl.CreateClock();
             PhysicsClock  = TimeControl.CreateClock();
 
-            GlobalGameObjects.StringManager = new LangContent(Content.ServiceProvider, Content.RootDirectory);
-            GlobalGameObjects.StringManager.Language = "English";
-            GlobalGameObjects.StringManager.LangDir = "Lang";
-            
+            GlobalGameObjects.StringManager = new LangContent(Content.ServiceProvider, Content.RootDirectory)
+                                                  {Language = "English", LangDir = "Lang"};
+
         }
         /****************************************************************************/
 
@@ -159,7 +158,7 @@ namespace PlagueEngine
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Editor.GameObjectEditorWindow(this));
+            Application.Run(_newGameObjectEditor= new Editor.GameObjectEditorWindow(this));
         }
 
         /****************************************************************************/
@@ -203,6 +202,11 @@ namespace PlagueEngine
         {
             ContentManager.Unload();
 #if DEBUG
+            if (_editorThread.IsAlive)
+            {
+                FormHelper.CloseForm(_newGameObjectEditor);
+                _editorThread.Abort();
+            }
             Diagnostics.PushLog("Unloading content complete");
             Diagnostics.CloseLogFile(); 
 #endif
