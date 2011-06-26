@@ -108,17 +108,27 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                    float angle,
                                    uint MaxHP,
                                    uint HP,
-                                   List<AnimationBinding> AnimationMapping
+                                   Dictionary<Action, string> AnimationMapping
             ):base(lb, MaxHP, HP, rotationSpeed, movingSpeed, distance, angle, AnimationMapping)
         {
             ai.registerController(this);
             this.attack.maxAttackDistance = 100;
-            this.AnimationToActionMapping.Add(Action.RELOAD_CARABINE, "Reload_Carabine");
-            this.AnimationToActionMapping.Add(Action.RELOAD_SIDEARM, "Reload_Pistol");
-            this.AnimationToActionMapping.Add(Action.WOUNDED_MOVE, "Wounded");
-            this.AnimationToActionMapping.Add(Action.WOUNDED_IDLE, "Wounded_Idle");
-            this.AnimationToActionMapping.Add(Action.LOAD_CARTRIDGE, "Load_Ammo");
-            this.AnimationToActionMapping.Add(Action.DIE, "Dying");
+            Dictionary<Action, string> tmpAnimationToActionMapping = new Dictionary<Controllers.Action, string>();
+
+            tmpAnimationToActionMapping.Add(Action.RELOAD_CARABINE, "Reload_Carabine");
+            tmpAnimationToActionMapping.Add(Action.RELOAD_SIDEARM, "Reload_Pistol");
+            tmpAnimationToActionMapping.Add(Action.WOUNDED_MOVE, "Wounded");
+            tmpAnimationToActionMapping.Add(Action.WOUNDED_IDLE, "Wounded_Idle");
+            tmpAnimationToActionMapping.Add(Action.LOAD_CARTRIDGE, "Load_Ammo");
+            tmpAnimationToActionMapping.Add(Action.DIE, "Dying");
+
+            foreach (KeyValuePair<Action, string> pair in tmpAnimationToActionMapping)
+            {
+                if (!AnimationToActionMapping.ContainsKey(pair.Key))
+                {
+                    AnimationToActionMapping.Add(pair.Key, pair.Value);
+                }
+            }
             //this.AnimationToActionMapping.Add(Action.RELOAD, "Reload_Pistol");
 
         }

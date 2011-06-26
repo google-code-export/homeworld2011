@@ -62,7 +62,7 @@ namespace PlagueEngine.ArtificialIntelligence
             data.Radius = mercData.Radius;
             data.Immovable = true;// mercData.Immovable;
             data.Translation = mercData.Translation;
-            data.SkinPitch = mercData.SkinPitch;
+            data.SkinPitch = 180;
             data.SkinRoll = mercData.SkinRoll;
             data.SkinYaw = mercData.SkinYaw;
             data.EnabledPhysics = mercData.EnabledPhysics;
@@ -72,7 +72,7 @@ namespace PlagueEngine.ArtificialIntelligence
             data.DescriptionWindowHeight = 200;
             data.Description = "Dead Mercenary";
 
-            data.Slots = mercData.Slots;
+            data.Slots = mercData.Slots + mercData.TinySlots;
             data.Items = mercData.Items;
             data.Type = typeof(DeadBody);
             data.World = mercData.World;
