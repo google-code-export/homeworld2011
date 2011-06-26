@@ -1,48 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Nuclex.UserInterface;
 using Nuclex.UserInterface.Controls;
 using Nuclex.UserInterface.Controls.Desktop;
 
 /************************************************************************************/
-/// PlagueEngine.GUI.Components
+// PlagueEngine.GUI.Components
 /************************************************************************************/
 namespace PlagueEngine.GUI.Components
 {
 
     /********************************************************************************/
-    /// WindowComponent
+    // WindowComponent
     /********************************************************************************/
     class WindowComponent : GUIComponent
     {
 
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
         public WindowControl Control { get; private set; }
-        private int width, height, x, y;
-        private String title;
+        private int _width, _height, _x, _y;
+        private String _title;
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Constructor
+        // Constructor
         /****************************************************************************/
         public WindowComponent(String title, int x, int y, int width, int height, bool enableDragging)            
         {
-            Control                = new WindowControl();
-            Control.Title          = title;
-            Control.Bounds = new UniRectangle(new UniScalar(x),
-                                              new UniScalar(y),
-                                              new UniScalar(width),
-                                              new UniScalar(height));
-            Control.EnableDragging = enableDragging;
-            this.height = height;
-            this.width = width;
-            this.x = x;
-            this.y = y;
+            Control = new WindowControl
+                          {
+                              Title = title,
+                              Bounds = new UniRectangle(new UniScalar(x),
+                                                        new UniScalar(y),
+                                                        new UniScalar(width),
+                                                        new UniScalar(height)),
+                              EnableDragging = enableDragging
+                          };
+            _height = height;
+            _width = width;
+            _x = x;
+            _y = y;
             Register();
         }
         /****************************************************************************/
@@ -53,26 +52,26 @@ namespace PlagueEngine.GUI.Components
 
                 
         /****************************************************************************/
-        /// Register
+        // Register
         /****************************************************************************/
-        public override void Register()
+        public override sealed void Register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.Control);
+            GUI.Manager.Screen.Desktop.Children.Add(Control);
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// Unregister
+        // Unregister
         /****************************************************************************/
         public  void Unregister()
         {
-            gui.Manager.Screen.Desktop.Children.Remove(this.Control);
+            GUI.Manager.Screen.Desktop.Children.Remove(Control);
 
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// Add Control
+        // Add Control
         /****************************************************************************/
         public void AddControl(Control control)
         {
@@ -82,7 +81,7 @@ namespace PlagueEngine.GUI.Components
 
 
         /****************************************************************************/
-        /// Remove Control
+        // Remove Control
         /****************************************************************************/
         public void RemoveControl(Control control)
         {
@@ -92,11 +91,11 @@ namespace PlagueEngine.GUI.Components
 
 
         /****************************************************************************/
-        /// Release Me
+        // Release Me
         /****************************************************************************/
         public override void ReleaseMe()
         {
-            gui.Manager.Screen.Desktop.Children.Remove(Control);                
+            GUI.Manager.Screen.Desktop.Children.Remove(Control);                
             base.ReleaseMe();
         }
         /****************************************************************************/
@@ -110,12 +109,12 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return title;
+                return _title;
             }
             set
             {
                 Control.Title = value;
-                title = value;
+                _title = value;
             }
         }
         /********************************************************************************/
@@ -129,15 +128,15 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return x;
+                return _x;
             }
             set
             {
                 Control.Bounds = new UniRectangle(new UniScalar(value),
-                                  new UniScalar(y),
-                                  new UniScalar(width),
-                                  new UniScalar(height));
-                x = value;
+                                  new UniScalar(_y),
+                                  new UniScalar(_width),
+                                  new UniScalar(_height));
+                _x = value;
             }
         }
         /********************************************************************************/
@@ -151,15 +150,15 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return y;
+                return _y;
             }
             set
             {
-                Control.Bounds = new UniRectangle(new UniScalar(x),
+                Control.Bounds = new UniRectangle(new UniScalar(_x),
                                   new UniScalar(value),
-                                  new UniScalar(width),
-                                  new UniScalar(height));
-                y = value;
+                                  new UniScalar(_width),
+                                  new UniScalar(_height));
+                _y = value;
             }
         }
         /********************************************************************************/
@@ -172,15 +171,15 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return width;
+                return _width;
             }
             set
             {
-                Control.Bounds = new UniRectangle(new UniScalar(x),
-                                  new UniScalar(y),
+                Control.Bounds = new UniRectangle(new UniScalar(_x),
+                                  new UniScalar(_y),
                                   new UniScalar(value),
-                                  new UniScalar(height));
-                width = value;
+                                  new UniScalar(_height));
+                _width = value;
             }
         }
         /********************************************************************************/
@@ -191,15 +190,15 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return height;
+                return _height;
             }
             set
             {
-                Control.Bounds = new UniRectangle(new UniScalar(x),
-                                  new UniScalar(y),
-                                  new UniScalar(width),
+                Control.Bounds = new UniRectangle(new UniScalar(_x),
+                                  new UniScalar(_y),
+                                  new UniScalar(_width),
                                   new UniScalar(value));
-                height = value;
+                _height = value;
             }
         }
         /********************************************************************************/

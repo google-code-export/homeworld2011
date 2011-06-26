@@ -1,76 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Nuclex.UserInterface.Controls;
+﻿using Nuclex.UserInterface.Controls;
 using Nuclex.UserInterface;
 using PlagueEngine.LowLevelGameFlow;
 
 /************************************************************************************/
-/// PlagueEngine.GUI.Components
+// PlagueEngine.GUI.Components
 /************************************************************************************/
 namespace PlagueEngine.GUI.Components
 {
     /********************************************************************************/
-    /// GUI Label Component
+    // GUI Label Component
     /********************************************************************************/
     class LabelComponent : GUIComponent
     {
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
         public LabelControl Control { get; protected set; }
-        private string text;
+        private string _text;
 
 
-        private int width, height,x,y;
+        private int _width, _height,_x,_y;
         /****************************************************************************/
 
         
         /****************************************************************************/
-        /// Constructor
+        // Constructor
         /****************************************************************************/
         public LabelComponent(string text, int x, int y, int width, int height)
             : base(x,y,width,height)
         {
-            Control = new LabelControl();
-            Control.Bounds = new UniRectangle(new UniScalar(x),
-                                              new UniScalar(y),
-                                              new UniScalar(width),
-                                              new UniScalar(height));
-            this.Text = text;
-            
-
+            Control = new LabelControl
+                          {
+                              Bounds = new UniRectangle(new UniScalar(x),
+                                                        new UniScalar(y),
+                                                        new UniScalar(width),
+                                                        new UniScalar(height))
+                          };
+            Text = text;
         }
         /****************************************************************************/
 
-        public void refresh()
+        public void Refresh()
         {
-            Control.Text = GlobalGameObjects.StringManager.Load<string>(text);
+            Control.Text = GlobalGameObjects.StringManager.Load<string>(_text);
         }
 
         /****************************************************************************/
-        /// register
+        // register
         /****************************************************************************/
         public override void Register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.Control);
+            GUI.Manager.Screen.Desktop.Children.Add(Control);
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// Unregister
+        // Unregister
         /****************************************************************************/
         public void Unregister()
         {
-            gui.Manager.Screen.Desktop.Children.Remove(this.Control);
+            GUI.Manager.Screen.Desktop.Children.Remove(Control);
 
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Release Me 
+        // Release Me 
         /****************************************************************************/
         public override void ReleaseMe()
         {
@@ -90,12 +86,12 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return text;
+                return _text;
             }
             set
             {
                 Control.Text = GlobalGameObjects.StringManager.Load<string>(value);
-                text = value;
+                _text = value;
             }
         }
         /********************************************************************************/
@@ -108,15 +104,15 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return x;
+                return _x;
             }
             set
             {
                 Control.Bounds = new UniRectangle(new UniScalar(value),
-                                  new UniScalar(y),
-                                  new UniScalar(width),
-                                  new UniScalar(height));
-                x = value;
+                                  new UniScalar(_y),
+                                  new UniScalar(_width),
+                                  new UniScalar(_height));
+                _x = value;
             }
         }
         /********************************************************************************/
@@ -129,15 +125,15 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return y;
+                return _y;
             }
             set
             {
-                Control.Bounds = new UniRectangle(new UniScalar(x),
+                Control.Bounds = new UniRectangle(new UniScalar(_x),
                                   new UniScalar(value),
-                                  new UniScalar(width),
-                                  new UniScalar(height));
-                y = value;
+                                  new UniScalar(_width),
+                                  new UniScalar(_height));
+                _y = value;
             }
         }
         /********************************************************************************/
@@ -150,15 +146,15 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return width;
+                return _width;
             }
             set
             {
-                Control.Bounds = new UniRectangle(new UniScalar(x),
-                                  new UniScalar(y),
+                Control.Bounds = new UniRectangle(new UniScalar(_x),
+                                  new UniScalar(_y),
                                   new UniScalar(value),
-                                  new UniScalar(height));
-                width = value;
+                                  new UniScalar(_height));
+                _width = value;
             }
         }
         /********************************************************************************/
@@ -171,15 +167,15 @@ namespace PlagueEngine.GUI.Components
         {
             get
             {
-                return height;
+                return _height;
             }
             set
             {
-                Control.Bounds = new UniRectangle(new UniScalar(x),
-                                  new UniScalar(y),
-                                  new UniScalar(width),
+                Control.Bounds = new UniRectangle(new UniScalar(_x),
+                                  new UniScalar(_y),
+                                  new UniScalar(_width),
                                   new UniScalar(value));
-                height = value;
+                _height = value;
             }
         }
         /********************************************************************************/

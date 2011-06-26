@@ -44,7 +44,7 @@ namespace PlagueEngine.GUI
         public void Initialize(GraphicsDevice graphicsDevice)
         {
             
-            GUIComponent.gui = this;
+            GUIComponent.GUI = this;
             
             var viewport = graphicsDevice.Viewport;
             var mainScreen = new Screen(viewport.Width, viewport.Height);

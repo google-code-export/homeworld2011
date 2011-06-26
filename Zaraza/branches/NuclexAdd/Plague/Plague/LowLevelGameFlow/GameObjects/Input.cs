@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
-
-using PlagueEngine.LowLevelGameFlow;
-using PlagueEngine.Rendering.Components;
-using PlagueEngine.Rendering;
-using PlagueEngine.GUI;
 using PlagueEngine.GUI.Components;
-using Microsoft.Xna.Framework.Input;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -19,7 +10,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
-        InputComponent inputComponent = null;
+        InputComponent _inputComponent;
         /********************************************************************************/
 
         /********************************************************************************/
@@ -27,7 +18,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public void Init(InputComponent inputComponent)
         {
-            this.inputComponent = inputComponent;
+            _inputComponent = inputComponent;
         }
         /********************************************************************************/
 
@@ -36,7 +27,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override void ReleaseComponents()
         {
-            this.inputComponent.ReleaseMe();
+            _inputComponent.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -45,10 +36,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            InputData data = new InputData();
+            var data = new InputData();
             GetData(data);
             //TODO: uzupełnić GO inputu
-            data.Text = this.inputComponent.input.Text;
+            data.Text = _inputComponent.Input.Text;
             return data;
         }
         /********************************************************************************/

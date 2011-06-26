@@ -1,44 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Nuclex.UserInterface.Controls.Desktop;
 using Nuclex.UserInterface;
 
 /************************************************************************************/
-/// PlagueEngine.GUI.Components
+// PlagueEngine.GUI.Components
 /************************************************************************************/
 namespace PlagueEngine.GUI.Components
 {
     /********************************************************************************/
-    /// GUI Input Component
+    // GUI Input Component
     /********************************************************************************/
     class InputComponent : GUIComponent
     {
         /****************************************************************************/
-        /// Fields
+        // Fields
         /****************************************************************************/
-        public InputControl input {  get; private set; }
+        public InputControl Input {  get; private set; }
         /****************************************************************************/
         
         /****************************************************************************/
-        /// Constructor
+        // Constructor
         /****************************************************************************/
-        public InputComponent():base()
+        public InputComponent()
         {
-            input = new InputControl();
+            Input = new InputControl();
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// initialize
+        // initialize
         /****************************************************************************/
         public bool Initialize(String text, UniRectangle bounds)
         {
-            if (input != null && gui!=null)
+            if (Input != null && GUI!=null)
             {
-                input.Text = text;
-                input.Bounds = bounds;
+                Input.Text = text;
+                Input.Bounds = bounds;
 #if DEBUG
                 Diagnostics.PushLog("Input component initialized successfully");
 #endif
@@ -54,12 +51,12 @@ namespace PlagueEngine.GUI.Components
 
 
         /****************************************************************************/
-        /// initialize
+        // initialize
         /****************************************************************************/
         public void Initialize(string text, int x, int y, int width, int height)
         {
-            input.Text = text;
-            input.Bounds = new UniRectangle(new UniScalar(x),
+            Input.Text = text;
+            Input.Bounds = new UniRectangle(new UniScalar(x),
                                               new UniScalar(y),
                                               new UniScalar(width),
                                               new UniScalar(height));
@@ -69,31 +66,31 @@ namespace PlagueEngine.GUI.Components
 
 
         /****************************************************************************/
-        /// register
+        // register
         /****************************************************************************/
         public override void Register()
         {
-            gui.Manager.Screen.Desktop.Children.Add(this.input);
+            GUI.Manager.Screen.Desktop.Children.Add(Input);
         }
         /****************************************************************************/
 
 
         /****************************************************************************/
-        /// Unregister
+        // Unregister
         /****************************************************************************/
         public void Unregister()
         {
-            gui.Manager.Screen.Desktop.Children.Remove(this.input);
+            GUI.Manager.Screen.Desktop.Children.Remove(Input);
 
         }
         /****************************************************************************/
 
         /****************************************************************************/
-        /// Release Me 
+        // Release Me 
         /****************************************************************************/
         public override void ReleaseMe()
         {   
-            gui.Manager.Screen.Desktop.Children.Remove(this.input);
+            GUI.Manager.Screen.Desktop.Children.Remove(Input);
             base.ReleaseMe();
         }
         /****************************************************************************/
