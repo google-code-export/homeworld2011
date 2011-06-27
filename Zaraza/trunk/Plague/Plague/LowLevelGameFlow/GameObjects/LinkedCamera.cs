@@ -31,6 +31,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private float _rotationSpeed;
         private float _zoomSpeed;
 
+        private float Xmin,Xmax,Ymin,Ymax,Zmin,Zmax;
+        private float angleMin;
+
         private Vector3 _position = Vector3.Zero;
         private Vector3 _target = Vector3.Zero;
 
@@ -80,7 +83,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Vector3 target,
                          GameObjectInstance mercenariesManager,
                          bool current,
-                         Vector2 heightRange)
+                         Vector2 heightRange,
+                         float xmax,
+                         float xmin,
+                         float ymax,
+                         float ymin,
+                         float zmax,
+                         float zmin,
+                         float anglemin)
         {
             CameraComponent = cameraComponent;
             KeyboardListenerComponent = keyboardListenerComponent;
@@ -124,6 +134,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             RequiresUpdate = true;
 
             if (current) cameraComponent.SetAsCurrent();
+
+
+            Xmax = xmax;
+            Xmin = xmin;
+            Zmax = zmax;
+            Zmin = zmin;
+            Ymax = ymax;
+            Ymin = ymin;
+            angleMin = anglemin;
         }
         /****************************************************************************/
 
@@ -374,10 +393,58 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             float dist;
 
             Physics.PhysicsUlitities.RayTest(position, desiredPosition + (desiredPosition - position) * 10, out dist, out skin, out pos, out nor);
+            if (skin != null)
+            {
+                return false;
+            }
 
-            return skin == null;
+
+            if (desiredPosition.X < Xmin)
+            {
+                return false;
+            }
+            if (desiredPosition.X > Xmax)
+            {
+                return false;
+            }
+            if (desiredPosition.Z < Zmin)
+            {
+                return false;
+            }
+            if (desiredPosition.Z > Zmax)
+            {
+                return false;
+            }
+            if (desiredPosition.Y < Ymin)
+            {
+                return false;
+            }
+            if (desiredPosition.Y > Ymax)
+            {
+                return false;
+            }
+
+            Vector3 v1 = _target - desiredPosition;
+            Vector3 v2 = _target - desiredPosition;
+            v2.Y = 0;
+
+            v1.Normalize();
+            v2.Normalize();
+
+            float angle= (float)Math.Acos(Vector3.Dot(v1, v2));
+            float angle2 = (float)(angle * 180.0 / Math.PI);
+
+            if (angle2 < angleMin)
+            {
+                return false;
+            }
+
+            return true;
+
         }
         /****************************************************************************/
+
+
 
 
         /****************************************************************************/
@@ -633,6 +700,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.MercenariesManager = MercenariesManager.ID;
 
             data.CurrentCamera = CameraComponent.Renderer.CurrentCamera != null && CameraComponent.Renderer.CurrentCamera.Equals(CameraComponent);
+            
+            data.Xmax = Xmax;
+            data.Xmin = Xmin;
+            data.Ymax = Ymax;
+            data.Ymin = Ymin;
+            data.Zmax = Zmax;
+            data.Zmin = Zmin;
+            data.AngleMin = angleMin;
             return data;
         }
         /****************************************************************************/
@@ -740,10 +815,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 /***************************************/
             }
 
+  
 
             CameraComponent.LookAt(_position, _target, Vector3.Up);
         }
         /****************************************************************************/
+
 
 
         /****************************************************************************/
@@ -786,6 +863,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool ActiveMouseListener;
         public Vector3 position;
         public Vector3 Target { get; set; }
+
+
+        [CategoryAttribute("Camera restriction")]
+        public float Xmin { get; set; }
+        [CategoryAttribute("Camera restriction")]
+        public float Xmax { get; set; }
+        [CategoryAttribute("Camera restriction")]
+        public float Ymin { get; set; }
+        [CategoryAttribute("Camera restriction")]
+        public float Ymax { get; set; }
+        [CategoryAttribute("Camera restriction")]
+        public float Zmin { get; set; }
+        [CategoryAttribute("Camera restriction")]
+        public float Zmax { get; set; }
+        [CategoryAttribute("Camera restriction")]
+        public float AngleMin { get; set; }
 
         public float movementSpeed
         {
