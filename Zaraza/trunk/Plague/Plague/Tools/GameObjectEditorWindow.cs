@@ -55,6 +55,7 @@ namespace PlagueEngine.Tools
                 {
                     editor.LoadAllObjectsId();
                     reload = false;
+                    editor.setUpCameraButton();
                 }
             }
             public override void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
@@ -1625,7 +1626,7 @@ namespace PlagueEngine.Tools
                     }
                 }
             }
-            if (freeCamera == null && linkedCamera == null)
+            if (freeCamera == null || linkedCamera == null)
             {
                 cameraType = null;
                 button3.Text = "Cant switch camera types";
@@ -1649,49 +1650,36 @@ namespace PlagueEngine.Tools
 
         private void switchToFreeCamera()
         {
-            if (freeCamera == null)
+            if (freeCamera != null)
             {
-                Vector3 pos = renderer.CurrentCamera.Position;
-                FreeCameraData fcdata = new FreeCameraData();
-                fcdata.Type = typeof(FreeCamera);
-                fcdata.World = Matrix.Invert(Matrix.CreateLookAt(pos,
-                                                                 new Vector3(pos.X, pos.Y - 70, pos.Z + 60),
-                                                                 new Vector3(0, 1, 0)));
-                fcdata.MovementSpeed = 0.05f;
-                fcdata.RotationSpeed = MathHelper.PiOver4 / 500;
-                fcdata.FoV = 60;
-                fcdata.ZNear = 1;
-                fcdata.ZFar = 200;
-                fcdata.ActiveKeyListener = true;
-                fcdata.ActiveMouseListener = true;
-                freeCamera = (FreeCamera)level.GameObjectsFactory.Create(fcdata);
-
-
-
-
+                renderer.CurrentCamera = freeCamera.cameraComponent;
+                cameraType = typeof(FreeCamera);
+                freeCamera.keyboardListenerComponent.Active = true;
+                freeCamera.mouseListenerComponent.Active = true;
+                linkedCamera.KeyboardListenerComponent.Active = false;
+                linkedCamera.MouseListenerComponent.Active = false;
+                //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
             }
-
-            renderer.CurrentCamera = freeCamera.cameraComponent;
-            cameraType = typeof(FreeCamera);
-            freeCamera.keyboardListenerComponent.Active = true;
-            freeCamera.mouseListenerComponent.Active = true;
-            linkedCamera.KeyboardListenerComponent.Active = false;
-            linkedCamera.MouseListenerComponent.Active = false;
-            //level.GameObjectsFactory.RemoveGameObject(linkedCamera.ID);
-
         }
 
         private void switchToLinkedCamera()
         {
-            int id = 0;
-            TreeNode[] nodes;
-            MercenariesManager mercManager;
-            if (linkedCamera == null)
+            if (linkedCamera != null)
             {
-                Vector3 pos = renderer.CurrentCamera.Position;
+                int id = 0;
+                TreeNode[] nodes;
+                MercenariesManager mercManager;
 
 
-                id = 0;
+                renderer.CurrentCamera = linkedCamera.CameraComponent;
+                cameraType = typeof(LinkedCamera);
+
+                linkedCamera.KeyboardListenerComponent.Active = true;
+                linkedCamera.MouseListenerComponent.Active = true;
+                freeCamera.keyboardListenerComponent.Active = false;
+                freeCamera.mouseListenerComponent.Active = false;
+
+
                 nodes = treeView1.Nodes.Find("MercenariesManager", false);
                 if (nodes.GetLength(0) != 0)
                 {
@@ -1700,51 +1688,13 @@ namespace PlagueEngine.Tools
                 }
                 mercManager = (MercenariesManager)level.GameObjects[id];
 
-                LinkedCameraData lcdata = new LinkedCameraData();
-                lcdata.Type = typeof(LinkedCamera);
-                lcdata.position = pos;
-                lcdata.Target = new Vector3(pos.X, pos.Y - 35, pos.Z + 25);
-                lcdata.MovementSpeed = 0.07f;
-                lcdata.RotationSpeed = 0.005f;
-                lcdata.ZoomSpeed = 0.01f;
-                lcdata.FoV = 60;
-                lcdata.ZNear = 1f;
-                lcdata.ZFar = 201;
-                lcdata.ActiveKeyListener = true;
-                lcdata.ActiveMouseListener = true;
-                lcdata.MercenariesManager = id;
-
-                linkedCamera = (LinkedCamera)(level.GameObjectsFactory.Create(lcdata));
+                linkedCamera.MercenariesManager = mercManager;
                 if (mercManager != null)
                 {
                     mercManager.LinkedCamera = linkedCamera;
                 }
-
+                //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
             }
-
-            renderer.CurrentCamera = linkedCamera.CameraComponent;
-            cameraType = typeof(LinkedCamera);
-
-            linkedCamera.KeyboardListenerComponent.Active = true;
-            linkedCamera.MouseListenerComponent.Active = true;
-            freeCamera.keyboardListenerComponent.Active = false;
-            freeCamera.mouseListenerComponent.Active = false;
-
-
-            nodes = treeView1.Nodes.Find("MercenariesManager", false);
-            if (nodes.GetLength(0) != 0)
-            {
-                id = int.Parse(nodes[0].Nodes[0].Text);
-
-            }
-            mercManager = (MercenariesManager)level.GameObjects[id];
-
-            linkedCamera.MercenariesManager = mercManager;
-            if (mercManager != null)
-            {
-                mercManager.LinkedCamera = linkedCamera;
-            }
-            //level.GameObjectsFactory.RemoveGameObject(freeCamera.ID);
         }
 
 
