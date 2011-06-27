@@ -146,8 +146,8 @@ namespace PlagueEngine.Audio.Components
                     _playingSounds.Add(soundName, sei);
                 }
             }
-            else
 #if DEBUG
+            else
                 Diagnostics.Info("Sound " + soundName + " won't be played. Time limit for this component not expired yet.");
 #endif
         }

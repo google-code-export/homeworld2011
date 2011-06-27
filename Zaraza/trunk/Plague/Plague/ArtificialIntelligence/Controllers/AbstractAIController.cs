@@ -71,6 +71,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             }
             set
             {
+                
                 switch (value)
                 {
                     case Action.ATTACK:
@@ -85,11 +86,16 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             //TODO: zakomentować przed prezentacją.
                             throw new ArgumentException("Przejście w atak/oczekiwanie ataku z celem ataku ustawionym na NULL");
                         }
+                        action = value;
+                        break;
+                    case Action.RELOAD:
+                        action = value;
                         break;
                     default:
+                        action = value;
+                        AttackTarget = null;
                         break;
                 }
-                action = value;
             }
         }
         protected Action                    MoveAction
