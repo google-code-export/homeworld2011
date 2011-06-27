@@ -319,6 +319,27 @@ namespace PlagueEngine.Rendering
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        /// CreateFogOfWarComponent
+        /****************************************************************************/
+        public FogOfWarComponent CreateFogOfWarComponent(GameObjectInstance gameObject,
+                                                               String texture,
+                                                               float spotSize,
+                                                                 float fogScale,
+                                                                 Vector2 FogSize,
+                                                                 bool enabled)
+        {
+            FogOfWarComponent result = new FogOfWarComponent(gameObject,
+                                                             String.IsNullOrEmpty(texture) ? null : content.LoadTexture2D(texture),
+                                                             spotSize,
+                                                             fogScale,
+                                                             FogSize,
+                                                             enabled);
+            return result;
+        }
+        /****************************************************************************/
+
         
         /****************************************************************************/
         /// Guess Technique

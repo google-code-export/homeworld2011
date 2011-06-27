@@ -1329,8 +1329,13 @@ namespace PlagueEngine.LowLevelGameFlow
             result.Init(linkedCamera,
                         _inputComponentsFactory.CreateKeyboardListenerComponent(result,true),
                         _inputComponentsFactory.CreateMouseListenerComponent(result,true),
-                        _renderingComponentsFactory.CreateFrontEndComponent(result,"MercenariesSet"));
-
+                        _renderingComponentsFactory.CreateFrontEndComponent(result,"MercenariesSet"),
+                        _renderingComponentsFactory.CreateFogOfWarComponent(result,
+                                                                            "spot",
+                                                                            data.SpotSize,
+                                                                            data.FogScale,
+                                                                            data.FogSize,
+                                                                            data.Enabled));
             return true;
         }
         /****************************************************************************/

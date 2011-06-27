@@ -36,6 +36,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private KeyboardListenerComponent _keyboard;
         private MouseListenerComponent _mouse;
         private FrontEndComponent _frontEnd;
+        private FogOfWarComponent _fogOfWar;
 
         private GameObjectInstance _targetGameObject;
         private Mercenary _currentMercenary;
@@ -67,12 +68,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(LinkedCamera linkedCamera,
                          KeyboardListenerComponent keyboard,
                          MouseListenerComponent mouse,
-                         FrontEndComponent frontEnd)
+                         FrontEndComponent frontEnd,
+                         FogOfWarComponent fogOfWar)
         {
             _selectedMercenaries = new List<Mercenary>();
             LinkedCamera = linkedCamera;
             _keyboard = keyboard;
             _mouse = mouse;
+
+            _fogOfWar = fogOfWar;
 
             _frontEnd = frontEnd;
             frontEnd.Draw = OnDraw;
@@ -95,6 +99,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Mercenaries = new Dictionary<Mercenary, List<EventArgs>>();
             WoundedMercenaries = new Dictionary<Mercenary, uint>();
             clock = TimeControl.CreateClock();
+
+            RequiresUpdate = true;
 
             MercenaryController.MercManager = this;
         }
@@ -802,6 +808,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 data.LinkedCamera = LinkedCamera.ID;
             }
+
+            data.FogScale = _fogOfWar.FogScale;
+            data.FogSize  = _fogOfWar.FogSize;
+            data.Enabled  = _fogOfWar.Enabled;
+            data.SpotSize = _fogOfWar.SpotSize;
+
             return data;
         }
         /****************************************************************************/
@@ -949,6 +961,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
         /****************************************************************************/
+        /// Update
+        /****************************************************************************/
+        public override void Update(TimeSpan deltaTime)
+        {
+            foreach (var merc in Mercenaries)
+            { 
+                _fogOfWar.DrawSpot(new Vector2(merc.Key.World.Translation.X,merc.Key.World.Translation.Z));
+            }
+        }
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// GetActionRect
         /****************************************************************************/
         private static Rectangle GetActionRect(EventArgs e)
@@ -1038,6 +1063,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     {
         [CategoryAttribute("References")]
         public int LinkedCamera { get; set; }
+
+        [CategoryAttribute("Fog of War")]
+        public float FogScale { get; set; }
+        [CategoryAttribute("Fog of War")]
+        public float SpotSize { get; set; }
+        [CategoryAttribute("Fog of War")]
+        public Vector2 FogSize { get; set; }
+        [CategoryAttribute("Fog of War")]
+        public bool Enabled { get; set; }
     }
     /********************************************************************************/
 
