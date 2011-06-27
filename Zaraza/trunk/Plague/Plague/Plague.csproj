@@ -213,6 +213,7 @@
     <Compile Include="Pathfinder\PathfinderComponent.cs" />
     <Compile Include="Pathfinder\PathfinderManager.cs" />
     <Compile Include="Pathfinder\PriorityQueue.cs" />
+    <Compile Include="Rendering\Components\FogOfWarComponent.cs" />
     <Compile Include="TimeControlSystem\ExpireClock.cs" />
     <Compile Include="Tools\EventsHistorian.cs" />
     <Compile Include="EventsSystem\Event.cs" />

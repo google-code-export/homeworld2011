@@ -24,6 +24,42 @@ float BaseIntensity;
 float BloomSaturation;
 float BaseSaturation;
 
+
+/****************************************************/
+/// Fog of War
+/****************************************************/
+bool   FogOfWarEnabled = false;
+float2 FogOfWarSize;
+float4x4 InverseViewProjection;
+float3 FogColor;
+
+texture FogOfWar;
+sampler FogOfWarSampler = sampler_state
+{
+	texture = <FogOfWar>;
+	MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
+};
+
+texture FogOfWar2;
+sampler FogOfWar2Sampler = sampler_state
+{
+	texture = <FogOfWar2>;
+	MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
+};
+/****************************************************/
+texture GBufferDepth;
+sampler GBufferDepthSampler = sampler_state
+{
+	texture	  = <GBufferDepth>;
+	MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
+};
+
 struct VertexShaderInput
 {
     float3 Position : POSITION0;
@@ -72,7 +108,26 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     base *= (1 - saturate(bloom));
     
     // Combine the two images.
-    return base + bloom;
+
+	float3 output = base + bloom;
+	if(FogOfWarEnabled)
+	{
+		float Depth = tex2D(GBufferDepthSampler,input.UV);
+		float4 Position = 1.0f;		
+		Position.x = input.UV.x * 2.0f - 1.0f;
+		Position.y = -(input.UV.y * 2.0f - 1.0f);
+		Position.z = Depth;
+	
+		Position = mul(Position,InverseViewProjection);
+		Position /= Position.w;
+
+		float fogSample  = tex2D(FogOfWarSampler,Position.xz / FogOfWarSize).r;
+		float fog2Sample = tex2D(FogOfWar2Sampler,Position.xz / FogOfWarSize).r;
+		
+		output = lerp(FogColor,output,saturate(fogSample + 0.5f * fog2Sample));		
+	}
+
+    return float4(output,1);
 }
 
 technique Technique1

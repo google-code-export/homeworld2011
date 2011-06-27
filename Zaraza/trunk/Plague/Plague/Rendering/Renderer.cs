@@ -151,6 +151,8 @@ namespace PlagueEngine.Rendering
         public List<MeshComponent> meshes = new List<MeshComponent>();
         public List<SkinnedMeshComponent> skinnedMeshes = new List<SkinnedMeshComponent>();
         /**********************/
+
+        internal FogOfWarComponent fogOfWar = null;
                 
         /****************************************************************************/
 
@@ -272,6 +274,7 @@ namespace PlagueEngine.Rendering
             SpotLightComponent.renderer   = this;
             FrontEndComponent.renderer    = this;
             OptionsMenu.renderer          = this;
+            FogOfWarComponent.renderer = this;
             spriteBatch = new SpriteBatch(Device);
             
             ExtendedMouseMovementState.Display = graphics.GraphicsDevice.DisplayMode;            
@@ -450,10 +453,21 @@ namespace PlagueEngine.Rendering
 
             /*************************/
             /// Cleaning Nuclex Shit
-            /*************************/
-            Device.BlendState = BlendState.Opaque;
+            /*************************/            
             Device.SamplerStates[0] = SamplerState.LinearWrap;
             /*************************/
+
+
+            /*************************/
+            /// Render Fog of War
+            /*************************/
+            if (fogOfWar != null)
+            {
+                if (fogOfWar.Enabled) fogOfWar.Update(spriteBatch);
+            }
+            /*************************/
+            
+            Device.BlendState = BlendState.Opaque;
 
             foreach (RenderableComponent renderableComponent in preRender)
             {
@@ -518,6 +532,20 @@ namespace PlagueEngine.Rendering
 
             Device.SetRenderTarget(final);
             Device.Clear(Color.Black);
+
+            if (fogOfWar != null)
+            {
+                bloomComposition.Parameters["FogOfWarEnabled"].SetValue(fogOfWar.Enabled);
+                if (fogOfWar.Enabled)
+                {
+                    bloomComposition.Parameters["FogColor"].SetValue(lightsManager.sunlight.FogColor);
+                    bloomComposition.Parameters["FogOfWar"].SetValue(fogOfWar.Fog);
+                    bloomComposition.Parameters["FogOfWar2"].SetValue(fogOfWar.FogSmall);
+                    bloomComposition.Parameters["FogOfWarSize"].SetValue(fogOfWar.FogSize / fogOfWar.FogScale);
+                    bloomComposition.Parameters["InverseViewProjection"].SetValue(InverseViewProjection);
+                }
+            }
+
             bloomComposition.Parameters["Texture"].SetValue(test);
             bloomComposition.Parameters["Bloom"].SetValue(bloom);
             bloomComposition.CurrentTechnique.Passes[0].Apply();
@@ -529,17 +557,21 @@ namespace PlagueEngine.Rendering
 #endif    
             DrawRect();
 
-
+            
             Device.SetRenderTarget(null);
             colorCorrection.Parameters["Texture"].SetValue(final);
             colorCorrection.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
-            //debugEffect.Parameters["Texture"].SetValue((preRender[0] as WaterSurfaceComponent).reflectionMap);
-            //debugEffect.Techniques[0].Passes[0].Apply();
-            //topLeft.Draw();
+            //Device.SetRenderTarget(null);
+            //if (fogOfWar != null)
+            //{
+            //    debugEffect.Parameters["Texture"].SetValue(fogOfWar.Fog);
+            //    debugEffect.Techniques[0].Passes[0].Apply();
+            //    topLeft.Draw();
+            //}
 
-            //debugEffect.Parameters["Texture"].SetValue((preRender[0] as WaterSurfaceComponent).refractionMap);
+            //debugEffect.Parameters["Texture"].SetValue(normal);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //topRight.Draw();
 
@@ -940,6 +972,7 @@ namespace PlagueEngine.Rendering
             bloomComposition.Parameters["BloomSaturation"].SetValue(bloomSaturation);
             bloomComposition.Parameters["BaseIntensity"].SetValue(baseIntensity);
             bloomComposition.Parameters["BaseSaturation"].SetValue(baseSaturation);
+            bloomComposition.Parameters["GBufferDepth"].SetValue(depth);
 
             colorCorrection.Parameters["HalfPixel"].SetValue(HalfPixel);
             colorCorrection.Parameters["Brightness"].SetValue(brightness);

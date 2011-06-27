@@ -114,7 +114,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	}
     
 	if(FogEnabled)
-	{	
+	{		
 		float Depth = tex2D(GBufferDepthSampler,input.UV);
 		output = lerp(output,FogColor,saturate((Depth - FogRange.x)/(FogRange.y - FogRange.x)));
 	}

@@ -151,9 +151,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             
             AudioManager.GetInstance.BackgroundMusicComponent = music;
-            music.LoadFolder("Music", 0.4f); 
-            music.AutomaticMode = false;
-            music.PlaySong("default", "cautious-path", true);
+            // To nie jest dobra muzyka
+            //music.LoadFolder("Music", 0.4f); 
+            //music.AutomaticMode = false;
+            //music.PlaySong("default", "cautious-path", true);
 
             waves.LoadFolder("Menu",1, 0, 0, false);
             waves.SetPosition(new Vector3(0, 3, -60));

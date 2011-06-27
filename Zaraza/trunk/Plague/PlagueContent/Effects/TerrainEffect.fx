@@ -35,6 +35,9 @@ sampler BaseTextureSampler = sampler_state
 	texture = <BaseTexture>;
 	AddressU = WRAP;
 	AddressV = WRAP;
+	MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
 };
 
 texture RTexture;
@@ -43,6 +46,9 @@ sampler RTextureSampler = sampler_state
 	texture = <RTexture>;
 	AddressU = WRAP;
 	AddressV = WRAP;
+	MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
 };
 
 texture GTexture;
@@ -51,6 +57,9 @@ sampler GTextureSampler = sampler_state
 	texture = <GTexture>;
 	AddressU = WRAP;
 	AddressV = WRAP;
+	MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
 };
 
 texture BTexture;
@@ -59,6 +68,9 @@ sampler BTextureSampler = sampler_state
 	texture = <BTexture>;
 	AddressU = WRAP;
 	AddressV = WRAP;
+	MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
 };
 
 texture WeightMap;
@@ -67,6 +79,9 @@ sampler WeightMapSampler = sampler_state
 	texture = <WeightMap>;
 	AddressU = WRAP;
 	AddressV = WRAP;
+	MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
 };
 /****************************************************/
 
