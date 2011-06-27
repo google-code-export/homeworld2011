@@ -144,9 +144,6 @@ namespace PlagueEngine.LowLevelGameFlow
                 
                 if (owner == null)
                 {
-#if DEBUG
-                    Diagnostics.Info("Object " + data.ID + " type of " + gameObject.GetType().Name +" has been moved to WaitingRoom.");
-#endif
                     PushToWaitingRoom(gameObject, data);
                     return false;
                 }
@@ -191,7 +188,9 @@ namespace PlagueEngine.LowLevelGameFlow
         private void PushToWaitingRoom(GameObjectInstance gameObject, GameObjectInstanceData data)
         {
             if (ProcessWaitingRoom) return;
-
+#if DEBUG
+            Diagnostics.Info("Object " + data.ID + " type of " + gameObject.GetType().Name + " has been moved to WaitingRoom.");
+#endif
             WaitingRoom.Add(data.ID, new KeyValuePair<GameObjectInstance, GameObjectInstanceData>(gameObject, data));
         }
         /****************************************************************************/
@@ -595,9 +594,6 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (mercMan == null)
             {
-#if DEBUG
-                Diagnostics.Info("Object " + data.ID + " type of LinkedCamera has been moved to WaitingRoom.");
-#endif
                 PushToWaitingRoom(result, data);
                 return false;
             }
@@ -1196,9 +1192,6 @@ namespace PlagueEngine.LowLevelGameFlow
 
                     if (storable == null)
                     {
-#if DEBUG
-                        Diagnostics.Info("Object " + data.ID + " type of Mercenary has been moved to WaitingRoom.");
-#endif
                         PushToWaitingRoom(result, data);
                         return false;
                     }
@@ -1213,9 +1206,6 @@ namespace PlagueEngine.LowLevelGameFlow
                 currentObject = (StorableObject)GetObject(data.CurrentItem);
                 if (currentObject == null)
                 {
-#if DEBUG
-                    Diagnostics.Info("Object " + data.ID + " type of Mercenary has been moved to WaitingRoom.");
-#endif
                     PushToWaitingRoom(result, data);
                     return false;
                 }
@@ -1227,9 +1217,6 @@ namespace PlagueEngine.LowLevelGameFlow
                 weapon = (Firearm)GetObject(data.Weapon);
                 if (weapon == null)
                 {
-#if DEBUG
-                    Diagnostics.Info("Object " + data.ID + " type of Mercenary has been moved to WaitingRoom.");
-#endif
                     PushToWaitingRoom(result, data);
                     return false;
                 }
@@ -1241,9 +1228,6 @@ namespace PlagueEngine.LowLevelGameFlow
                 sideArm = (Firearm)GetObject(data.SideArm);
                 if (sideArm == null)
                 {
-#if DEBUG
-                    Diagnostics.Info("Object " + data.ID + " type of Mercenary has been moved to WaitingRoom.");
-#endif
                     PushToWaitingRoom(result, data);
                     return false;
                 }
@@ -1318,9 +1302,6 @@ namespace PlagueEngine.LowLevelGameFlow
                 linkedCamera = GetObject(data.LinkedCamera) as LinkedCamera;
                 if (linkedCamera == null)
                 {
-#if DEBUG
-                    Diagnostics.Info("Object " + data.ID + " type of MercenariesManager has been moved to WaitingRoom.");
-#endif
                     PushToWaitingRoom(result, data);
                     return false;
                 }
@@ -1370,9 +1351,6 @@ namespace PlagueEngine.LowLevelGameFlow
                         var accessory = (Accessory)GetObject(data.AvailableAccessories[i].AccessoryID);
                         if(accessory == null)
                         {
-#if DEBUG
-                            Diagnostics.Info("Object " + data.ID + " type of Firearm has been moved to WaitingRoom.");
-#endif
                             PushToWaitingRoom(result,data);
                             return false;
                         }   
@@ -1391,9 +1369,6 @@ namespace PlagueEngine.LowLevelGameFlow
                 ammoClip = (AmmoClip)GetObject(data.AmmoClip);
                 if (ammoClip == null)
                 {
-#if DEBUG
-                    Diagnostics.Info("Object " + data.ID + " type of Firearm has been moved to WaitingRoom.");
-#endif
                     PushToWaitingRoom(result, data);
                     return false;
                 }
@@ -1402,9 +1377,6 @@ namespace PlagueEngine.LowLevelGameFlow
             var ammunition = GetObject(GlobalGameObjects.Ammunition) as Ammunition;
             if (ammunition == null)
             {
-#if DEBUG
-                Diagnostics.Info("Object " + data.ID + " type of Firearm has been moved to WaitingRoom.");
-#endif
                 PushToWaitingRoom(result, data);
                 return false;
             }            
@@ -1617,9 +1589,6 @@ namespace PlagueEngine.LowLevelGameFlow
             var feedback = GetObject(data.Feedback);
             if(feedback == null)
             {
-#if DEBUG
-                Diagnostics.Info("Object " + data.ID + " type of ActionSwitch has been moved to WaitingRoom.");
-#endif
                 PushToWaitingRoom(result,data);
                 return false;
             }
@@ -1790,9 +1759,6 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (camera == null)
             {
-#if DEBUG
-                Diagnostics.Info("Object " + data.ID + " type of Compass has been moved to WaitingRoom.");
-#endif
                 PushToWaitingRoom(result, data);
                 return false;
             }
@@ -1824,9 +1790,6 @@ namespace PlagueEngine.LowLevelGameFlow
 
                     if (storable == null)
                     {
-#if DEBUG
-                        Diagnostics.Info("Object " + data.ID + " type of Container has been moved to WaitingRoom.");
-#endif
                         PushToWaitingRoom(result, data);
                         return false;
                     }
@@ -1875,9 +1838,6 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (ammunition == null)
             {
-#if DEBUG
-                Diagnostics.Info("Object " + data.ID + " type of AmmoClip has been moved to WaitingRoom.");
-#endif
                 PushToWaitingRoom(result, data);
                 return false;
             }
@@ -1984,9 +1944,6 @@ namespace PlagueEngine.LowLevelGameFlow
 
             if (ammunition == null)
             {
-#if DEBUG
-                Diagnostics.Info("Object " + data.ID + " type of AmmoBox has been moved to WaitingRoom.");
-#endif
                 PushToWaitingRoom(result, data);
                 return false;
             }
