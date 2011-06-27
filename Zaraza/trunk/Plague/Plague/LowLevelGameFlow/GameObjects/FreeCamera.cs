@@ -50,6 +50,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private bool                      isOnWindow = false;
         ConstraintWorldPoint              objectController = new ConstraintWorldPoint();
         ConstraintVelocity                damperController = new ConstraintVelocity();
+        bool                              wasImmovable = false;
         bool                              middleButton = false;
         float                             camPickDistance = 0;
 
@@ -473,8 +474,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             delta = Vector3.Transform(delta, Matrix.Transpose(skin.Owner.Orientation));
 
                             camPickDistance = (cameraComponent.Position - pos).Length();
-
-                            //skin.Owner.Immovable = false;
+                            wasImmovable = skin.Owner.Immovable;
+                            skin.Owner.Immovable = false;
                             skin.Owner.SetActive();
                             objectController.Destroy();
                             damperController.Destroy();
@@ -516,7 +517,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                     {
                         if (skin.Owner != null)
                         {
-                             //skin.Owner.Immovable = true;
+                            skin.Owner.Immovable = wasImmovable;
                         }
                         skin = null;
                     }
