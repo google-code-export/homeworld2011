@@ -200,17 +200,16 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         else
                         {
                             #region Przeładuj
-                            
+                            Action = Action.RELOAD;
+                            if (attackTimerID != -1)
+                            {
+                                TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                attackTimerID = -1;
+                            }
                             if (merc.Reload())
                             {
                                 #region Przeładuj magazynek
                                 //Animacja przeładowania, subskrypcja końca animacji.
-                                Action = Action.RELOAD;
-                                if (attackTimerID != -1)
-                                {
-                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
-                                    attackTimerID = -1;
-                                }
                                 if ((merc.CurrentObject as Firearm).SideArm)
                                 {
                                     AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_SIDEARM];
@@ -219,26 +218,16 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                 {
                                     AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
                                 }
-
-                                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
                                 (merc.CurrentObject as Firearm).Freeze();
                                 #endregion
                             }
                             else
                             {
-                                Action = Action.RELOAD;
-                                if (attackTimerID != -1)
-                                {
-                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
-                                    attackTimerID = -1;
-                                }
-                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE];
-
-                                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
-                                (merc.CurrentObject as Firearm).Freeze();
+                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE]; 
                             }
+                            controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                
                             #endregion
                         }
                     }
@@ -540,115 +529,105 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 #region Atakuj cel
                 Mercenary merc = controlledObject as Mercenary;
                 OpenFireToTargetCommandEvent OpenFireToTargetCommandEvent = null;
-                
+
 
                 #region Jeśli najemnik jest uzbrojony...
                 if ((merc.CurrentObject as Firearm) != null)
                 {
+                    
                     OpenFireToTargetCommandEvent = e as OpenFireToTargetCommandEvent;
-                    //AttackTarget = OpenFireToTargetCommandEvent.target;
-                    //jeśli attack taget to mob to timer ataku on
-                    //stan w atak i juz
-
-                    //( było, ale chyba zbędne. attackTimerID == -1)
-                    #region ...i nie atakuje już podanego celu...
-                    if (attackTimerID == -1 || OpenFireToTargetCommandEvent.target != AttackTarget)
+                    if (OpenFireToTargetCommandEvent.target != AttackTarget) //nie atakuje już tego celu
                     {
-                        #region ... strzel,
-                        if ((merc.CurrentObject as Firearm).SureFire(OpenFireToTargetCommandEvent.target.World.Translation))
+                        #region Namierz na cel
+                        Vector3 direction = controlledObject.World.Translation - OpenFireToTargetCommandEvent.target.World.Translation;
+                        Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                        Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+                        float det = v1.X * v2.Y - v1.Y * v2.X;
+                        float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
+                        if (det < 0) angle = -angle;
+                        if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
+                        TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate()
                         {
-                            #region Namierz na cel
-                            Vector3 direction = controlledObject.World.Translation - OpenFireToTargetCommandEvent.target.World.Translation;
-                            Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                            Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
-                            float det = v1.X * v2.Y - v1.Y * v2.X;
-                            float angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-                            if (det < 0) angle = -angle;
-                            if (Math.Abs(angle) > 0.01f) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle));
-                            TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { 
-                                controlledObject.Controller.StopMoving(); 
+                            controlledObject.Controller.StopMoving();
+                        });
+                        #endregion
+
+                        AttackTarget = OpenFireToTargetCommandEvent.target;
+                        Action = Action.ATTACK;
+
+                        if (OpenFireToTargetCommandEvent.target.GetType().Equals(typeof(Creature)))
+                        {
+                            #region Kontynuuj ostrzał, jeśli to mob
+
+                            #region Jeśli atakował kogoś innego, skasuj timer.
+                            if (attackTimerID != -1)
+                            {
+                                TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                            }
+                            #endregion
+                            this.receiver = sender as IEventsReceiver;
+
+                            #region Włacz Timer Ataku.
+                            attackTimerID = TimeControlSystem.TimeControl.CreateTimer(new TimeSpan(0, 0, 1), -1, delegate()
+                            {
+                                if (Action == Action.ATTACK_IDLE)
+                                {
+                                    Action = Action.ATTACK;
+                                }
+                                else if (Action != Action.RELOAD)
+                                {
+                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                    attackTimerID = -1;
+                                }
                             });
                             #endregion
-                            #region Kontynuuj ostrzał, jeśli to mob
-                            if (OpenFireToTargetCommandEvent.target.GetType().Equals(typeof(Creature)))
-                            {
-                                #region Jeśli atakował kogoś innego, skasuj timer.
-                                if (attackTimerID != -1)
-                                {
-                                    TimeControlSystem.TimeControl.ReleaseTimer((uint) attackTimerID);
-                                }
-                                #endregion
-                                this.receiver = sender as IEventsReceiver;
-                                #region Wyznacz cel
-                                AttackTarget = OpenFireToTargetCommandEvent.target;
-                                Action = Action.ATTACK_IDLE;
-                                #endregion
-                                #region Włacz Timer Ataku.
-                                attackTimerID = TimeControlSystem.TimeControl.CreateTimer(new TimeSpan(0, 0, 1), -1, delegate()
-                                {
-                                    if (Action == Action.ATTACK_IDLE)
-                                    {
-                                        Action = Action.ATTACK;
-                                    }
-                                    else if (Action != Action.RELOAD)
-                                    {
-                                        TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
-                                        attackTimerID = -1;
-                                    }
-                                });
-                                #endregion
-                                return;
-                            }
-
+                            return;
                             #endregion
                         }
                         else
                         {
-                            #region Przeładuj
-                            if (merc.Reload())
-                            {
-                                //Animacja przeładowania, subskrypcja końca animacji.
-                                Action = Action.RELOAD;
-                                if (attackTimerID != -1)
-                                {
-                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
-                                    attackTimerID = -1;
-                                }
-                                if ((merc.CurrentObject as Firearm).SideArm)
-                                {
-                                    AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_SIDEARM];
-                                }
-                                else
-                                {
-                                    AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
-                                }
-
-                                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
-                                (merc.CurrentObject as Firearm).Freeze();
-                            }
-                            else
-                            {
-                                Action = Action.RELOAD;
-                                if (attackTimerID != -1)
-                                {
-                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
-                                    attackTimerID = -1;
-                                }
-                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE];
-
-                                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
-                                (merc.CurrentObject as Firearm).Freeze();
-                            }
-                            #endregion
+                            TimeControl.CreateFrameCounter(2, 0, delegate() 
+                            { 
+                                Action = Action.IDLE;
+                                AttackTarget = null; 
+                            });
                         }
-                        #endregion
                     }
-                    #endregion
                 }
                 #endregion
                 controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
+                #endregion
+            }
+            else if (e.GetType().Equals(typeof(ReloadCommandEvent)))
+            {
+                #region Przeładuj
+                receiver = sender as IEventsReceiver;
+                Mercenary merc = controlledObject as Mercenary;
+                Action = Action.RELOAD;
+                if (attackTimerID != -1)
+                {
+                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                    attackTimerID = -1;
+                }
+                if (merc.Reload())
+                {
+                    //Animacja przeładowania, subskrypcja końca animacji.
+                    if ((merc.CurrentObject as Firearm).SideArm)
+                    {
+                        AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_SIDEARM];
+                    }
+                    else
+                    {
+                        AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
+                    }
+                    (merc.CurrentObject as Firearm).Freeze();
+                }
+                else
+                {
+                    AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE];
+                }
+                controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
+                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
                 #endregion
             }
             else if (e.GetType().Equals(typeof(AnimationEndEvent)))
@@ -679,16 +658,21 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     }
                     else
                     {
+                        controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                         Action = Action.IDLE;
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                        AttackTarget = null;
                     }
                 }
                 else if (evt.animation == AnimationToActionMapping[Action.LOAD_CARTRIDGE])
                 {
+                    #region Laduj po naboju
                     Mercenary merc = controlledObject as Mercenary;
                     Firearm firearm = merc.CurrentObject as Firearm;
                     AmmoClip clip = firearm.AmmoClip; 
                     if (clip.Content.Count < clip.Capacity )
                     {
+                        #region magazynek niepełny
                         //tu ladowanie po naboju.
                         //controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.LOAD_CARTRIDGE], TimeSpan.FromSeconds(0.3));
                         foreach (var item in merc.Items)
@@ -732,11 +716,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.LOAD_CARTRIDGE]);
 
-                        if (clip.Content.Count > 0)
+                        if (clip.Content.Count > 0 && AttackTarget != null)
                         {
-                            firearm.Unfreeze();
-                            if (AttackTarget != null)
-                            {
                                 Action = Action.ATTACK;
                                 #region Włacz Timer Ataku.
                                 attackTimerID = TimeControlSystem.TimeControl.CreateTimer(new TimeSpan(0, 0, 1), -1, delegate()
@@ -752,25 +733,18 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                     }
                                 });
                                 #endregion
-                            }
-                            else
-                            {
-                                Action = Action.IDLE;
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
-                            }
                         }
                         else
                         {
-                            firearm.Unfreeze();
+                            controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                             Action = Action.IDLE;//WHAT TO DO!?!?
                             controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
                             AttackTarget = null;
-
                         }
+                        #endregion
                     }
                     else
                     {
-                        firearm.Unfreeze();
                         controlledObject.Mesh.CancelAnimationsEndSubscription(AnimationToActionMapping[Action.LOAD_CARTRIDGE]);
                         if (AttackTarget != null)
                         {
@@ -792,10 +766,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
                         else
                         {
+                            //skonczyl ladowanie, więc musi posłać event
+                            controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                             Action = Action.IDLE;
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                            AttackTarget = null;
                         }
                     }
+                    #endregion
                 }
                 else
                 {
