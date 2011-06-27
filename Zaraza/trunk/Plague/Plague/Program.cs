@@ -2,27 +2,28 @@ using System;
 
 
 /************************************************************************************/
-/// PlagueEngine
+// PlagueEngine
 /************************************************************************************/
 namespace PlagueEngine
 {
 #if WINDOWS || XBOX
 
     /********************************************************************************/
-    /// Program
+    // Program
     /********************************************************************************/
     static class Program
     {
 
         /****************************************************************************/
-        /// Main
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        // Main
+        // <summary>
+        // The main entry point for the application.
+        // </summary>
         /****************************************************************************/
-        static void Main(string[] args)
+        [STAThread]
+        static void Main()
         {
-            using (Game game = new Game("Pyramiden"))
+            using (var game = new Game("Pyramiden"))
             {
                 #if RELEASE
                 try
