@@ -74,6 +74,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
+            data.Radius = body.Radius;
             data.Mass = body.Mass;
             data.Elasticity = body.Elasticity;
             data.StaticRoughness = body.StaticRoughness;

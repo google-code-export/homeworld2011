@@ -68,6 +68,7 @@ namespace PlagueEngine.Rendering
                                                         String gtexture,
                                                         String btexture,
                                                         String weightMap,                                    
+                                                        String normalMap,         
                                                         float width,
                                                         int segments,
                                                         float height,                                                        
@@ -80,11 +81,13 @@ namespace PlagueEngine.Rendering
                                                             content.LoadTexture2D(gtexture),
                                                             content.LoadTexture2D(btexture),
                                                             content.LoadTexture2D(weightMap),
+                                                            content.LoadTexture2D(normalMap),
                                                             width,
                                                             height,
                                                             segments,
                                                             textureTiling,
-                                                            content.LoadEffect("TerrainEffect"));
+                                                            content.LoadEffect("TerrainEffect")
+                                                            );
             result.ComputeMesh();
             return result;                                                                                      
         }

@@ -28,11 +28,7 @@ namespace PlagueEngine.Physics.Components
     {
 
 
-        /****************************************************************************/
-        /// Fields
-        /****************************************************************************/
-        private float radius;
-        /****************************************************************************/
+
 
 
 
@@ -52,7 +48,7 @@ namespace PlagueEngine.Physics.Components
                             float roll)
             : base( enabled,gameObject, mass, immovable, material, skinTranslation,yaw,pitch,roll)
     {
-            this.radius = radius;
+            Radius = radius;
             Sphere sphere = new Sphere(Vector3.Zero, radius);
             Skin.AddPrimitive(sphere, material);
 
