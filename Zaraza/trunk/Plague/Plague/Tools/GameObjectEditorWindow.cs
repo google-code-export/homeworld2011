@@ -636,7 +636,13 @@ namespace PlagueEngine.Tools
             BoomTriger.ClassType = typeof(BoomTriger);
             BoomTriger.dataClassType = typeof(BoomTrigerData);
             gameObjectClassNames.Add(BoomTriger);
-            
+
+
+            gameObjectsClassName CylindricalStorableObject = new gameObjectsClassName();
+            CylindricalStorableObject.className = "CylindricalStorableObject";
+            CylindricalStorableObject.ClassType = typeof(CylindricalStorableObject);
+            CylindricalStorableObject.dataClassType = typeof(CylindricalStorableObjectData);
+            gameObjectClassNames.Add(CylindricalStorableObject);
         }
         /********************************************************************************/
 

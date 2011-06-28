@@ -134,6 +134,7 @@
     <Compile Include="ArtificialIntelligence\EventArgs.cs" />
     <Compile Include="AItest\AI.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BoomTriger.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\CylindricalStorableObject.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DeadBody.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\InGameMenu.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MovieClip.cs" />
