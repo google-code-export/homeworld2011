@@ -29,6 +29,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float explosionForce;
         public float explosionRadius;
         public Vector3 explosionPosition;
+        Mercenary merc;
+        StorableObject objectToDestroy;
         /****************************************************************************/
 
 
@@ -73,7 +75,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (mercenary.HasItem(_keyId))
                 {
+                    merc = mercenary;
                     return new[] { "Examine", "Activate" };
+                    
                 }
             }
             return new[] { "Examine" };
@@ -92,6 +96,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
 
             ExplosionManager.CreateExplosion(explosionPosition, explosionForce, explosionRadius);
+            this.SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
 
         }
 
@@ -104,7 +109,22 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             TimeControl.CreateTimer(TimeSpan.FromSeconds(timer), 1, DoBoom);
 
+            if (merc != null)
+            {
 
+                foreach (var item in merc.Items.Keys)
+                {
+                    if (item.ID == _keyId)
+                    {
+                        objectToDestroy = item;
+                    }
+                }
+
+                if (objectToDestroy != null)
+                {
+                    merc.Items.Remove(objectToDestroy);
+                }
+            }
 
         }
 
