@@ -2219,13 +2219,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Terrain\Level1Weights.bmp">
-      <Name>Level1Weights</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\Environment\stone01.FBX">
       <Name>stone01</Name>
       <Importer>FbxImporter</Importer>
@@ -2296,6 +2289,14 @@
       <Name>stone04</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Terrain\Level1Weights.png">
+      <Name>Level1Weights</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
