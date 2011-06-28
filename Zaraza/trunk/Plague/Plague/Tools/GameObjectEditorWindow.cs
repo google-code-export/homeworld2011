@@ -1552,7 +1552,10 @@ namespace PlagueEngine.Tools
 
 
                 propertyGrid2.SelectedObject = currentEditGameObject;
-
+                if (freeCamera != null)
+                {
+                    freeCamera.selectedGameObject = level.GameObjects[currentEditGameObject.ID];
+                }
 
             }
         }

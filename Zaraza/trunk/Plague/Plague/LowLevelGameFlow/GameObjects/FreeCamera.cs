@@ -63,7 +63,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         float distance=0.0f;
         float a = 0.11f;
         bool pressed = false;
-        GameObjectInstance selectedGameObject = null;
+        public GameObjectInstance selectedGameObject = null;
         CollisionSkin skin = null;
         /****************************************************************************/
 
