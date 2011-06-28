@@ -1388,7 +1388,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.SpotSize,
                                                                             data.FogScale,
                                                                             data.FogSize,
-                                                                            data.Enabled));
+                                                                            data.Enabled),
+                                                                            data.IgnoreMercenaries);
             return true;
         }
         /****************************************************************************/

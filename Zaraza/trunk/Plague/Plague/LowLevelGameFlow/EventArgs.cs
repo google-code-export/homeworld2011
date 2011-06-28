@@ -509,6 +509,27 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
     /********************************************************************************/
+    /// RegisterMercenaryEvent
+    /********************************************************************************/
+    class RegisterMercenaryEvent : EventArgs
+    {
+        public Mercenary mercenary;
+
+        public RegisterMercenaryEvent(Mercenary mercenary)
+        {
+            this.mercenary = mercenary;
+        }
+
+        public override string ToString()
+        {
+            if (mercenary != null) return "ID: " + mercenary.ID.ToString();
+            else return "Null";
+        }
+    }
+    /********************************************************************************/
+
+
+    /********************************************************************************/
     /// OpenEvent
     /********************************************************************************/
     class OpenEvent : EventArgs
