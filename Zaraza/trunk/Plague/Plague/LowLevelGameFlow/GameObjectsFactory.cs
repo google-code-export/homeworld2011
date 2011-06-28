@@ -2549,6 +2549,73 @@ namespace PlagueEngine.LowLevelGameFlow
         }
         /****************************************************************************/
 
+
+        /****************************************************************************/
+        // CreateCylindricalStorableObject
+        /****************************************************************************/
+        public bool CreateCylindricalStorableObject(CylindricalStorableObject result, CylindricalStorableObjectData data)
+        {
+            var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
+
+            result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
+                                                                       instancingMode,
+                                                                       data.EnabledMesh,
+                                                                       false),
+
+                        _physicsComponentFactory.CreateCylindricalBodyComponent(data.EnabledPhysics, result,
+                                                                                data.Mass,
+                                                                                data.Radius,
+                                                                                data.Lenght,
+                                                                                data.Elasticity,
+                                                                                data.StaticRoughness,
+                                                                                data.DynamicRoughness,
+                                                                                data.Immovable,
+                                                                                data.World,
+                                                                                data.Translation,
+                                                                                data.SkinYaw,
+                                                                                data.SkinPitch,
+                                                                                data.SkinRoll),
+                        data.Icon,
+                        data.SlotsIcon,
+                        data.Description,
+                        data.DescriptionWindowWidth,
+                        data.DescriptionWindowHeight,
+                        _particleFactory.CreateParticleEmitterComponent(result,
+                                                                        data.BlendState,
+                                                                        data.Duration,
+                                                                        data.DurationRandomnes,
+                                                                        data.EmitterVelocitySensitivity,
+                                                                        data.VelocityEnd,
+                                                                        data.Gravity,
+                                                                        data.ColorMax,
+                                                                        data.EndSizeMax,
+                                                                        data.VelocityHorizontalMax,
+                                                                        data.ParticlesMax,
+                                                                        data.RotateSpeedMax,
+                                                                        data.StartSizeMax,
+                                                                        data.VelocityVerticalMax,
+                                                                        data.ColorMin,
+                                                                        data.EndSizeMin,
+                                                                        data.VelocityHorizontalMin,
+                                                                        data.RotateSpeedMin,
+                                                                        data.StartSizeMin,
+                                                                        data.VelocityVerticalMin,
+                                                                        data.ParticleTexture,
+                                                                        data.ParticlesPerSecond,
+                                                                        data.EmitterTranslation,
+                                                                        data.World,
+                                                                        data.ParticlesEnabled,
+                                                                        data.Technique)
+                                                                       );
+
+            return true;
+        }
+        /****************************************************************************/
+
     }
     /********************************************************************************/    
 
