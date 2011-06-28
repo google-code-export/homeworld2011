@@ -526,6 +526,45 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
 
+        /****************************************************************************/
+        // CreateBoomTriger
+        /****************************************************************************/
+        public bool CreateBoomTriger(BoomTriger result, BoomTrigerData data)
+        {
+            
+            result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                            data.Mass,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll),
+
+                                                                            data.keyId,
+                                                                            data.Description,
+                                                                            data.DescriptionWindowWidth,
+                                                                            data.DescriptionWindowHeight,
+                                                                            data.Stones,
+                                                                            _level,
+                                                                            data.timer,
+                                                                            data.explosionForce,
+                                                                            data.explosionRadius,
+                                                                            data.explosionPosition);
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
+
 
         /****************************************************************************/
         // Create BuildingWithRoof

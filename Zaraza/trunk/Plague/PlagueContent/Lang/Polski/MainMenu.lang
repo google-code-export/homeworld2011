@@ -41,6 +41,7 @@
     <key id="optionstag" val=""/>
     <key id="creditstext" val="Autorzy"/>
     <key id="creditstag" val=""/>
-  
+  	<key id="resumetext" val="Wznów"/>
+	<key id="mainmenutext" val="Menu główne"/>
   </package>
 </XNABabylonStringFile>

@@ -22,9 +22,9 @@
     <key id="back" val="Save"/>
     <key id="on" val="On"/>
     <key id="off" val="Off"/>
-    <key id="toggle_on" val="Toggle On"/>
-    <key id="toggle_off" val="Toggle Off"/>
-    
+    <key id="toggle_on" val="Toggle"/>
+    <key id="toggle_off" val="Toggle"/>
+    <key id="back2" val="Back"/>
     
     <key id="language_english" val="English"/>
     <key id="language_polish"  val="Polski"/>

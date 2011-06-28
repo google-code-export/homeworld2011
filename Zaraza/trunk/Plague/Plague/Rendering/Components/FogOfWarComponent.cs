@@ -38,7 +38,7 @@ namespace PlagueEngine.Rendering.Components
             FogScale = fogScale;
             Enabled  = enabled;
 
-            renderer.fogOfWar = this;
+            //renderer.fogOfWar = this;
             if (FogSize != Vector2.Zero && FogScale != 0)
             {
                 Fog      = new RenderTarget2D(renderer.Device, (int)(FogSize.X / FogScale), (int)(FogSize.Y / FogScale), false, SurfaceFormat.Color, DepthFormat.None);

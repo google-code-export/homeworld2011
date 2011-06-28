@@ -47,6 +47,7 @@ namespace PlagueEngine.Physics
                 Vector3 forceDir = Vector3.Normalize(collidee.Owner.Position - position);
                 float dist = Vector3.Distance(collidee.Owner.Position, position);
                 collidee.Owner.AddWorldForce(forceDir*force* (float)(Math.Abs((1.0-dist/radius))));
+                //collidee.Owner.Velocity += forceDir * force * (float)(Math.Abs((1.0 - dist / radius))) / collidee.Owner.Mass;
             }
             return false;
         }

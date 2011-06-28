@@ -631,6 +631,12 @@ namespace PlagueEngine.Tools
             gameObjectClassNames.Add(MovieClip);
 
 
+            gameObjectsClassName BoomTriger = new gameObjectsClassName();
+            BoomTriger.className = "BoomTriger";
+            BoomTriger.ClassType = typeof(BoomTriger);
+            BoomTriger.dataClassType = typeof(BoomTrigerData);
+            gameObjectClassNames.Add(BoomTriger);
+            
         }
         /********************************************************************************/
 
