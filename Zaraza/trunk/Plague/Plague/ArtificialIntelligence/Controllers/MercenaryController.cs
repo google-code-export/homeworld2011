@@ -15,6 +15,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     class MercenaryController : AbstractAIController
     {
+        const uint RUN_SPEED = 15;
+        const uint FREE_RUN_SPEED = 17;
+        const uint WALK_SPEED = 10;
+        const uint WOUNDED_SPEED = 6;
+
         static public IEventsReceiver MercManager { protected get; set; }
 
         public Rectangle Icon { get; protected set; }
@@ -22,6 +27,128 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         public uint TinySlots { get; protected set; }
         public uint Slots { get; protected set; }
         long attackTimerID = -1;
+       
+        
+        private uint painResistance = 0;
+        public uint PainResistance
+        {
+            get
+            {
+                return painResistance;
+            }
+            set
+            {
+                if (value > painResistance && (HP + PainResistance) * 100 / MaxHP > 35)
+                {
+                    AnimationToActionMapping[Action.IDLE] = AnimationToActionMapping[Action.NORMAL_IDLE];
+                    Mercenary merc = controlledObject as Mercenary;
+                    if(merc.CurrentObject as Firearm != null)
+                    {
+                        Firearm f = merc.CurrentObject as Firearm;
+                        if (f.SideArm)
+                        {
+                            AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.TACTICAL_MOVE_SIDEARM];
+                        }
+                        else
+                        {
+                            AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.TACTICAL_MOVE_SIDEARM];
+                        }
+                        MovingSpeed = WALK_SPEED;
+                    }
+                    else
+                    {
+                        AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.FREE_RUN];
+                        MovingSpeed = FREE_RUN_SPEED;
+                    }
+                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                }
+                if (value < 0)
+                {
+                    painResistance = 0;
+                }
+                else
+                {
+                    painResistance = value;
+                }
+            }
+        }
+
+        //Funkcje tylko do celów pomocniczych, bo setter mi sie tak rozrósł, że nie ogarniałem
+        protected void FreeRun()
+        {
+            AnimationToActionMapping[Action] = AnimationToActionMapping[Action.FREE_RUN];
+            this.MovingSpeed = FREE_RUN_SPEED;
+        }
+
+        protected void Run(Mercenary merc)
+        {
+            Firearm firearm = merc.CurrentObject as Firearm;
+            if (firearm.SideArm)
+            {
+                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RUN_SIDEARM];
+            }
+            else
+            {
+                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RUN_CARABINE];
+            }
+            this.MovingSpeed = RUN_SPEED;
+        }
+
+        protected void Walk(Mercenary merc)
+        {
+            Firearm firearm = merc.CurrentObject as Firearm;
+            if (firearm.SideArm)
+            {
+                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.TACTICAL_MOVE_SIDEARM];
+            }
+            else
+            {
+                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.TACTICAL_MOVE_CARABINE];
+            }
+            this.MovingSpeed = WALK_SPEED;
+        }
+
+        protected void WoundedWalk()
+        {
+            AnimationToActionMapping[Action] = AnimationToActionMapping[Action.WOUNDED_MOVE];
+            MovingSpeed = WOUNDED_SPEED;
+        }
+
+        public override uint HP
+        {
+            get
+            {
+                return base.HP;
+            }
+            set
+            {
+                if (value > HP && MaxHP>0 && (value + PainResistance)*100 / MaxHP > 35)
+                {
+                    AnimationToActionMapping[Action.IDLE] = AnimationToActionMapping[Action.NORMAL_IDLE];
+                    Mercenary merc = controlledObject as Mercenary;
+                    if (merc.CurrentObject as Firearm != null)
+                    {
+                        Firearm f = merc.CurrentObject as Firearm;
+                        if (f.SideArm)
+                        {
+                            AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.TACTICAL_MOVE_SIDEARM];
+                        }
+                        else
+                        {
+                            AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.TACTICAL_MOVE_SIDEARM];
+                        }
+                        MovingSpeed = WALK_SPEED;
+                    }
+                    else
+                    {
+                        AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.FREE_RUN];
+                        MovingSpeed = FREE_RUN_SPEED;
+                    }
+                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                }
+                base.HP = value;
+            }
+        }
 
         protected override Action Action
         {
@@ -32,44 +159,51 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     Mercenary merc = null;
                     switch (value)
                     {
-                        case Action.FOLLOW:
-                            merc = controlledObject as Mercenary;
-                            //TODO: dorobić test czy nie spełnia warunku wounded.
-                            if (merc.CurrentObject as Firearm != null)
-                            {
-                                Firearm firearm = merc.CurrentObject as Firearm;
-                                if (firearm.SideArm)
-                                {
-                                    base.MoveAction = Action.TACTICAL_MOVE_SIDEARM;
-                                }
-                                else
-                                {
-                                    base.MoveAction = Action.TACTICAL_MOVE_CARABINE;
-                                }
-                            }
+                        case Action.IDLE:
                             base.Action = value;
-                            return;
-                        case Action.MOVE:
-                            merc = controlledObject as Mercenary;
-                            //TODO: dorobić test czy nie spełnia warunku wounded.
-                            if (merc.CurrentObject as Firearm != null)
+                            if ((HP + PainResistance) * 100 / MaxHP < 35)
                             {
-                                Firearm firearm = merc.CurrentObject as Firearm;
-                                if (firearm.SideArm)
-                                {
-                                    base.Action = Action.TACTICAL_MOVE_SIDEARM;
-                                    base.MoveAction = Action.TACTICAL_MOVE_SIDEARM;
-                                }
-                                else
-                                {
-                                    base.Action = Action.TACTICAL_MOVE_CARABINE;
-                                    base.MoveAction = Action.TACTICAL_MOVE_CARABINE;
-                                }
+                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.WOUNDED_IDLE];
                             }
                             else
                             {
-                                base.Action = value;
-                                base.MoveAction = value;
+                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.NORMAL_IDLE];
+                            }
+                            return;
+                        case Action.RUN:
+                            merc = controlledObject as Mercenary;
+                            base.Action = Action.MOVE;
+                            if ((HP + PainResistance)*100/MaxHP < 35)
+                            {
+                                WoundedWalk();
+                                return;
+                            }
+                            if (merc.CurrentObject as Firearm != null)
+                            {
+                                Run(merc);
+                            }
+                            else
+                            {
+                                FreeRun();
+                            }
+                            return;
+                        case Action.FOLLOW:
+                        case Action.MOVE:
+                            merc = controlledObject as Mercenary;
+                            base.Action = value;
+
+                            if ((HP + PainResistance) * 100 / MaxHP < 35)
+                            {
+                                WoundedWalk();
+                                return;
+                            }
+                            if (merc.CurrentObject as Firearm != null)
+                            {
+                                Walk(merc);
+                            }
+                            else
+                            {
+                                FreeRun();
                             }
                             return;
                         default:
@@ -115,12 +249,18 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             this.attack.maxAttackDistance = 100;
             Dictionary<Action, string> tmpAnimationToActionMapping = new Dictionary<Controllers.Action, string>();
 
+            this.AnimationToActionMapping.Remove(Action.WOUNDED_IDLE);
+
             tmpAnimationToActionMapping.Add(Action.RELOAD_CARABINE, "Reload_Carabine");
             tmpAnimationToActionMapping.Add(Action.RELOAD_SIDEARM, "Reload_Pistol");
             tmpAnimationToActionMapping.Add(Action.WOUNDED_MOVE, "Wounded");
-            tmpAnimationToActionMapping.Add(Action.WOUNDED_IDLE, "Wounded_Idle");
+            tmpAnimationToActionMapping.Add(Action.WOUNDED_IDLE, "Idle_Wounded");
             tmpAnimationToActionMapping.Add(Action.LOAD_CARTRIDGE, "Load_Ammo");
             tmpAnimationToActionMapping.Add(Action.DIE, "Dying");
+            tmpAnimationToActionMapping.Add(Action.RUN_SIDEARM, "Run_Pistol");
+            tmpAnimationToActionMapping.Add(Action.RUN_CARABINE, "Run_Carabine");
+            tmpAnimationToActionMapping.Add(Action.FREE_RUN, "Run");
+            tmpAnimationToActionMapping.Add(Action.NORMAL_IDLE, "Idle");
 
             foreach (KeyValuePair<Action, string> pair in tmpAnimationToActionMapping)
             {
@@ -274,6 +414,32 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 Action = Action.MOVE;
                 #endregion
             }
+            else if (e.GetType().Equals(typeof(RunToPointCommandEvent)))
+            {
+                #region MoveToPoint
+                if (!controlledObject.SoundEffectComponent.IsPlaying())
+                {
+                    controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
+                }
+                var moveToPointCommandEvent = e as RunToPointCommandEvent;
+
+                receiver = sender as IEventsReceiver;
+                if (moveToPointCommandEvent != null)
+                {
+                    target = moveToPointCommandEvent.point;
+                    if (controlledObject.PathfinderComponent.GetPath(controlledObject.World.Translation, moveToPointCommandEvent.point))
+                    {
+
+                        target = controlledObject.PathfinderComponent.NextNode();
+#if DEBUG
+                        Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Run Position:" + controlledObject.World.Translation);
+                        Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Run Target:" + target);
+#endif
+                    }
+                }
+                Action = Action.RUN;
+                #endregion
+            }
             else if (e.GetType().Equals(typeof(GrabObjectCommandEvent)))
             {
                 #region GrabEvent
@@ -317,7 +483,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         if (objectTarget.Status == GameObjectStatus.Pickable)
                         {
-                             (controlledObject as Mercenary).PickItem(objectTarget as StorableObject);
+                            (controlledObject as Mercenary).PickItem(objectTarget as StorableObject);
                         }
 
                         objectTarget = null;
@@ -349,11 +515,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
                         controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
-                        
+
                         controlledObject.SendEvent(new ExchangeItemsEvent(controlledObject as Mercenary, objectTarget as Mercenary), Priority.Normal, receiver);
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.Normal, receiver);
                         objectTarget = null;
-                        
+
                         #endregion
                     }
                     else if (Action == Action.OPEN)
@@ -423,13 +589,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                 #endregion
             }
-            else if (e.GetType().Equals(typeof (AttackOrderEvent)))
+            else if (e.GetType().Equals(typeof(AttackOrderEvent)))
             {
                 #region Attack Order Event
                 AttackOrderEvent evt = e as AttackOrderEvent;
                 Action = Action.ENGAGE;
                 this.AttackTarget = evt.EnemyToAttack;
-                #endregion 
+                #endregion
             }
             else if (e.GetType().Equals(typeof(FriendlyFire)))
             {
@@ -447,7 +613,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 TakeDamage evt = e as TakeDamage;
                 MercenaryHit newEvt = new MercenaryHit((int)evt.amount);
                 this.controlledObject.Broadcast(newEvt);
-                
+
                 if (evt.causesBleeding)
                 {
                     IsBleeding = true;
@@ -487,8 +653,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 #region LookAtPoint
                 if ((controlledObject as Mercenary).CurrentObject == null) return;
                 LookAtPointEvent LookAtPointEvent = e as LookAtPointEvent;
-                Action = Action.IDLE;              
-                if(!((controlledObject as Mercenary).CurrentObject as Firearm).SideArm) controlledObject.mesh.BlendTo("LookAt_Carabine", TimeSpan.FromSeconds(0.5f));
+                Action = Action.IDLE;
+                if (!((controlledObject as Mercenary).CurrentObject as Firearm).SideArm) controlledObject.mesh.BlendTo("LookAt_Carabine", TimeSpan.FromSeconds(0.5f));
                 else controlledObject.mesh.BlendTo("LookAt_Pistol", TimeSpan.FromSeconds(0.5f));
                 Vector3 direction = controlledObject.World.Translation - LookAtPointEvent.point;
                 Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
@@ -534,7 +700,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 #region Jeśli najemnik jest uzbrojony...
                 if ((merc.CurrentObject as Firearm) != null)
                 {
-                    
+
                     OpenFireToTargetCommandEvent = e as OpenFireToTargetCommandEvent;
                     if (OpenFireToTargetCommandEvent.target != AttackTarget) //nie atakuje już tego celu
                     {
@@ -586,10 +752,17 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         }
                         else
                         {
-                            TimeControl.CreateFrameCounter(2, 0, delegate() 
-                            { 
+                            TimeControl.CreateFrameCounter(5, 1, delegate()
+                            {
                                 Action = Action.IDLE;
-                                AttackTarget = null; 
+                                AttackTarget = null;
+                                TimeControl.CreateTimer(TimeSpan.FromSeconds(2), 0, delegate()
+                                {
+                                    if (Action == Action.IDLE)
+                                    {
+                                        this.controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                    }
+                                });
                             });
                         }
                     }
@@ -669,15 +842,15 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     #region Laduj po naboju
                     Mercenary merc = controlledObject as Mercenary;
                     Firearm firearm = merc.CurrentObject as Firearm;
-                    AmmoClip clip = firearm.AmmoClip; 
-                    if (clip.Content.Count < clip.Capacity )
+                    AmmoClip clip = firearm.AmmoClip;
+                    if (clip.Content.Count < clip.Capacity)
                     {
                         #region magazynek niepełny
                         //tu ladowanie po naboju.
                         //controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.LOAD_CARTRIDGE], TimeSpan.FromSeconds(0.3));
                         foreach (var item in merc.Items)
                         {
-                            AmmoBox box = item.Key as AmmoBox; 
+                            AmmoBox box = item.Key as AmmoBox;
                             if (box != null && item.Value.Slot < merc.TinySlots)
                             {
                                 #region mamy pudełko które jest w kieszeni
@@ -709,7 +882,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                 }
                                 #endregion
                             }
-                            
+
                         }
 
                         //jeśli tu dotarło, to znaczy, że nie ma amunicji.
@@ -718,21 +891,21 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         if (clip.Content.Count > 0 && AttackTarget != null)
                         {
-                                Action = Action.ATTACK;
-                                #region Włacz Timer Ataku.
-                                attackTimerID = TimeControlSystem.TimeControl.CreateTimer(new TimeSpan(0, 0, 1), -1, delegate()
+                            Action = Action.ATTACK;
+                            #region Włacz Timer Ataku.
+                            attackTimerID = TimeControlSystem.TimeControl.CreateTimer(new TimeSpan(0, 0, 1), -1, delegate()
+                            {
+                                if (Action == Action.ATTACK_IDLE)
                                 {
-                                    if (Action == Action.ATTACK_IDLE)
-                                    {
-                                        Action = Action.ATTACK;
-                                    }
-                                    else if (Action != Action.RELOAD)
-                                    {
-                                        TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
-                                        attackTimerID = -1;
-                                    }
-                                });
-                                #endregion
+                                    Action = Action.ATTACK;
+                                }
+                                else if (Action != Action.RELOAD)
+                                {
+                                    TimeControlSystem.TimeControl.ReleaseTimer((uint)attackTimerID);
+                                    attackTimerID = -1;
+                                }
+                            });
+                            #endregion
                         }
                         else
                         {
@@ -805,7 +978,18 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             (controlledObject as Mercenary).IsDisposed = true;   
             base.Dispose();
         }
-    
+
+        public override void bleed()
+        {
+            if (IsBleeding && (HP + PainResistance) * 100 / (double)MaxHP < 35)
+            {
+                AnimationToActionMapping[Action.IDLE] = AnimationToActionMapping[Action.WOUNDED_IDLE];
+                AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.WOUNDED_MOVE];
+                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                MovingSpeed = WOUNDED_SPEED;
+            }
+            base.bleed();
+        }
     }
 
     

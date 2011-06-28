@@ -46,7 +46,7 @@ namespace PlagueEngine.ArtificialIntelligence
 
             MercenaryData mercData = (MercenaryData)merc.GetData();
             //data mamy w data, wiec kontroler moze zginac.
-            merc.ObjectAIController.Dispose();
+            
 
 
             data.Model = mercData.Model;
@@ -81,6 +81,7 @@ namespace PlagueEngine.ArtificialIntelligence
 
             Diagnostics.PushLog(LoggingLevel.INFO, "===Dead Body from Merc created===");
             SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+            TimeControlSystem.TimeControl.CreateFrameCounter(2, 0, delegate() { merc.ObjectAIController.Dispose(); });
         }
 
         /// <summary>

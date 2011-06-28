@@ -15,8 +15,9 @@ using PlagueEngine.Rendering;
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
     public enum Action { 
-        IDLE, WOUNDED_IDLE,
+        IDLE, WOUNDED_IDLE, NORMAL_IDLE,
         MOVE, TACTICAL_MOVE_SIDEARM, TACTICAL_MOVE_CARABINE, WOUNDED_MOVE,
+        RUN, FREE_RUN, RUN_SIDEARM, RUN_CARABINE,
         TO_IDLE,
         PICK, EXAMINE, OPEN, ACTIVATE,
         FOLLOW, EXCHANGE,
@@ -25,6 +26,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         RELOAD, RELOAD_SIDEARM, RELOAD_CARABINE, LOAD_CARTRIDGE,
         DIE
     };
+    
     abstract class AbstractAIController : EventsSender, IAIController, IAttackable, IEventsReceiver
     {
         /****************************************************************************/
@@ -98,7 +100,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 }
             }
         }
-        protected Action                    MoveAction
+        /*protected Action                    MoveAction
         {
             get
             {
@@ -116,7 +118,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         break;
                 }
             }
-        }
+        }*/
         
         /***MOVEMENT*****************************************************************/
         public float                        RotationSpeed { get; protected set; }
@@ -131,7 +133,18 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         /***HP***********************************************************************/
         public uint                         MaxHP { get; protected set; }
-        public uint                         HP { get; set; }
+        public virtual uint                 HP 
+        {
+            get
+            {
+                return hp;
+            }
+            set
+            {
+                hp = value;
+            }
+        }
+        private uint hp;
 
         /***BLEEDING*****************************************************************/
         public bool                         IsBleeding
@@ -273,7 +286,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         }
 
-        public void bleed()
+        public virtual void bleed()
         {
             if (IsDisposed()) return;
             if (IsBleeding)
@@ -432,9 +445,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             switch (Action)
             {
                 case Action.MOVE:
-                case Action.WOUNDED_MOVE:
-                case Action.TACTICAL_MOVE_CARABINE:
-                case Action.TACTICAL_MOVE_SIDEARM:
                     #region MoveAction
                     currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X,
                                                  controlledObject.World.Translation.Z),
@@ -516,9 +526,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                             controlledObject.Controller.MoveForward(MovingSpeed);
 
-                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[MoveAction])
+                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
                             {
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[MoveAction], TimeSpan.FromSeconds(0.3f));
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
                             }
                             #endregion
                         }
@@ -537,9 +547,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                             controlledObject.Controller.MoveForward(MovingSpeed);
 
-                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[MoveAction])
+                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
                             {
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[MoveAction], TimeSpan.FromSeconds(0.3f));
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
                             }
                         }
                     }
