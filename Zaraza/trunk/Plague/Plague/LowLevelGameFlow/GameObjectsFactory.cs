@@ -287,7 +287,16 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
+        /****************************************************************************/
+        // Create InGameMenu
+        /****************************************************************************/
+        public bool CreateInGameMenu(InGameMenu result, InGameMenuData data)
+        {
 
+            result.Init(_renderingComponentsFactory.CreateFrontEndComponent(result, "MainMenuFrame"));
+            return true;
+        }
+        /****************************************************************************/
 
 
 

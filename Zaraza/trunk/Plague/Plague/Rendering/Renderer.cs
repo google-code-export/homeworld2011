@@ -274,7 +274,11 @@ namespace PlagueEngine.Rendering
             SpotLightComponent.renderer   = this;
             FrontEndComponent.renderer    = this;
             OptionsMenu.renderer          = this;
+
+            InGameMenu.renderer           = this;
+
             FogOfWarComponent.renderer = this;
+
             spriteBatch = new SpriteBatch(Device);
             
             ExtendedMouseMovementState.Display = graphics.GraphicsDevice.DisplayMode;            
