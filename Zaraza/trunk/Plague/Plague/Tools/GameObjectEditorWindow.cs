@@ -621,6 +621,16 @@ namespace PlagueEngine.Tools
             MedKit.ClassType = typeof(MedKit);
             MedKit.dataClassType = typeof(MedKitData);
             gameObjectClassNames.Add(MedKit);
+
+
+
+            gameObjectsClassName MovieClip = new gameObjectsClassName();
+            MovieClip.className = "MovieClip";
+            MovieClip.ClassType = typeof(MovieClip);
+            MovieClip.dataClassType = typeof(MovieClipData);
+            gameObjectClassNames.Add(MovieClip);
+
+
         }
         /********************************************************************************/
 

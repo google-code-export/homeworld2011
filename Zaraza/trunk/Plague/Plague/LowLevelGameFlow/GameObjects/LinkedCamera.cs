@@ -163,6 +163,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                
                 escPressCounter++;
+                
             }
         }
         /****************************************************************************/
@@ -608,14 +609,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (key == Keys.Escape && state.WasPressed())
             {
                 Diagnostics.PushLog(escPressCounter.ToString());
-                escPressCounter++;
-                if (escPressCounter % 2 != 0)
-                {
+             
                     InGameMenuData data = new InGameMenuData();
                    
                     this.SendEvent(new CreateObjectEvent(data), Priority.Normal, GlobalGameObjects.GameController);
 
-                }
             }
 
             if (key == Keys.LeftControl) _addToSelection = state.IsDown();

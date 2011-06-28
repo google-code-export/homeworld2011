@@ -135,6 +135,7 @@
     <Compile Include="AItest\AI.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DeadBody.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\InGameMenu.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\MovieClip.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Spawner.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SpawnPoint.cs" />
     <Compile Include="Audio\AudioManager.cs" />

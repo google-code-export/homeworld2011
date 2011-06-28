@@ -31,6 +31,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /// Fields
         /****************************************************************************/
         KeyboardListenerComponent keyboard;
+        MouseListenerComponent mouse;
         FrontEndComponent frame;
         internal static Renderer renderer;
         internal static ContentManager contentManager;
@@ -69,6 +70,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(FrontEndComponent frame)
         {
             keyboard = new KeyboardListenerComponent(this, true);
+            mouse = new MouseListenerComponent(this, true);
+            keyboard.Modal = true;
+            mouse.Modal = true;
             keyboard.SubscibeKeys(OnKey, Keys.Escape);
             this.frame = frame;
             frame.Draw = OnDraw;
@@ -349,6 +353,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override void ReleaseComponents()
         {
+            keyboard.Modal = false;
+            mouse.Modal = false;
+
             resumeGamebutton.ReleaseMe();
             exitMainMenuButton.ReleaseMe();
             exitGamebutton.ReleaseMe();

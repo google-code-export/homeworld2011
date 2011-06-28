@@ -12,6 +12,12 @@ using PlagueEngine.GUI;
 using PlagueEngine.Particles;
 using PlagueEngine.HighLevelGameFlow;
 
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Graphics;
+using PlagueEngine.Rendering.Components;
+
 /************************************************************************************/
 // PlagueEngine.LowLevelGameFlow
 /************************************************************************************/
@@ -297,6 +303,22 @@ namespace PlagueEngine.LowLevelGameFlow
             return true;
         }
         /****************************************************************************/
+
+
+
+
+
+        /****************************************************************************/
+        // Create MovieClip
+        /****************************************************************************/
+        public bool CreateMovieClip(MovieClip result, MovieClipData data)
+        {
+
+            result.Init(_game.ContentManager.Load<Video>(data.videoName), data.videoName, _renderingComponentsFactory.CreateFrontEndComponent(result, null));
+            return true;
+        }
+        /****************************************************************************/
+
 
 
 
