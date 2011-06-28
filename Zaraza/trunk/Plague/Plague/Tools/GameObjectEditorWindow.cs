@@ -643,6 +643,13 @@ namespace PlagueEngine.Tools
             CylindricalStorableObject.ClassType = typeof(CylindricalStorableObject);
             CylindricalStorableObject.dataClassType = typeof(CylindricalStorableObjectData);
             gameObjectClassNames.Add(CylindricalStorableObject);
+
+
+            gameObjectsClassName SquareStorableObject = new gameObjectsClassName();
+            SquareStorableObject.className = "SquareStorableObject";
+            SquareStorableObject.ClassType = typeof(SquareStorableObject);
+            SquareStorableObject.dataClassType = typeof(SquareStorableObjectData);
+            gameObjectClassNames.Add(SquareStorableObject);
         }
         /********************************************************************************/
 

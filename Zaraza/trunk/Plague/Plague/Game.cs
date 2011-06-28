@@ -171,7 +171,7 @@ namespace PlagueEngine
         protected override void LoadContent()
         {
 
-            Level.LoadLevel("Level1.lvl");
+            Level.LoadLevel("Menu.lvl");
 
             Renderer.LoadEffects();
 
