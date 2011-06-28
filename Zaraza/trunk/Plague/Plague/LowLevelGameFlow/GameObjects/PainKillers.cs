@@ -9,6 +9,7 @@ using PlagueEngine.Rendering;
 using PlagueEngine.Rendering.Components;
 using PlagueEngine.Physics.Components;
 using PlagueEngine.Physics;
+using PlagueEngine.ArtificialIntelligence.Controllers;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -195,6 +196,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Use(Mercenary mercenary)
         {
             mercenary.ObjectAIController.BleedingIntensity /= 2;
+            (mercenary.ObjectAIController as MercenaryController).PainResistance += 15;
+            TimeControlSystem.TimeControl.CreateTimer(TimeSpan.FromMinutes(1.5), 2, delegate()
+            {
+                (mercenary.ObjectAIController as MercenaryController).PainResistance -= 5;
+            });
             --Amount;
         }
 
