@@ -41,6 +41,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private GameObjectInstance _targetGameObject;
         private Mercenary _currentMercenary;
         private Inventory _inventory;
+        private List<int> _blackList;
 
         private int _screenWidthOver2;
         private int _mouseX;
@@ -69,7 +70,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          KeyboardListenerComponent keyboard,
                          MouseListenerComponent mouse,
                          FrontEndComponent frontEnd,
-                         FogOfWarComponent fogOfWar)
+                         FogOfWarComponent fogOfWar,
+                         List<int> ignoreMercenaries)
         {
             _selectedMercenaries = new List<Mercenary>();
             LinkedCamera = linkedCamera;
@@ -77,6 +79,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             _mouse = mouse;
 
             _fogOfWar = fogOfWar;
+            if (ignoreMercenaries == null) _blackList = new List<int>();
+            else _blackList = ignoreMercenaries;
 
             _frontEnd = frontEnd;
             frontEnd.Draw = OnDraw;
@@ -144,11 +148,27 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             if (sender == null) return;
             var argsType = e.GetType();
 
-            
+
+            /*****************************************/
+            // RegisterMercenaryEvent 
+            /*****************************************/
+            if (argsType.Equals(typeof(RegisterMercenaryEvent)))
+            {
+                RegisterMercenaryEvent RegisterMercenaryEvent = e as RegisterMercenaryEvent;
+                var m = RegisterMercenaryEvent.mercenary;
+                if (m != null)
+                {
+                    if (Mercenaries.ContainsKey(m)) return;                    
+                    
+                    Mercenaries.Add(m, new List<EventArgs>());
+                    WoundedMercenaries.Add(m, 0);
+                    _iconsOffset = (66 * Mercenaries.Count) / 2;
+                }
+            }
             /*****************************************/
             // LookAtPointEvent 
             /*****************************************/
-            if (argsType.Equals(typeof(LookAtPointEvent)))
+            else if (argsType.Equals(typeof(LookAtPointEvent)))
             {
                 if (sender.GetType().Equals(typeof(LinkedCamera)))
                 {
@@ -434,10 +454,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
         {
             if (e.GetType().Equals(typeof(CreateEvent)) && sender.GetType().Equals(typeof(Mercenary)))
-            {
+            {                
                 var m = sender as Mercenary;
                 if (m != null)
                 {
+                    if (_blackList.Contains(m.ID)) return;
                     Mercenaries.Add(m, new List<EventArgs>());
                     WoundedMercenaries.Add(m,0);
                     _iconsOffset = (66 * Mercenaries.Count) / 2;
@@ -472,11 +493,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 MercenaryHit MercenaryHit = e as MercenaryHit;
 
-                WoundedMercenaries[m] += (uint)MercenaryHit.damage;
-                TimeControlSystem.TimeControl.CreateTimer(TimeSpan.FromSeconds(0.05f), MercenaryHit.damage, delegate() 
-                                                                                            {
-                                                                                                if(WoundedMercenaries.ContainsKey(m)) --WoundedMercenaries[m];                                                                                                    
-                                                                                            });                
+                if (WoundedMercenaries.ContainsKey(m))
+                {
+                    WoundedMercenaries[m] += (uint)MercenaryHit.damage;
+                    TimeControlSystem.TimeControl.CreateTimer(TimeSpan.FromSeconds(0.05f), MercenaryHit.damage, delegate()
+                                                                                                {
+                                                                                                    if (WoundedMercenaries.ContainsKey(m)) --WoundedMercenaries[m];
+                                                                                                });
+                }
             }
             /*************************************/
 
@@ -814,6 +838,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Enabled  = _fogOfWar.Enabled;
             data.SpotSize = _fogOfWar.SpotSize;
 
+            data.IgnoreMercenaries = _blackList;
+
             return data;
         }
         /****************************************************************************/
@@ -936,6 +962,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             foreach (var mercenary in mercenaries)
             {
+                if (!Mercenaries.ContainsKey(mercenary)) continue;
                 actions = Mercenaries[mercenary];
 
                 if (actions.Count != 0 && clear)
@@ -1061,8 +1088,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     [Serializable]
     public class MercenariesManagerData : GameObjectInstanceData
     {
+        public MercenariesManagerData()
+        {
+            IgnoreMercenaries = new List<int>();
+        }
+
         [CategoryAttribute("References")]
         public int LinkedCamera { get; set; }
+
+        [CategoryAttribute("References")]
+        public List<int> IgnoreMercenaries { get; set; }
 
         [CategoryAttribute("Fog of War")]
         public float FogScale { get; set; }
