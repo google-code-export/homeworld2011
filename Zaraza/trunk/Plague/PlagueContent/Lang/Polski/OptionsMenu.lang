@@ -22,9 +22,9 @@
     <key id="back" val="Zapisz"/>
     <key id="on" val="Włączony"/>
     <key id="off" val="Wyłączony"/>
-    <key id="toggle_on" val="Włącz"/>
-    <key id="toggle_off" val="Wyłącz"/>
-
+    <key id="toggle_on" val="Zmień"/>
+    <key id="toggle_off" val="Zmień"/>
+	<key id="back2" val="Powrót"/>
 
     <key id="language_english" val="English"/>
     <key id="language_polish"  val="Polski"/>
