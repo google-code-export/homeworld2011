@@ -61,18 +61,18 @@ namespace PlagueEngine.Rendering.Components
             renderer.Device.SetRenderTarget(Fog);
             renderer.Device.Clear(Color.Black);
             spriteBatch.Begin();
-            
-            foreach(var spot in spots)
+
+            foreach (var spot in spots)
             {
-                spriteBatch.Draw(Texture, new Rectangle((int)(spot.X - SpotSize / 2), 
-                                                        (int)(spot.Y - SpotSize / 2), 
-                                                        (int)(SpotSize), 
+                spriteBatch.Draw(Texture, new Rectangle((int)(spot.X - SpotSize / 2),
+                                                        (int)(spot.Y - SpotSize / 2),
+                                                        (int)(SpotSize),
                                                         (int)(SpotSize)), Color.White);
             }
 
             spriteBatch.End();
 
-            renderer.Device.SetRenderTarget(FogSmall);            
+            renderer.Device.SetRenderTarget(FogSmall);
             spriteBatch.Begin();
 
             foreach (var spot in spots)
@@ -84,9 +84,9 @@ namespace PlagueEngine.Rendering.Components
             }
 
             spriteBatch.End();
-            
 
-            renderer.Device.SetRenderTarget(null);            
+
+            renderer.Device.SetRenderTarget(null);
             spots.Clear();
         }
 
