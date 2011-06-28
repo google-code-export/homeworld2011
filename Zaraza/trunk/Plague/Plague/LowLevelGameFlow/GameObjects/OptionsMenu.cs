@@ -147,7 +147,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             //                                             y + 80,
             //                                             200, 170, Nuclex.UserInterface.Controls.Desktop.ListSelectionMode.Single);
             //this.LanguageChoiceLabel = new LabelComponent(languageLabelKey, x, y , 100, 70);
-            this.BackButton          = new ButtonComponent("OptionsMenu.back", 400, 200 + height - 250, 120, 50, "");
+            this.BackButton          = new ButtonComponent("OptionsMenu.back", 400, 160 + height - 250, 120, 50, "");
 
             this.parent = parent;
 

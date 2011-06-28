@@ -77,6 +77,7 @@ namespace PlagueEngine.Resources
             //SaveGameObjectsDefinitions();
 
             OptionsMenu.contentManager = this;
+            InGameMenu.contentManager = this;
         }
         /****************************************************************************/
 

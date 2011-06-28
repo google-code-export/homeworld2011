@@ -27,6 +27,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public KeyboardListenerComponent KeyboardListenerComponent;
         public MouseListenerComponent MouseListenerComponent;
 
+        public EventsSnifferComponent sniffer;
         private float _movementSpeed;
         private float _rotationSpeed;
         private float _zoomSpeed;
@@ -67,6 +68,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public bool StopScrolling   { get; set; }
         public bool FireMode        { get; set; }
         public bool Run             { get; set; }
+
+        int escPressCounter = 0;
         /****************************************************************************/
 
 
@@ -96,6 +99,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             KeyboardListenerComponent = keyboardListenerComponent;
             MouseListenerComponent = mouseListenerComponent;
 
+            sniffer = new EventsSnifferComponent();
+            sniffer.SetOnSniffedEvent(OnSniffedEvent);
+            sniffer.SubscribeEvents(typeof(InGameMenuClose));
+
             HeightRange = heightRange;
             _movementSpeed = movementSpeed;
             _rotationSpeed = rotationSpeed;
@@ -107,7 +114,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             KeyboardListenerComponent.SubscibeKeys(OnKey, Keys.W, Keys.S, Keys.A,Keys.D,
                                                           Keys.LeftControl,Keys.Space, 
-                                                          Keys.LeftAlt);
+                                                          Keys.LeftAlt,Keys.Escape);
 
             MouseListenerComponent.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move, MouseMoveAction.Scroll);
             MouseListenerComponent.SubscribeKeys(OnMouseKey, MouseKeyAction.MiddleClick, MouseKeyAction.RightClick, MouseKeyAction.LeftClick);
@@ -145,6 +152,21 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             angleMin = anglemin;
         }
         /****************************************************************************/
+
+
+        /****************************************************************************/
+        /// On Sniffed Event
+        /****************************************************************************/
+        private void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
+        {
+            if (e.GetType().Equals(typeof(InGameMenuClose)) )
+            {
+               
+                escPressCounter++;
+            }
+        }
+        /****************************************************************************/
+
 
 
         /****************************************************************************/
@@ -583,6 +605,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnKey(Keys key, ExtendedKeyState state)
         {
+            if (key == Keys.Escape && state.WasPressed())
+            {
+                Diagnostics.PushLog(escPressCounter.ToString());
+                escPressCounter++;
+                if (escPressCounter % 2 != 0)
+                {
+                    InGameMenuData data = new InGameMenuData();
+                   
+                    this.SendEvent(new CreateObjectEvent(data), Priority.Normal, GlobalGameObjects.GameController);
+
+                }
+            }
+
             if (key == Keys.LeftControl) _addToSelection = state.IsDown();
 
             if (key == Keys.Space) lookAt = state.IsDown();
@@ -674,6 +709,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             CameraComponent.ReleaseMe();
             KeyboardListenerComponent.ReleaseMe();
             MouseListenerComponent.ReleaseMe();
+            sniffer.ReleaseMe();
         }
         /****************************************************************************/
 
