@@ -64,6 +64,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.GTexture       = terrainComponent.GTexture;
             data.BTexture       = terrainComponent.BTexture;
             data.WeightMap      = terrainComponent.WeightMap;
+            data.NormalMap      = terrainComponent.normalMap == null ? String.Empty : terrainComponent.normalMap.Name;
             data.TextureTiling  = terrainComponent.TextureTiling;
             
             return data;
@@ -103,6 +104,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public String BTexture      { get; set; }
         [CategoryAttribute("Textures")]
         public String WeightMap     { get; set; }
+        [CategoryAttribute("Textures")]
+        public String NormalMap { get; set; }
         [CategoryAttribute("Textures")]
         public float TextureTiling  { get; set; }
 

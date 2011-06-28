@@ -455,6 +455,8 @@ namespace PlagueEngine.Rendering
 
             if (currentCamera == null) return;
 
+            if (spriteBatch.GraphicsDevice.IsDisposed) spriteBatch = new SpriteBatch(Device);
+
             /*************************/
             /// Cleaning Nuclex Shit
             /*************************/            
@@ -802,14 +804,8 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         private void DrawIcons(Matrix ViewProjection)
         {
-            if (spriteBatch.GraphicsDevice.IsDisposed)
-            {
-                spriteBatch = new SpriteBatch(Device);
-            }
-
             int screenWidth = Device.PresentationParameters.BackBufferWidth;
             int screenHeight = Device.PresentationParameters.BackBufferHeight;
-
 
             spriteBatch.Begin();
             editor.DrawIcons(spriteBatch, ref ViewProjection, screenWidth, screenHeight);

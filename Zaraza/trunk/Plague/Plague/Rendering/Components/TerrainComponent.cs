@@ -40,6 +40,8 @@ namespace PlagueEngine.Rendering.Components
         private Texture2D    weightMap      = null;
         private float        textureTiling  = 0;
 
+        public Texture2D normalMap = null;
+
         private Vector3[]    objectSpaceBBCorners = null;
         private Vector3[]    BBCorners            = new Vector3[8];
         /****************************************************************************/
@@ -55,6 +57,7 @@ namespace PlagueEngine.Rendering.Components
                                 Texture2D          gTexture,
                                 Texture2D          bTexture,
                                 Texture2D          weightMap,
+                                Texture2D          normalMap,
                                 float              width,
                                 float              height,
                                 int                segments,
@@ -74,6 +77,7 @@ namespace PlagueEngine.Rendering.Components
             this.bTexture       = bTexture;
             this.weightMap      = weightMap;
             this.textureTiling  = textureTiling;
+            this.normalMap = normalMap;
 
             this.effect         = effect;
 
@@ -114,7 +118,7 @@ namespace PlagueEngine.Rendering.Components
                     vertexHeight *= height;
 
                     vertices[(z * Segments) + x].Position = new Vector3(x * cellSize, vertexHeight, z * cellSize);
-                    vertices[(z * Segments) + x].TextureCoordinate = new Vector2((float)x / (float)Segments, (float)z / (float)Segments);
+                    vertices[(z * Segments) + x].TextureCoordinate = new Vector2((float)x / (float)(Segments - 1) , (float)z / (float)(Segments-1));
                 }
             }
 
@@ -219,7 +223,12 @@ namespace PlagueEngine.Rendering.Components
         {
             SetEffect();
             effect.Parameters["World"].SetValue(gameObject.World);
+            
+            if (normalMap != null) effect.CurrentTechnique = effect.Techniques[1];
+            else effect.CurrentTechnique = effect.Techniques[0];
+
             effect.CurrentTechnique.Passes[0].Apply();
+
             device.Indices = indexBuffer;
             device.SetVertexBuffer(vertexBuffer);
             device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, trianglesCount);
@@ -238,6 +247,7 @@ namespace PlagueEngine.Rendering.Components
             effect.Parameters["GTexture"].SetValue(gTexture);
             effect.Parameters["BTexture"].SetValue(bTexture);
             effect.Parameters["WeightMap"].SetValue(weightMap);
+            if(normalMap != null) effect.Parameters["NormalMap"].SetValue(normalMap);
         }
         /****************************************************************************/
 
@@ -305,7 +315,7 @@ namespace PlagueEngine.Rendering.Components
 
             device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, trianglesCount);
 
-            effect.CurrentTechnique = effect.Techniques[0];
+            //effect.CurrentTechnique = effect.Techniques[0];
         }
         /****************************************************************************/
 

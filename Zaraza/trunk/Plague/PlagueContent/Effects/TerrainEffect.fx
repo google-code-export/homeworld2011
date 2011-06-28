@@ -5,6 +5,10 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 float4x4 ViewProjection;
+
+float3x3 TBN = float3x3(float3(1,0,0),
+						float3(0,0,1),
+					    float3(0,1,0));
 /****************************************************/
 
 
@@ -79,6 +83,17 @@ sampler WeightMapSampler = sampler_state
 	texture = <WeightMap>;
 	AddressU = WRAP;
 	AddressV = WRAP;
+	MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
+};
+
+texture NormalMap;
+sampler NormalMapSampler = sampler_state 
+{
+	texture   = <NormalMap>;
+	AddressU  = WRAP;
+	AddressV  = WRAP;
 	MagFilter = LINEAR;
     MinFilter = LINEAR;
     Mipfilter = LINEAR;
@@ -219,6 +234,45 @@ struct PixelShaderOutput
 /****************************************************/
 /// PixelShaderFunction
 /****************************************************/
+PixelShaderOutput PixelShaderFunction2(VertexShaderOutput input)
+{
+	if (ClipPlaneEnabled)
+	{
+		clip(dot(float4(input.WorldPosition, 1), ClipPlane));		
+	}
+
+	float3 baseTex = tex2D(BaseTextureSampler, input.UV * TextureTiling);
+	float3 rTex	   = tex2D(RTextureSampler,	   input.UV * TextureTiling);
+	float3 gTex	   = tex2D(GTextureSampler,	   input.UV * TextureTiling);
+	float3 bTex	   = tex2D(BTextureSampler,	   input.UV * TextureTiling);
+	float3 wMap	   = tex2D(WeightMapSampler,   input.UV);
+
+	float3 normal	= normalize(tex2D(NormalMapSampler, input.UV * TextureTiling) * 2 - 1);
+	
+	normal		  = normalize(mul(normal,TBN));
+
+
+	float3 texColor = clamp(1.0f - wMap.r - wMap.g - wMap.b, 0 , 1);
+	texColor *= baseTex;
+
+	texColor += wMap.r * rTex + wMap.g * gTex + wMap.b * bTex;
+
+	PixelShaderOutput output;
+	
+	output.Color   = float4(texColor,0);
+	output.Normal  = float4(0.5f * (normal + 1.0f),0);
+	output.Depth   = input.Depth.x / input.Depth.y;
+	
+	output.SSAODepth = input.Depth.z;
+
+    return output;
+}
+/****************************************************/
+
+
+/****************************************************/
+/// PixelShaderFunction
+/****************************************************/
 PixelShaderOutput PixelShaderFunction(VertexShaderOutput input)
 {
 	if (ClipPlaneEnabled)
@@ -284,6 +338,20 @@ technique Technique1
     {
         VertexShader = compile vs_3_0 VertexShaderFunction();
         PixelShader  = compile ps_3_0 PixelShaderFunction();
+    }
+}
+/****************************************************/
+
+
+/****************************************************/
+/// Technique1
+/****************************************************/
+technique Technique2
+{
+    pass Pass1
+    {
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader  = compile ps_3_0 PixelShaderFunction2();
     }
 }
 /****************************************************/
