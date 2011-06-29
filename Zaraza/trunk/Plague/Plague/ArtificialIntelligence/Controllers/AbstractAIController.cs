@@ -510,6 +510,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         else
                         {
                             //TODO: Akcja dla pustej ścieżki.
+                            Broadcast(new NewDialogMessageEvent(controlledObject.Name, "No way!" ,(controlledObject as Mercenary).Icon), EventsSystem.Priority.Normal);
 #if DEBUG
                             Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Nie można wyznaczyć ścieżki, wykonuje akcje dla tego eventu.");
 #endif
