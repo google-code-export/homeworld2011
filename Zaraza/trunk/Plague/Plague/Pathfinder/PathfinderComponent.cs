@@ -147,7 +147,7 @@ namespace PlagueEngine.Pathfinder
                         curentDirection = temp.Direction;
                         tempNodes.Add(temp);
 #if DEBUG
-                        PathfinderManager.Pm.GenerateBox(temp);
+//                        PathfinderManager.Pm.GenerateBox(temp);
 #endif
                     }
 
