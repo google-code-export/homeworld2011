@@ -1510,11 +1510,48 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.FogSize,
                                                                             data.Enabled),
                                                                             data.IgnoreMercenaries);
+            MercenaryActivationTrigger.MercenariesManager = result;
             return true;
         }
         /****************************************************************************/
 
+        /****************************************************************************/
+        // CreateMercenaryActivationTrigger
+        /****************************************************************************/
+        public bool CreateMercenaryActivationTrigger(MercenaryActivationTrigger result, MercenaryActivationTriggerData data)
+        {
+            List<Mercenary> tmp = new List<Mercenary>();
+            Mercenary hlp = null;
+            foreach (int id in data.MercIDs)
+            {
+                hlp = this.GetObject(id) as Mercenary;
+                if (hlp == null)
+                {
+                    PushToWaitingRoom(result, data);
+                    return false;
+                }
+                tmp.Add(hlp);
+            }
+            result.Init(tmp.ToArray(),
+                _physicsComponentFactory.CreateSphericalBodyComponent(true,
+                                                                      result,
+                                                                      0,
+                                                                      data.Radius,
+                                                                      0,
+                                                                      0,
+                                                                      0,
+                                                                      true,
+                                                                      data.World,
+                                                                      Vector3.Zero,
+                                                                      0,
+                                                                      0,
+                                                                      0),
+                                                                      1);
 
+            return true;
+        }
+        /****************************************************************************/
+        
         /****************************************************************************/
         // CreateGameController
         /****************************************************************************/

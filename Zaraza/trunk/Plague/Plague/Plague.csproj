@@ -136,6 +136,7 @@
     <Compile Include="Helpers\ThreadHelper.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BoomTriger.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Doors.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\MercenaryActivationTrigger.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\RadioBox.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareStorableObject.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalStorableObject.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\FlammableBarrel.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\IUsable.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\PainKillers.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\Trigger.cs" />
     <Compile Include="LowLevelGameFlow\IFlammable.cs" />
     <Compile Include="LowLevelGameFlow\IPenetrable.cs" />
     <Compile Include="LowLevelGameFlow\IShootable.cs" />
