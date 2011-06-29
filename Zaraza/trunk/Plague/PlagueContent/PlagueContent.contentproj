@@ -2334,6 +2334,23 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\Weapons\ChamberingRound.mp3">
+      <Name>ChamberingRound</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\Weapons\EjectingMagazine.mp3">
+      <Name>EjectingMagazine</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\Weapons\PelletGunPump.mp3">
+      <Name>PelletGunPump</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Models\Misc\techbox.FBX">
       <Name>techbox</Name>
       <Importer>FbxImporter</Importer>

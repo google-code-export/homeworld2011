@@ -373,11 +373,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                     AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
                                 }
                                 (merc.CurrentObject as Firearm).Freeze();
+                                merc.WeaponSound.PlaySound("Weapons", "ChamberingRound");
                                 #endregion
                             }
                             else
                             {
-                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE]; 
+                                AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE];
+                                merc.WeaponSound.PlaySound("Weapons", "EjectingMagazine");
                             }
                             controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
                             controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
@@ -806,11 +808,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     {
                         AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RELOAD_CARABINE];
                     }
+                    merc.WeaponSound.PlaySound("Weapons", "ChamberingRound");
                     (merc.CurrentObject as Firearm).Freeze();
                 }
                 else
                 {
                     AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE];
+                    merc.WeaponSound.PlaySound("Weapons", "EjectingMagazine");
                 }
                 controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
@@ -890,6 +894,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                         }
                                         //animacja i jeszcze raz.
                                         controlledObject.Mesh.PlayClip(AnimationToActionMapping[Action.LOAD_CARTRIDGE]);
+                                        merc.WeaponSound.PlaySound("Weapons", "PelletGunPump");
                                         return;
                                     }
                                 }
@@ -983,7 +988,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 HealCommandEvent evt = e as HealCommandEvent;
                 if (evt.merc != null)
                 {
-                    //TODO: heal others
+                    objectTarget = evt.merc;
+                    Action = Action.HEAL;//TODO: heal others
                 }
                 else
                 {
@@ -995,6 +1001,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             if (mk != null)
                             {
                                 mk.Use(merc);
+                                if (mk.Amount == 0)
+                                {
+                                    merc.Items.Remove(mk);
+                                    SendEvent(new DestroyObjectEvent(mk.ID), Priority.High, GlobalGameObjects.GameController);
+                                }
                                 return;
                             }
                         }
@@ -1007,11 +1018,17 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             if (pk != null)
                             {
                                 pk.Use(merc);
+                                if (pk.Amount == 0)
+                                {
+                                    merc.Items.Remove(pk);
+                                    SendEvent(new DestroyObjectEvent(pk.ID), Priority.High, GlobalGameObjects.GameController);
+                                }
                                 break;
                             }
                         }
                     }
                 }
+                SendEvent(new ActionDoneEvent(), Priority.High, sender as IEventsReceiver);
 
             }
             else

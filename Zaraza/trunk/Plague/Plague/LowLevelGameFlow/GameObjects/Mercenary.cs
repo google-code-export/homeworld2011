@@ -25,6 +25,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public delegate void OnSomething();
 
+        public SoundEffectComponent WeaponSound { get; set; }
+
         /****************************************************************************/
         // Slots
         /****************************************************************************/
@@ -90,6 +92,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          Dictionary<PlagueEngine.ArtificialIntelligence.Controllers.Action, string> AnimationMapping
             )
         {
+            WeaponSound = new SoundEffectComponent();
+            WeaponSound.LoadFolder("Weapons", 1f, 0, 0, true);
+            WeaponSound.StopAllSounds();
+
             ObjectAIController = new MercenaryController(this, rotationSpeed, movingSpeed, distance, angle, maxHP, HP, AnimationMapping);
             Mesh = mesh;
             Body = body;
@@ -809,6 +815,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void ReleaseComponents()
         {
+            if (WeaponSound != null)
+            {
+                WeaponSound.StopAllSounds();
+                WeaponSound.ReleaseMe();
+                WeaponSound = null;
+            }
             if (Mesh != null)
             {
                 Mesh.ReleaseMe();
