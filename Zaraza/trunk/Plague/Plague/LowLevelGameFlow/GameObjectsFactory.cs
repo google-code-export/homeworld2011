@@ -531,7 +531,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         public bool CreateBoomTriger(BoomTriger result, BoomTrigerData data)
         {
-            
+
             result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
                                                                             data.Mass,
                                                                             data.Lenght,
@@ -556,7 +556,33 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.timer,
                                                                             data.explosionForce,
                                                                             data.explosionRadius,
-                                                                            data.explosionPosition);
+                                                                            data.explosionPosition,
+                            _particleFactory.CreateParticleEmitterComponent(result,
+                                                            data.BlendState,
+                                                            data.Duration,
+                                                            data.DurationRandomnes,
+                                                            data.EmitterVelocitySensitivity,
+                                                            data.VelocityEnd,
+                                                            data.Gravity,
+                                                            data.ColorMax,
+                                                            data.EndSizeMax,
+                                                            data.VelocityHorizontalMax,
+                                                            data.ParticlesMax,
+                                                            data.RotateSpeedMax,
+                                                            data.StartSizeMax,
+                                                            data.VelocityVerticalMax,
+                                                            data.ColorMin,
+                                                            data.EndSizeMin,
+                                                            data.VelocityHorizontalMin,
+                                                            data.RotateSpeedMin,
+                                                            data.StartSizeMin,
+                                                            data.VelocityVerticalMin,
+                                                            data.ParticleTexture,
+                                                            data.ParticlesPerSecond,
+                                                            data.EmitterTranslation,
+                                                            data.World,
+                                                            data.ParticlesEnabled,
+                                                            data.Technique));
 
             return true;
         }
