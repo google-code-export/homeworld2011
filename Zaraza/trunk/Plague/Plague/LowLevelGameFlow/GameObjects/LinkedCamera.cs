@@ -101,9 +101,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             backgroundMusic = new BackgroundMusicComponent();
             AudioManager.GetInstance.BackgroundMusicComponent = backgroundMusic;
-            backgroundMusic.LoadFolder("Ambients", 0.4f);
+            backgroundMusic.LoadFolder("Ambients", 0.1f);
             backgroundMusic.AutomaticMode = false;
-            backgroundMusic.PlaySong("default", "Begining", false);
+            //backgroundMusic.PlaySong("default", "Begining", false);
 
             CameraComponent = cameraComponent;
             KeyboardListenerComponent = keyboardListenerComponent;
