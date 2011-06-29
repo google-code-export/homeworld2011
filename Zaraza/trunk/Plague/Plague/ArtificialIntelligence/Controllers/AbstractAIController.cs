@@ -457,7 +457,11 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     #region MoveAction
                     if (!controlledObject.PathfinderComponent.IsComputing)
                     {
-                        if (controlledObject.PathfinderComponent.PathType != PathType.Empty && target.Equals(controlledObject.PathfinderComponent.EndPoint))
+                        if (controlledObject.PathfinderComponent.PathType != PathType.Empty)
+                        {
+                            
+                        
+                        if (!controlledObject.PathfinderComponent.IsEmpty && target.Equals(controlledObject.PathfinderComponent.EndPoint))
                         {
                             target = controlledObject.PathfinderComponent.NextNode();
                         }
@@ -498,9 +502,22 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                             if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
                             {
-
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                             }
+                        }
+                        }
+                        else
+                        {
+                            //TODO: Akcja dla pustej ścieżki.
+#if DEBUG
+                            Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Nie można wyznaczyć ścieżki, wykonuje akcje dla tego eventu.");
+#endif
+                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.IDLE])
+                            {
+                                controlledObject.Controller.StopMoving();
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
+                            }
+                            controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                         }
                     }
                     else
