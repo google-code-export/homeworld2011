@@ -28,8 +28,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public SquareBodyComponent body;
         private int _keyId = -1;
-        public SkinnedMeshComponent mesh;
+        public MeshComponent mesh;
         bool used = false;
+        Mercenary merc;
+        StorableObject objectToDestroy;
         /****************************************************************************/
 
 
@@ -43,7 +45,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          String description,
                          int descriptionWindowWidth,
                          int descriptionWindowHeight,
-                         SkinnedMeshComponent mesh)
+                         MeshComponent mesh)
         {
 
             this.body = body;
@@ -51,7 +53,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             activationRecievers = new int[0];
             Init(activationRecievers, description, descriptionWindowWidth, descriptionWindowHeight);
             this.mesh = mesh;
-            mesh.Stop();
+          
         }
         /****************************************************************************/
 
@@ -67,7 +69,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (mercenary.HasItem(_keyId) && !used)
                 {
-
+                    merc = mercenary;
                     return new[] { "Examine", "Activate" };
 
                 }
@@ -77,7 +79,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
         /****************************************************************************/
 
-
+        private void removeBody()
+        {
+            //body.Disable();
+        }
 
 
 
@@ -86,9 +91,28 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         protected override void OnActivation()
         {
+            if (merc != null)
+            {
+
+                foreach (var item in merc.Items.Keys)
+                {
+                    if (item.ID == _keyId)
+                    {
+                        objectToDestroy = item;
+                    }
+                }
+
+                if (objectToDestroy != null)
+                {
+                    merc.Items.Remove(objectToDestroy);
+                }
+            }
 
             used = true;
             Diagnostics.PushLog("DRZWI WYLAMANE");
+            body.Immovable = false;
+            body.Body.Velocity += Vector3.Normalize(this.World.Translation - merc.World.Translation)*10;
+            TimeControl.CreateTimer(TimeSpan.FromSeconds(3), 1, removeBody);
         }
 
 
@@ -133,20 +157,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Specular = (mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name);
             data.Normals = (mesh.Textures.Normals == null ? String.Empty : mesh.Textures.Normals.Name);
 
-
-            data.TimeRatio = mesh.TimeRatio;
-            data.CurrentClip = (mesh.currentAnimation.Clip == null ? String.Empty : mesh.currentAnimation.Clip.Name);
-            data.CurrentTime = mesh.currentAnimation.ClipTime.TotalSeconds;
-            data.CurrentKeyframe = mesh.currentAnimation.Keyframe;
-            data.Pause = mesh.Pause;
-
-            data.Blend = mesh.Blend;
-            data.BlendDuration = mesh.BlendDuration.TotalSeconds;
-            data.BlendTime = mesh.BlendTime.TotalSeconds;
-            data.BlendClip = (mesh.blendAnimation.Clip == null ? String.Empty : mesh.blendAnimation.Clip.Name);
-            data.BlendClipTime = mesh.blendAnimation.ClipTime.TotalSeconds;
-            data.BlendKeyframe = mesh.blendAnimation.Keyframe;
-
+            data.EnabledMesh = mesh.Enabled;
+            data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
 
             data.Mass = body.Mass;
             data.Elasticity = body.Elasticity;
@@ -199,29 +211,14 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("Textures")]
         public String Normals { get; set; }
 
-        [CategoryAttribute("Animation")]
-        public float TimeRatio { get; set; }
-        [CategoryAttribute("Animation")]
-        public String CurrentClip { get; set; }
-        [CategoryAttribute("Animation")]
-        public double CurrentTime { get; set; }
-        [CategoryAttribute("Animation")]
-        public int CurrentKeyframe { get; set; }
-        [CategoryAttribute("Animation")]
-        public bool Pause { get; set; }
+        [CategoryAttribute("EnabledMesh")]
+        public bool EnabledMesh { get; set; }
 
-        [CategoryAttribute("Animation Blending")]
-        public bool Blend { get; set; }
-        [CategoryAttribute("Animation Blending")]
-        public double BlendDuration { get; set; }
-        [CategoryAttribute("Animation Blending")]
-        public double BlendTime { get; set; }
-        [CategoryAttribute("Animation Blending")]
-        public String BlendClip { get; set; }
-        [CategoryAttribute("Animation Blending")]
-        public double BlendClipTime { get; set; }
-        [CategoryAttribute("Animation Blending")]
-        public int BlendKeyframe { get; set; }
+
+        [CategoryAttribute("Instancing"),
+        DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
+        public uint InstancingMode { get; set; }
+
 
         [CategoryAttribute("Physics")]
         public float Mass { get; set; }

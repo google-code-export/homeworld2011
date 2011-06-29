@@ -531,6 +531,8 @@ namespace PlagueEngine.LowLevelGameFlow
         public bool CreateDoors(Doors result, DoorsData data)
         {
 
+            var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
+
             result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
                                                                             data.Mass,
                                                                             data.Lenght,
@@ -550,22 +552,14 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.DescriptionWindowWidth,
                                                                             data.DescriptionWindowHeight,
 
-                                               _renderingComponentsFactory.CreateSkinnedMeshComponent(result,
-                                                                              data.Model,
-                                                                              data.Diffuse,
-                                                                              data.Specular,
-                                                                              data.Normals,
-                                                                              data.TimeRatio,
-                                                                              data.CurrentClip,
-                                                                              data.CurrentKeyframe,
-                                                                              data.CurrentTime,
-                                                                              data.Pause,
-                                                                              data.Blend,
-                                                                              data.BlendClip,
-                                                                              data.BlendKeyframe,
-                                                                              data.BlendClipTime,
-                                                                              data.BlendDuration,
-                                                                              data.BlendTime));
+                                             _renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
+                                                                       instancingMode,
+                                                                       data.EnabledMesh,
+                                                                       false));
 
 
 
