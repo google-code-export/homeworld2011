@@ -12,6 +12,7 @@ using PlagueEngine.Rendering.Components;
 using PlagueEngine.GUI.Components;
 
 using PlagueEngine.TimeControlSystem;
+using PlagueEngine.Input.Components;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
@@ -46,6 +47,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         Vector2 iconPosition;
         uint timerID;
 
+
+        MouseListenerComponent mouse;
+        int mousex, mousey;
         /****************************************************************************/
 
 
@@ -68,11 +72,48 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             sniffer.SetOnSniffedEvent(OnSniffedEvent);
             sniffer.SubscribeEvents(typeof(NewDialogMessageEvent));
             this.iconPosition = iconPos;
-            RequiresUpdate = true;
+       
 
 
+            mouse = new MouseListenerComponent(this, true);
+            mouse.SubscribeMouseMove(OnMouseMove, MouseMoveAction.Move);
+            mouse.SubscribeKeys(OnMouseKey,MouseKeyAction.LeftClick);
+             
         }
         /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        /// On Mouse Key
+        /****************************************************************************/
+        private void OnMouseKey(MouseKeyAction mouseKeyAction,ref ExtendedMouseKeyState mouseKeyState)
+        {
+            if (mouseKeyState.WasPressed() && mouseKeyAction == MouseKeyAction.LeftClick)
+            {
+                if (mousex >= windowPos.X && mousex <= (windowPos.X + windowWidth) && mousey >= windowPos.Y && mousey <= (windowPos.Y + windowHeight))
+                {
+                 
+                    UpdateMessages();
+                }
+            }
+        }
+
+            
+        /****************************************************************************/
+        /// On Mouse Move
+        /****************************************************************************/
+        private void OnMouseMove(MouseMoveAction mouseMoveAction, ref ExtendedMouseMovementState mouseMovementState)
+        {
+            mousex = (int)mouseMovementState.Position.X;
+            mousey = (int)mouseMovementState.Position.Y;
+
+            
+        }
+
+
+
 
 
         private void UpdateMessages()
@@ -94,10 +135,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
 
 
-        public override void Update(TimeSpan deltaTime)
-        {
-
-        }
 
 
 
@@ -106,6 +143,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         private void OnDraw(SpriteBatch spriteBatch, ref Matrix ViewProjection, int screenWidth, int screenHeight)
         {
+
 
             if (draw && messages.Count!=0)
             {
@@ -161,6 +199,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             sniffer.ReleaseMe();
             texture.ReleaseMe();
             text.ReleaseMe();
+            mouse.ReleaseMe();
         }
         /********************************************************************************/
 

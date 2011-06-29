@@ -435,6 +435,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 item.OnDropping();
 
+                
+
             }
             else if (CurrentObject != null)
             {
