@@ -79,6 +79,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
             this.emitter = emitter;
+            //emitter.EnableEmitter();
             emitter.DisableEmitter();
         }
         /****************************************************************************/
@@ -126,7 +127,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             sounds.SetPosition(this.World.Translation);
             sounds.PlaySound("Misc", "Bomb", false, 200);
             body.dontCollide = true;
-            TimeControl.CreateTimer(TimeSpan.FromSeconds(2), 1, remove);
+            TimeControl.CreateTimer(TimeSpan.FromSeconds(5), 1, remove);
             TimeControl.CreateTimer(TimeSpan.FromSeconds(0.5f), 1, removeParticles);
             emitter.EnableEmitter();
             this.SendEvent(new DestroyObjectEvent(bombId), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
