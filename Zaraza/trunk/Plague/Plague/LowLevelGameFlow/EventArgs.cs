@@ -619,6 +619,23 @@ namespace PlagueEngine.LowLevelGameFlow
     /********************************************************************************/
 
 
+    class HealCommandEvent : EventArgs
+    {
+        public Mercenary merc;
+
+        public HealCommandEvent(Mercenary merc)
+        {
+            this.merc = merc;
+        }
+
+        public HealCommandEvent() : this(null) {}
+        
+        public override string ToString()
+        {
+            return "Heal " + (merc == null ? "self." : merc.ToString());
+        }
+    }
+    
 
 
     /********************************************************************************/

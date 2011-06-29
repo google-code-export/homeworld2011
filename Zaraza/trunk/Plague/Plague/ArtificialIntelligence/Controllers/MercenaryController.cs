@@ -54,13 +54,15 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.TACTICAL_MOVE_SIDEARM];
                         }
                         MovingSpeed = WALK_SPEED;
+                        BLEND_TIME = TimeSpan.FromSeconds(0.3);
                     }
                     else
                     {
                         AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.FREE_RUN];
                         MovingSpeed = FREE_RUN_SPEED;
+                        BLEND_TIME = TimeSpan.FromSeconds(0.1);
                     }
-                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                 }
                 if (value < 0)
                 {
@@ -78,6 +80,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         {
             AnimationToActionMapping[Action] = AnimationToActionMapping[Action.FREE_RUN];
             this.MovingSpeed = FREE_RUN_SPEED;
+            BLEND_TIME = TimeSpan.FromSeconds(0.1);
         }
 
         protected void Run(Mercenary merc)
@@ -92,6 +95,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 AnimationToActionMapping[Action] = AnimationToActionMapping[Action.RUN_CARABINE];
             }
             this.MovingSpeed = RUN_SPEED;
+            BLEND_TIME = TimeSpan.FromSeconds(0.15);
         }
 
         protected void Walk(Mercenary merc)
@@ -106,12 +110,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 AnimationToActionMapping[Action] = AnimationToActionMapping[Action.TACTICAL_MOVE_CARABINE];
             }
             this.MovingSpeed = WALK_SPEED;
+            BLEND_TIME = TimeSpan.FromSeconds(0.3);
         }
 
         protected void WoundedWalk()
         {
             AnimationToActionMapping[Action] = AnimationToActionMapping[Action.WOUNDED_MOVE];
             MovingSpeed = WOUNDED_SPEED;
+            BLEND_TIME = TimeSpan.FromSeconds(0.3);
         }
 
         public override uint HP
@@ -138,13 +144,15 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.TACTICAL_MOVE_SIDEARM];
                         }
                         MovingSpeed = WALK_SPEED;
+                        BLEND_TIME = TimeSpan.FromSeconds(0.3);
                     }
                     else
                     {
                         AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.FREE_RUN];
                         MovingSpeed = FREE_RUN_SPEED;
+                        BLEND_TIME = TimeSpan.FromSeconds(0.1);
                     }
-                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                 }
                 base.HP = value;
             }
@@ -189,6 +197,12 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             return;
                         case Action.FOLLOW:
                         case Action.MOVE:
+                        case Action.PICK:
+                        case Action.EXAMINE:
+                        case Action.ENGAGE:
+                        case Action.EXCHANGE:
+                        case Action.ACTIVATE:
+                        case Action.OPEN:
                             merc = controlledObject as Mercenary;
                             base.Action = value;
 
@@ -296,7 +310,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         objectTarget = null;
                         Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], BLEND_TIME);
                         objectTarget = null;
                         return;
                     }
@@ -314,9 +328,9 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         controlledObject.Controller.MoveForward(MovingSpeed);
                         
-                        if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.MOVE])
+                        if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
                         {
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                         }
                     }
                     #endregion
@@ -366,7 +380,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                 AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE]; 
                             }
                             controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                                 
                             #endregion
                         }
@@ -490,7 +504,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         Action = Action.IDLE;
                         controlledObject.Body.Immovable = true;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], BLEND_TIME);
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                         #endregion
                     }
@@ -504,7 +518,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         objectTarget = null;
                         Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                         #endregion
                     }
@@ -514,7 +528,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
                         Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
 
                         controlledObject.SendEvent(new ExchangeItemsEvent(controlledObject as Mercenary, objectTarget as Mercenary), Priority.Normal, receiver);
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.Normal, receiver);
@@ -528,7 +542,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
                         Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
 
                         controlledObject.SendEvent(new OpenEvent(controlledObject as Mercenary), Priority.Normal, objectTarget);
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.Normal, receiver);
@@ -542,7 +556,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         controlledObject.Body.CancelSubscribeCollisionEvent(objectTarget.ID);
                         Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                         controlledObject.SendEvent(new ObjectActivatedEvent(), Priority.Normal, objectTarget);
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.Normal, receiver);
                         objectTarget = null;
@@ -619,17 +633,24 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     IsBleeding = true;
                 }
 
+                
+
                 if (HP <= evt.amount)
                 {
                     EnemyKilled args = new EnemyKilled(controlledObject);
                     SendEvent(args, Priority.Normal, AbstractAIController.ai);
-                    //Dispose();
-                    //controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.DIE], TimeSpan.FromSeconds(0.3f));
                     TimeControl.CreateTimer(TimeSpan.FromSeconds(0.6f), 0, delegate() { ai.MercernaryDied((Mercenary)this.controlledObject); });
                 }
                 else
                 {
                     HP -= (uint)evt.amount;
+                    if ((HP + PainResistance) * 100 / (double)MaxHP < 35)
+                    {
+                        AnimationToActionMapping[Action.IDLE] = AnimationToActionMapping[Action.WOUNDED_IDLE];
+                        AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.WOUNDED_MOVE];
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
+                        MovingSpeed = WOUNDED_SPEED;
+                    }
                     if (evt.attacker != null && AttackTarget == null)
                     {
                         if (evt.attacker.GetType().Equals(typeof(Mercenary)))
@@ -654,8 +675,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 if ((controlledObject as Mercenary).CurrentObject == null) return;
                 LookAtPointEvent LookAtPointEvent = e as LookAtPointEvent;
                 Action = Action.IDLE;
-                if (!((controlledObject as Mercenary).CurrentObject as Firearm).SideArm) controlledObject.mesh.BlendTo("LookAt_Carabine", TimeSpan.FromSeconds(0.5f));
-                else controlledObject.mesh.BlendTo("LookAt_Pistol", TimeSpan.FromSeconds(0.5f));
+                if (!((controlledObject as Mercenary).CurrentObject as Firearm).SideArm)
+                {
+                    controlledObject.mesh.BlendTo("LookAt_Carabine", BLEND_TIME);
+                }
+                else
+                {
+                    controlledObject.mesh.BlendTo("LookAt_Pistol", BLEND_TIME);
+                }
                 Vector3 direction = controlledObject.World.Translation - LookAtPointEvent.point;
                 Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
                 Vector2 v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
@@ -760,7 +787,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                 {
                                     if (Action == Action.IDLE)
                                     {
-                                        this.controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                                        this.controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                                     }
                                 });
                             });
@@ -800,7 +827,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     AnimationToActionMapping[Action] = AnimationToActionMapping[Action.LOAD_CARTRIDGE];
                 }
                 controlledObject.Mesh.SubscribeAnimationsEnd(AnimationToActionMapping[Action]);
-                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3));
+                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                 #endregion
             }
             else if (e.GetType().Equals(typeof(AnimationEndEvent)))
@@ -833,7 +860,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     {
                         controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                         Action = Action.IDLE;
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                         AttackTarget = null;
                     }
                 }
@@ -911,7 +938,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         {
                             controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                             Action = Action.IDLE;//WHAT TO DO!?!?
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                             AttackTarget = null;
                         }
                         #endregion
@@ -942,7 +969,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             //skonczyl ladowanie, więc musi posłać event
                             controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                             Action = Action.IDLE;
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                             AttackTarget = null;
                         }
                     }
@@ -963,6 +990,43 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 }
                 #endregion
                 base.OnEvent(sender, e);
+            }
+            else if (e.GetType().Equals(typeof(HealCommandEvent)))
+            {
+                Mercenary merc = controlledObject as Mercenary;
+                HealCommandEvent evt = e as HealCommandEvent;
+                if (evt.merc != null)
+                {
+                    //TODO: heal others
+                }
+                else
+                {
+                    if (merc.HasItemType(typeof(MedKit)))
+                    {
+                        foreach (var item in merc.Items)
+                        {
+                            MedKit mk = item.Key as MedKit;
+                            if (mk != null)
+                            {
+                                mk.Use(merc);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in merc.Items)
+                        {
+                            PainKillers pk = item.Key as PainKillers;
+                            if (pk != null)
+                            {
+                                pk.Use(merc);
+                                break;
+                            }
+                        }
+                    }
+                }
+
             }
             else
             {
@@ -985,7 +1049,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 AnimationToActionMapping[Action.IDLE] = AnimationToActionMapping[Action.WOUNDED_IDLE];
                 AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.WOUNDED_MOVE];
-                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                 MovingSpeed = WOUNDED_SPEED;
             }
             base.bleed();
