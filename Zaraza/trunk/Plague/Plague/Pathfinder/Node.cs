@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PlagueEngine.Pathfinder
 {
-    public enum NodeType {Static, Dynamic, None, Navigation}
+    public enum NodeType {None, Navigation, Blocked, Wrong}
     [Serializable]
     public class Node : IComparable
     {
@@ -18,7 +18,7 @@ namespace PlagueEngine.Pathfinder
 
         public Node(){}
 
-        public Node(int x, int y, NodeType nodeType,int direction=-1)
+        public Node(int x, int y, NodeType nodeType = NodeType.None,int direction=-1)
         {
             X = x;
             Y = y;

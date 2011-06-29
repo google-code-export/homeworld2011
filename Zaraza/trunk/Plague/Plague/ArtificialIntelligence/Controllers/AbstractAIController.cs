@@ -513,7 +513,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 #if DEBUG
                             Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Nie można wyznaczyć ścieżki, wykonuje akcje dla tego eventu.");
 #endif
-                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.IDLE])
+                            Action = Action.IDLE;
+                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
                             {
                                 controlledObject.Controller.StopMoving();
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
