@@ -2368,6 +2368,20 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\Misc\Bomb.mp3">
+      <Name>Bomb</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\Misc\Clock.mp3">
+      <Name>Clock</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Models\Enemies\FleshCreatureDead.X">
       <Name>FleshCreatureDead</Name>
       <Importer>XImporter</Importer>
