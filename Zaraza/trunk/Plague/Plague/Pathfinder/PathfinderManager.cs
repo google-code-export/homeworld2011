@@ -78,9 +78,31 @@ namespace PlagueEngine.Pathfinder
             }
             return bloced ? new Node(0, 0, NodeType.None) : node;
         }
-        public void RemoveBlocade(Vector3 startPosition, float weidth, float lenght)
+        public void RemoveBlocade(Vector3 startPosition, float width, float lenght)
         {
-            
+            // start
+            //   *------lenght-----
+            //   |
+            //   w
+            //   i
+            //   d
+            //   h
+            //   t
+            //   |
+
+            var endPosition = startPosition +new Vector3(width, 0, lenght);
+            var startNode = GetNode(startPosition);
+            var endNode = GetNode(endPosition);
+            lock (BlockedNodes)
+            {
+            for (var x = startNode.X; x < endNode.X; x++)
+            {
+                for (var y = startNode.Y; x < endNode.Y; y++)
+                {
+                    BlockedNodes.Remove(new Node(x, y, NodeType.None));
+                }
+            }
+            }
         }
         public Vector3 NodeToVector(Node node)
         {
