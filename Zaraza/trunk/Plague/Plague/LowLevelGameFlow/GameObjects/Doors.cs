@@ -81,6 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private void removeBody()
         {
+            if(body.Body!=null)
             body.Disable();
         }
 
@@ -111,8 +112,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             used = true;
             Diagnostics.PushLog("DRZWI WYLAMANE");
             body.Immovable = false;
-            body.Body.Velocity += Vector3.Normalize(this.World.Translation - merc.World.Translation)*10;
-            TimeControl.CreateTimer(TimeSpan.FromSeconds(3), 1, removeBody);
+            //body.Body.Velocity += Vector3.Normalize(this.World.Translation - merc.World.Translation)*20;
+          Vector3 p=this.World.Translation;
+          
+            p.Y+=5;
+            ((BodyExtended)(body.Body)).AddWorldForce2(Vector3.Normalize(this.World.Translation - merc.World.Translation) * 100, p);
+            body.DontCollideWithGameObjectsType(typeof(Mercenary));
+            TimeControl.CreateTimer(TimeSpan.FromSeconds(6), 1, removeBody);
         }
 
 
