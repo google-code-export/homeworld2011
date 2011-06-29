@@ -525,6 +525,18 @@ namespace PlagueEngine.LowLevelGameFlow
             if (mercenary != null) return "ID: " + mercenary.ID.ToString();
             else return "Null";
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj as RegisterMercenaryEvent == null)
+            {
+                return false;
+            }
+            else
+            {
+                return mercenary.Equals((obj as RegisterMercenaryEvent).mercenary);
+            }
+        }
     }
     /********************************************************************************/
 

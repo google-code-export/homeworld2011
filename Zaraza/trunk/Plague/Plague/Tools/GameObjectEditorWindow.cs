@@ -664,6 +664,14 @@ namespace PlagueEngine.Tools
             Doors.ClassType = typeof(Doors);
             Doors.dataClassType = typeof(DoorsData);
             gameObjectClassNames.Add(Doors);
+
+            gameObjectsClassName MercenaryActivationTrigger = new gameObjectsClassName();
+            MercenaryActivationTrigger.className = "MercenaryActivationTrigger";
+            MercenaryActivationTrigger.ClassType = typeof(MercenaryActivationTrigger);
+            MercenaryActivationTrigger.dataClassType = typeof(MercenaryActivationTriggerData);
+            gameObjectClassNames.Add(MercenaryActivationTrigger);
+
+
         }
         /********************************************************************************/
 
