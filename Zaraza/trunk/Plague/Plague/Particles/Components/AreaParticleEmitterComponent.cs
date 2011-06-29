@@ -75,8 +75,15 @@ namespace PlagueEngine.Particles.Components
         /********************************************************************************/
         public void EnableEmitter()
         {
+            Vector3 pos = gameObject.World.Translation;
+            Matrix world = gameObject.World;
+            world.M41 = 0;
+            world.M42 = 0;
+            world.M43 = 0;
+            Vector3 t = Vector3.Transform(particleTranslation, world);
+
+            previousPosition = pos + t;
             enabled = true;
-            previousPosition = this.gameObject.World.Translation;
         }
         /********************************************************************************/
 
