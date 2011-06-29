@@ -525,6 +525,106 @@ namespace PlagueEngine.LowLevelGameFlow
 
 
 
+        /****************************************************************************/
+        // CreateDoors
+        /****************************************************************************/
+        public bool CreateDoors(Doors result, DoorsData data)
+        {
+
+            result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                            data.Mass,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll),
+                                                                            data.keyId,
+                                                                            data.Description,
+                                                                            data.DescriptionWindowWidth,
+                                                                            data.DescriptionWindowHeight,
+
+                                               _renderingComponentsFactory.CreateSkinnedMeshComponent(result,
+                                                                              data.Model,
+                                                                              data.Diffuse,
+                                                                              data.Specular,
+                                                                              data.Normals,
+                                                                              data.TimeRatio,
+                                                                              data.CurrentClip,
+                                                                              data.CurrentKeyframe,
+                                                                              data.CurrentTime,
+                                                                              data.Pause,
+                                                                              data.Blend,
+                                                                              data.BlendClip,
+                                                                              data.BlendKeyframe,
+                                                                              data.BlendClipTime,
+                                                                              data.BlendDuration,
+                                                                              data.BlendTime));
+
+
+
+
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+        // CreateRadioBox
+        /****************************************************************************/
+        public bool CreateRadioBox(RadioBox result, RadioBoxData data)
+        {
+            var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
+
+            result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                            data.Mass,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll),
+                                                                            data.keyId,
+                                                                            data.Description,
+                                                                            data.DescriptionWindowWidth,
+                                                                            data.DescriptionWindowHeight,
+                                               _renderingComponentsFactory.CreateMeshComponent(result,
+                                                                       data.Model,
+                                                                       data.Diffuse,
+                                                                       data.Specular,
+                                                                       data.Normals,
+                                                                       instancingMode,
+                                                                       data.EnabledMesh,
+                                                                       false));
+                                                                            
+                
+                
+                
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
+
+
+
 
         /****************************************************************************/
         // CreateBoomTriger

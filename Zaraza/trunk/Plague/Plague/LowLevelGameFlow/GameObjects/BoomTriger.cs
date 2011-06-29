@@ -131,7 +131,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             TimeControl.CreateTimer(TimeSpan.FromSeconds(0.5f), 1, removeParticles);
             emitter.EnableEmitter();
             this.SendEvent(new DestroyObjectEvent(bombId), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
-           
+            
         }
 
 
