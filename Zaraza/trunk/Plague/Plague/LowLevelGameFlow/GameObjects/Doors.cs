@@ -51,6 +51,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             activationRecievers = new int[0];
             Init(activationRecievers, description, descriptionWindowWidth, descriptionWindowHeight);
             this.mesh = mesh;
+            mesh.Stop();
         }
         /****************************************************************************/
 
