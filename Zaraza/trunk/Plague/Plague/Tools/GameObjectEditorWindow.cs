@@ -650,6 +650,20 @@ namespace PlagueEngine.Tools
             SquareStorableObject.ClassType = typeof(SquareStorableObject);
             SquareStorableObject.dataClassType = typeof(SquareStorableObjectData);
             gameObjectClassNames.Add(SquareStorableObject);
+
+
+
+            gameObjectsClassName RadioBox = new gameObjectsClassName();
+            RadioBox.className = "RadioBox";
+            RadioBox.ClassType = typeof(RadioBox);
+            RadioBox.dataClassType = typeof(RadioBoxData);
+            gameObjectClassNames.Add(RadioBox);
+
+            gameObjectsClassName Doors = new gameObjectsClassName();
+            Doors.className = "Doors";
+            Doors.ClassType = typeof(Doors);
+            Doors.dataClassType = typeof(DoorsData);
+            gameObjectClassNames.Add(Doors);
         }
         /********************************************************************************/
 
