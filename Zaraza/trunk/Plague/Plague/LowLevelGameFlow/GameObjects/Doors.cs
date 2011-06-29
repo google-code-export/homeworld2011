@@ -81,7 +81,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         private void removeBody()
         {
-            //body.Disable();
+            body.Disable();
         }
 
 
