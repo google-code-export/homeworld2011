@@ -92,33 +92,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             PathfinderManager.Pm = (PathfinderManager)bFormatter.Deserialize(stream);
             stream.Close();
             PathfinderManager.Pm.Factory = Factory;
+            //GenerateBoxes();
+            TimeControl.CreateFrameCounter(10, 0, GenerateFild);
 
-            //TimeControl.CreateFrameCounter(10, 0, generateBoxes);
         }
         /****************************************************************************/
+
+        public void GenerateFild()
+        {
+            
+            PathfinderManager.Pm.GenerateBox(PathfinderManager.Pm.GetNode(PathfinderManager.Pm.BoxStartPosition));
+            PathfinderManager.Pm.GenerateBox(PathfinderManager.Pm.GetNode(PathfinderManager.Pm.BoxStartPosition + new Vector3(PathfinderManager.Pm.BoxWidth * PathfinderManager.Pm.NumberOfBoxesInWidth,0,0)));
+            PathfinderManager.Pm.GenerateBox(PathfinderManager.Pm.GetNode(PathfinderManager.Pm.BoxStartPosition + new Vector3(0,0,PathfinderManager.Pm.BoxWidth * PathfinderManager.Pm.NumberOfBoxesInLength)));
+            PathfinderManager.Pm.GenerateBox(PathfinderManager.Pm.GetNode(PathfinderManager.Pm.BoxStartPosition + new Vector3(PathfinderManager.Pm.BoxWidth * PathfinderManager.Pm.NumberOfBoxesInWidth, 0, PathfinderManager.Pm.BoxWidth * PathfinderManager.Pm.NumberOfBoxesInLength)));
+        }
         public void GenerateBoxes()
         {
             foreach (var n in PathfinderManager.Pm.BlockedNodes)
             {
-                Vector3 move = PathfinderManager.Pm.BoxStartPosition;
-                move.X += (PathfinderManager.Pm.BoxSpace) * n.X;
-                move.Z += (PathfinderManager.Pm.BoxSpace) * n.Y;
-                var dddtata = new SquareBodyMeshData
-                                  {
-                                      Definition = "BrickWall",
-                                      Type = (typeof (SquareBodyMesh)),
-                                      Diffuse = "Misc\\woodbox01.diff",
-                                      Normals = "Misc\\woodbox01.norm",
-                                      Model = "Misc\\Wall",
-                                      Specular = "Misc\\woodbox01.spec",
-                                      Immovable = true,
-                                      EnabledPhysics = false,
-                                      Width = PathfinderManager.Pm.BoxWidth,
-                                      Lenght = PathfinderManager.Pm.BoxWidth,
-                                      Height = PathfinderManager.Pm.BoxHeight,
-                                      World = Matrix.CreateTranslation(move)
-                                  };
-                Factory.Create(dddtata);
+                PathfinderManager.Pm.GenerateBox(n);
             }
         }
         public void DestroyBoxes()

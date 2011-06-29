@@ -135,7 +135,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 return Matrix.Identity;
             }
-            return bone == -1 ? World : Mesh.WorldTransforms[bone];
+            return bone == -1  ? World : Mesh.WorldTransforms[bone];
         }
         /****************************************************************************/
 

@@ -14,6 +14,10 @@ namespace PlagueEngine.Pathfinder
         [NonSerialized]
         internal GameObjectsFactory Factory;
 
+        public static readonly Heuristic Heuristic = new HManhattan();
+        public static readonly TimeSpan TimeLimit = TimeSpan.FromSeconds(0.3f);
+        public static readonly float DirectionChangePenelty = 2.0f;
+        public static readonly int ControlNodes = 3;
         private float _boxWidth;
         private float _distanceBeetwenBoxes;
 
@@ -67,14 +71,23 @@ namespace PlagueEngine.Pathfinder
             {
                 return new Node(0, 0, NodeType.None);
             }
-            return BlockedNodes.Contains(node) ? new Node(0, 0, NodeType.None) : node;
+            bool bloced;
+            lock(BlockedNodes)
+            {
+                bloced = BlockedNodes.Contains(node);
+            }
+            return bloced ? new Node(0, 0, NodeType.None) : node;
+        }
+        public void RemoveBlocade(Vector3 startPosition, float weidth, float lenght)
+        {
+            
         }
         public Vector3 NodeToVector(Node node)
         {
             return node == null ? Vector3.Zero : new Vector3(node.X * BoxSpace + BoxStartPosition.X, BoxStartPosition.Y, node.Y * BoxSpace + BoxStartPosition.Z);
         }
 
-        public  void GenerateBox(Node n)
+        public void GenerateBox(Node n)
         {
             if (n == null) return;
             var move = Pm.BoxStartPosition;
@@ -83,12 +96,12 @@ namespace PlagueEngine.Pathfinder
             move.Z += (Pm.BoxSpace) * n.Y;
             var dddtata = new SquareBodyMeshData
                               {
-                                  Definition = "PathNode",
+                                  Definition = "Woodbox",
+                                  EnabledMesh = true,
                                   Type = (typeof (SquareBodyMesh)),
                                   World = Matrix.CreateTranslation(move)
                               };
             Factory.Create(dddtata);
         }
-
     }
 }

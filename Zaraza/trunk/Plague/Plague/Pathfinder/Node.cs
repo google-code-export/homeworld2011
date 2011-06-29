@@ -14,14 +14,16 @@ namespace PlagueEngine.Pathfinder
         public float Distance;
         public NodeType NodeType;
         public Node Parent;
+        public int Direction=-1;
 
         public Node(){}
 
-        public Node(int x, int y, NodeType nodeType)
+        public Node(int x, int y, NodeType nodeType,int direction=-1)
         {
             X = x;
             Y = y;
             NodeType = nodeType;
+            Direction = direction;
         }
         public override bool Equals(object obj)
         {
@@ -35,15 +37,17 @@ namespace PlagueEngine.Pathfinder
         public List<Node> GenerateChildren()
         {
             var result = new List<Node>();
+            var direction = 0;
             for (var newX = X - 1; newX <= X + 1; newX++)
             {
                 for (var newY = Y - 1; newY <= Y + 1; newY++)
                 {
                     if (newX == X && newY == Y) continue;
-                    var child = PathfinderManager.Pm.CheckNode(new Node(newX, newY, NodeType.Navigation));
+                    var child = PathfinderManager.Pm.CheckNode(new Node(newX, newY, NodeType.Navigation,direction));
                     if (child.NodeType != NodeType.Navigation) continue;
                     child.Parent = this;
                     result.Add(child);
+                    direction++;
                 }
             }
             return result;

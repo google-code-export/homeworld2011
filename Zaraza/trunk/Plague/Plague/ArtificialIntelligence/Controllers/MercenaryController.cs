@@ -405,25 +405,18 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             if (e.GetType().Equals(typeof(MoveToPointCommandEvent)))
             {
                 #region MoveToPoint
-                if (!controlledObject.SoundEffectComponent.IsPlaying())
-                {
-                    controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
-                }
+
                 var moveToPointCommandEvent = e as MoveToPointCommandEvent;
 
                 receiver = sender as IEventsReceiver;
                 if (moveToPointCommandEvent != null)
                 {
-                    target = moveToPointCommandEvent.point;
-                    if (controlledObject.PathfinderComponent.GetPath(controlledObject.World.Translation, moveToPointCommandEvent.point))
+                    if (!controlledObject.SoundEffectComponent.IsPlaying())
                     {
-
-                        target = controlledObject.PathfinderComponent.NextNode();
-#if DEBUG
-                        Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Position:" + controlledObject.World.Translation);
-                        Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Target:" + target);
-#endif
+                        controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
                     }
+                    target = moveToPointCommandEvent.point;
+                    controlledObject.PathfinderComponent.ComputePath(controlledObject.World.Translation, moveToPointCommandEvent.point);
                 }
                 Action = Action.MOVE;
                 #endregion
@@ -431,25 +424,18 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             else if (e.GetType().Equals(typeof(RunToPointCommandEvent)))
             {
                 #region MoveToPoint
-                if (!controlledObject.SoundEffectComponent.IsPlaying())
-                {
-                    controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
-                }
+               
                 var moveToPointCommandEvent = e as RunToPointCommandEvent;
 
                 receiver = sender as IEventsReceiver;
                 if (moveToPointCommandEvent != null)
                 {
-                    target = moveToPointCommandEvent.point;
-                    if (controlledObject.PathfinderComponent.GetPath(controlledObject.World.Translation, moveToPointCommandEvent.point))
+                    if (!controlledObject.SoundEffectComponent.IsPlaying())
                     {
-
-                        target = controlledObject.PathfinderComponent.NextNode();
-#if DEBUG
-                        Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Run Position:" + controlledObject.World.Translation);
-                        Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Run Target:" + target);
-#endif
+                        controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
                     }
+                    target = moveToPointCommandEvent.point;
+                    controlledObject.PathfinderComponent.ComputePath(controlledObject.World.Translation, moveToPointCommandEvent.point);
                 }
                 Action = Action.RUN;
                 #endregion

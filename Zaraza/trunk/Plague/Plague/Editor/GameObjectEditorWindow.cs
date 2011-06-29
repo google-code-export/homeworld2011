@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using PlagueEngine.Editor.TabPages;
 using PlagueEngine.Editor.Controls;
+using PlagueEngine.Helpers;
 
 
 /********************************************************************************/
@@ -11,9 +12,9 @@ namespace PlagueEngine.Editor
     /********************************************************************************/
     // Game Object Editor Window
     /********************************************************************************/
-    partial class GameObjectEditorWindow : Form
+    partial class GameObjectEditorWindow : BetterForm
     {
-        
+
         private readonly EditorData _editorData;
 
         private readonly EditorSniffer _sniffer;
