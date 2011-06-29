@@ -26,7 +26,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         SWITCH_TO_SIDEARM, SWITCH_TO_CARABINE, SWITCH,
         RELOAD, RELOAD_SIDEARM, RELOAD_CARABINE, LOAD_CARTRIDGE,
         DIE,
-        HEAL
+        HEAL,
+        PLAY_DEAD
     };
     
     abstract class AbstractAIController : EventsSender, IAIController, IAttackable, IEventsReceiver
@@ -110,25 +111,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 }
             }
         }
-        /*protected Action                    MoveAction
-        {
-            get
-            {
-                return moveAction;
-            }
-            set
-            {
-                switch (value)
-                {
-                    case Action.MOVE:
-                    case Action.TACTICAL_MOVE_CARABINE:
-                    case Action.TACTICAL_MOVE_SIDEARM:
-                    case Action.WOUNDED_MOVE:
-                        moveAction = value;
-                        break;
-                }
-            }
-        }*/
         
         /***MOVEMENT*****************************************************************/
         public float                        RotationSpeed { get; protected set; }

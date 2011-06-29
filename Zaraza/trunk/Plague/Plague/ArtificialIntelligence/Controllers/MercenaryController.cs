@@ -627,7 +627,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 {
                     EnemyKilled args = new EnemyKilled(controlledObject);
                     SendEvent(args, Priority.Normal, AbstractAIController.ai);
-                    TimeControl.CreateTimer(TimeSpan.FromSeconds(0.6f), 0, delegate() { ai.MercernaryDied((Mercenary)this.controlledObject); });
+                    ai.Kill((Mercenary)this.controlledObject);
                 }
                 else
                 {
@@ -1048,7 +1048,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
         public override void bleed()
         {
-            if (IsBleeding && (HP + PainResistance) * 100 / (double)MaxHP < 35)
+            
+            if (!IsDisposed() && IsBleeding && (HP + PainResistance) * 100 / (double)MaxHP < 35)
             {
                 AnimationToActionMapping[Action.IDLE] = AnimationToActionMapping[Action.WOUNDED_IDLE];
                 AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.WOUNDED_MOVE];
