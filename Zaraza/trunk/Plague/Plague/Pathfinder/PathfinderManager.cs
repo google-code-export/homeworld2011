@@ -58,25 +58,24 @@ namespace PlagueEngine.Pathfinder
             var newPos = Vector3.Subtract(position, BoxStartPosition);
             if (newPos.X < 0 || newPos.Z < 0)
             {
-                return new Node(0, 0, NodeType.None);
+                return new Node(0, 0, NodeType.Wrong);
             }
             var x = (int)Math.Ceiling(newPos.X / (BoxSpace));
             var y = (int)Math.Ceiling(newPos.Z / (BoxSpace));
             
-            return CheckNode(new Node(x, y, NodeType.Navigation));
+            return CheckNode(new Node(x , y));
         }
         public Node CheckNode(Node node)
         {
             if (node == null || BlockedNodes == null || (node.X > NumberOfBoxesInLength - 1 || node.Y > NumberOfBoxesInWidth - 1) || node.X < 0 || node.Y < 0)
             {
-                return new Node(0, 0, NodeType.None);
+                return new Node(0, 0, NodeType.Wrong);
             }
-            bool bloced;
             lock(BlockedNodes)
             {
-                bloced = BlockedNodes.Contains(node);
+                node.NodeType = BlockedNodes.Contains(node) ? NodeType.Blocked : NodeType.Navigation;
             }
-            return bloced ? new Node(0, 0, NodeType.None) : node;
+            return node;
         }
         public void RemoveBlocade(Vector3 startPosition, float width, float lenght)
         {
@@ -91,17 +90,18 @@ namespace PlagueEngine.Pathfinder
             //   |
 
             var endPosition = startPosition +new Vector3(width, 0, lenght);
-            var startNode = GetNode(startPosition);
-            var endNode = GetNode(endPosition);
+            var startNode = CheckNode(GetNode(startPosition));
+            var endNode = CheckNode(GetNode(endPosition));
+            if (startNode.NodeType == NodeType.Wrong || endNode.NodeType == NodeType.Wrong) return;
             lock (BlockedNodes)
             {
-            for (var x = startNode.X; x < endNode.X; x++)
-            {
-                for (var y = startNode.Y; x < endNode.Y; y++)
+                for (var x = startNode.X; x < endNode.X; x++)
                 {
-                    BlockedNodes.Remove(new Node(x, y, NodeType.None));
+                    for (var y = startNode.Y; x < endNode.Y; y++)
+                    {
+                        BlockedNodes.Remove(new Node(x, y));
+                    }
                 }
-            }
             }
         }
         public Vector3 NodeToVector(Node node)
