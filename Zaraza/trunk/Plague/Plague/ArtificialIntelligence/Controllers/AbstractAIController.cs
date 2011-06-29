@@ -25,7 +25,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         ENGAGE, ATTACK_IDLE, ATTACK,
         SWITCH_TO_SIDEARM, SWITCH_TO_CARABINE, SWITCH,
         RELOAD, RELOAD_SIDEARM, RELOAD_CARABINE, LOAD_CARTRIDGE,
-        DIE
+        DIE,
+        HEAL
     };
     
     abstract class AbstractAIController : EventsSender, IAIController, IAttackable, IEventsReceiver
