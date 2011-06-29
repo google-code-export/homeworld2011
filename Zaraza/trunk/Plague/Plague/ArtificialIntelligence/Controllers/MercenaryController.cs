@@ -418,7 +418,6 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         controlledObject.SoundEffectComponent.PlayRandomSound("OnMove");
                     }
                     target = moveToPointCommandEvent.point;
-                    controlledObject.PathfinderComponent.ComputePath(controlledObject.World.Translation, moveToPointCommandEvent.point);
                 }
                 Action = Action.MOVE;
                 #endregion
