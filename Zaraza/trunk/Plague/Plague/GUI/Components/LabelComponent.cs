@@ -37,6 +37,10 @@ namespace PlagueEngine.GUI.Components
                                                         new UniScalar(height))
                           };
             Text = text;
+            _x = x;
+            _y = y;
+            _width = width;
+            _height = height;
         }
         /****************************************************************************/
 

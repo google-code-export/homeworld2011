@@ -60,7 +60,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.texture = face;
             this.windowPos = windowPos;
             this.windowRect = windowRect;
-
+            Diagnostics.PushLog(text.X.ToString());
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
 
@@ -179,7 +179,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.windowWidth =  windowWidth;
             data.WindowPosition = new Vector2(windowPos.X,windowPos.Y);
             data.TextPosition = new Vector2(text.X, text.Y);
-
+            Diagnostics.PushLog(text.X.ToString());
             return data;
         }
         /********************************************************************************/
