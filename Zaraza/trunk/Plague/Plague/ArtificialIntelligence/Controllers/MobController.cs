@@ -11,10 +11,14 @@ using PlagueEngine.ArtificialIntelligence.Controllers;
 
 namespace PlagueEngine.ArtificialIntelligence.Controllers
 {
+    enum MobType { ZOMBIE, MUTATED };
+
     class MobController : AbstractAIController
     {
         //TODO: change temporary constructor
+        bool CanBleed;
 
+        public MobType Type = MobType.ZOMBIE;
         /// <summary>
         /// 
         /// </summary>
@@ -36,6 +40,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             : base(person, MaxHP, HP, rotationSpeed, movingSpeed, distance, angle, AnimationMapping)
         {
             ai.registerController(this);
+            //niech defaultowo nie krwawią, najwyżej zmieni się na ostatnią chwilę i już.
         }
 
         /// <summary>
@@ -48,6 +53,14 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
            base.OnEvent(sender, e);
         }
 
+
+        public override void bleed()
+        {
+            if (CanBleed)
+            {
+                base.bleed();
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -56,6 +69,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         {
             switch (Action)
             {
+                case Action.PLAY_DEAD:
+                    return;
                 default:
                     base.Update(deltaTime);
                     return;

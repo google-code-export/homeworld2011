@@ -38,51 +38,23 @@ namespace PlagueEngine.ArtificialIntelligence
             AbstractAIController.ai = this;
         }
 
-        public void MercernaryDied(Mercenary merc)
+        /// <summary>
+        /// Function for killing beings.
+        /// </summary>
+        /// <param name="being"></param>
+        public void Kill(AbstractLivingBeing being)
         {
-            Container container = new Container();
-            DeadBodyData data = new DeadBodyData();
-            merc.DropItem();
-
-            MercenaryData mercData = (MercenaryData)merc.GetData();
-            //data mamy w data, wiec kontroler moze zginac.
-            
-
-
-            data.Model = mercData.Model;
-            data.Diffuse = mercData.Diffuse;
-            data.Specular = mercData.Specular;
-            data.Normals = mercData.Normals;
-
-            data.Mass = mercData.Mass;
-            data.Elasticity = mercData.Elasticity;
-            data.StaticRoughness = mercData.StaticRoughness;
-            data.DynamicRoughness = mercData.DynamicRoughness;
-            data.Length = mercData.Length;
-            data.Radius = mercData.Radius;
-            data.Immovable = true;// mercData.Immovable;
-            data.Translation = mercData.Translation;
-            data.SkinPitch = 180;
-            data.SkinRoll = mercData.SkinRoll;
-            data.SkinYaw = mercData.SkinYaw;
-            data.EnabledPhysics = mercData.EnabledPhysics;
-            //data.Immovable = mercData.Immovable;
-            //TODO: dorabianie jakiegoś defaultowego descriptiona.
-            data.DescriptionWindowWidth = 100;
-            data.DescriptionWindowHeight = 200;
-            data.Description = "Dead Mercenary";
-
-            data.Slots = mercData.Slots + mercData.TinySlots;
-            data.Items = mercData.Items;
-            data.Type = typeof(DeadBody);
-            data.World = mercData.World;
-            data.Status = mercData.Status;
-            data.Name = mercData.Name;
-
-            Diagnostics.PushLog(LoggingLevel.INFO, "===Dead Body from Merc created===");
-            SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
-            TimeControlSystem.TimeControl.CreateFrameCounter(2, 0, delegate() { merc.ObjectAIController.Dispose(); });
+            if (typeof(Creature).Equals(being.GetType()))
+            {
+                MobDied(being as Creature);
+            }
+            else if (typeof(Mercenary).Equals(being.GetType()))
+            {
+                MercernaryDied(being as Mercenary);
+            }
         }
+
+ 
 
         /// <summary>
         /// Registers newly created controller in the AI subsystem.
@@ -206,6 +178,98 @@ namespace PlagueEngine.ArtificialIntelligence
             }*/
 
             counter++;
+        }
+
+        private void MobDied(Creature creature)
+        {
+            Container container = new Container();
+            DeadBodyData data = new DeadBodyData();
+
+            CreatureData mobData = creature.GetData() as CreatureData;
+            //data mamy w data, wiec kontroler moze zginac.
+
+
+
+            data.Model = mobData.Model;
+            data.Diffuse = mobData.Diffuse;
+            data.Specular = mobData.Specular;
+            data.Normals = mobData.Normals;
+
+            data.Mass = mobData.Mass;
+            data.Elasticity = mobData.Elasticity;
+            data.StaticRoughness = mobData.StaticRoughness;
+            data.DynamicRoughness = mobData.DynamicRoughness;
+            data.Length = mobData.Length;
+            data.Radius = mobData.Radius;
+            data.Immovable = true;// mercData.Immovable;
+            data.Translation = mobData.Translation;
+            data.SkinPitch = 180;
+            data.SkinRoll = mobData.SkinRoll;
+            data.SkinYaw = mobData.SkinYaw;
+            data.EnabledPhysics = mobData.EnabledPhysics;
+            //data.Immovable = mercData.Immovable;
+            //TODO: dorabianie jakiegoś defaultowego descriptiona.
+            data.DescriptionWindowWidth = 100;
+            data.DescriptionWindowHeight = 200;
+            data.Description = "Dead Body";
+
+            //TODO podregulować
+            data.Slots = 50;
+            data.Items = null; //TODO: jakieś randomowe itemy wpinać.
+            data.Type = typeof(DeadBody);
+            data.World = mobData.World;
+            data.Status = mobData.Status;
+            data.Name = mobData.Name;
+
+            Diagnostics.PushLog(LoggingLevel.INFO, "===Dead Body from Zombie created===");
+            SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+            TimeControlSystem.TimeControl.CreateFrameCounter(2, 0, delegate() { creature.ObjectAIController.Dispose(); });
+        }
+
+        private void MercernaryDied(Mercenary merc)
+        {
+            Container container = new Container();
+            DeadBodyData data = new DeadBodyData();
+            merc.DropItem();
+
+            MercenaryData mercData = (MercenaryData)merc.GetData();
+            //data mamy w data, wiec kontroler moze zginac.
+
+
+
+            data.Model = mercData.Model;
+            data.Diffuse = mercData.Diffuse;
+            data.Specular = mercData.Specular;
+            data.Normals = mercData.Normals;
+
+            data.Mass = mercData.Mass;
+            data.Elasticity = mercData.Elasticity;
+            data.StaticRoughness = mercData.StaticRoughness;
+            data.DynamicRoughness = mercData.DynamicRoughness;
+            data.Length = mercData.Length;
+            data.Radius = mercData.Radius;
+            data.Immovable = true;// mercData.Immovable;
+            data.Translation = mercData.Translation;
+            data.SkinPitch = 180;
+            data.SkinRoll = mercData.SkinRoll;
+            data.SkinYaw = mercData.SkinYaw;
+            data.EnabledPhysics = mercData.EnabledPhysics;
+            //data.Immovable = mercData.Immovable;
+            //TODO: dorabianie jakiegoś defaultowego descriptiona.
+            data.DescriptionWindowWidth = 100;
+            data.DescriptionWindowHeight = 200;
+            data.Description = "Dead Mercenary";
+
+            data.Slots = mercData.Slots + mercData.TinySlots;
+            data.Items = mercData.Items;
+            data.Type = typeof(DeadBody);
+            data.World = mercData.World;
+            data.Status = mercData.Status;
+            data.Name = mercData.Name;
+
+            Diagnostics.PushLog(LoggingLevel.INFO, "===Dead Body from Merc created===");
+            SendEvent(new CreateObjectEvent(data), Priority.High, GlobalGameObjects.GameController);
+            TimeControlSystem.TimeControl.CreateFrameCounter(2, 0, delegate() { merc.ObjectAIController.Dispose(); });
         }
     }
 }
