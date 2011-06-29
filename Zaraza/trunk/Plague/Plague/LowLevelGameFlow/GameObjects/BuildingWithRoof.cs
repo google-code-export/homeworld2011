@@ -37,6 +37,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.mesh2 = mesh2;
             this.body = physcisComponent;
 
+            mesh2.CastShadows = true;
+
 
             this.body.SubscribeStartCollisionEvent(typeof(Mercenary));
             this.body.SubscribeLostCollisionEvent(typeof(Mercenary));

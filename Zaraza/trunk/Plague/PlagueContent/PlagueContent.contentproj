@@ -2409,13 +2409,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\Ambients\Begining.mp3">
-      <Name>Begining</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Buildings\blockedDoors.diff.jpg">
       <Name>blockedDoors.diff</Name>
       <Importer>TextureImporter</Importer>
@@ -2460,6 +2453,40 @@
   <ItemGroup>
     <Compile Include="Models\Buildings\blockedDoors.FBX">
       <Name>blockedDoors</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\Ambients\Begining.mp3">
+      <Name>Begining</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Misc\blat.FBX">
+      <Name>blat</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Misc\krzeslo.FBX">
+      <Name>krzeslo</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Misc\regal.FBX">
+      <Name>regal</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Misc\stolik.FBX">
+      <Name>stolik</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlagueEngineModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Misc\szafka.FBX">
+      <Name>szafka</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlagueEngineModelProcessor</Processor>
     </Compile>

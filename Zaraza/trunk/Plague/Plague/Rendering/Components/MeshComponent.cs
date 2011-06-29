@@ -108,6 +108,7 @@ namespace PlagueEngine.Rendering.Components
         public TexturesPack      Textures       { get { return textures;       } }
         public InstancingModes   InstancingMode { get { return instancingMode; } }
         public bool              Enabled        { get; set; }
+        public bool              CastShadows    { get; set; }
         public bool Static                      { get; private set; }
         /****************************************************************************/
 
