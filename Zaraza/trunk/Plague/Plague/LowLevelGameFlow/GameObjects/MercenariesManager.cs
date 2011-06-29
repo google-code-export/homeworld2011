@@ -334,6 +334,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 var selectedActionEvent = e as SelectedActionEvent;
                 if (selectedActionEvent == null) return;
 
+
                 if (_currentMercenary != null)
                 {
                     switch (selectedActionEvent.Action)
@@ -350,6 +351,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         case "Reload": QueueEvent(new ReloadCommandEvent(), !_leftControl, _currentMercenary); break;
                         case "Switch to Weapon": QueueEvent(new SwitchToWeaponCommandEvent(), !_leftControl, _currentMercenary); break;
                         case "Switch to Side Arm": QueueEvent(new SwitchToSideArmCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Heal": QueueEvent(new HealCommandEvent(), !_leftControl, _currentMercenary); break;
+                        case "Heal Him": QueueEvent(new HealCommandEvent(_targetGameObject as Mercenary), !_leftControl, _currentMercenary); break;
                         case "Inventory":
                             var data = new InventoryData
                                                 {

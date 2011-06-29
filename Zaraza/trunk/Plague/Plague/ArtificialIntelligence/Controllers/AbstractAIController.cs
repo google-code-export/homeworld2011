@@ -36,6 +36,13 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         /****************************************************************************/
 
         /****************************************************************************/
+        /// CONST
+        /****************************************************************************/
+        public TimeSpan BLEND_TIME = TimeSpan.FromSeconds(0.3);
+        /****************************************************************************/
+
+
+        /****************************************************************************/
         /// PROPERTIES
         /****************************************************************************/
         public GameObjectInstance AttackTarget
@@ -78,6 +85,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 {
                     case Action.ATTACK:
                     case Action.ATTACK_IDLE:
+                    case Action.ENGAGE:
                         if (AttackTarget == null)
                         {
 #if DEBUG
@@ -314,7 +322,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             if (isDisposed) return;
             if (e.GetType().Equals(typeof(TakeDamage)))
             {
-                 #region Take Damage
+                #region Take Damage
                 TakeDamage evt = e as TakeDamage;
 
                 if (evt.causesBleeding)
@@ -331,7 +339,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 else
                 {
                     HP -= (uint)evt.amount;
-                    if (evt.attacker !=null && AttackTarget == null)
+                    if (evt.attacker != null && AttackTarget == null)
                     {
                         AttackTarget = evt.attacker;
                         Action = PlagueEngine.ArtificialIntelligence.Controllers.Action.ENGAGE;
@@ -360,7 +368,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                 Action = Action.IDLE;
                 objectTarget = null;
                 controlledObject.Controller.StopMoving();
-                controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                 #endregion
             }
             else if (e.GetType().Equals(typeof(EnemyNoticed)))
@@ -382,7 +390,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     Action = Action.IDLE;
                     AttackTarget = null;
                     controlledObject.Controller.StopMoving();
-                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                 }
                 #endregion
             }
@@ -456,7 +464,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         {
                             Action = Action.IDLE;
                             controlledObject.Controller.StopMoving();
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                             controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
                         }
                         target = controlledObject.PathfinderComponent.NextNode(); 
@@ -478,7 +486,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         if (controlledObject.Mesh.CurrentClip != this.AnimationToActionMapping[Action])
                         {
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                         }
                     }
                     #endregion
@@ -491,7 +499,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         objectTarget = null;
                         Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        controlledObject.Mesh.BlendTo("Idle", TimeSpan.FromSeconds(0.3f));
+                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                         return;
                         #endregion
                     }
@@ -505,7 +513,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                             controlledObject.Controller.StopMoving();
                             if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.IDLE])
                             {
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], BLEND_TIME);
                             }
                             return;
                             #endregion
@@ -528,7 +536,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                             if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
                             {
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                             }
                             #endregion
                         }
@@ -549,7 +557,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                             if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
                             {
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], TimeSpan.FromSeconds(0.3f));
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                             }
                         }
                     }
@@ -570,7 +578,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                         this.AttackTarget = null;
                         this.Action = Action.IDLE;
                         controlledObject.Controller.StopMoving();
-                        this.controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.IDLE], TimeSpan.FromSeconds(0.3f));
+                        this.controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                     }
                     else
                     {
@@ -589,7 +597,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
 
                         if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.MOVE])
                         {
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], TimeSpan.FromSeconds(0.5f));
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action.MOVE], BLEND_TIME);
                         }
                     }
                     #endregion
