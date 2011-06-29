@@ -438,30 +438,19 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 case Action.MOVE:
                     #region MoveAction
-                    if (!controlledObject.PathfinderComponent.IsComputing)
-                    {
-                        if (controlledObject.PathfinderComponent.PathType != PathType.Empty)
-                        {
-                            
-                        
-                        if (!controlledObject.PathfinderComponent.IsEmpty && target.Equals(controlledObject.PathfinderComponent.EndPoint))
-                        {
-                            target = controlledObject.PathfinderComponent.NextNode();
-                        }
+
                         currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X,
                                                 controlledObject.World.Translation.Z),
                                     new Vector2(target.X,
                                                 target.Z));
                         if (currentDistance < DistancePrecision)
                         {
-                            if (controlledObject.PathfinderComponent.IsEmpty)
-                            {
+                           
                                 Action = Action.IDLE;
                                 controlledObject.Controller.StopMoving();
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                                 controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
-                            }
-                            target = controlledObject.PathfinderComponent.NextNode();
+
                         }
                         else
                         {
@@ -488,31 +477,8 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                                 controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                             }
                         }
-                        }
-                        else
-                        {
-                            //TODO: Akcja dla pustej ścieżki.
-                            Broadcast(new NewDialogMessageEvent(controlledObject.Name, "No way!" ,(controlledObject as Mercenary).Icon), EventsSystem.Priority.Normal);
-#if DEBUG
-                            Diagnostics.PushLog(LoggingLevel.INFO, controlledObject.PathfinderComponent, "Nie można wyznaczyć ścieżki, wykonuje akcje dla tego eventu.");
-#endif
-                            Action = Action.IDLE;
-                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
-                            {
-                                controlledObject.Controller.StopMoving();
-                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
-                            }
-                            controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
-                        }
-                    }
-                    else
-                    {
-                        if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.IDLE])
-                        {
-                            controlledObject.Controller.StopMoving();
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
-                        }
-                    }
+
+                   
                     #endregion
                     return;
                 case Action.FOLLOW:
