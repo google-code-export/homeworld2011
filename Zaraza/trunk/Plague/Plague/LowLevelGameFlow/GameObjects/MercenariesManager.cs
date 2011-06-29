@@ -670,13 +670,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                         LinkedCamera.MouseListenerComponent.Active = false;
 
-                        _mouse.SetCursor("Default");
-                        return;
+                        _mouse.SetCursor("Default");                        
+                    }
+                    else
+                    {
+                        _useGUI = false;
+                        LinkedCamera.MouseListenerComponent.Active = true;
                     }
                 }
             }
-            _useGUI = false;
-            LinkedCamera.MouseListenerComponent.Active = true;
         }
         /****************************************************************************/
 

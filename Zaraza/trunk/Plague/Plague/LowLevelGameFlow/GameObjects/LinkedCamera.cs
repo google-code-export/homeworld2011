@@ -7,6 +7,8 @@ using PlagueEngine.Input.Components;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.EventsSystem;
 using JigLibX.Collision;
+using PlagueEngine.Audio.Components;
+using PlagueEngine.Audio;
 
 /************************************************************************************/
 // PlagueEngine.LowLevelGameFlow.GameObjects
@@ -26,6 +28,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public CameraComponent CameraComponent;
         public KeyboardListenerComponent KeyboardListenerComponent;
         public MouseListenerComponent MouseListenerComponent;
+        public BackgroundMusicComponent backgroundMusic;
 
         public EventsSnifferComponent sniffer;
         private float _movementSpeed;
@@ -95,6 +98,13 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                          float zmin,
                          float anglemin)
         {
+
+            backgroundMusic = new BackgroundMusicComponent();
+            AudioManager.GetInstance.BackgroundMusicComponent = backgroundMusic;
+            backgroundMusic.LoadFolder("Ambients", 0.4f);
+            backgroundMusic.AutomaticMode = false;
+            backgroundMusic.PlaySong("default", "Begining", false);
+
             CameraComponent = cameraComponent;
             KeyboardListenerComponent = keyboardListenerComponent;
             MouseListenerComponent = mouseListenerComponent;
@@ -707,7 +717,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             CameraComponent.ReleaseMe();
             KeyboardListenerComponent.ReleaseMe();
             MouseListenerComponent.ReleaseMe();
-            sniffer.ReleaseMe();
+            sniffer.ReleaseMe();            
         }
         /****************************************************************************/
 
