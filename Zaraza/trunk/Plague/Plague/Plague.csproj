@@ -133,6 +133,7 @@
     <Compile Include="ArtificialIntelligence\Controllers\MobController.cs" />
     <Compile Include="ArtificialIntelligence\EventArgs.cs" />
     <Compile Include="AItest\AI.cs" />
+    <Compile Include="Helpers\ThreadHelper.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BoomTriger.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\SquareStorableObject.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\CylindricalStorableObject.cs" />
@@ -248,7 +249,9 @@
     <Compile Include="Input\InputComponentsFactory.cs" />
     <Compile Include="LowLevelGameFlow\GameObjectComponent.cs" />
     <Compile Include="Tools\Diagnostics.cs" />
-    <Compile Include="Tools\FormHelper.cs" />
+    <Compile Include="Editor\BetterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Tools\LogWindow.cs">
       <SubType>Form</SubType>
     </Compile>

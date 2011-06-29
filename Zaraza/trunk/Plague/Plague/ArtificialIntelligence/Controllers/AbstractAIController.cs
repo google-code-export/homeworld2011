@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.EventsSystem;
 using PlagueEngine.Audio.Components;
+using PlagueEngine.Pathfinder;
 using PlagueEngine.Physics;
 using PlagueEngine.TimeControlSystem;
 using PlagueEngine.ArtificialIntelligence;
@@ -454,38 +455,59 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 case Action.MOVE:
                     #region MoveAction
-                    currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X,
-                                                 controlledObject.World.Translation.Z),
-                                     new Vector2(target.X,
-                                                 target.Z)); 
-                    if (currentDistance < DistancePrecision)
+                    if (!controlledObject.PathfinderComponent.IsComputing)
                     {
-                        if (controlledObject.PathfinderComponent.IsEmpty)
+                        if (controlledObject.PathfinderComponent.PathType != PathType.Empty && target.Equals(controlledObject.PathfinderComponent.EndPoint))
                         {
-                            Action = Action.IDLE;
-                            controlledObject.Controller.StopMoving();
-                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
-                            controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
+                            target = controlledObject.PathfinderComponent.NextNode();
                         }
-                        target = controlledObject.PathfinderComponent.NextNode(); 
+                        currentDistance = Vector2.Distance(new Vector2(controlledObject.World.Translation.X,
+                                                controlledObject.World.Translation.Z),
+                                    new Vector2(target.X,
+                                                target.Z));
+                        if (currentDistance < DistancePrecision)
+                        {
+                            if (controlledObject.PathfinderComponent.IsEmpty)
+                            {
+                                Action = Action.IDLE;
+                                controlledObject.Controller.StopMoving();
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
+                                controlledObject.SendEvent(new ActionDoneEvent(), Priority.High, receiver);
+                            }
+                            target = controlledObject.PathfinderComponent.NextNode();
+                        }
+                        else
+                        {
+                            direction = controlledObject.World.Translation - target;
+                            v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
+                            v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
+
+                            det = v1.X * v2.Y - v1.Y * v2.X;
+                            angle = (float)Math.Acos(Vector2.Dot(v1, v2));
+
+                            if (det < 0) angle = -angle;
+
+                            if (Math.Abs(angle) > AnglePrecision)
+                            {
+                                var angleDegrees = MathHelper.ToDegrees(angle);
+                                var rotationAngle = angleDegrees * RotationSpeed * (float)deltaTime.TotalSeconds;
+                                controlledObject.Controller.Rotate(rotationAngle > angleDegrees ? angleDegrees : rotationAngle);
+                            }
+
+                            controlledObject.Controller.MoveForward(MovingSpeed);
+
+                            if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action])
+                            {
+
+                                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
+                            }
+                        }
                     }
                     else
                     {
-                        direction = controlledObject.World.Translation - target;
-                        v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
-                        v2 = Vector2.Normalize(new Vector2(controlledObject.World.Forward.X, controlledObject.World.Forward.Z));
-
-                        det = v1.X * v2.Y - v1.Y * v2.X;
-                        angle = (float)Math.Acos((double)Vector2.Dot(v1, v2));
-
-                        if (det < 0) angle = -angle;
-
-                        if (Math.Abs(angle) > AnglePrecision) controlledObject.Controller.Rotate(MathHelper.ToDegrees(angle) * RotationSpeed * (float)deltaTime.TotalSeconds);
-
-                        controlledObject.Controller.MoveForward(MovingSpeed);
-
-                        if (controlledObject.Mesh.CurrentClip != this.AnimationToActionMapping[Action])
+                        if (controlledObject.Mesh.CurrentClip != AnimationToActionMapping[Action.IDLE])
                         {
+                            controlledObject.Controller.StopMoving();
                             controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
                         }
                     }

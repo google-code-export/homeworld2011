@@ -14,6 +14,7 @@ using PlagueEngine.ArtificialIntelligence;
 using PlagueLocalizationExtension;
 using System.Windows.Forms;
 using System.Threading;
+using PlagueEngine.Helpers;
 
 namespace PlagueEngine
 {
@@ -36,8 +37,8 @@ namespace PlagueEngine
         internal PhysicsManager            PhysicsManager     { get; private set; }
         internal AudioManager              AudioManager       { get; private set; }
         internal Level                     Level              { get; private set; }
-        private Thread _editorThread;
-        private Editor.GameObjectEditorWindow _newGameObjectEditor;
+        //private Thread _editorThread;
+        //private Editor.GameObjectEditorWindow _newGameObjectEditor;
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false,0.0f,1.0f,false,1,1,0.25f,1,0.25f);
         
         public bool GameStopped { get;  set; }
@@ -141,7 +142,8 @@ namespace PlagueEngine
             
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
-            _editorThread = new Thread(EditorStart) {Priority = ThreadPriority.AboveNormal};
+            //_newGameObjectEditor = new Editor.GameObjectEditorWindow(this);
+            //_editorThread = ThreadHelper.GetNewThread(_newGameObjectEditor.StartForm);
             //_editorThread.Start();
 #endif
             
@@ -153,13 +155,6 @@ namespace PlagueEngine
 #endif
         }
         /****************************************************************************/
-
-        private void EditorStart()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(_newGameObjectEditor= new Editor.GameObjectEditorWindow(this));
-        }
 
         /****************************************************************************/
         /// Load Content
@@ -200,13 +195,9 @@ namespace PlagueEngine
         /****************************************************************************/
         protected override void UnloadContent()
         {
+           
             ContentManager.Unload();
 #if DEBUG
-            if (_editorThread.IsAlive)
-            {
-                FormHelper.CloseForm(_newGameObjectEditor);
-                _editorThread.Abort();
-            }
             Diagnostics.PushLog("Unloading content complete");
             Diagnostics.CloseLogFile(); 
 #endif
@@ -278,6 +269,7 @@ namespace PlagueEngine
             base.OnExiting(sender, args);
             ContentManager.SaveDefaultProfile();
             //ContentManager.SaveConfiguration(Renderer.CurrentConfiguration);
+            ThreadHelper.KillAll();
 
 #if DEBUG
             Diagnostics.PushLog("Exiting");

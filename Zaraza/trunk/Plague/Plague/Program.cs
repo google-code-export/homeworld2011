@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 
 /************************************************************************************/
@@ -13,7 +14,7 @@ namespace PlagueEngine
     /********************************************************************************/
     static class Program
     {
-
+        public static ApartmentState ApartmentState = ApartmentState.STA;
         /****************************************************************************/
         // Main
         // <summary>
