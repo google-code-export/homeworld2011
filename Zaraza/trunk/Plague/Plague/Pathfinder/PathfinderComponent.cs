@@ -71,8 +71,8 @@ namespace PlagueEngine.Pathfinder
 #if DEBUG
                                 Diagnostics.PushLog(LoggingLevel.WARN, this, "Path computing interapted. Time limit reached.");
 #endif
-                                PathType = PathType.Closest;
-                                break;
+                                Clear();
+                                return;
                             }
                             var active = tempNodes.Dequeue();
                             visited.Add(active);
@@ -95,24 +95,6 @@ namespace PlagueEngine.Pathfinder
                                 tempNodes.Enqueue(child);
                             }
                         }
-                        if (PathType.Equals(PathType.Closest))
-                        {
-                            var closest = start;
-                            foreach (var node in visited)
-                            {
-                                if (node.CompareTo(closest) < 0)
-                                {
-                                    closest = node;
-                                }
-                            }
-                            while (closest.Parent != null)
-                            {
-                                _path.Push(closest);
-                                closest = closest.Parent;
-                            }
-                            SimplifiePath();
-                            return;
-                        }
                     }
                 }
 
@@ -121,7 +103,7 @@ namespace PlagueEngine.Pathfinder
         }
         private void SimplifiePath()
         {
-            if (_path != null && _path.Count > 0)
+            if ((_path != null && _path.Count > 0) && PathfinderManager.ControlNodes!=0)
             {
                 var tempNodes = new List<Node>();
                 var curentDirection = -1;
