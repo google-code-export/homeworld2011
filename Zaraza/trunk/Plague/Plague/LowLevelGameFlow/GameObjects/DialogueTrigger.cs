@@ -31,10 +31,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         protected List<string> Messages;
         protected List<TimeSpan> WaitTimes;
         protected List<Mercenary> Characters;
+        protected List<Mercenary> Ignored;
 
         protected int TextIndex = 0;
 
-        public void Init(SphericalBodyComponent Body, List<string> Messages, List<TimeSpan> WaitTimes, List<Mercenary> Characters)
+        public void Init(SphericalBodyComponent Body, List<string> Messages, List<TimeSpan> WaitTimes, List<Mercenary> Characters, List<Mercenary> Ignored)
         {
             base.Init(Body, 1);
             this.Messages = Messages;
@@ -46,12 +47,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.Messages = Messages;
             this.WaitTimes = WaitTimes;
             this.Characters = Characters;
+            this.Ignored = Ignored;
         }
 
         public void NextText()
         {
-            Broadcast(new NewDialogMessageEvent(Characters[TextIndex].Name, Messages[TextIndex], Characters[TextIndex].Icon), Priority.Normal);
-            if (TextIndex + 1 == WaitTimes.Count)
+            Broadcast(new NewDialogMessageEvent(Characters[TextIndex].Name,
+                                                GlobalGameObjects.StringManager.Load<string>(Messages[TextIndex]),
+                                                Characters[TextIndex].Icon), Priority.Normal);
+            if (TextIndex + 1 < WaitTimes.Count)
             {
                 TimeControlSystem.TimeControl.CreateTimer(WaitTimes[TextIndex], 0, delegate() { NextText(); });
                 TextIndex++;
@@ -68,20 +72,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 StartCollisionEvent evt = e as StartCollisionEvent;
 
-                if (evt.gameObject.GetType().Equals(typeof(Mercenary)))
+                if (evt.gameObject.GetType().Equals(typeof(Mercenary)) && !Ignored.Contains(evt.gameObject))
                 {
-                    if (Calls == 0 && TextIndex == Messages.Count)
-                    {
-                        SendEvent(new DestroyObjectEvent(this.ID), Priority.Normal, GlobalGameObjects.GameController);
-                    }
-                    else
+                    if (Calls != 0)
                     {
                         Calls--;
                         if (Calls == 0)
                         {
                             Body.CancelSubscribeStartCollisionEvent(typeof(Mercenary));
                         }
-                        TimeControlSystem.TimeControl.CreateTimer(WaitTimes[0], 0, delegate() { NextText(); });
+                        TimeControlSystem.TimeControl.CreateFrameCounter(1, 0, delegate() { NextText(); });
                     }
                 }
 
@@ -94,17 +94,25 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             base.GetData(data);
 
             List<int> tmpIDs = new List<int>();
-            foreach (KeyValuePair<EventArgs, EventsSystem.IEventsReceiver[]> pair in events)
+            foreach (Mercenary merc in Characters)
             {
-                tmpIDs.Add((pair.Key as RegisterMercenaryEvent).mercenary.ID);
+                tmpIDs.Add(merc.ID);
             }
-            data.MercIDs = tmpIDs.ToArray();
+            data.MercIDs = tmpIDs;
             
             List<Str> helper = new List<Str>();
             foreach (string txt in Messages)
             {
                 helper.Add(new Str(txt));
             }
+
+            List<int> tmpIgnoredIDs = new List<int>();
+            foreach (Mercenary merc in Characters)
+            {
+                tmpIgnoredIDs.Add(merc.ID);
+            }
+
+            data.IgnoredMercIDs = tmpIgnoredIDs;
             data.Messages = helper;
             data.WaitTimes = WaitTimes;
 
@@ -131,6 +139,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             Messages = new List<Str>();
             WaitTimes = new List<TimeSpan>();
+            MercIDs = new List<int>();
+            IgnoredMercIDs = new List<int>();
         }
 
 
@@ -139,7 +149,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("TextParams")]
         public List<TimeSpan> WaitTimes { get; set; }
         [CategoryAttribute("TextParams")]
-        public int[] MercIDs { get; set; }
+        public List<int> MercIDs { get; set; }
+        [CategoryAttribute("TextParams")]
+        public List<int> IgnoredMercIDs { get; set; }
+
     }
     
 }
