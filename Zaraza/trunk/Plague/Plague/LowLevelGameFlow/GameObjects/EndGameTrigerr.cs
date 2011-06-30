@@ -11,8 +11,7 @@ using PlagueEngine.Rendering;
 using PlagueEngine.Physics;
 using PlagueEngine.Physics.Components;
 
-
-
+using PlagueEngine.EventsSystem;
 /********************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
 /********************************************************************************/
@@ -21,16 +20,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
     /********************************************************************************/
-    /// SquareBodyMesh
+    /// EndGameTrigerr
     /********************************************************************************/
-    class SquareBodyMesh : GameObjectInstance
+    class EndGameTrigerr : GameObjectInstance
     {
 
 
         /********************************************************************************/
         /// Fields
         /********************************************************************************/
-        public MeshComponent mesh = null;
         public SquareBodyComponent body = null;
         /********************************************************************************/
 
@@ -39,10 +37,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         /// Init
         /********************************************************************************/
-        public void Init(MeshComponent mesh, SquareBodyComponent physcisComponent)
+        public void Init(SquareBodyComponent physcisComponent)
         {
-            this.mesh = mesh;
+           
             this.body = physcisComponent;
+            body.dontCollide = true;
+            body.SubscribeStartCollisionEvent(typeof(Mercenary));
         }
         /********************************************************************************/
 
@@ -54,12 +54,23 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override void ReleaseComponents()
         {
-            mesh.ReleaseMe();
+          
             body.ReleaseMe();
         }
         /********************************************************************************/
 
-  
+
+
+        /****************************************************************************/
+        // On Event
+        /****************************************************************************/
+        public override void OnEvent(EventsSender sender, EventArgs e)
+        {
+
+            Broadcast(new FadeInEvent(), Priority.High);
+        }
+
+
 
 
         /********************************************************************************/
@@ -67,15 +78,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /********************************************************************************/
         public override GameObjectInstanceData GetData()
         {
-            SquareBodyMeshData data = new SquareBodyMeshData();
+            EndGameTrigerrData data = new EndGameTrigerrData();
             GetData(data);
-            data.Model = mesh.Model.Name;
-            data.Diffuse = (mesh.Textures.Diffuse == null ? String.Empty : mesh.Textures.Diffuse.Name);
-            data.Specular = (mesh.Textures.Specular == null ? String.Empty : mesh.Textures.Specular.Name);
-            data.Normals = (mesh.Textures.Normals == null ? String.Empty : mesh.Textures.Normals.Name);
-
-            data.InstancingMode = Renderer.InstancingModeToUInt(mesh.InstancingMode);
-
+      
             data.Mass = body.Mass;
             data.Elasticity = body.Elasticity;
             data.StaticRoughness = body.StaticRoughness;
@@ -88,11 +93,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.SkinPitch = body.Pitch;
             data.SkinRoll = body.Roll;
             data.SkinYaw = body.Yaw;
-            data.EnabledMesh = mesh.Enabled;
-            data.Static = mesh.Static;
             data.EnabledPhysics = body.Enabled;
+
+
             return data;
-        }   
+        }
         /********************************************************************************/
 
 
@@ -104,29 +109,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
 
     /********************************************************************************/
-    /// SquareBodyMeshData
+    /// EndGameTrigerrData
     /********************************************************************************/
     [Serializable]
-    public class SquareBodyMeshData : GameObjectInstanceData
+    public class EndGameTrigerrData : GameObjectInstanceData
     {
-        [CategoryAttribute("Model")]
-        public String Model { get; set; }
-
-        [CategoryAttribute("Textures")]
-        public String Diffuse { get; set; }
-
-        [CategoryAttribute("Textures")]
-        public String Specular { get; set; }
-
-        [CategoryAttribute("Textures")]
-        public String Normals { get; set; }
-
-        [CategoryAttribute("Mesh")]
-        public bool Static { get; set; }
-
-        [CategoryAttribute("Instancing"),
-        DescriptionAttribute("1 - No Instancing, 2 - Static Instancing, 3 - Dynamic Instancing.")]
-        public uint InstancingMode { get; set; }
 
         [CategoryAttribute("Physics")]
         public float Mass { get; set; }
@@ -166,9 +153,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         [CategoryAttribute("Collision Skin")]
         public float SkinRoll { get; set; }
-
-        [CategoryAttribute("EnabledMesh")]
-        public bool EnabledMesh { get; set; }
     }
     /********************************************************************************/
 

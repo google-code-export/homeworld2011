@@ -696,6 +696,13 @@ namespace PlagueEngine.Tools
             gameObjectClassNames.Add(DialogueTrigger);
 
 
+            gameObjectsClassName EndGameTrigerr = new gameObjectsClassName();
+            EndGameTrigerr.className = "EndGameTrigerr";
+            EndGameTrigerr.ClassType = typeof(EndGameTrigerr);
+            EndGameTrigerr.dataClassType = typeof(EndGameTrigerrData);
+            gameObjectClassNames.Add(EndGameTrigerr);
+
+
 
         }
         /********************************************************************************/
