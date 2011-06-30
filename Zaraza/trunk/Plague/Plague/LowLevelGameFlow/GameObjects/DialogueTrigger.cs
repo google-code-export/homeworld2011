@@ -86,7 +86,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.WaitTimes = WaitTimes;
 
             return data;
-
+        }
         }
 
         [Serializable]

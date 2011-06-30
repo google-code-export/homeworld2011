@@ -91,18 +91,19 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         protected override void OnActivation()
         {
-      
+
 
             used = true;
             Diagnostics.PushLog("DRZWI WYLAMANE");
             body.Immovable = false;
             //body.Body.Velocity += Vector3.Normalize(this.World.Translation - merc.World.Translation)*20;
-          Vector3 p=this.World.Translation;
-          
-            p.Y+=5;
+            Vector3 p = this.World.Translation;
+
+            p.Y += 5;
             ((BodyExtended)(body.Body)).AddWorldForce2(Vector3.Normalize(this.World.Translation - merc.World.Translation) * 100, p);
             body.DontCollideWithGameObjectsType(typeof(Mercenary));
             TimeControl.CreateTimer(TimeSpan.FromSeconds(6), 1, removeBody);
+        }
    
 
 
