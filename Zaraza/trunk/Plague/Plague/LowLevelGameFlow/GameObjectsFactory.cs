@@ -2029,7 +2029,10 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.optionswindowtexty,
                         _renderingComponentsFactory.CreateFrontEndComponent(result,"MainMenuFrame"),
                         
-                        _renderingComponentsFactory.CreateFrontEndComponent(result,"SplashScreen"));
+                        _renderingComponentsFactory.CreateFrontEndComponent(result,"SplashScreen"),
+                        
+                        _renderingComponentsFactory.CreateFrontEndComponent(result,"Logo"),
+                        data.logoX,data.logoY);
 
 
             return true;
