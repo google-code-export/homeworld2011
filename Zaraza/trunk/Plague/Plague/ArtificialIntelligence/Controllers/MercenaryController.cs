@@ -635,7 +635,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     {
                         AnimationToActionMapping[Action.IDLE] = AnimationToActionMapping[Action.WOUNDED_IDLE];
                         AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.WOUNDED_MOVE];
-                        controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
+                        if (AnimationToActionMapping.ContainsKey(Action))
+                        {
+                            controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
+                        }
                         MovingSpeed = WOUNDED_SPEED;
                     }
                     if (evt.attacker != null && AttackTarget == null)
@@ -1052,7 +1055,10 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             {
                 AnimationToActionMapping[Action.IDLE] = AnimationToActionMapping[Action.WOUNDED_IDLE];
                 AnimationToActionMapping[Action.MOVE] = AnimationToActionMapping[Action.WOUNDED_MOVE];
-                controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
+                if (AnimationToActionMapping.ContainsKey(Action))
+                {
+                    controlledObject.Mesh.BlendTo(AnimationToActionMapping[Action], BLEND_TIME);
+                } 
                 MovingSpeed = WOUNDED_SPEED;
             }
             base.bleed();
