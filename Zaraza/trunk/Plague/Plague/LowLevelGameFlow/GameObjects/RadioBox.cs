@@ -88,6 +88,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             used = true;
             Diagnostics.PushLog("RADIOBOX AKTYWOWANY");
+
+            Broadcast(new FadeInEvent(), EventsSystem.Priority.Normal);
         }
 
 
