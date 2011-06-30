@@ -30,7 +30,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int _keyId = -1;
         public MeshComponent mesh;
         bool used = false;
-      
+      Mercenary merc;
         /****************************************************************************/
 
 
@@ -68,7 +68,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (mercenary.HasItem(_keyId) && !used)
                 {
-                   
+                    merc=mercenary;
                     return new[] { "Examine", "Activate" };
 
                 }
