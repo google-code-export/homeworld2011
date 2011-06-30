@@ -108,8 +108,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.Messages = helper;
             data.WaitTimes = WaitTimes;
 
-            return data;
+            return data;        
         }
+
 
     }
     [Serializable]
@@ -124,6 +125,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
             return result;
         }
+
 
         public DialogueTriggerData()
         {
