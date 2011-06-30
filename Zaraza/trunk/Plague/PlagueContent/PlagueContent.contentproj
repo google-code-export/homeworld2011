@@ -1397,7 +1397,7 @@
       <ProcessorParameters_AnimationClip15Duration>1</ProcessorParameters_AnimationClip15Duration>
       <ProcessorParameters_AnimationClip16Duration>0.87</ProcessorParameters_AnimationClip16Duration>
       <ProcessorParameters_AnimationClip17>Dying</ProcessorParameters_AnimationClip17>
-      <ProcessorParameters_AnimationClip17Duration>0.54</ProcessorParameters_AnimationClip17Duration>
+      <ProcessorParameters_AnimationClip17Duration>0.69</ProcessorParameters_AnimationClip17Duration>
     </Compile>
   </ItemGroup>
   <ItemGroup>

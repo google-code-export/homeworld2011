@@ -995,6 +995,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         public override void Update(TimeSpan deltaTime)
         {
+            if (Mercenaries.Count == 0 && clock.Time.TotalSeconds > 5) Broadcast(new FadeInEvent(), EventsSystem.Priority.Normal);
+
             foreach (var merc in Mercenaries)
             { 
                 _fogOfWar.DrawSpot(new Vector2(merc.Key.World.Translation.X,merc.Key.World.Translation.Z));
