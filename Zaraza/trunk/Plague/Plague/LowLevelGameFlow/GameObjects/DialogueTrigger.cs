@@ -13,14 +13,36 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     {
         protected List<string> Messages;
         protected List<TimeSpan> WaitTimes;
+        protected List<Mercenary> Characters;
 
-        protected uint TextIndex = 0;
+        protected int TextIndex = 0;
 
-        public void Init(SphericalBodyComponent Body, List<string> Messages, List<TimeSpan> WaitTimes, List<GameObjectInstance> characters)
+        public void Init(SphericalBodyComponent Body, List<string> Messages, List<TimeSpan> WaitTimes, List<Mercenary> Characters)
         {
             base.Init(Body,1);
             this.Messages = Messages;
             this.WaitTimes = WaitTimes;
+            if (Messages.Count != WaitTimes.Count || WaitTimes.Count != Characters.Count)
+            {
+                throw new ArgumentException("Listy powinny zawierać tyle samo elementów");
+            }
+            this.Messages = Messages;
+            this.WaitTimes = WaitTimes;
+            this.Characters = Characters;
+        }
+
+        public void NextText()
+        {
+            Broadcast(new NewDialogMessageEvent(Characters[TextIndex].Name, Messages[TextIndex], Characters[TextIndex].Icon), Priority.Normal);
+            if (TextIndex + 1 == WaitTimes.Count)
+            {
+                TimeControlSystem.TimeControl.CreateTimer(WaitTimes[TextIndex], 0, delegate() { NextText(); });
+                TextIndex++;
+            }
+            else
+            {
+                SendEvent(new DestroyObjectEvent(this.ID), Priority.Normal, GlobalGameObjects.GameController);
+            }
         }
 
         public override void OnEvent(EventsSender sender, EventArgs e)
@@ -31,41 +53,39 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (evt.gameObject.GetType().Equals(typeof(Mercenary)))
                 {
-                    if (Calls == 0)
+                    if (Calls == 0 && TextIndex == Messages.Count)
                     {
                         SendEvent(new DestroyObjectEvent(this.ID), Priority.Normal, GlobalGameObjects.GameController);
                     }
                     else
                     {
-                        foreach (KeyValuePair<EventArgs, IEventsReceiver[]> pair in events)
+                        Calls--;
+                        if (Calls == 0)
                         {
-                            RegisterMercenaryEvent tmp = pair.Key as RegisterMercenaryEvent;
-                            if (tmp.mercenary == evt.gameObject)
-                            {
-                                return;
-                            }
-
+                            Body.CancelSubscribeStartCollisionEvent(typeof(Mercenary));
                         }
-                        foreach (KeyValuePair<EventArgs, IEventsReceiver[]> pair in events)
-                        {
-                            if (pair.Value == null)
-                            {
-                                Broadcast(pair.Key);
-                            }
-                            else
-                            {
-                                foreach (IEventsReceiver receiver in pair.Value)
-                                {
-                                    SendEvent(pair.Key, Priority.Normal, receiver);
-                                }
-                            }
-                        }
+                        TimeControlSystem.TimeControl.CreateTimer(WaitTimes[0], 0, delegate() { NextText(); });
                     }
                 }
 
             }
-            base.OnEvent(sender, e);
         }
+
+        public override GameObjectInstanceData GetData()
+        {
+            var data = new DialogueTriggerData();
+            base.GetData(data);
+
+            List<int> tmpIDs = new List<int>();
+            foreach (KeyValuePair<EventArgs, EventsSystem.IEventsReceiver[]> pair in events)
+            {
+                tmpIDs.Add((pair.Key as RegisterMercenaryEvent).mercenary.ID);
+            }
+            data.MercIDs = tmpIDs.ToArray();
+            data.Messages = Messages;
+            data.WaitTimes = WaitTimes;
+
+            return data;
 
     }
 
@@ -74,6 +94,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
     {
         [CategoryAttribute("TextParams")]
         public List<string> Messages { get; set; }
+        [CategoryAttribute("TextParams")]
         public List<TimeSpan> WaitTimes { get; set; }
+        [CategoryAttribute("TextParams")]
+        public int[] MercIDs { get; set; }
     }
 }
