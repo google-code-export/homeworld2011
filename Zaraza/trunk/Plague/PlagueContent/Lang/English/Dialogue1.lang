@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XNABabylonStringFile>
+  <version>1.0</version>
+  <revisionDate>15-06-2011</revisionDate>
+  <author>Bartosz Herman</author>
+  <language>English</language>
+
+  <package id="Dialogue1">
+
+    <key id="first" val="Hey, Ramone! You okay?"/>
+    <key id="second" val="Not exactly, boss..."/>
+    <key id="third" val="Damn, you are bleeding! Has anyone ever trained you how to jump with a parachute!?!"/>
+    <key id="fourth" val="Some time ago, but I never listened to the old prick..."/>
+
+  </package>
+</XNABabylonStringFile>

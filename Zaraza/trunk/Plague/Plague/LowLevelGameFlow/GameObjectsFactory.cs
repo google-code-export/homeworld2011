@@ -1629,6 +1629,7 @@ namespace PlagueEngine.LowLevelGameFlow
         public bool CreateDialogueTrigger(DialogueTrigger result, DialogueTriggerData data)
         {
             List<Mercenary> tmp = new List<Mercenary>();
+            List<Mercenary> tmpIgnored = new List<Mercenary>();
             Mercenary hlp = null;
             foreach (int id in data.MercIDs)
             {
@@ -1639,6 +1640,17 @@ namespace PlagueEngine.LowLevelGameFlow
                     return false;
                 }
                 tmp.Add(hlp);
+            }
+
+            foreach (int id in data.IgnoredMercIDs)
+            {
+                hlp = this.GetObject(id) as Mercenary;
+                if (hlp == null)
+                {
+                    PushToWaitingRoom(result, data);
+                    return false;
+                }
+                tmpIgnored.Add(hlp);
             }
             result.Init(_physicsComponentFactory.CreateSphericalBodyComponent(true,
                                                                       result,
@@ -1655,7 +1667,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       0),
                         data.GetMessages(),
                         data.WaitTimes,
-                        tmp);
+                        tmp,
+                        tmpIgnored);
 
             return true;
         }

@@ -41,6 +41,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         {
             ai.registerController(this);
             //niech defaultowo nie krwawią, najwyżej zmieni się na ostatnią chwilę i już.
+            CanBleed = false;
         }
 
         /// <summary>
@@ -50,7 +51,41 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
         /// <param name="e"></param>
         override public void OnEvent(EventsSystem.EventsSender sender, System.EventArgs e)
         {
-           base.OnEvent(sender, e);
+            if (e.GetType().Equals(typeof(TakeDamage)))
+            {
+#if DEBUG
+                Diagnostics.PushLog(LoggingLevel.INFO, "Mob Hit, calculating dmg");
+#endif
+                #region Take Damage
+                TakeDamage evt = e as TakeDamage;
+
+                if (evt.causesBleeding && CanBleed)
+                {
+                    IsBleeding = true;
+                }
+
+                if (HP <= evt.amount)
+                {
+                    EnemyKilled args = new EnemyKilled(controlledObject);
+                    SendEvent(args, Priority.Normal, AbstractAIController.ai);
+                    ai.Kill(controlledObject);
+                }
+                else
+                {
+                    HP -= (uint)evt.amount;
+                    if (evt.attacker != null && AttackTarget == null)
+                    {
+                        AttackTarget = evt.attacker;
+                        Action = PlagueEngine.ArtificialIntelligence.Controllers.Action.ENGAGE;
+                    }
+                }
+
+                #endregion
+            }
+            else
+            {
+                base.OnEvent(sender, e);
+            }
         }
 
 
