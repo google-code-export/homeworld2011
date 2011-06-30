@@ -1545,8 +1545,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       Vector3.Zero,
                                                                       0,
                                                                       0,
-                                                                      0),
-                                                                      1);
+                                                                      0));
 
             return true;
         }
