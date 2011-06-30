@@ -62,6 +62,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             }
 
                         }
+                        Body.CancelSubscribeStartCollisionEvent(typeof(Mercenary));
                         foreach (KeyValuePair<EventArgs, IEventsReceiver[]> pair in events)
                         {
                             if (pair.Value == null)
@@ -72,10 +73,11 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                             {
                                 foreach (IEventsReceiver receiver in pair.Value)
                                 {
-                                    SendEvent(pair.Key, Priority.Normal, receiver);
+                                    SendEvent(pair.Key, Priority.Normal, MercenariesManager);
                                 }
                             }
                         }
+                        Calls--;
                         SendEvent(new DestroyObjectEvent(this.ID), Priority.Normal, GlobalGameObjects.GameController);
                     }
                 }
