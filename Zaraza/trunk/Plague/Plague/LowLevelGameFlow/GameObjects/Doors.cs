@@ -30,8 +30,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private int _keyId = -1;
         public MeshComponent mesh;
         bool used = false;
-        Mercenary merc;
-        StorableObject objectToDestroy;
+      
         /****************************************************************************/
 
 
@@ -69,7 +68,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             {
                 if (mercenary.HasItem(_keyId) && !used)
                 {
-                    merc = mercenary;
+                   
                     return new[] { "Examine", "Activate" };
 
                 }
@@ -92,22 +91,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         /****************************************************************************/
         protected override void OnActivation()
         {
-            if (merc != null)
-            {
-
-                foreach (var item in merc.Items.Keys)
-                {
-                    if (item.ID == _keyId)
-                    {
-                        objectToDestroy = item;
-                    }
-                }
-
-                if (objectToDestroy != null)
-                {
-                    merc.Items.Remove(objectToDestroy);
-                }
-            }
+      
 
             used = true;
             Diagnostics.PushLog("DRZWI WYLAMANE");
@@ -119,7 +103,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             ((BodyExtended)(body.Body)).AddWorldForce2(Vector3.Normalize(this.World.Translation - merc.World.Translation) * 100, p);
             body.DontCollideWithGameObjectsType(typeof(Mercenary));
             TimeControl.CreateTimer(TimeSpan.FromSeconds(6), 1, removeBody);
-        }
+   
 
 
 
