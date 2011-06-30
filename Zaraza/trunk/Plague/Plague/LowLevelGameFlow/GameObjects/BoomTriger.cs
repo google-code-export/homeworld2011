@@ -107,6 +107,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         private void remove()
         {
             this.SendEvent(new DestroyObjectEvent(this.ID), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
+
+            foreach (var stone in stones)
+            {
+                this.SendEvent(new DestroyObjectEvent(stone), EventsSystem.Priority.Normal, GlobalGameObjects.GameController);
+
+            }
            
         }
 
