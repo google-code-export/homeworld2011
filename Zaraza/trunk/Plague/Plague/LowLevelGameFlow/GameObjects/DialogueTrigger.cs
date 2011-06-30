@@ -9,6 +9,23 @@ using PlagueEngine.EventsSystem;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
+    [Serializable]
+    class Str
+    {
+        [CategoryAttribute("Value")]
+        public string content { get; set; }
+
+        public Str()
+        {
+            content = "";
+        }
+
+        public Str(string txt)
+        {
+            content = txt;
+        }
+    }
+
     class DialogueTrigger : Trigger
     {
         protected List<string> Messages;
@@ -82,22 +99,45 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 tmpIDs.Add((pair.Key as RegisterMercenaryEvent).mercenary.ID);
             }
             data.MercIDs = tmpIDs.ToArray();
-            data.Messages = Messages;
+            
+            List<Str> helper = new List<Str>();
+            foreach (string txt in Messages)
+            {
+                helper.Add(new Str(txt));
+            }
+            data.Messages = helper;
             data.WaitTimes = WaitTimes;
 
             return data;
         }
+
+    }
+    [Serializable]
+    class DialogueTriggerData : TriggerData
+    {
+        public List<string> GetMessages()
+        {
+            List<string> result = new List<string>();
+            foreach (Str tmp in Messages)
+            {
+                result.Add(tmp.content);
+            }
+            return result;
         }
 
-        [Serializable]
-        class DialogueTriggerData : TriggerData
+        public DialogueTriggerData()
         {
-            [CategoryAttribute("TextParams")]
-            public List<string> Messages { get; set; }
-            [CategoryAttribute("TextParams")]
-            public List<TimeSpan> WaitTimes { get; set; }
-            [CategoryAttribute("TextParams")]
-            public int[] MercIDs { get; set; }
+            Messages = new List<Str>();
+            WaitTimes = new List<TimeSpan>();
         }
+
+
+        [CategoryAttribute("TextParams")]
+        public List<Str> Messages { get; set; }
+        [CategoryAttribute("TextParams")]
+        public List<TimeSpan> WaitTimes { get; set; }
+        [CategoryAttribute("TextParams")]
+        public int[] MercIDs { get; set; }
     }
+    
 }

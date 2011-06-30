@@ -31,7 +31,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void NextText()
         {
             Broadcast(new NewDialogMessageEvent(Activator.Name, Messages[TextIndex], Activator.Icon), Priority.Normal);
-            if (TextIndex + 1 == WaitTimes.Count)
+            if ((TextIndex + 1) < WaitTimes.Count)
             {
                 TimeControlSystem.TimeControl.CreateTimer(WaitTimes[TextIndex], 0, delegate() { NextText(); });
                 TextIndex++;
@@ -50,11 +50,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 if (evt.gameObject.GetType().Equals(typeof(Mercenary)))
                 {
-                    if (Calls == 0 && TextIndex == Messages.Count)
-                    {
-                        SendEvent(new DestroyObjectEvent(this.ID), Priority.Normal, GlobalGameObjects.GameController);
-                    }
-                    else
+                    if (Calls != 0)
                     {
                         Calls--;
                         if (Calls == 0)
@@ -74,20 +70,42 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             var data = new MonologueTriggerData();
             base.GetData(data);
 
-            data.Messages = Messages;
+            List<Str> helper = new List<Str>();
+            foreach (string txt in Messages)
+            {
+                helper.Add(new Str(txt));
+            }
+            data.Messages = helper; 
             data.WaitTimes = WaitTimes;
 
             return data;
 
         }
-
-        [Serializable]
-        class MonologueTriggerData : TriggerData
-        {
-            [CategoryAttribute("TextParams")]
-            public List<string> Messages { get; set; }
-            [CategoryAttribute("TextParams")]
-            public List<TimeSpan> WaitTimes { get; set; }
-        }
     }
+
+    [Serializable]
+    class MonologueTriggerData : TriggerData
+    {
+        public List<string> GetMessages()
+        {
+            List<string> result = new List<string>();
+            foreach (Str tmp in Messages)
+            {
+                result.Add(tmp.content);
+            }
+            return result;
+        }
+
+        public MonologueTriggerData()
+        {
+            Messages = new List<Str>();
+            WaitTimes = new List<TimeSpan>();
+        }
+
+        [CategoryAttribute("TextParams")]
+        public List<Str> Messages { get; set; }
+        [CategoryAttribute("TextParams")]
+        public List<TimeSpan> WaitTimes { get; set; }
+    }
+    
 }

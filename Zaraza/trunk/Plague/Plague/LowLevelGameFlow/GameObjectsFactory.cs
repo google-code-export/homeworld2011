@@ -1550,6 +1550,69 @@ namespace PlagueEngine.LowLevelGameFlow
             return true;
         }
         /****************************************************************************/
+
+        /****************************************************************************/
+        // CreateMonologueTrigger
+        /****************************************************************************/
+        public bool CreateMonologueTrigger(MonologueTrigger result, MonologueTriggerData data)
+        {
+            result.Init(_physicsComponentFactory.CreateSphericalBodyComponent(true,
+                                                                      result,
+                                                                      0,
+                                                                      data.Radius,
+                                                                      0,
+                                                                      0,
+                                                                      0,
+                                                                      true,
+                                                                      data.World,
+                                                                      Vector3.Zero,
+                                                                      0,
+                                                                      0,
+                                                                      0),
+                        data.GetMessages(),
+                        data.WaitTimes);
+
+            return true;
+        }
+        /****************************************************************************/
+
+        /****************************************************************************/
+        // CreateDialogueTrigger
+        /****************************************************************************/
+        public bool CreateDialogueTrigger(DialogueTrigger result, DialogueTriggerData data)
+        {
+            List<Mercenary> tmp = new List<Mercenary>();
+            Mercenary hlp = null;
+            foreach (int id in data.MercIDs)
+            {
+                hlp = this.GetObject(id) as Mercenary;
+                if (hlp == null)
+                {
+                    PushToWaitingRoom(result, data);
+                    return false;
+                }
+                tmp.Add(hlp);
+            }
+            result.Init(_physicsComponentFactory.CreateSphericalBodyComponent(true,
+                                                                      result,
+                                                                      0,
+                                                                      data.Radius,
+                                                                      0,
+                                                                      0,
+                                                                      0,
+                                                                      true,
+                                                                      data.World,
+                                                                      Vector3.Zero,
+                                                                      0,
+                                                                      0,
+                                                                      0),
+                        data.GetMessages(),
+                        data.WaitTimes,
+                        tmp);
+
+            return true;
+        }
+        /****************************************************************************/
         
         /****************************************************************************/
         // CreateGameController

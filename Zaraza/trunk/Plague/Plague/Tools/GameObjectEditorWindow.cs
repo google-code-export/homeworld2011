@@ -671,6 +671,18 @@ namespace PlagueEngine.Tools
             MercenaryActivationTrigger.dataClassType = typeof(MercenaryActivationTriggerData);
             gameObjectClassNames.Add(MercenaryActivationTrigger);
 
+            gameObjectsClassName MonologueTrigger = new gameObjectsClassName();
+            MonologueTrigger.className = "MonologueTrigger";
+            MonologueTrigger.ClassType = typeof(MonologueTrigger);
+            MonologueTrigger.dataClassType = typeof(MonologueTriggerData);
+            gameObjectClassNames.Add(MonologueTrigger);
+
+            gameObjectsClassName DialogueTrigger = new gameObjectsClassName();
+            DialogueTrigger.className = "DialogueTrigger";
+            DialogueTrigger.ClassType = typeof(DialogueTrigger);
+            DialogueTrigger.dataClassType = typeof(DialogueTriggerData);
+            gameObjectClassNames.Add(DialogueTrigger);
+
 
         }
         /********************************************************************************/
