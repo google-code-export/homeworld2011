@@ -1547,9 +1547,27 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       0,
                                                                       0));
 
+
+            return true;
+        }
+
+        /****************************************************************************/
+
+        // CreateFadeInOut
+        /****************************************************************************/
+        public bool CreateFadeInOut(FadeInOut result, FadeInOutData data)
+        {
+            result.Init(_renderingComponentsFactory.CreateFrontEndComponent(result, "black"), data.Time,
+                _renderingComponentsFactory.CreateFrontEndComponent(result,"gameover"));
             return true;
         }
         /****************************************************************************/
+
+
+
+
+        /****************************************************************************/
+
 
         /****************************************************************************/
         // CreateMonologueTrigger
@@ -1615,6 +1633,7 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         
         /****************************************************************************/
+
         // CreateGameController
         /****************************************************************************/
         public bool CreateGameController(GameController result, GameControllerData data)

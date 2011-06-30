@@ -665,6 +665,18 @@ namespace PlagueEngine.Tools
             Doors.dataClassType = typeof(DoorsData);
             gameObjectClassNames.Add(Doors);
 
+
+
+
+            gameObjectsClassName FadeInOut = new gameObjectsClassName();
+            FadeInOut.className = "FadeInOut";
+            FadeInOut.ClassType = typeof(FadeInOut);
+            FadeInOut.dataClassType = typeof(FadeInOutData);
+            gameObjectClassNames.Add(FadeInOut);
+
+
+
+
             gameObjectsClassName MercenaryActivationTrigger = new gameObjectsClassName();
             MercenaryActivationTrigger.className = "MercenaryActivationTrigger";
             MercenaryActivationTrigger.ClassType = typeof(MercenaryActivationTrigger);
@@ -682,6 +694,7 @@ namespace PlagueEngine.Tools
             DialogueTrigger.ClassType = typeof(DialogueTrigger);
             DialogueTrigger.dataClassType = typeof(DialogueTriggerData);
             gameObjectClassNames.Add(DialogueTrigger);
+
 
 
         }

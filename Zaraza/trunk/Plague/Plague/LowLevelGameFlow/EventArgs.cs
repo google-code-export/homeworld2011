@@ -23,8 +23,11 @@ namespace PlagueEngine.LowLevelGameFlow
     class ActionDoneEvent      : EventArgs { };
     class StopActionEvent      : EventArgs { };
     class CloseEvent           : EventArgs { };
-    class ExitGameEvent             : EventArgs { };
-    class InGameMenuClose : EventArgs { };
+    class ExitGameEvent        : EventArgs { };
+    class InGameMenuClose      : EventArgs { };
+    class FadeInEvent          : EventArgs { };
+    class FadeInCancelEvent    : EventArgs { };
+    class FadeOutEvent         : EventArgs { };
 
     class DropItemCommandEvent        : EventArgs { };
     class ReloadCommandEvent          : EventArgs { };    

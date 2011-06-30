@@ -137,6 +137,7 @@
     <Compile Include="LowLevelGameFlow\GameObjects\BoomTriger.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DialogueTrigger.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\Doors.cs" />
+    <Compile Include="LowLevelGameFlow\GameObjects\FadeInOut.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MercenaryActivationTrigger.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\MonologueTrigger.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\RadioBox.cs" />
