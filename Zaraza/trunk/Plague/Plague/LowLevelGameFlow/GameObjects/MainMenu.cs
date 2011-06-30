@@ -34,7 +34,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         SoundEffectComponent waves = new SoundEffectComponent();
         SoundEffectComponent wind = new SoundEffectComponent();
 
-
+        FrontEndComponent logo;
+        int logox, logoy;
         FrontEndComponent frame;
 
         /***********************************/
@@ -145,11 +146,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         LabelComponent creditslabel, int creditswindowx, int creditswindowy, int creditswindowwidth, int creditswindowheight, String creditswindowtext, int creditswindowtextx, int creditswindowtexty,
                         LabelComponent optionslabel, int optionswindowx, int optionswindowy, int optionswindowwidth, int optionswindowheight, String optionswindowtext, int optionswindowtextx, int optionswindowtexty,
                         FrontEndComponent frame,
-            FrontEndComponent splash)
+            FrontEndComponent splash,
+            FrontEndComponent logo,
+            int logox,int logoy)
         {
             this.RequiresUpdate = true;
+            this.logo = logo;
+            logo.Draw = OnDraw;
+            this.logox = logox;
+            this.logoy = logoy;
 
-            
             AudioManager.GetInstance.BackgroundMusicComponent = music;
             // To nie jest dobra muzyka
             //music.LoadFolder("Music", 0.4f); 
@@ -359,6 +365,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
                 optionsMenu.OnDraw(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
 
+                spriteBatch.Draw(logo.Texture, new Rectangle(logox, logoy, logo.Texture.Width, logo.Texture.Height), Color.White);
+
+
                 if (creditswindowregistered)
                 {
                     spriteBatch.Draw(frame.Texture, new Rectangle(creditswindowx, creditswindowy, creditswindowwidth, creditswindowheight), Color.White);
@@ -387,6 +396,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
             optionsMenu.ReleaseComponents();
             splashScreen.ReleaseMe();
+            logo.ReleaseMe();
         }
         /********************************************************************************/
 
@@ -458,6 +468,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             data.optionswindowtextx = optionswindowtextx;
             data.optionswindowtexty = optionswindowtexty;
 
+
+            data.logoY = logoy;
+            data.logoX = logox;
+
             return data;
         }
         /********************************************************************************/
@@ -520,6 +534,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         [CategoryAttribute("options button")]
         public int optionsheight { get; set; }
 
+
+        [CategoryAttribute("logo")]
+        public int logoX { get; set; }
+
+        [CategoryAttribute("logo")]
+        public int logoY { get; set; }
 
 
 
