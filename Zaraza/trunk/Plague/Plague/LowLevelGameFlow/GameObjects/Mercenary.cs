@@ -432,7 +432,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
           
             if (item != null)
             {
-                Broadcast(new NewDialogMessageEvent(this.Name, "dropuje " + item.Name, this.Icon), EventsSystem.Priority.Normal);
+                //Broadcast(new NewDialogMessageEvent(this.Name, "dropuje " + item.Name, this.Icon), EventsSystem.Priority.Normal);
              
                 item.World = Matrix.Identity;
                 item.World.Translation = World.Translation +
