@@ -2,38 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PlagueEngine.Physics.Components;
 using System.ComponentModel;
 using PlagueEngine.Physics;
 using PlagueEngine.EventsSystem;
+using PlagueEngine.Physics.Components;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
-    class DialogueTrigger : Trigger
+    class MonologueTrigger : Trigger
     {
         protected List<string> Messages;
         protected List<TimeSpan> WaitTimes;
-        protected List<Mercenary> Characters;
+        Mercenary Activator;
 
         protected int TextIndex = 0;
 
-        public void Init(SphericalBodyComponent Body, List<string> Messages, List<TimeSpan> WaitTimes, List<Mercenary> Characters)
+        public void Init(SphericalBodyComponent Body, List<string> Messages, List<TimeSpan> WaitTimes)
         {
             base.Init(Body, 1);
             this.Messages = Messages;
             this.WaitTimes = WaitTimes;
-            if (Messages.Count != WaitTimes.Count || WaitTimes.Count != Characters.Count)
+            if (Messages.Count != WaitTimes.Count)
             {
                 throw new ArgumentException("Listy powinny zawierać tyle samo elementów");
             }
-            this.Messages = Messages;
-            this.WaitTimes = WaitTimes;
-            this.Characters = Characters;
         }
 
         public void NextText()
         {
-            Broadcast(new NewDialogMessageEvent(Characters[TextIndex].Name, Messages[TextIndex], Characters[TextIndex].Icon), Priority.Normal);
+            Broadcast(new NewDialogMessageEvent(Activator.Name, Messages[TextIndex], Activator.Icon), Priority.Normal);
             if (TextIndex + 1 == WaitTimes.Count)
             {
                 TimeControlSystem.TimeControl.CreateTimer(WaitTimes[TextIndex], 0, delegate() { NextText(); });
@@ -64,6 +61,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                         {
                             Body.CancelSubscribeStartCollisionEvent(typeof(Mercenary));
                         }
+                        Activator = evt.gameObject as Mercenary;
                         TimeControlSystem.TimeControl.CreateTimer(WaitTimes[0], 0, delegate() { NextText(); });
                     }
                 }
@@ -73,15 +71,9 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public override GameObjectInstanceData GetData()
         {
-            var data = new DialogueTriggerData();
+            var data = new MonologueTriggerData();
             base.GetData(data);
 
-            List<int> tmpIDs = new List<int>();
-            foreach (KeyValuePair<EventArgs, EventsSystem.IEventsReceiver[]> pair in events)
-            {
-                tmpIDs.Add((pair.Key as RegisterMercenaryEvent).mercenary.ID);
-            }
-            data.MercIDs = tmpIDs.ToArray();
             data.Messages = Messages;
             data.WaitTimes = WaitTimes;
 
@@ -90,14 +82,12 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         }
 
         [Serializable]
-        class DialogueTriggerData : TriggerData
+        class MonologueTriggerData : TriggerData
         {
             [CategoryAttribute("TextParams")]
             public List<string> Messages { get; set; }
             [CategoryAttribute("TextParams")]
             public List<TimeSpan> WaitTimes { get; set; }
-            [CategoryAttribute("TextParams")]
-            public int[] MercIDs { get; set; }
         }
     }
 }
