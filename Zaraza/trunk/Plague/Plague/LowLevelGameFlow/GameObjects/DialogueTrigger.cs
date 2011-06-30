@@ -4,39 +4,23 @@ using System.Linq;
 using System.Text;
 using PlagueEngine.Physics.Components;
 using System.ComponentModel;
-using PlagueEngine.EventsSystem;
 using PlagueEngine.Physics;
+using PlagueEngine.EventsSystem;
 
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
-    class MercenaryActivationTrigger : Trigger
+    class DialogueTrigger : Trigger
     {
-        static public MercenariesManager MercenariesManager = null;
+        protected List<string> Messages;
+        protected List<TimeSpan> WaitTimes;
 
+        protected uint TextIndex = 0;
 
-        public void Init(Mercenary[] Mercenaries, SphericalBodyComponent Body)
+        public void Init(SphericalBodyComponent Body, List<string> Messages, List<TimeSpan> WaitTimes, List<GameObjectInstance> characters)
         {
-            base.Init(Body, 1);
-            this.events = new Dictionary<EventArgs, EventsSystem.IEventsReceiver[]>();
-            foreach (Mercenary merc in Mercenaries)
-            {
-                this.events.Add(new RegisterMercenaryEvent(merc), new MercenariesManager[] { MercenariesManager });
-            }
-        }
-
-        public override GameObjectInstanceData GetData()
-        {
-            var data = new MercenaryActivationTriggerData();
-            base.GetData(data);
-
-            List<int> tmpIDs = new List<int>();
-            foreach (KeyValuePair<EventArgs, EventsSystem.IEventsReceiver[]> pair in events)
-            {
-                tmpIDs.Add((pair.Key as RegisterMercenaryEvent).mercenary.ID);
-            }
-            data.MercIDs = tmpIDs.ToArray();
-
-            return data;
+            base.Init(Body,1);
+            this.Messages = Messages;
+            this.WaitTimes = WaitTimes;
         }
 
         public override void OnEvent(EventsSender sender, EventArgs e)
@@ -76,22 +60,20 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                                 }
                             }
                         }
-                        SendEvent(new DestroyObjectEvent(this.ID), Priority.Normal, GlobalGameObjects.GameController);
                     }
                 }
 
             }
             base.OnEvent(sender, e);
         }
+
     }
 
-
     [Serializable]
-    class MercenaryActivationTriggerData : TriggerData
+    class DialogueTriggerData : TriggerData
     {
-        [CategoryAttribute("Targets")]
-        public int[] MercIDs { get; set; }
-
-        
+        [CategoryAttribute("TextParams")]
+        public List<string> Messages { get; set; }
+        public List<TimeSpan> WaitTimes { get; set; }
     }
 }

@@ -46,6 +46,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
             this.MaxCalls = MaxCalls;
             this._calls = MaxCalls;
+            this.Status = GameObjectStatus.Passable;
             this.Body = Body;
             this.Body.SubscribeStartCollisionEvent(typeof(Mercenary));
             this.Body.dontCollide = true;
@@ -107,15 +108,15 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public override void ReleaseComponents()
         {
-            Body.ReleaseMe();
+            if (Body != null)
+            {
+                Body.ReleaseMe();
+                Body = null;
+            }
+            base.ReleaseComponents();
         }
 
-        public void Dispose()
-        {
-            Body = null;
-            events = null;
-            base.Dispose();
-        }
+
     }
 
     
