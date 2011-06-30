@@ -40,6 +40,20 @@
     <key id="optionstext" val="Opcje"/>
     <key id="optionstag" val=""/>
     <key id="creditstext" val="Autorzy"/>
+    <key id="creditscontent" val="Główny programista: 
+        Krzysztof Tracz
+        
+Podsystem fizyki: 
+        Andrzej Dominowski
+        
+Podsystem dźwięku: 
+        Łukasz Michalski
+        
+Programowanie AI: 
+        Bartosz Herman
+
+Grafika: 
+        Piotr Wójcik"/>
     <key id="creditstag" val=""/>
   	<key id="resumetext" val="Wznów"/>
 	<key id="mainmenutext" val="Menu główne"/>

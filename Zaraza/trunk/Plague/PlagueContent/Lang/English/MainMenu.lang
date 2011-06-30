@@ -39,7 +39,21 @@
     <key id="exittag" val=""/>
     <key id="optionstext" val="Options"/>
     <key id="optionstag" val=""/>
-    <key id="creditstext" val="Credits"/>
+    <key id ="creditstext" val="Credits"/>
+<key id="creditscontent" val="Head programmer: 
+        Krzysztof Tracz
+        
+Physics: 
+        Andrzej Dominowski
+        
+Sounds: 
+        Łukasz Michalski
+        
+AI programming: 
+        Bartosz Herman
+     
+Graphic artist: 
+        Piotr Wójcik"/>
     <key id="creditstag" val=""/>
 	<key id="resumetext" val="Resume"/>
 	<key id="mainmenutext" val="Main menu"/>
