@@ -411,6 +411,35 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
 
 
+
+        /****************************************************************************/
+        // CreateEndGameTrigerr
+        /****************************************************************************/
+        public bool CreateEndGameTrigerr(EndGameTrigerr result, EndGameTrigerrData data)
+        {
+        
+
+            result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
+                                                                            data.Mass,
+                                                                            data.Lenght,
+                                                                            data.Height,
+                                                                            data.Width,
+                                                                            data.Elasticity,
+                                                                            data.StaticRoughness,
+                                                                            data.DynamicRoughness,
+                                                                            data.Immovable,
+                                                                            data.World,
+                                                                            data.Translation,
+                                                                            data.SkinYaw,
+                                                                            data.SkinPitch,
+                                                                            data.SkinRoll));
+
+            return true;
+        }
+        /****************************************************************************/
+
+
+
         
         /****************************************************************************/
         // Create Square Body Mesh
