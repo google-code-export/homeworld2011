@@ -314,7 +314,8 @@ namespace PlagueEngine.LowLevelGameFlow
         public bool CreateMovieClip(MovieClip result, MovieClipData data)
         {
 
-            result.Init(_game.ContentManager.Load<Video>(data.videoName), data.videoName, _renderingComponentsFactory.CreateFrontEndComponent(result, null));
+            result.Init(_game.ContentManager.Load<Video>(data.videoName), data.videoName, _renderingComponentsFactory.CreateFrontEndComponent(result, null),
+                  _renderingComponentsFactory.CreateFrontEndComponent(result,"SplashScreen"));
             return true;
         }
         /****************************************************************************/
