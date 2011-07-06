@@ -1038,11 +1038,10 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         {
 
             //TODO: odkomentować przed prezentacją
-            //if (shooter != this)
-            //{
+            if (shooter != this)
+            {
                 ObjectAIController.OnEvent(null, new ArtificialIntelligence.TakeDamage(damage, shooter, true, false));
-
-            //}
+            }
         }
 
         /****************************************************************************/

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XNABabylonStringFile>
+  <version>1.0</version>
+  <revisionDate>15-06-2011</revisionDate>
+  <author>Bartosz Herman</author>
+  <language>English</language>
+
+  <package id="Dialogue3">
+
+    <key id="dymitr1" val="Dymitr here! Can you guys hear me?"/>
+    <key id="PPR1" val="Where the hell are you?! The helocopter is burning!"/>
+    <key id="dymitr2" val="Wait, we got separa..."/>
+    <key id="PPR2" val="I don't fucking care! We are loosing equipment!"/>
+    <key id="Makumba1" val="XXX reporting! We have landed safely with YYY. Awaiting orders."/>
+    <key id="dymitr3" val="What is your location?"/>
+    <key id="Makumba2" val="We are on a border of rocky terrain. We wait next to power line."/>
+    <key id="PPR3" val="Hurry up idiots! I won't manage to save all stuff alone!"/>
+    <key id="dymitr4" val="OK, we are moving. XXX, stay where you are."/>
+  </package>
+</XNABabylonStringFile>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XNABabylonStringFile>
+  <version>1.0</version>
+  <revisionDate>15-06-2011</revisionDate>
+  <author>Bartosz Herman</author>
+  <language>English</language>
+
+  <package id="Monologue1">
+
+    <key id="sentence1" val="Wait, who's there...?"/>
+    <key id="sentence2" val="Freeze! Hands Up! Who are you?!"/>
+    <key id="sentence3" val="..."/>
+    <key id="sentence4" val="We are armed, this is your last chance!"/>
+    <key id="sentence5" val="... What's wrong with that guy...?"/>
+    <key id="sentence6" val="... Open Fire!"/>
+  </package>
+</XNABabylonStringFile>

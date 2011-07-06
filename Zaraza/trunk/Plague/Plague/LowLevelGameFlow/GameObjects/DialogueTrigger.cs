@@ -38,8 +38,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public void Init(SphericalBodyComponent Body, List<string> Messages, List<TimeSpan> WaitTimes, List<Mercenary> Characters, List<Mercenary> Ignored)
         {
             base.Init(Body, 1);
-            this.Messages = Messages;
-            this.WaitTimes = WaitTimes;
             if (Messages.Count != WaitTimes.Count || WaitTimes.Count != Characters.Count)
             {
                 throw new ArgumentException("Listy powinny zawierać tyle samo elementów");
@@ -90,7 +88,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
 
         public override GameObjectInstanceData GetData()
         {
-            var data = new DialogueTriggerData();
+            DialogueTriggerData data = new DialogueTriggerData();
             base.GetData(data);
 
             List<int> tmpIDs = new List<int>();
@@ -107,7 +105,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             }
 
             List<int> tmpIgnoredIDs = new List<int>();
-            foreach (Mercenary merc in Characters)
+            foreach (Mercenary merc in Ignored)
             {
                 tmpIgnoredIDs.Add(merc.ID);
             }
