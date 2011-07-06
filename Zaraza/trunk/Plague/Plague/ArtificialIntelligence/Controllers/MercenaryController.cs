@@ -340,7 +340,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
                     merc = controlledObject as Mercenary;
                     if ((merc.CurrentObject as Firearm) != null)
                     {
-                        if ((merc.CurrentObject as Firearm).SureFire(AttackTarget.World.Translation))
+                        if ((merc.CurrentObject as Firearm).SureFire(AttackTarget.World.Translation+2*Vector3.Up))
                         {
                             Vector3 direction = controlledObject.World.Translation - AttackTarget.World.Translation;
                             Vector2 v1 = Vector2.Normalize(new Vector2(direction.X, direction.Z));
@@ -662,7 +662,7 @@ namespace PlagueEngine.ArtificialIntelligence.Controllers
             else if (e.GetType().Equals(typeof(LookAtPointEvent)))
             {
                 #region LookAtPoint
-                if ((controlledObject as Mercenary).CurrentObject == null) return;
+                if ((controlledObject as Mercenary).CurrentObject as Firearm == null) return;
                 LookAtPointEvent LookAtPointEvent = e as LookAtPointEvent;
                 Action = Action.IDLE;
                 if (!((controlledObject as Mercenary).CurrentObject as Firearm).SideArm)

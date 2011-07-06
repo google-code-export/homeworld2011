@@ -7,10 +7,14 @@
 
   <package id="Dialogue1">
 
-    <key id="first" val="Hey, Ramone! You okay?"/>
-    <key id="second" val="Not exactly, boss..."/>
-    <key id="third" val="Damn, you are bleeding! Has anyone ever trained you how to jump with a parachute!?!"/>
-    <key id="fourth" val="Some time ago, but I never listened to the old prick..."/>
-
+    <key id="dymitr1" val="RADIO: It's Dymitr..."/>
+    <key id="dymitr2" val="RADIO: ...can anyone hear me?"/>
+    <key id="ramon1" val="RADIO: Crrreeek... yeah, poorly..."/>
+    <key id="dymitr3" val="RADIO: Where are you?"/>
+    <key id="ramon2" val="RADIO: It's dark, I cannot see clearly..."/>
+    <key id="ramon3" val="RADIO: ... oh, here is a power line next to me."/>
+    <key id="dymitr4" val="RADIO: Okay, I'll try to find you. Anyone else?"/>
+    <key id="dymitr5" val="(silence)"/>
+    <key id="dymitr6" val="Nope... I guess antenna is broken..."/>
   </package>
 </XNABabylonStringFile>

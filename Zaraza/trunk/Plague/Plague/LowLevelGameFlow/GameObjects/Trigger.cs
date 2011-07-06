@@ -50,6 +50,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             this.Body = Body;
             this.Body.SubscribeStartCollisionEvent(typeof(Mercenary));
             this.Body.dontCollide = true;
+            this.Body.Enable();
         }
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             base.GetData(data);
 
             data.Radius = Body.Radius;
-            data.Calls = MaxCalls;
+            data.MaxCalls = MaxCalls;
         }
 
         /// <summary>
@@ -128,6 +129,6 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
         public float Radius { get; set; }
 
         [CategoryAttribute("TriggerProperties")]
-        public int Calls { get; set; }
+        public int MaxCalls { get; set; }
     }
 }

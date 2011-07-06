@@ -2510,6 +2510,7 @@
       <Name>Dialogue1</Name>
       <Importer>TextImporter</Importer>
       <Processor>PlagueLangProcessor</Processor>
+      <SubType>Designer</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -2520,10 +2521,32 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lang\English\Dialogue2.lang">
+      <Name>Dialogue2</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="2.wmv">
       <Name>2</Name>
       <Importer>WmvImporter</Importer>
       <Processor>VideoProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lang\English\Monologue1.lang">
+      <Name>Monologue1</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lang\English\Dialogue3.lang">
+      <Name>Dialogue3</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
