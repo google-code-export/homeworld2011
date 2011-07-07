@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XNABabylonStringFile>
+  <version>1.0</version>
+  <revisionDate>15-06-2011</revisionDate>
+  <author>Bartosz Herman</author>
+  <language>English</language>
+
+  <package id="Dialogue4">
+    <key id="makumba1" val="Boss! Here!"/>
+    <key id="dymitr1" val="Good to see you, guys."/>
+    <key id="dzafar1" val="Good to see you too."/>
+    <key id="dymitr2" val="Have you seen anything strange...?"/>
+    <key id="dzafar2" val="Like what?"/>
+    <key id="ramon1" val="We've met... How to call it? A rotting man."/>
+    <key id="dzafar3" val="What the fuck?"/>
+    <key id="dymitr3" val="Yes, I have seen it too. But we will discuss later."/>
+    <key id="makumba2" val="What are the orders?"/>
+    <key id="dymitr4" val="We will follow that road."/>
+    <key id="dymitr5" val="It should guide us to the crashsite."/>
+  </package>
+</XNABabylonStringFile>
