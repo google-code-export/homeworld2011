@@ -2549,6 +2549,13 @@
       <Processor>PlagueLangProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lang\English\Dialogue4.lang">
+      <Name>Dialogue4</Name>
+      <Importer>TextImporter</Importer>
+      <Processor>PlagueLangProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <Target Name="BeforeBuild">
   </Target>
