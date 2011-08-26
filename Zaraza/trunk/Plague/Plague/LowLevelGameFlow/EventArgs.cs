@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 using PlagueEngine.LowLevelGameFlow.GameObjects;
@@ -9,79 +6,99 @@ using PlagueEngine.LowLevelGameFlow.GameObjects;
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow
 /************************************************************************************/
+
 namespace PlagueEngine.LowLevelGameFlow
 {
-
     /********************************************************************************/
     /// Empty Events
     /********************************************************************************/
-    class CreateEvent          : EventArgs { };
-    class DestroyEvent         : EventArgs { };
-    class SwitchEvent          : EventArgs { };
-    class GameObjectReleased   : EventArgs { };
-    class ExamineEvent         : EventArgs { };    
-    class ActionDoneEvent      : EventArgs { };
-    class StopActionEvent      : EventArgs { };
-    class CloseEvent           : EventArgs { };
-    class ExitGameEvent        : EventArgs { };
-    class InGameMenuClose      : EventArgs { };
-    class FadeInEvent          : EventArgs { };
-    class FadeInCancelEvent    : EventArgs { };
-    class FadeOutEvent         : EventArgs { };
 
-    class DropItemCommandEvent        : EventArgs { };
-    class ReloadCommandEvent          : EventArgs { };    
-    class SwitchToWeaponCommandEvent  : EventArgs { };
-    class SwitchToSideArmCommandEvent : EventArgs { };
+    internal class CreateEvent : EventArgs { };
+
+    internal class DestroyEvent : EventArgs { };
+
+    internal class SwitchEvent : EventArgs { };
+
+    internal class GameObjectReleased : EventArgs { };
+
+    internal class ExamineEvent : EventArgs { };
+
+    internal class ActionDoneEvent : EventArgs { };
+
+    internal class StopActionEvent : EventArgs { };
+
+    internal class CloseEvent : EventArgs { };
+
+    internal class ExitGameEvent : EventArgs { };
+
+    internal class InGameMenuClose : EventArgs { };
+
+    internal class FadeInEvent : EventArgs { };
+
+    internal class FadeInCancelEvent : EventArgs { };
+
+    internal class FadeOutEvent : EventArgs { };
+
+    internal class DropItemCommandEvent : EventArgs { };
+
+    internal class ReloadCommandEvent : EventArgs { };
+
+    internal class SwitchToWeaponCommandEvent : EventArgs { };
+
+    internal class SwitchToSideArmCommandEvent : EventArgs { };
+
     /********************************************************************************/
 
-    
     /********************************************************************************/
     /// GameObjectClicked
     /********************************************************************************/
-    class GameObjectClicked : EventArgs
+
+    internal class GameObjectClicked : EventArgs
     {
-            public int gameObjectID;
-            public GameObjectClicked(int gameObjectID)
-            {
-                this.gameObjectID = gameObjectID;
-            }
+        public int gameObjectID;
 
-            public override string ToString()
-            {
-                return "gameObjectID :" + gameObjectID.ToString();
-            }
-    }    
+        public GameObjectClicked(int gameObjectID)
+        {
+            this.gameObjectID = gameObjectID;
+        }
+
+        public override string ToString()
+        {
+            return "gameObjectID :" + gameObjectID.ToString();
+        }
+    }
+
     /********************************************************************************/
-
 
     /********************************************************************************/
     /// SelectedObjectEvent
     /********************************************************************************/
-    class SelectedObjectEvent : EventArgs
+
+    internal class SelectedObjectEvent : EventArgs
     {
         public GameObjectInstance gameObject;
-        public Vector3            position;
+        public Vector3 position;
 
         public SelectedObjectEvent(GameObjectInstance gameObject, Vector3 position)
         {
             this.gameObject = gameObject;
-            this.position   = position;
+            this.position = position;
         }
 
         public override string ToString()
         {
             if (gameObject != null) return "ID: " + gameObject.ID.ToString() + ", Position: " + position.ToString();
-            else return "Null, Position: " + position.ToString(); 
+            else return "Null, Position: " + position.ToString();
         }
     }
+
     /********************************************************************************/
 
-    
     /********************************************************************************/
     /// CommandOnObjectEvent
     /********************************************************************************/
-    class CommandOnObjectEvent : EventArgs
+
+    internal class CommandOnObjectEvent : EventArgs
     {
         public GameObjectInstance gameObject;
         public Vector3 position;
@@ -98,20 +115,21 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null, Position: " + position.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ExSwitchEvent
     /********************************************************************************/
-    class ExSwitchEvent : EventArgs
+
+    internal class ExSwitchEvent : EventArgs
     {
         public String name;
-        public bool   value;
+        public bool value;
 
         public ExSwitchEvent(String name, bool value)
         {
-            this.name  = name;
+            this.name = name;
             this.value = value;
         }
 
@@ -120,13 +138,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return name + ": " + value.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// AddToSelectionEvent
     /********************************************************************************/
-    class AddToSelectionEvent : EventArgs
+
+    internal class AddToSelectionEvent : EventArgs
     {
         public GameObjectInstance gameObject;
 
@@ -141,13 +160,14 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// RemoveFromSelectionEvent
     /********************************************************************************/
-    class RemoveFromSelectionEvent : EventArgs
+
+    internal class RemoveFromSelectionEvent : EventArgs
     {
         public GameObjectInstance gameObject;
 
@@ -162,13 +182,14 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// MoveToPointCommandEvent
     /********************************************************************************/
-    class MoveToPointCommandEvent : EventArgs
+
+    internal class MoveToPointCommandEvent : EventArgs
     {
         public Vector3 point;
 
@@ -182,13 +203,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return point.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// LookAtPointEvent
     /********************************************************************************/
-    class LookAtPointEvent : EventArgs
+
+    internal class LookAtPointEvent : EventArgs
     {
         public Vector3 point;
 
@@ -202,13 +224,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return point.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// RunToPointCommandEvent
     /********************************************************************************/
-    class RunToPointCommandEvent : EventArgs
+
+    internal class RunToPointCommandEvent : EventArgs
     {
         public Vector3 point;
 
@@ -222,13 +245,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return point.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// Open Fire Command Event
     /********************************************************************************/
-    class OpenFireCommandEvent : EventArgs
+
+    internal class OpenFireCommandEvent : EventArgs
     {
         public Vector3 point;
 
@@ -242,13 +266,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return point.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// Open Fire To Target Command Event
     /********************************************************************************/
-    class OpenFireToTargetCommandEvent : EventArgs
+
+    internal class OpenFireToTargetCommandEvent : EventArgs
     {
         public GameObjectInstance target;
 
@@ -262,13 +287,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return target.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// MoveToObjectCommandEvent
     /********************************************************************************/
-    class MoveToObjectCommandEvent : EventArgs
+
+    internal class MoveToObjectCommandEvent : EventArgs
     {
         public GameObjectInstance gameObject;
 
@@ -283,13 +309,14 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ChangeLevelEvent
     /********************************************************************************/
-    class ChangeLevelEvent : EventArgs
+
+    internal class ChangeLevelEvent : EventArgs
     {
         public String Level;
 
@@ -303,13 +330,29 @@ namespace PlagueEngine.LowLevelGameFlow
             return Level;
         }
     }
-    /********************************************************************************/
 
+    internal class SaveLevelEvent : EventArgs
+    {
+        public String Level;
+
+        public SaveLevelEvent(String level)
+        {
+            Level = level;
+        }
+
+        public override string ToString()
+        {
+            return Level;
+        }
+    }
+
+    /********************************************************************************/
 
     /********************************************************************************/
     /// CreateObjectEvent
     /********************************************************************************/
-    class CreateObjectEvent : EventArgs
+
+    internal class CreateObjectEvent : EventArgs
     {
         public GameObjectInstanceData Data;
 
@@ -323,13 +366,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return Data.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ObjectCreatedEvent
     /********************************************************************************/
-    class ObjectCreatedEvent : EventArgs
+
+    internal class ObjectCreatedEvent : EventArgs
     {
         public GameObjectInstance GameObject;
 
@@ -343,13 +387,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return GameObject.ID.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// DestroyObjectEvent
     /********************************************************************************/
-    class DestroyObjectEvent : EventArgs
+
+    internal class DestroyObjectEvent : EventArgs
     {
         public int ID;
 
@@ -363,13 +408,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return ID.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// SelectedActionEvent
     /********************************************************************************/
-    class SelectedActionEvent : EventArgs
+
+    internal class SelectedActionEvent : EventArgs
     {
         public String Action;
 
@@ -383,13 +429,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return Action;
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ChangeSpeedEvent
     /********************************************************************************/
-    class ChangeSpeedEvent : EventArgs
+
+    internal class ChangeSpeedEvent : EventArgs
     {
         public float Amount;
 
@@ -403,13 +450,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return Amount.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// GrabObjectCommandEvent
     /********************************************************************************/
-    class GrabObjectCommandEvent : EventArgs
+
+    internal class GrabObjectCommandEvent : EventArgs
     {
         public GameObjectInstance gameObject;
 
@@ -424,13 +472,14 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// OpenContainerCommandEvent
     /********************************************************************************/
-    class OpenContainerCommandEvent : EventArgs
+
+    internal class OpenContainerCommandEvent : EventArgs
     {
         public Container container;
 
@@ -445,13 +494,14 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ExamineObjectCommandEvent
     /********************************************************************************/
-    class ExamineObjectCommandEvent : EventArgs
+
+    internal class ExamineObjectCommandEvent : EventArgs
     {
         public GameObjectInstance gameObject;
 
@@ -466,13 +516,14 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// FollowObjectCommandEvent
     /********************************************************************************/
-    class FollowObjectCommandEvent : EventArgs
+
+    internal class FollowObjectCommandEvent : EventArgs
     {
         public GameObjectInstance gameObject;
 
@@ -487,13 +538,14 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ExchangeItemsCommandEvent
     /********************************************************************************/
-    class ExchangeItemsCommandEvent : EventArgs
+
+    internal class ExchangeItemsCommandEvent : EventArgs
     {
         public Mercenary mercenary;
 
@@ -508,13 +560,14 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
+
     /********************************************************************************/
 
-    
     /********************************************************************************/
     /// RegisterMercenaryEvent
     /********************************************************************************/
-    class RegisterMercenaryEvent : EventArgs
+
+    internal class RegisterMercenaryEvent : EventArgs
     {
         public Mercenary mercenary;
 
@@ -541,13 +594,14 @@ namespace PlagueEngine.LowLevelGameFlow
             }
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// OpenEvent
     /********************************************************************************/
-    class OpenEvent : EventArgs
+
+    internal class OpenEvent : EventArgs
     {
         public Mercenary mercenary;
 
@@ -562,18 +616,19 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ExchangeItemsEvent
     /********************************************************************************/
-    class ExchangeItemsEvent : EventArgs
+
+    internal class ExchangeItemsEvent : EventArgs
     {
         public Mercenary mercenary1;
         public Mercenary mercenary2;
 
-        public ExchangeItemsEvent(Mercenary mercenary1,Mercenary mercenary2)
+        public ExchangeItemsEvent(Mercenary mercenary1, Mercenary mercenary2)
         {
             this.mercenary1 = mercenary1;
             this.mercenary2 = mercenary2;
@@ -585,18 +640,20 @@ namespace PlagueEngine.LowLevelGameFlow
             else return "Null";
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ActivateObjectEvent
     /********************************************************************************/
-    class ActivateObjectEvent : EventArgs
+
+    internal class ActivateObjectEvent : EventArgs
     {
         public GameObjectInstance gameObject;
+
         public ActivateObjectEvent(GameObjectInstance gameObject)
         {
-            this.gameObject= gameObject;
+            this.gameObject = gameObject;
         }
 
         public override string ToString()
@@ -604,13 +661,14 @@ namespace PlagueEngine.LowLevelGameFlow
             return "Activate :" + gameObject.ID.ToString();
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// ObjectActivatedEvent
     /********************************************************************************/
-    class ObjectActivatedEvent : EventArgs
+
+    internal class ObjectActivatedEvent : EventArgs
     {
         public GameObjectInstance gameObject;
 
@@ -618,6 +676,7 @@ namespace PlagueEngine.LowLevelGameFlow
         {
             this.gameObject = gameObject;
         }
+
         public ObjectActivatedEvent()
         {
         }
@@ -631,10 +690,10 @@ namespace PlagueEngine.LowLevelGameFlow
             return null;
         }
     }
+
     /********************************************************************************/
 
-
-    class HealCommandEvent : EventArgs
+    internal class HealCommandEvent : EventArgs
     {
         public Mercenary merc;
 
@@ -643,45 +702,44 @@ namespace PlagueEngine.LowLevelGameFlow
             this.merc = merc;
         }
 
-        public HealCommandEvent() : this(null) {}
-        
+        public HealCommandEvent() : this(null) { }
+
         public override string ToString()
         {
             return "Heal " + (merc == null ? "self." : merc.ToString());
         }
     }
-    
-
 
     /********************************************************************************/
     /// NewDialogMessageEvent
     /********************************************************************************/
-    class NewDialogMessageEvent : EventArgs
+
+    internal class NewDialogMessageEvent : EventArgs
     {
         public String name;
         public String text;
         public Rectangle icon;
 
-        public NewDialogMessageEvent(String name,String text, Rectangle icon)
+        public NewDialogMessageEvent(String name, String text, Rectangle icon)
         {
             this.name = name;
             this.text = text;
             this.icon = icon;
         }
-      
 
         public override string ToString()
         {
             return name + " is saying: " + text;
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// SetBloomEvent
     /********************************************************************************/
-    class SetBloomEvent : EventArgs
+
+    internal class SetBloomEvent : EventArgs
     {
         public float BloomIntensity;
         public float BaseIntensity;
@@ -701,11 +759,11 @@ namespace PlagueEngine.LowLevelGameFlow
             BaseSaturation = baseSaturation;
             BloomThreshold = bloomThreshold;
         }
-        
+
         public SetBloomEvent()
         {
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 }

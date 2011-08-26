@@ -37,8 +37,7 @@ namespace PlagueEngine
         internal PhysicsManager            PhysicsManager     { get; private set; }
         internal AudioManager              AudioManager       { get; private set; }
         internal Level                     Level              { get; private set; }
-        //private Thread _editorThread;
-        //private Editor.GameObjectEditorWindow _newGameObjectEditor;
+        private Editor.GameObjectEditorWindow _newGameObjectEditor;
         private readonly RenderConfig _defaultRenderConfig = new RenderConfig(1024, 768, false, false, false,0.0f,1.0f,false,1,1,0.25f,1,0.25f);
         
         public bool GameStopped { get;  set; }
@@ -142,9 +141,8 @@ namespace PlagueEngine
             
 #if DEBUG
             _gameObjectEditor = new GameObjectEditorWindow(Level, ContentManager, Renderer, Input, this);
-            //_newGameObjectEditor = new Editor.GameObjectEditorWindow(this);
-            //_editorThread = ThreadHelper.GetNewThread(_newGameObjectEditor.StartForm);
-            //_editorThread.Start();
+            _newGameObjectEditor = new Editor.GameObjectEditorWindow(this);
+            ThreadHelper.GetNewThread(_newGameObjectEditor.StartForm).Start();
 #endif
             
             Input.Enabled = true;

@@ -1,6 +1,6 @@
-﻿namespace PlagueEngine.Editor.Controls
+﻿namespace PlagueEngine.Editor.Controls.GameObjectsControls
 {
-    partial class ObjectTree
+    partial class PropertyGrid
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,31 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.treeViewObjects = new System.Windows.Forms.TreeView();
+            this.Grid = new PlagueEngine.Editor.Controls.BetterPropertyGrid();
             this.SuspendLayout();
             // 
-            // treeViewObjects
+            // Grid
             // 
-            this.treeViewObjects.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewObjects.Location = new System.Drawing.Point(0, 0);
-            this.treeViewObjects.Name = "treeViewObjects";
-            this.treeViewObjects.Size = new System.Drawing.Size(160, 170);
-            this.treeViewObjects.TabIndex = 0;
-            this.treeViewObjects.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewObjectsAfterSelect);
+            this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Grid.Location = new System.Drawing.Point(0, 0);
+            this.Grid.Name = "Grid";
+            this.Grid.Size = new System.Drawing.Size(430, 430);
+            this.Grid.TabIndex = 1;
+            this.Grid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.Grid_PropertyValueChanged);
             // 
-            // ObjectTree
+            // PropertyGrid
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.treeViewObjects);
-            this.Name = "ObjectTree";
-            this.Size = new System.Drawing.Size(160, 170);
+            this.Controls.Add(this.Grid);
+            this.Name = "PropertyGrid";
+            this.Size = new System.Drawing.Size(430, 430);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TreeView treeViewObjects;
+        private BetterPropertyGrid Grid;
     }
 }

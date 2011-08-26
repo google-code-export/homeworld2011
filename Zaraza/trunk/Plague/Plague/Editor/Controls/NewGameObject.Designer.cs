@@ -1,6 +1,6 @@
 ﻿namespace PlagueEngine.Editor.Controls
 {
-    partial class NewPropertyGridControl
+    partial class NewGameObject
     {
         /// <summary> 
         /// Required designer variable.

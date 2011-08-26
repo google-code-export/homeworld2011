@@ -1,45 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using PlagueEngine.EventsSystem;
-using PlagueEngine.HighLevelGameFlow;
 
 /************************************************************************************/
 /// PlagueEngine.LowLevelGameFlow.GameObjects
 /************************************************************************************/
+
 namespace PlagueEngine.LowLevelGameFlow.GameObjects
 {
-
     /********************************************************************************/
     /// GameController
     /********************************************************************************/
-    class GameController : GameObjectInstance
-    {
 
+    internal class GameController : GameObjectInstance
+    {
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
         private Game game = null;
         /****************************************************************************/
 
-
         /****************************************************************************/
         /// Init
         /****************************************************************************/
+
         public void Init(Game game)
         {
             this.game = game;
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         /// On Event
         /****************************************************************************/
+
         public override void OnEvent(EventsSender sender, EventArgs e)
         {
             /*************************************/
@@ -47,10 +42,16 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /*************************************/
             if (e.GetType().Equals(typeof(ChangeLevelEvent)))
             {
-               
                 ChangeLevelEvent ChangeLevelEvent = e as ChangeLevelEvent;
                 game.Level.LoadLevel(ChangeLevelEvent.Level);
-             
+            }
+            /*************************************/
+            /// ChangeLevelEvent
+            /*************************************/
+            else if (e.GetType().Equals(typeof(SaveLevelEvent)))
+            {
+                SaveLevelEvent ChangeLevelEvent = e as SaveLevelEvent;
+                game.Level.SaveLevel(ChangeLevelEvent.Level);
             }
             /*************************************/
             /// CreateObjectEvent
@@ -96,7 +97,7 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             /// SetBloomEvent
             /*************************************/
             else if (e.GetType().Equals(typeof(SetBloomEvent)))
-            { 
+            {
                 SetBloomEvent SetBloomEvent = e as SetBloomEvent;
                 game.Renderer.BaseIntensity = SetBloomEvent.BaseIntensity;
                 game.Renderer.BaseSaturation = SetBloomEvent.BaseSaturation;
@@ -104,30 +105,31 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
                 game.Renderer.BloomSaturation = SetBloomEvent.BloomSaturation;
                 game.Renderer.BloomThreshold = SetBloomEvent.BloomThreshold;
             }
-            /*************************************/        
-
+            /*************************************/
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Get Data
         /****************************************************************************/
+
         public override GameObjectInstanceData GetData()
         {
             GameControllerData data = new GameControllerData();
             GetData(data);
             return data;
         }
+
         /****************************************************************************/
-
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 
     /********************************************************************************/
     /// GameControllerData
     /********************************************************************************/
+
     [Serializable]
     public class GameControllerData : GameObjectInstanceData
     {
@@ -136,7 +138,8 @@ namespace PlagueEngine.LowLevelGameFlow.GameObjects
             Type = typeof(GameController);
         }
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 }
+
 /************************************************************************************/

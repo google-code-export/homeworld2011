@@ -2,72 +2,70 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Nuclex.Input;
 using Nuclex.UserInterface;
 using PlagueEngine.Input.Components;
-using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.TimeControlSystem;
 
 // TODO: Rozwinąć input o mapowanie klawiszy
 
-
 /************************************************************************************/
 /// PlagueEngine.Input
 /************************************************************************************/
+
 namespace PlagueEngine.Input
 {
-
     /********************************************************************************/
     /// Delegates
     /********************************************************************************/
     delegate void OnKey(Keys key, ExtendedKeyState state);
 
     delegate void OnMouseKey(MouseKeyAction mouseKeyAction, ref ExtendedMouseKeyState mouseKeyState);
-    delegate void OnMouseMove(MouseMoveAction mouseMoveAction,ref ExtendedMouseMovementState mouseMovementState);
+    delegate void OnMouseMove(MouseMoveAction mouseMoveAction, ref ExtendedMouseMovementState mouseMovementState);
     /********************************************************************************/
-
 
     /********************************************************************************/
     /// Input
     /********************************************************************************/
-    class Input
+
+    internal class Input
     {
-     
         /****************************************************************************/
         /// Keyboard Listener
         /****************************************************************************/
-        class KeyboardListener
+
+        private class KeyboardListener
         {
-                        
             /************************************************************************/
             /// Fields
             /************************************************************************/
             public KeyboardListenerComponent listener;
-            public OnKey                     onKey;
+            public OnKey onKey;
             /************************************************************************/
-
 
             /************************************************************************/
             /// Constructor
             /************************************************************************/
+
             public KeyboardListener(KeyboardListenerComponent listener, OnKey onKey)
             {
                 this.listener = listener;
-                this.onKey    = onKey;
+                this.onKey = onKey;
             }
+
             /************************************************************************/
-
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Mouse Move Listener
         /****************************************************************************/
-        class MouseMoveListener
-        {
 
+        private class MouseMoveListener
+        {
             /************************************************************************/
             /// Fields
             /************************************************************************/
@@ -75,27 +73,27 @@ namespace PlagueEngine.Input
             public OnMouseMove onMouseMove;
             /************************************************************************/
 
-
             /************************************************************************/
             /// Constructor
             /************************************************************************/
-            public MouseMoveListener(MouseListenerComponent mouseListenerComponent,OnMouseMove onMouseMove)
+
+            public MouseMoveListener(MouseListenerComponent mouseListenerComponent, OnMouseMove onMouseMove)
             {
-                this.mouseListenerComponent=mouseListenerComponent;
-                this.onMouseMove=onMouseMove;
+                this.mouseListenerComponent = mouseListenerComponent;
+                this.onMouseMove = onMouseMove;
             }
+
             /************************************************************************/
-
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Mouse Key Listener
         /****************************************************************************/
-        class MouseKeyListener
-        {
 
+        private class MouseKeyListener
+        {
             /************************************************************************/
             /// Fields
             /************************************************************************/
@@ -103,126 +101,125 @@ namespace PlagueEngine.Input
             public OnMouseKey onMouseKey;
             /************************************************************************/
 
-
             /************************************************************************/
             /// Constructor
             /************************************************************************/
-            public MouseKeyListener(MouseListenerComponent mouseListenerComponent,OnMouseKey onMouseKey)
+
+            public MouseKeyListener(MouseListenerComponent mouseListenerComponent, OnMouseKey onMouseKey)
             {
-                this.mouseListenerComponent=mouseListenerComponent;
-                this.onMouseKey=onMouseKey;
+                this.mouseListenerComponent = mouseListenerComponent;
+                this.onMouseKey = onMouseKey;
             }
+
             /************************************************************************/
-
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
         public static bool inTextInputMode = false;
-        private Dictionary<Keys, List<KeyboardListener>>            keyListeners       = new Dictionary<Keys,List<KeyboardListener>>();
-        private Dictionary<MouseKeyAction,List<MouseKeyListener>>   mouseKeyListeners  = new Dictionary<MouseKeyAction,List<MouseKeyListener>>();
-        private Dictionary<MouseMoveAction,List<MouseMoveListener>> mouseMoveListeners = new Dictionary<MouseMoveAction,List<MouseMoveListener>>();
+        private Dictionary<Keys, List<KeyboardListener>> keyListeners = new Dictionary<Keys, List<KeyboardListener>>();
+        private Dictionary<MouseKeyAction, List<MouseKeyListener>> mouseKeyListeners = new Dictionary<MouseKeyAction, List<MouseKeyListener>>();
+        private Dictionary<MouseMoveAction, List<MouseMoveListener>> mouseMoveListeners = new Dictionary<MouseMoveAction, List<MouseMoveListener>>();
 
-        internal Stack<MouseListenerComponent>    ModalsMouseListeners    = new Stack<MouseListenerComponent>();
+        internal Stack<MouseListenerComponent> ModalsMouseListeners = new Stack<MouseListenerComponent>();
         internal Stack<KeyboardListenerComponent> ModalsKeyboardListeners = new Stack<KeyboardListenerComponent>();
 
-        private InputManager           inputManager;
-        private Screen                 _guiScreen;   
-        private Game                   game;
+        private InputManager inputManager;
+        private Screen _guiScreen;
+        private Game game;
         private InputComponentsFactory componentsFactory;
-        private KeyboardState          oldKeyboardState;
-        private MouseState             oldMouseState;
-        private int                    cursorLock;
-        private bool                   enabled;
-        private Clock                  clock;
-        private TimeSpan               prevLeftButtonDown;
-        private TimeSpan               prevMiddleButtonDown;
-        private TimeSpan               prevRightButtonDown;
-        private TimeSpan               doubleClickTime = TimeSpan.FromSeconds(0.25);
+        private KeyboardState oldKeyboardState;
+        private MouseState oldMouseState;
+        private int cursorLock;
+        private bool enabled;
+        private Clock clock;
+        private TimeSpan prevLeftButtonDown;
+        private TimeSpan prevMiddleButtonDown;
+        private TimeSpan prevRightButtonDown;
+        private TimeSpan doubleClickTime = TimeSpan.FromSeconds(0.25);
 
-
-        private SpriteBatch             spriteBatch   = null;
-        private Dictionary<String, int> cursors       = new Dictionary<String,int>();
-        private Texture2D               cursorTexture = null;
-        private Vector2                 cursorSize;
-        private int[]                   cursorGrid    = new int[2];
-        private int                     currentCursor = -1;
-        private Vector2                 cursorPosition;
-        internal bool                    cursorIsVisible = true;
-        private Rectangle               cursorRect;
+        private SpriteBatch spriteBatch = null;
+        private Dictionary<String, int> cursors = new Dictionary<String, int>();
+        private Texture2D cursorTexture = null;
+        private Vector2 cursorSize;
+        private int[] cursorGrid = new int[2];
+        private int currentCursor = -1;
+        private Vector2 cursorPosition;
+        internal bool cursorIsVisible = true;
+        private Rectangle cursorRect;
         /****************************************************************************/
-
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Input(Game game, GameServiceContainer services,GraphicsDevice device)
-        {
-            enabled              = true;
-            this.game            = game;
-            inputManager         = new InputManager(services, game.Window.Handle);
-            componentsFactory    = new InputComponentsFactory(this);
-            InputComponent.input = this;
-            spriteBatch          = new SpriteBatch(device);
-            clock = TimeControl.CreateClock();
-            
-            
-        }
-        /****************************************************************************/
 
+        public Input(Game game, GameServiceContainer services, GraphicsDevice device)
+        {
+            enabled = true;
+            this.game = game;
+            inputManager = new InputManager(services, game.Window.Handle);
+            componentsFactory = new InputComponentsFactory(this);
+            InputComponent.input = this;
+            spriteBatch = new SpriteBatch(device);
+            clock = TimeControl.CreateClock();
+        }
+
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Subscribe Mouse Move Listener
         /****************************************************************************/
-        public void SubscribeMouseMoveListener(MouseListenerComponent listener, 
-                                               MouseMoveAction        mouseMoveAction, 
-                                               OnMouseMove            onMouseMove)
+
+        public void SubscribeMouseMoveListener(MouseListenerComponent listener,
+                                               MouseMoveAction mouseMoveAction,
+                                               OnMouseMove onMouseMove)
         {
-            if(mouseMoveListeners.Keys.Contains(mouseMoveAction))
+            if (mouseMoveListeners.Keys.Contains(mouseMoveAction))
             {
-                mouseMoveListeners[mouseMoveAction].Add(new MouseMoveListener(listener,onMouseMove));
+                mouseMoveListeners[mouseMoveAction].Add(new MouseMoveListener(listener, onMouseMove));
             }
             else
             {
-
                 List<MouseMoveListener> list = new List<MouseMoveListener>();
-                list.Add(new MouseMoveListener(listener,onMouseMove));
-                mouseMoveListeners.Add(mouseMoveAction,list);
+                list.Add(new MouseMoveListener(listener, onMouseMove));
+                mouseMoveListeners.Add(mouseMoveAction, list);
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Subscribe Mouse Key Listener
         /****************************************************************************/
-        public void SubscribeMouseKeyListener(MouseListenerComponent listener, 
-                                              MouseKeyAction         mouseKeyAction, 
-                                              OnMouseKey             onMouseKey)
+
+        public void SubscribeMouseKeyListener(MouseListenerComponent listener,
+                                              MouseKeyAction mouseKeyAction,
+                                              OnMouseKey onMouseKey)
         {
-            if(mouseKeyListeners.Keys.Contains(mouseKeyAction))
+            if (mouseKeyListeners.Keys.Contains(mouseKeyAction))
             {
-                mouseKeyListeners[mouseKeyAction].Add(new MouseKeyListener(listener,onMouseKey));
+                mouseKeyListeners[mouseKeyAction].Add(new MouseKeyListener(listener, onMouseKey));
             }
             else
             {
                 List<MouseKeyListener> list = new List<MouseKeyListener>();
-                list.Add(new MouseKeyListener(listener,onMouseKey));
-                mouseKeyListeners.Add(mouseKeyAction,list);
+                list.Add(new MouseKeyListener(listener, onMouseKey));
+                mouseKeyListeners.Add(mouseKeyAction, list);
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Subscribe Keyboard Listener
         /****************************************************************************/
+
         public void SubscribeKeyboardListener(KeyboardListenerComponent listener,
-                                              Keys                      key,
-                                              OnKey                     onKey)
+                                              Keys key,
+                                              OnKey onKey)
         {
             if (keyListeners.Keys.Contains(key))
             {
@@ -232,21 +229,22 @@ namespace PlagueEngine.Input
             {
                 List<KeyboardListener> list = new List<KeyboardListener>();
                 list.Add(new KeyboardListener(listener, onKey));
-                keyListeners.Add(key,list);
+                keyListeners.Add(key, list);
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Release Keyboard Listener Component
         /****************************************************************************/
+
         public void ReleaseKeyboardListenerComponent(KeyboardListenerComponent component)
         {
             List<KeyboardListener> listenersToDelete = new List<KeyboardListener>();
 
             foreach (List<KeyboardListener> list in keyListeners.Values)
-            {                
+            {
                 foreach (KeyboardListener listener in list)
                 {
                     if (listener.listener == component) listenersToDelete.Add(listener);
@@ -256,23 +254,24 @@ namespace PlagueEngine.Input
                 {
                     list.Remove(listener);
                 }
-                
+
                 listenersToDelete.Clear();
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Release Mouse Listener Component
         /****************************************************************************/
+
         public void ReleaseMouseListenerComponent(MouseListenerComponent component)
         {
-            List<MouseKeyListener>  keyListenersToDelete  = new List<MouseKeyListener>();
+            List<MouseKeyListener> keyListenersToDelete = new List<MouseKeyListener>();
             List<MouseMoveListener> moveListenersToDelete = new List<MouseMoveListener>();
 
             foreach (List<MouseKeyListener> list in mouseKeyListeners.Values)
-            {                
+            {
                 foreach (MouseKeyListener listener in list)
                 {
                     if (listener.mouseListenerComponent == component) keyListenersToDelete.Add(listener);
@@ -282,13 +281,12 @@ namespace PlagueEngine.Input
                 {
                     list.Remove(listener);
                 }
-                
+
                 keyListenersToDelete.Clear();
             }
 
-            
             foreach (List<MouseMoveListener> list in mouseMoveListeners.Values)
-            {                
+            {
                 foreach (MouseMoveListener listener in list)
                 {
                     if (listener.mouseListenerComponent == component) moveListenersToDelete.Add(listener);
@@ -298,16 +296,17 @@ namespace PlagueEngine.Input
                 {
                     list.Remove(listener);
                 }
-                
+
                 moveListenersToDelete.Clear();
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Update
         /****************************************************************************/
+
         public void Update()
         {
             if (!enabled) return;
@@ -316,25 +315,24 @@ namespace PlagueEngine.Input
             if (Input.inTextInputMode) return;
             CheckKeyboard();
         }
-        /****************************************************************************/
-
 
         /****************************************************************************/
-        /// Check Mouse 
+
         /****************************************************************************/
+        /// Check Mouse
+        /****************************************************************************/
+
         private void CheckMouse()
         {
             MouseState state = Mouse.GetState();
-            
+
             cursorPosition.X = state.X;
             cursorPosition.Y = state.Y;
 
-
-            
-            foreach(var mouseMoveAction in mouseMoveListeners.Keys)
+            foreach (var mouseMoveAction in mouseMoveListeners.Keys)
             {
                 var mouseMoveState = new ExtendedMouseMovementState(state.X, state.Y, state.ScrollWheelValue, oldMouseState.X, oldMouseState.Y, oldMouseState.ScrollWheelValue);
-                foreach(var mouseMoveListener in mouseMoveListeners[mouseMoveAction] )
+                foreach (var mouseMoveListener in mouseMoveListeners[mouseMoveAction])
                 {
                     if (ModalsMouseListeners.Count > 0)
                     {
@@ -342,12 +340,12 @@ namespace PlagueEngine.Input
                         {
                             mouseMoveListener.onMouseMove(mouseMoveAction, ref mouseMoveState);
                             break;
-                        }                        
+                        }
                     }
                     else
                     {
                         if (mouseMoveListener.mouseListenerComponent.Active) mouseMoveListener.onMouseMove(mouseMoveAction, ref mouseMoveState);
-                        if (!mouseMoveState.Propagate) break;                    
+                        if (!mouseMoveState.Propagate) break;
                     }
                 }
             }
@@ -363,12 +361,12 @@ namespace PlagueEngine.Input
                         {
                             mouseKeyListener.onMouseKey(mouseKeyAction, ref currentState);
                             break;
-                        }                        
+                        }
                     }
                     else
                     {
                         if (mouseKeyListener.mouseListenerComponent.Active) mouseKeyListener.onMouseKey(mouseKeyAction, ref currentState);
-                        if (!currentState.Propagate) break;                    
+                        if (!currentState.Propagate) break;
                     }
                 }
             }
@@ -376,7 +374,9 @@ namespace PlagueEngine.Input
             if (cursorLock > 0) Mouse.SetPosition(oldMouseState.X, oldMouseState.Y);
             else oldMouseState = state;
         }
+
         /****************************************************************************/
+
         private ExtendedMouseKeyState ExtendedMouseKeyStateFactory(MouseState state, MouseKeyAction mouseKeyAction)
         {
             var down = false;
@@ -384,15 +384,14 @@ namespace PlagueEngine.Input
             var doubleClick = false;
             switch (mouseKeyAction)
             {
-
                 case MouseKeyAction.LeftClick:
-                    
+
                     down = (state.LeftButton == ButtonState.Pressed ? true : false);
                     changed = (oldMouseState.LeftButton != state.LeftButton ? true : false);
 
                     if (down && changed)
                     {
-                        if ((clock.Time - prevLeftButtonDown)<doubleClickTime)
+                        if ((clock.Time - prevLeftButtonDown) < doubleClickTime)
                         {
                             doubleClick = true;
                         }
@@ -405,7 +404,7 @@ namespace PlagueEngine.Input
                     break;
 
                 case MouseKeyAction.RightClick:
-                    
+
                     down = (state.RightButton == ButtonState.Pressed ? true : false);
                     changed = (oldMouseState.RightButton != state.RightButton ? true : false);
 
@@ -417,7 +416,6 @@ namespace PlagueEngine.Input
                         }
                     }
 
-
                     if (down)
                     {
                         prevRightButtonDown = clock.Time;
@@ -425,7 +423,7 @@ namespace PlagueEngine.Input
                     break;
 
                 case MouseKeyAction.MiddleClick:
-                    
+
                     down = (state.MiddleButton == ButtonState.Pressed ? true : false);
                     changed = (oldMouseState.MiddleButton != state.MiddleButton ? true : false);
 
@@ -443,12 +441,13 @@ namespace PlagueEngine.Input
                     }
                     break;
             }
-            return new ExtendedMouseKeyState(down, changed,doubleClick);
+            return new ExtendedMouseKeyState(down, changed, doubleClick);
         }
 
         /****************************************************************************/
         /// Check Keyboard
         /****************************************************************************/
+
         private void CheckKeyboard()
         {
             KeyboardState state = Keyboard.GetState();
@@ -456,27 +455,27 @@ namespace PlagueEngine.Input
             ExtendedKeyState keyState;
             foreach (Keys key in keyListeners.Keys)
             {
-                if(state.IsKeyDown(key))
+                if (state.IsKeyDown(key))
                 {
-                    if(oldKeyboardState.IsKeyDown(key))
+                    if (oldKeyboardState.IsKeyDown(key))
                     {
-                        keyState = new ExtendedKeyState(true,false);
+                        keyState = new ExtendedKeyState(true, false);
                     }
                     else
                     {
-                        keyState = new ExtendedKeyState(true,true);
-                    }                    
+                        keyState = new ExtendedKeyState(true, true);
+                    }
                 }
                 else
                 {
-                    if(oldKeyboardState.IsKeyUp(key))
+                    if (oldKeyboardState.IsKeyUp(key))
                     {
-                        keyState = new ExtendedKeyState(false,false);
+                        keyState = new ExtendedKeyState(false, false);
                     }
                     else
                     {
-                        keyState = new ExtendedKeyState(false,true);
-                    }                                    
+                        keyState = new ExtendedKeyState(false, true);
+                    }
                 }
 
                 foreach (KeyboardListener keyboardListener in keyListeners[key])
@@ -498,12 +497,13 @@ namespace PlagueEngine.Input
 
             oldKeyboardState = state;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Lock Cursor
         /****************************************************************************/
+
         public void LockCursor()
         {
             if (cursorLock == 0)
@@ -515,27 +515,29 @@ namespace PlagueEngine.Input
 
             ++cursorLock;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Unlock Cursor
         /****************************************************************************/
+
         public void UnlockCursor()
         {
             if (cursorLock != 0) --cursorLock;
             if (cursorLock == 0)
             {
-                if(currentCursor < 0) game.IsMouseVisible = true;
+                if (currentCursor < 0) game.IsMouseVisible = true;
                 cursorIsVisible = true;
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Properties
         /****************************************************************************/
+
         public InputComponentsFactory ComponentsFactory
         {
             get
@@ -550,7 +552,6 @@ namespace PlagueEngine.Input
             set
             {
                 enabled = value;
-                game.IsMouseVisible = !value;
                 if (inputManager == null) return;
                 inputManager.Enable = value;
                 if (value) return;
@@ -580,12 +581,13 @@ namespace PlagueEngine.Input
             get { return _guiScreen; }
             set { _guiScreen = value; }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
+
         public void Draw()
         {
             if (currentCursor >= 0 && cursorIsVisible)
@@ -597,17 +599,18 @@ namespace PlagueEngine.Input
 
                 spriteBatch.Begin();
 
-                if (currentCursor == cursors["Targeting"]) spriteBatch.Draw(cursorTexture, cursorPosition + new Vector2(-16,-16), cursorRect, Color.White);
-                else spriteBatch.Draw(cursorTexture, cursorPosition, cursorRect, Color.White);                
+                if (currentCursor == cursors["Targeting"]) spriteBatch.Draw(cursorTexture, cursorPosition + new Vector2(-16, -16), cursorRect, Color.White);
+                else spriteBatch.Draw(cursorTexture, cursorPosition, cursorRect, Color.White);
                 spriteBatch.End();
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Set Cursor Texture
         /****************************************************************************/
+
         public void SetCursorTexture(Texture2D texture, int width, int height, String[] cursors)
         {
             int i = 0;
@@ -617,8 +620,8 @@ namespace PlagueEngine.Input
             }
 
             this.cursorTexture = texture;
-            this.cursorSize.X  = texture.Width  / width;
-            this.cursorSize.Y  = texture.Height / height;
+            this.cursorSize.X = texture.Width / width;
+            this.cursorSize.Y = texture.Height / height;
             cursorGrid[0] = width;
             cursorGrid[1] = height;
 
@@ -631,12 +634,13 @@ namespace PlagueEngine.Input
 
             game.IsMouseVisible = false;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Set Cursor
         /****************************************************************************/
+
         public void SetCursor(String cursor)
         {
             if (String.IsNullOrEmpty(cursor))
@@ -653,15 +657,16 @@ namespace PlagueEngine.Input
 
                     cursorRect = new Rectangle((int)((currentCursor % cursorGrid[0]) * cursorSize.X),
                                                 (int)((currentCursor / cursorGrid[1]) * cursorSize.Y),
-                                                (int) cursorSize.X,
-                                                (int) cursorSize.Y);
+                                                (int)cursorSize.X,
+                                                (int)cursorSize.Y);
                 }
             }
         }
+
         /****************************************************************************/
-
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 }
+
 /************************************************************************************/

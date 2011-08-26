@@ -1,36 +1,36 @@
 ﻿using System.Collections.Generic;
-using JigLibX.Physics;
 using JigLibX.Collision;
+using JigLibX.Physics;
 using PlagueEngine.Resources;
 
 namespace PlagueEngine.Physics
 {
-
     /********************************************************************************/
     ///  PlagueEngine.Physics
     /********************************************************************************/
-    class PhysicsManager
+
+    internal class PhysicsManager
     {
-        
         /****************************************************************************/
         ///  Fields
         /****************************************************************************/
-        private  PhysicsSystem                              physicsSystem;
-        internal Dictionary<int, RigidBodyComponent>        rigidBodies              = new Dictionary<int, RigidBodyComponent>();
-        internal Dictionary<int, CollisionSkinComponent>    collisionSkins           = new Dictionary<int, CollisionSkinComponent>();
-        internal List<Cone>                                 cones = new List<Cone>();
-        internal List<PhysicsController>                    controllers              = new List<PhysicsController>();
-        internal PhysicsComponentFactory                    physicsComponentFactory;
+        private PhysicsSystem physicsSystem;
+        internal Dictionary<int, RigidBodyComponent> rigidBodies = new Dictionary<int, RigidBodyComponent>();
+        internal Dictionary<int, CollisionSkinComponent> collisionSkins = new Dictionary<int, CollisionSkinComponent>();
+        internal List<Cone> cones = new List<Cone>();
+        internal List<PhysicsController> controllers = new List<PhysicsController>();
+        internal PhysicsComponentFactory physicsComponentFactory;
+        private List<Cone> wastedCones = new List<Cone>();
         /****************************************************************************/
-
 
         /****************************************************************************/
         ///  Constructor
         /****************************************************************************/
+
         public PhysicsManager(ContentManager content)
-        {                       
-            physicsComponentFactory       = new PhysicsComponentFactory(content);
-            physicsSystem                 = new PhysicsSystem
+        {
+            physicsComponentFactory = new PhysicsComponentFactory(content);
+            physicsSystem = new PhysicsSystem
                                                 {
                                                     CollisionSystem = new CollisionSystemSAP(),
                                                     SolverType = PhysicsSystem.Solver.Fast,
@@ -48,12 +48,13 @@ namespace PlagueEngine.Physics
             PhysicsController.physicsManager = this;
             Cone.physicsManager = this;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         ///  Update
         /****************************************************************************/
+
         public void Update(float timeStep)
         {
             if (timeStep < 1.0f / 30.0f) physicsSystem.Integrate(timeStep);
@@ -74,12 +75,6 @@ namespace PlagueEngine.Physics
                 controller.UpdateController(timeStep);
             }
 
-
-
-
-
-            List<Cone> wastedCones = new List<Cone>();
-
             foreach (Cone cone in cones)
             {
                 cone.Update();
@@ -93,17 +88,15 @@ namespace PlagueEngine.Physics
             {
                 cones.Remove(cone);
             }
-
-
-
-
+            wastedCones.Clear();
 
             ExplosionManager.Update();
         }
+
         /****************************************************************************/
-               
     }
+
     /********************************************************************************/
-    
 }
+
 /************************************************************************************/

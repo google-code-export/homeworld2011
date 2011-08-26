@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.IO;
-using PlagueEngine.Resources;
-using PlagueEngine.Rendering;
+using PlagueEngine.Editor.Controls.GameObjectsControls;
 using PlagueEngine.HighLevelGameFlow;
+using PlagueEngine.Rendering;
+using PlagueEngine.Resources;
 
 namespace PlagueEngine.Editor
 {
-    class EditorData
+    internal class EditorData
     {
         private const string GameObjectNamespace = "PlagueEngine.LowLevelGameFlow.GameObjects";
         private const string GameObjectFactory = "GameObjectsFactory";
@@ -17,6 +18,8 @@ namespace PlagueEngine.Editor
         private const string LevelExtension = ".lvl";
 
         public Level Level { get; set; }
+
+        public Assembly ExecutingAssembly { get; set; }
 
         public Input.Input Input { get; set; }
 
@@ -30,10 +33,17 @@ namespace PlagueEngine.Editor
 
         public List<GameObjectClassName> GameObjectClassNames { get; set; }
 
+        public List<BaseControl> GameObjectControls { get; set; }
+
+        public EditorEventSender EditorEventSender { get; set; }
+
         public EditorData(Game game)
         {
+            EditorEventSender = new Editor.EditorEventSender();
             GameObjectClassNames = new List<GameObjectClassName>();
             Levels = new List<FileInfo>();
+            GameObjectControls = new List<BaseControl>();
+            ExecutingAssembly = Assembly.GetExecutingAssembly();
             Game = game;
             Input = game.Input;
             Level = game.Level;
@@ -41,15 +51,16 @@ namespace PlagueEngine.Editor
             ContentManager = game.ContentManager;
             FillClassNames();
             FillLevelNames();
+            FillGameObjectControls();
         }
+
         public void FillClassNames()
         {
             GameObjectClassNames.Clear();
-            var assembly = Assembly.GetExecutingAssembly();
             var gameObjectClassName = new List<Type>();
             var gameObjectDataClass = new List<Type>();
             Type factory = null;
-            foreach (var type in assembly.GetTypes())
+            foreach (var type in ExecutingAssembly.GetTypes())
             {
                 if (type.Name.Equals(GameObjectFactory))
                 {
@@ -57,7 +68,7 @@ namespace PlagueEngine.Editor
                     continue;
                 }
                 if (String.IsNullOrWhiteSpace(type.Namespace) || !type.Namespace.Equals(GameObjectNamespace)) continue;
-                
+
                 if (type.Name.EndsWith("Data"))
                 {
                     gameObjectDataClass.Add(type);
@@ -70,7 +81,7 @@ namespace PlagueEngine.Editor
             if (factory == null)
             {
 #if DEBUG
-                Diagnostics.Fatal("There is no class " + GameObjectFactory +" !!!");
+                Diagnostics.Fatal("There is no class " + GameObjectFactory + " !!!");
 #endif
                 return;
             }
@@ -81,6 +92,19 @@ namespace PlagueEngine.Editor
                     if (!dataType.Name.Equals(type.Name + "Data")) continue;
                     GameObjectClassNames.Add(new GameObjectClassName(type.Name, type, dataType, factory.GetMethod("Create" + type.Name) != null));
                     break;
+                }
+            }
+        }
+
+        public void FillGameObjectControls()
+        {
+            GameObjectControls.Clear();
+            foreach (Type type in ExecutingAssembly.GetTypes())
+            {
+                var baseType = type.BaseType;
+                if (baseType != null && baseType.Name.Equals("BaseControl"))
+                {
+                    GameObjectControls.Add((BaseControl)Activator.CreateInstance(type));
                 }
             }
         }
@@ -100,6 +124,11 @@ namespace PlagueEngine.Editor
             {
                 Levels.Add(fileInfo);
             }
+        }
+
+        internal GameObjectClassName GetClassByData(string name)
+        {
+            return String.IsNullOrWhiteSpace(name) ? null : GameObjectClassNames.FirstOrDefault(gameobject => name.Equals(gameobject.DataClassType.Name));
         }
     }
 }
