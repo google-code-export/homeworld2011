@@ -1,32 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Xml.Serialization;
-
-using PlagueEngine.Resources;
-using PlagueEngine.Rendering.Components;
 using PlagueEngine.Input.Components;
-using PlagueEngine.Tools;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
-
-using Microsoft.Xna.Framework.Input;
 using PlagueEngine.Particles;
-
+using PlagueEngine.Rendering.Components;
+using PlagueEngine.Resources;
+using PlagueEngine.Tools;
 
 /************************************************************************************/
 /// PlagueEngine.Rendering
 /************************************************************************************/
-namespace PlagueEngine.Rendering
-{  
 
+namespace PlagueEngine.Rendering
+{
     /********************************************************************************/
     /// Renderer
     /********************************************************************************/
-    class Renderer
+
+    internal class Renderer
     {
-     
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
@@ -34,19 +28,17 @@ namespace PlagueEngine.Rendering
         /**********************/
         /// Basics
         /**********************/
-        private  GraphicsDeviceManager      graphics          = null;
-        internal ContentManager             contentManager    = null;
-        private  RenderingComponentsFactory componentsFactory = null;
+        private GraphicsDeviceManager graphics = null;
+        internal ContentManager contentManager = null;
+        private RenderingComponentsFactory componentsFactory = null;
         /**********************/
-
 
         /*************************/
         /// Renderable Components
         /*************************/
         internal List<RenderableComponent> renderableComponents = new List<RenderableComponent>();
-        internal List<RenderableComponent> preRender            = new List<RenderableComponent>();
+        internal List<RenderableComponent> preRender = new List<RenderableComponent>();
         /*************************/
-
 
         /*************************/
         /// Particles
@@ -54,39 +46,35 @@ namespace PlagueEngine.Rendering
         private ParticleManager particleManager = null;
         /*************************/
 
-
         /**********************/
         /// Global Components
         /**********************/
-        private  CameraComponent   currentCamera = null;
+        private CameraComponent currentCamera = null;
         /**********************/
-                       
 
         /**********************/
         /// Rect
         /**********************/
-        private bool            drawRect   = false;
-        private Color           rectColor  = Color.Green;
-        private Effect          rectEffect = null;
+        private bool drawRect = false;
+        private Color rectColor = Color.Green;
+        private Effect rectEffect = null;
         private VertexPositionColor[] rect = new VertexPositionColor[5];
         /**********************/
-
 
         /**********************/
         /// Helpers
         /**********************/
-        internal BatchedMeshes        batchedMeshes         = null;
-        internal BatchedSkinnedMeshes batchedSkinnedMeshes  = null;
-        internal DebugDrawer          debugDrawer           = null;
-        internal LightsManager        lightsManager         = null;        
-        private  SpriteBatch          spriteBatch           = null;        
+        internal BatchedMeshes batchedMeshes = null;
+        internal BatchedSkinnedMeshes batchedSkinnedMeshes = null;
+        internal DebugDrawer debugDrawer = null;
+        internal LightsManager lightsManager = null;
+        private SpriteBatch spriteBatch = null;
         internal List<FrontEndComponent> frontEndComponents = new List<FrontEndComponent>();
-        internal Dictionary<String, SpriteFont> fonts       = new Dictionary<String, SpriteFont>();
-        private Effect colorCorrection = null;        
+        internal Dictionary<String, SpriteFont> fonts = new Dictionary<String, SpriteFont>();
+        private Effect colorCorrection = null;
         private float brightness = 0.0f;
-        private float contrast   = 1.0f;
+        private float contrast = 1.0f;
         /**********************/
-
 
         /**********************/
         /// Deferred Shading
@@ -94,46 +82,44 @@ namespace PlagueEngine.Rendering
         private Vector2 TextureSize;
         private Vector2 HalfPixel;
 
-        private  RenderTarget2D color            = null;
-        private  RenderTarget2D normal           = null;
-        internal RenderTarget2D depth            = null;
-        private  RenderTarget2D light            = null;
-        private  RenderTarget2D test             = null;
+        private RenderTarget2D color = null;
+        private RenderTarget2D normal = null;
+        internal RenderTarget2D depth = null;
+        private RenderTarget2D light = null;
+        private RenderTarget2D test = null;
 
-        private Quad           fullScreenQuad   = null;
-        private Effect         clearEffect      = null;
-        private Effect         debugEffect      = null;
+        private Quad fullScreenQuad = null;
+        private Effect clearEffect = null;
+        private Effect debugEffect = null;
 
-        private Effect         composition      = null;
-        
-        private Quad topLeft     = null;
-        private Quad topRight    = null;
-        private Quad bottomLeft  = null;
+        private Effect composition = null;
+
+        private Quad topLeft = null;
+        private Quad topRight = null;
+        private Quad bottomLeft = null;
         private Quad bottomRight = null;
         /**********************/
-
 
         /**********************/
         /// SSAO
         /**********************/
-        private Effect         ssaoEffect     = null;        
-        private Effect         ssaoBlurEffect = null;
-        private Texture2D      ditherTexture  = null;
-        public  float          sampleRadius   = 0.00005f;
-        public  float          distanceScale  = 1000.0f;
-        private RenderTarget2D ssao           = null;
-        private RenderTarget2D ssaoDepth      = null;
-        private RenderTarget2D ssaoBlur       = null;
-        public  bool           ssaoEnabled    = false;
+        private Effect ssaoEffect = null;
+        private Effect ssaoBlurEffect = null;
+        private Texture2D ditherTexture = null;
+        public float sampleRadius = 0.00005f;
+        public float distanceScale = 1000.0f;
+        private RenderTarget2D ssao = null;
+        private RenderTarget2D ssaoDepth = null;
+        private RenderTarget2D ssaoBlur = null;
+        public bool ssaoEnabled = false;
         /**********************/
 
-
         /**********************/
-        /// Bloom 
+        /// Bloom
         /**********************/
-        private Effect bloomEffect       = null;
-        private Effect bloomComposition  = null;
-        private RenderTarget2D bloom     = null;
+        private Effect bloomEffect = null;
+        private Effect bloomComposition = null;
+        private RenderTarget2D bloom = null;
         private RenderTarget2D bloomBlur = null;
         private float bloomIntensity;
         private float baseIntensity;
@@ -142,7 +128,6 @@ namespace PlagueEngine.Rendering
         private float bloomThreshold;
         /**********************/
         private RenderTarget2D final = null;
-
 
         /**********************/
         /// G-O EDITOR
@@ -153,7 +138,7 @@ namespace PlagueEngine.Rendering
         /**********************/
 
         internal FogOfWarComponent fogOfWar = null;
-                
+
         /****************************************************************************/
 
         public float Brightness
@@ -167,7 +152,8 @@ namespace PlagueEngine.Rendering
                     colorCorrection.Parameters["Brightness"].SetValue(brightness);
                 }
             }
-        }       
+        }
+
         public float Contrast
         {
             get { return contrast; }
@@ -181,7 +167,6 @@ namespace PlagueEngine.Rendering
             }
         }
 
-
         public float BloomIntensity
         {
             get { return bloomIntensity; }
@@ -194,6 +179,7 @@ namespace PlagueEngine.Rendering
                 }
             }
         }
+
         public float BloomSaturation
         {
             get { return bloomSaturation; }
@@ -206,6 +192,7 @@ namespace PlagueEngine.Rendering
                 }
             }
         }
+
         public float BaseIntensity
         {
             get { return baseIntensity; }
@@ -218,6 +205,7 @@ namespace PlagueEngine.Rendering
                 }
             }
         }
+
         public float BaseSaturation
         {
             get { return baseSaturation; }
@@ -230,6 +218,7 @@ namespace PlagueEngine.Rendering
                 }
             }
         }
+
         public float BloomThreshold
         {
             get { return bloomThreshold; }
@@ -246,71 +235,72 @@ namespace PlagueEngine.Rendering
         /****************************************************************************/
         /// Constants
         /****************************************************************************/
-        private const SurfaceFormat     surfaceFormat   = SurfaceFormat.Color;
-        private const DepthFormat       depthFormat     = DepthFormat.Depth24;
+        private const SurfaceFormat surfaceFormat = SurfaceFormat.Color;
+        private const DepthFormat depthFormat = DepthFormat.Depth24;
         /****************************************************************************/
-
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public Renderer(Game game,RenderConfig config)
+
+        public Renderer(Game game, RenderConfig config)
         {
-            graphics               = new GraphicsDeviceManager(game);           
-            contentManager         = game.ContentManager;           
-            CurrentConfiguration   = config;
-            componentsFactory      = new RenderingComponentsFactory(this);            
-            batchedMeshes          = new BatchedMeshes(contentManager, this);
-            batchedSkinnedMeshes   = new BatchedSkinnedMeshes(contentManager, this);
-            particleManager        = game.ParticleManager;
+            graphics = new GraphicsDeviceManager(game);
+            contentManager = game.ContentManager;
+            CurrentConfiguration = config;
+            componentsFactory = new RenderingComponentsFactory(this);
+            batchedMeshes = new BatchedMeshes(contentManager, this);
+            batchedSkinnedMeshes = new BatchedSkinnedMeshes(contentManager, this);
+            particleManager = game.ParticleManager;
             Physics.PhysicsUlitities.graphics = this.graphics;
 
-            FreeCamera.renderer           = this;
-            MeshComponent.renderer        = this;
-            RenderableComponent.renderer  = this;
+            FreeCamera.renderer = this;
+            MeshComponent.renderer = this;
+            RenderableComponent.renderer = this;
             SkinnedMeshComponent.renderer = this;
-            Quad.renderer                 = this;
-            PointLightComponent.renderer  = this;
-            SpotLightComponent.renderer   = this;
-            FrontEndComponent.renderer    = this;
-            OptionsMenu.renderer          = this;
+            Quad.renderer = this;
+            PointLightComponent.renderer = this;
+            SpotLightComponent.renderer = this;
+            FrontEndComponent.renderer = this;
+            OptionsMenu.renderer = this;
 
-            InGameMenu.renderer           = this;
+            InGameMenu.renderer = this;
 
             FogOfWarComponent.renderer = this;
 
             spriteBatch = new SpriteBatch(Device);
-            
-            ExtendedMouseMovementState.Display = graphics.GraphicsDevice.DisplayMode;            
 
+            ExtendedMouseMovementState.Display = graphics.GraphicsDevice.DisplayMode;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Init Debug Drawer
         /****************************************************************************/
+
         public void InitDebugDrawer(Physics.PhysicsManager physicsManager)
         {
             debugDrawer = new DebugDrawer(this, physicsManager);
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Enumerate Available Resolutions
         /****************************************************************************/
+
         public List<int[]> EnumerateAvailableResolutions()
-        { 
-            List<int[]> result  = new List<int[]>();
-            int[] resolution    = null;
+        {
+            List<int[]> result = new List<int[]>();
+            int[] resolution = null;
 
             foreach (DisplayMode displayMode in Device.Adapter.SupportedDisplayModes)
             {
                 if (displayMode.Format == SurfaceFormat.Color)
                 {
                     resolution = new int[2];
-                    
+
                     resolution[0] = displayMode.Width;
                     resolution[1] = displayMode.Height;
 
@@ -320,30 +310,32 @@ namespace PlagueEngine.Rendering
 
             return result;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// VSync
         /****************************************************************************/
+
         public bool VSync
         {
             get
             {
                 return graphics.SynchronizeWithVerticalRetrace;
             }
-            
+
             set
             {
                 graphics.SynchronizeWithVerticalRetrace = value;
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Current Configuration
         /****************************************************************************/
+
         public RenderConfig CurrentConfiguration
         {
             get
@@ -362,7 +354,7 @@ namespace PlagueEngine.Rendering
                                         baseSaturation,
                                         bloomThreshold);
             }
-            
+
             set
             {
                 Brightness = value.Brightness;
@@ -398,57 +390,60 @@ namespace PlagueEngine.Rendering
 #endif
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Draw Rect
         /****************************************************************************/
+
         private void DrawRect()
         {
             if (!drawRect) return;
 
             rectEffect.CurrentTechnique.Passes[0].Apply();
-            
+
             Device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip, rect, 0, 4);
 
             drawRect = false;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Draw Selection Rect
         /****************************************************************************/
+
         public void DrawSelectionRect(Rectangle selectionRect)
         {
-            float x =         (float)selectionRect.Left   / (float)Device.PresentationParameters.BackBufferWidth;
+            float x = (float)selectionRect.Left / (float)Device.PresentationParameters.BackBufferWidth;
             float y = 1.0f - ((float)selectionRect.Bottom / (float)Device.PresentationParameters.BackBufferHeight);
-            float w =         (float)selectionRect.Right  / (float)Device.PresentationParameters.BackBufferWidth;
-            float h = 1.0f - ((float)selectionRect.Top    / (float)Device.PresentationParameters.BackBufferHeight);
+            float w = (float)selectionRect.Right / (float)Device.PresentationParameters.BackBufferWidth;
+            float h = 1.0f - ((float)selectionRect.Top / (float)Device.PresentationParameters.BackBufferHeight);
 
-            rect[0].Position = new Vector3(x,y,0);
+            rect[0].Position = new Vector3(x, y, 0);
             rect[0].Color = rectColor;
 
-            rect[1].Position = new Vector3(w,y,0);
+            rect[1].Position = new Vector3(w, y, 0);
             rect[1].Color = rectColor;
 
-            rect[2].Position = new Vector3(w,h,0);
+            rect[2].Position = new Vector3(w, h, 0);
             rect[2].Color = rectColor;
 
-            rect[3].Position = new Vector3(x,h,0);
+            rect[3].Position = new Vector3(x, h, 0);
             rect[3].Color = rectColor;
 
             rect[4] = rect[0];
 
             drawRect = true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Draw
         /****************************************************************************/
+
         public void Draw(TimeSpan time, GameTime gameTime)
         {
             batchedSkinnedMeshes.DeltaTime = time;
@@ -459,10 +454,9 @@ namespace PlagueEngine.Rendering
 
             /*************************/
             /// Cleaning Nuclex Shit
-            /*************************/            
+            /*************************/
             Device.SamplerStates[0] = SamplerState.LinearWrap;
             /*************************/
-
 
             /*************************/
             /// Render Fog of War
@@ -472,7 +466,7 @@ namespace PlagueEngine.Rendering
                 if (fogOfWar.Enabled) fogOfWar.Update(spriteBatch);
             }
             /*************************/
-            
+
             Device.BlendState = BlendState.Opaque;
 
             foreach (RenderableComponent renderableComponent in preRender)
@@ -505,14 +499,14 @@ namespace PlagueEngine.Rendering
             lightsManager.RenderLights(ref ViewProjection, ref InverseViewProjection, ref CameraPosition, Frustrum);
 
             if (ssaoEnabled) RenderSSAO(ref Projection, ref View, currentCamera.ZFar, currentCamera.Aspect);
-            
+
             Device.SetRenderTarget(test);
 
             composition.Parameters["Ambient"].SetValue(lightsManager.sunlight.Ambient);
             composition.Parameters["FogEnabled"].SetValue(lightsManager.sunlight.Fog);
             composition.Parameters["FogColor"].SetValue(lightsManager.sunlight.FogColor);
             composition.Parameters["FogRange"].SetValue(lightsManager.sunlight.FogRange);
-            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);            
+            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
 
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
@@ -520,12 +514,11 @@ namespace PlagueEngine.Rendering
             particleManager.DrawParticles(gameTime);
             Device.BlendState = BlendState.Opaque;
 
-
             Device.SetRenderTarget(bloom);
             bloomEffect.Parameters["Texture"].SetValue(test);
             bloomEffect.CurrentTechnique.Passes[0].Apply();
             fullScreenQuad.Draw();
-            
+
             Device.SetRenderTarget(bloomBlur);
             ssaoBlurEffect.Parameters["Texture"].SetValue(bloom);
             ssaoBlurEffect.CurrentTechnique.Passes[0].Apply();
@@ -556,14 +549,13 @@ namespace PlagueEngine.Rendering
             bloomComposition.Parameters["Bloom"].SetValue(bloom);
             bloomComposition.CurrentTechnique.Passes[0].Apply();
             fullScreenQuad.JustDraw();
-            
-            DrawFrontEnd(ViewProjection);            
+
+            DrawFrontEnd(ViewProjection);
 #if DEBUG
             DrawIcons(ViewProjection);
-#endif    
+#endif
             DrawRect();
 
-            
             Device.SetRenderTarget(null);
             colorCorrection.Parameters["Texture"].SetValue(final);
             colorCorrection.Techniques[0].Passes[0].Apply();
@@ -588,17 +580,16 @@ namespace PlagueEngine.Rendering
             //debugEffect.Parameters["Texture"].SetValue(test);
             //debugEffect.Techniques[0].Passes[0].Apply();
             //bottomRight.Draw();
-
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Render
         /****************************************************************************/
-        internal void Render(ref Vector3 cameraPosition,ref Matrix view,ref Matrix projection,ref Matrix viewProjection,BoundingFrustum frustrum)
-        {
 
+        internal void Render(ref Vector3 cameraPosition, ref Matrix view, ref Matrix projection, ref Matrix viewProjection, BoundingFrustum frustrum)
+        {
             /************************************/
             /// Batched Skinned Meshes
             /************************************/
@@ -607,23 +598,21 @@ namespace PlagueEngine.Rendering
             batchedSkinnedMeshes.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
             batchedSkinnedMeshes.Draw(frustrum);
             /************************************/
-            
-            
+
             /************************************/
             /// Renderable Components
             /************************************/
             foreach (RenderableComponent renderableComponent in renderableComponents)
             {
                 if (!renderableComponent.FrustrumInteresction(frustrum)) continue;
-                
+
                 renderableComponent.Effect.Parameters["View"].SetValue(view);
                 renderableComponent.Effect.Parameters["Projection"].SetValue(projection);
                 renderableComponent.Effect.Parameters["ViewProjection"].SetValue(viewProjection);
-                
+
                 renderableComponent.Draw();
             }
             /************************************/
-
 
             /************************************/
             /// Batched Meshes
@@ -634,21 +623,20 @@ namespace PlagueEngine.Rendering
             batchedMeshes.Draw(frustrum);
             /************************************/
 
-
             /************************************/
             /// Debug Drawer
             /************************************/
             if (debugDrawer != null) debugDrawer.Draw(currentCamera.View, currentCamera.Projection);
             /************************************/
-
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Pre Render
         /****************************************************************************/
-        internal void PreRender(Vector3 cameraPosition, Matrix view, Matrix projection, Matrix viewProjection, BoundingFrustum frustrum, RenderTarget2D renderTarget,bool clip,Vector4 clipPlane)
+
+        internal void PreRender(Vector3 cameraPosition, Matrix view, Matrix projection, Matrix viewProjection, BoundingFrustum frustrum, RenderTarget2D renderTarget, bool clip, Vector4 clipPlane)
         {
             Vector3 CameraPosition = cameraPosition;
             Matrix View = view;
@@ -656,7 +644,6 @@ namespace PlagueEngine.Rendering
             Matrix ViewProjection = viewProjection;
             Matrix InverseViewProjection = Matrix.Invert(viewProjection);
             BoundingFrustum Frustrum = frustrum;
-
 
             /*********************************/
             /// Clear GBuffer
@@ -667,7 +654,6 @@ namespace PlagueEngine.Rendering
             fullScreenQuad.Draw();
             Device.DepthStencilState = DepthStencilState.Default;
             /*********************************/
-
 
             /************************************/
             /// Batched Skinned Meshes
@@ -680,7 +666,6 @@ namespace PlagueEngine.Rendering
             batchedSkinnedMeshes.Draw(frustrum);
             batchedSkinnedMeshes.Effect.Parameters["ClipPlaneEnabled"].SetValue(false);
             /************************************/
-
 
             /************************************/
             /// Renderable Components
@@ -699,17 +684,16 @@ namespace PlagueEngine.Rendering
             }
             /************************************/
 
-
             /************************************/
             /// Batched Meshes
             /************************************/
             batchedMeshes.SetEffectParameter("View", view);
             batchedMeshes.SetEffectParameter("Projection", projection);
             batchedMeshes.SetEffectParameter("ViewProjection", viewProjection);
-            batchedMeshes.SetEffectParameter("ClipPlaneEnabled",clip);
-            batchedMeshes.SetEffectParameter("ClipPlane",clipPlane);                
+            batchedMeshes.SetEffectParameter("ClipPlaneEnabled", clip);
+            batchedMeshes.SetEffectParameter("ClipPlane", clipPlane);
             batchedMeshes.Draw(frustrum);
-            batchedMeshes.SetEffectParameter("ClipPlaneEnabled", false);            
+            batchedMeshes.SetEffectParameter("ClipPlaneEnabled", false);
             /************************************/
 
             Device.RasterizerState = RasterizerState.CullCounterClockwise;
@@ -723,21 +707,22 @@ namespace PlagueEngine.Rendering
             composition.Parameters["FogEnabled"].SetValue(lightsManager.sunlight.Fog);
             composition.Parameters["FogColor"].SetValue(lightsManager.sunlight.FogColor);
             composition.Parameters["FogRange"].SetValue(lightsManager.sunlight.FogRange);
-            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);  
+            composition.Parameters["SSAOEnabled"].SetValue(ssaoEnabled);
 
             composition.Techniques[0].Passes[0].Apply();
             fullScreenQuad.Draw();
 
             Device.SetRenderTarget(null);
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Render SSAO
         /****************************************************************************/
-        private void RenderSSAO(ref Matrix Projection,ref Matrix View, float zFar, float aspect)
-        {            
+
+        private void RenderSSAO(ref Matrix Projection, ref Matrix View, float zFar, float aspect)
+        {
             fullScreenQuad.SetBuffers();
 
             Device.SetRenderTarget(ssaoBlur);
@@ -768,19 +753,19 @@ namespace PlagueEngine.Rendering
 
             Device.SetRenderTarget(null);
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Draw Front End
         /****************************************************************************/
+
         private void DrawFrontEnd(Matrix ViewProjection)
         {
             if (spriteBatch.GraphicsDevice.IsDisposed)
             {
                 spriteBatch = new SpriteBatch(Device);
             }
-
 
             int screenWidth = Device.PresentationParameters.BackBufferWidth;
             int screenHeight = Device.PresentationParameters.BackBufferHeight;
@@ -794,14 +779,13 @@ namespace PlagueEngine.Rendering
 
             spriteBatch.End();
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         /// DrawIcons
         /****************************************************************************/
+
         private void DrawIcons(Matrix ViewProjection)
         {
             int screenWidth = Device.PresentationParameters.BackBufferWidth;
@@ -811,14 +795,13 @@ namespace PlagueEngine.Rendering
             editor.DrawIcons(spriteBatch, ref ViewProjection, screenWidth, screenHeight);
             spriteBatch.End();
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         /// Components Factory
         /****************************************************************************/
+
         public RenderingComponentsFactory ComponentsFactory
         {
             get
@@ -826,12 +809,13 @@ namespace PlagueEngine.Rendering
                 return componentsFactory;
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Graphics Device
         /****************************************************************************/
+
         public GraphicsDevice Device
         {
             get
@@ -839,12 +823,13 @@ namespace PlagueEngine.Rendering
                 return graphics.GraphicsDevice;
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Graphics Manager
         /****************************************************************************/
+
         public GraphicsDeviceManager Manager
         {
             get
@@ -852,13 +837,13 @@ namespace PlagueEngine.Rendering
                 return graphics;
             }
         }
+
         /****************************************************************************/
-
-
 
         /****************************************************************************/
         /// SpriteBatch
         /****************************************************************************/
+
         public SpriteBatch SpriteBatch
         {
             get
@@ -866,15 +851,13 @@ namespace PlagueEngine.Rendering
                 return spriteBatch;
             }
         }
+
         /****************************************************************************/
-
-
-
-
 
         /****************************************************************************/
         /// Current Camera
         /****************************************************************************/
+
         public CameraComponent CurrentCamera
         {
             get
@@ -887,82 +870,87 @@ namespace PlagueEngine.Rendering
                 currentCamera = value;
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Release Renderable Component
         /****************************************************************************/
+
         public void ReleaseRenderableComponent(RenderableComponent component)
         {
             renderableComponents.Remove(component);
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Release PreRender Component
         /****************************************************************************/
+
         public void ReleasePreRenderComponent(RenderableComponent component)
         {
             preRender.Remove(component);
-        }        
+        }
+
         /****************************************************************************/
-                
 
         /****************************************************************************/
         /// Instancing Mode To UInt
         /****************************************************************************/
+
         public static uint InstancingModeToUInt(InstancingModes instancingMode)
         {
             switch (instancingMode)
             {
-                case InstancingModes.NoInstancing:      return 1;
+                case InstancingModes.NoInstancing: return 1;
                 case InstancingModes.DynamicInstancing: return 3;
                 default: return 0;
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// UInt To Instancing Mode
         /****************************************************************************/
+
         public static InstancingModes UIntToInstancingMode(uint value)
         {
             switch (value)
             {
-                case 1:  return InstancingModes.NoInstancing;
+                case 1: return InstancingModes.NoInstancing;
                 default: return InstancingModes.DynamicInstancing;
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Effects
         /****************************************************************************/
+
         public void LoadEffects()
         {
             batchedMeshes.LoadEffects();
             batchedSkinnedMeshes.LoadEffect();
 
-            clearEffect      = contentManager.LoadEffect("DSClear");
-            debugEffect      = contentManager.LoadEffect("DSDebug");
-            composition      = contentManager.LoadEffect("DSComposition");
-            ssaoEffect       = contentManager.LoadEffect("SSAO");
-            ssaoBlurEffect   = contentManager.LoadEffect("GaussianBlur15");
-            rectEffect       = contentManager.LoadEffect("SSLineEffect");
-            colorCorrection  = contentManager.LoadEffect("ColorCorrection");
-            bloomEffect      = contentManager.LoadEffect("Bloom");
+            clearEffect = contentManager.LoadEffect("DSClear");
+            debugEffect = contentManager.LoadEffect("DSDebug");
+            composition = contentManager.LoadEffect("DSComposition");
+            ssaoEffect = contentManager.LoadEffect("SSAO");
+            ssaoBlurEffect = contentManager.LoadEffect("GaussianBlur15");
+            rectEffect = contentManager.LoadEffect("SSLineEffect");
+            colorCorrection = contentManager.LoadEffect("ColorCorrection");
+            bloomEffect = contentManager.LoadEffect("Bloom");
             bloomComposition = contentManager.LoadEffect("BloomComposition");
-            
+
             composition.Parameters["GBufferColor"].SetValue(color);
             composition.Parameters["GBufferDepth"].SetValue(depth);
             composition.Parameters["LightMap"].SetValue(light);
             composition.Parameters["SSAOTexture"].SetValue(ssaoBlur);
             composition.Parameters["HalfPixel"].SetValue(HalfPixel);
-                        
+
             debugEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
 
             bloomEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
@@ -977,22 +965,23 @@ namespace PlagueEngine.Rendering
             colorCorrection.Parameters["HalfPixel"].SetValue(HalfPixel);
             colorCorrection.Parameters["Brightness"].SetValue(brightness);
             colorCorrection.Parameters["Contrast"].SetValue(contrast);
-                       
-            ditherTexture = contentManager.LoadTexture2D("RandomNormals");            
+
+            ditherTexture = contentManager.LoadTexture2D("RandomNormals");
 
             ssaoEffect.Parameters["DitherTexture"].SetValue(ditherTexture);
             ssaoEffect.Parameters["GBufferNormal"].SetValue(normal);
             ssaoEffect.Parameters["GBufferDepth"].SetValue(ssaoDepth);
             ssaoEffect.Parameters["HalfPixel"].SetValue(HalfPixel);
 
-            ssaoBlurEffect.Parameters["Texture"].SetValue(ssao);            
+            ssaoBlurEffect.Parameters["Texture"].SetValue(ssao);
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Fonts
         /****************************************************************************/
+
         public void LoadFonts(params String[] fonts)
         {
             SpriteFont spriteFont;
@@ -1002,12 +991,13 @@ namespace PlagueEngine.Rendering
                 this.fonts.Add(font, spriteFont);
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Init Deferred Helpers
         /****************************************************************************/
+
         public void InitHelpers()
         {
             TextureSize.X = Device.PresentationParameters.BackBufferWidth;
@@ -1043,7 +1033,7 @@ namespace PlagueEngine.Rendering
                                        false,
                                        SurfaceFormat.HdrBlendable,
                                        DepthFormat.None);
-            
+
             test = new RenderTarget2D(Device,
                                       Device.PresentationParameters.BackBufferWidth,
                                       Device.PresentationParameters.BackBufferHeight,
@@ -1073,15 +1063,15 @@ namespace PlagueEngine.Rendering
                                           DepthFormat.None);
 
             bloom = new RenderTarget2D(Device,
-                              Device.PresentationParameters.BackBufferWidth/2,
-                              Device.PresentationParameters.BackBufferHeight/2,
+                              Device.PresentationParameters.BackBufferWidth / 2,
+                              Device.PresentationParameters.BackBufferHeight / 2,
                               false,
                               SurfaceFormat.Color,
                               DepthFormat.None);
 
             bloomBlur = new RenderTarget2D(Device,
-                              Device.PresentationParameters.BackBufferWidth/2,
-                              Device.PresentationParameters.BackBufferHeight/2,
+                              Device.PresentationParameters.BackBufferWidth / 2,
+                              Device.PresentationParameters.BackBufferHeight / 2,
                               false,
                               SurfaceFormat.Color,
                               DepthFormat.None);
@@ -1095,10 +1085,10 @@ namespace PlagueEngine.Rendering
 
             fullScreenQuad = new Quad(-1, 1, 1, -1);
 
-            topLeft     = new Quad(-1.0f, 1.0f, 0.0f,  0.0f);
-            topRight    = new Quad( 0.0f, 1.0f, 1.0f,  0.0f);
-            bottomLeft  = new Quad(-1.0f, 0.0f, 0.0f, -1.0f);
-            bottomRight = new Quad( 0.0f, 0.0f, 1.0f, -1.0f);
+            topLeft = new Quad(-1.0f, 1.0f, 0.0f, 0.0f);
+            topRight = new Quad(0.0f, 1.0f, 1.0f, 0.0f);
+            bottomLeft = new Quad(-1.0f, 0.0f, 0.0f, -1.0f);
+            bottomRight = new Quad(0.0f, 0.0f, 1.0f, -1.0f);
 
             lightsManager = new LightsManager(normal, depth, light, fullScreenQuad, HalfPixel, this, contentManager);
 
@@ -1106,10 +1096,9 @@ namespace PlagueEngine.Rendering
             //Vector2[] o = new Vector2[7];
 
             //calcSettings(1.0f/2048.0f, 1.0f/2048.0f,out w,out o);
-
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         //void calcSettings(float w, float h, out float[] weights, out Vector2[] offsets)
         //{
@@ -1140,13 +1129,13 @@ namespace PlagueEngine.Rendering
         //        weights[i] /= total;
         //}
 
-
         //float gaussianFn(float x)
         //{
         //    return (float)((1.0f / Math.Sqrt(2 * Math.PI * 1 * 1)) * Math.Exp(-(x * x) / (2 * 1 * 1)));
         //}
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 }
+
 /************************************************************************************/

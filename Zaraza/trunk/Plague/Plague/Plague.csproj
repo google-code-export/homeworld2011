@@ -133,6 +133,53 @@
     <Compile Include="ArtificialIntelligence\Controllers\MobController.cs" />
     <Compile Include="ArtificialIntelligence\EventArgs.cs" />
     <Compile Include="AItest\AI.cs" />
+    <Compile Include="Editor\Controls\BeseEditorDataControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\BeseEditorDataControl.Designer.cs">
+      <DependentUpon>BeseEditorDataControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\BetterPropertyGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\GameObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\GameObjectControl.Designer.cs">
+      <DependentUpon>GameObjectControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\GameObjectsControls\BaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\GameObjectsControls\BaseControl.Designer.cs">
+      <DependentUpon>BaseControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\GameObjectsControls\Bloom.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\GameObjectsControls\Bloom.Designer.cs">
+      <DependentUpon>Bloom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\GameObjectsControls\PropertyGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\GameObjectsControls\PropertyGrid.Designer.cs">
+      <DependentUpon>PropertyGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\Item.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\Item.Designer.cs">
+      <DependentUpon>Item.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\Controls\MainMenu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Controls\MainMenu.Designer.cs">
+      <DependentUpon>MainMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor\EditorEventSender.cs" />
+    <Compile Include="Editor\OnGameObjectSelection.cs" />
     <Compile Include="Helpers\ThreadHelper.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\BoomTriger.cs" />
     <Compile Include="LowLevelGameFlow\GameObjects\DialogueTrigger.cs" />
@@ -158,17 +205,11 @@
     <Compile Include="Editor\Controls\BetterComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Editor\Controls\EditPropertyGridControl.cs">
+    <Compile Include="Editor\Controls\NewGameObject.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Editor\Controls\EditPropertyGridControl.Designer.cs">
-      <DependentUpon>EditPropertyGridControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Editor\Controls\NewPropertyGridControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Editor\Controls\NewPropertyGridControl.Designer.cs">
-      <DependentUpon>NewPropertyGridControl.cs</DependentUpon>
+    <Compile Include="Editor\Controls\NewGameObject.Designer.cs">
+      <DependentUpon>NewGameObject.cs</DependentUpon>
     </Compile>
     <Compile Include="Editor\Controls\ObjectTree.cs">
       <SubType>UserControl</SubType>
@@ -194,13 +235,13 @@
       <DependentUpon>DeleteDefinition.cs</DependentUpon>
     </Compile>
     <Compile Include="Editor\TabPages\EditTab.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editor\TabPages\EditTab.Designer.cs">
       <DependentUpon>EditTab.cs</DependentUpon>
     </Compile>
     <Compile Include="Editor\TabPages\NewTab.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editor\TabPages\NewTab.Designer.cs">
       <DependentUpon>NewTab.cs</DependentUpon>
@@ -457,11 +498,29 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Editor\Controls\EditPropertyGridControl.resx">
-      <DependentUpon>EditPropertyGridControl.cs</DependentUpon>
+    <EmbeddedResource Include="Editor\Controls\BeseEditorDataControl.resx">
+      <DependentUpon>BeseEditorDataControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Editor\Controls\NewPropertyGridControl.resx">
-      <DependentUpon>NewPropertyGridControl.cs</DependentUpon>
+    <EmbeddedResource Include="Editor\Controls\GameObjectControl.resx">
+      <DependentUpon>GameObjectControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\GameObjectsControls\BaseControl.resx">
+      <DependentUpon>BaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\GameObjectsControls\Bloom.resx">
+      <DependentUpon>Bloom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\GameObjectsControls\PropertyGrid.resx">
+      <DependentUpon>PropertyGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\Item.resx">
+      <DependentUpon>Item.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\MainMenu.resx">
+      <DependentUpon>MainMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\Controls\NewGameObject.resx">
+      <DependentUpon>NewGameObject.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editor\Controls\ObjectTree.resx">
       <DependentUpon>ObjectTree.cs</DependentUpon>
@@ -471,6 +530,12 @@
     </None>
     <EmbeddedResource Include="Editor\MessageBoxs\DeleteDefinition.resx">
       <DependentUpon>DeleteDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\TabPages\EditTab.resx">
+      <DependentUpon>EditTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor\TabPages\NewTab.resx">
+      <DependentUpon>NewTab.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\LogWindow.resx">
       <DependentUpon>LogWindow.cs</DependentUpon>

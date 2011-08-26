@@ -1,44 +1,61 @@
-﻿using System.Windows.Forms;
-using PlagueEngine.Editor.TabPages;
+﻿using System;
+using System.Windows.Forms;
 using PlagueEngine.Editor.Controls;
-using PlagueEngine.Helpers;
-
 
 /********************************************************************************/
 // PlagueEngine.Editor
 /********************************************************************************/
+
 namespace PlagueEngine.Editor
 {
     /********************************************************************************/
     // Game Object Editor Window
     /********************************************************************************/
+
     partial class GameObjectEditorWindow : BetterForm
     {
-
         private readonly EditorData _editorData;
 
         private readonly EditorSniffer _sniffer;
-
 
         public GameObjectEditorWindow(Game game)
         {
             InitializeComponent();
             _editorData = new EditorData(game);
             _sniffer = new EditorSniffer(this);
-            var editTab = new EditTab(_editorData);
-            tabControlMain.TabPages.Add(new NewTab(_editorData));
-            tabControlMain.TabPages.Add(editTab);
-            var objectTree = new ObjectTree(_editorData) {Dock = DockStyle.Fill};
-            objectTree.SelectedObjectCallback += editTab.SelectedObject;
-            TreePanel.Controls.Add(objectTree);
+            mainMenu.SetEditorData(_editorData);
+            objectTree.SetEditorData(_editorData);
+            FillTabs();
             _sniffer.EditorReloadCallback += objectTree.FillAllObjectsId;
-            WindowResize();
         }
 
-        private void GameObjectEditorWindowResize(object sender, System.EventArgs e)
+        private void FillTabs()
         {
-            WindowResize();
+            foreach (Type type in _editorData.ExecutingAssembly.GetTypes())
+            {
+                if (!String.IsNullOrWhiteSpace(type.Namespace) && type.Namespace.Equals("PlagueEngine.Editor.TabPages"))
+                {
+                    Control control = Activator.CreateInstance(type) as Control;
+                    OnGameObjectSelection selectionControl = control as OnGameObjectSelection;
+                    if (selectionControl != null)
+                    {
+                        objectTree.SelectedObjectCallback += selectionControl.OnObjectSelection;
+                    }
+                    BeseEditorDataControl beseEditorDataControl = control as BeseEditorDataControl;
+                    if (beseEditorDataControl != null)
+                    {
+                        beseEditorDataControl.SetEditorData(_editorData);
+                    }
+                    if (control != null)
+                    {
+                        TabPage tab = new TabPage();
+                        control.Dock = DockStyle.Fill;
+                        tab.Text = control.Text;
+                        tab.Controls.Add(control);
+                        tabControlMain.TabPages.Add(tab);
+                    }
+                }
+            }
         }
     }
-
 }

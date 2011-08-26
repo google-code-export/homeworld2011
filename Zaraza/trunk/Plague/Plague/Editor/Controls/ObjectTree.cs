@@ -1,27 +1,29 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using PlagueEngine.LowLevelGameFlow;
 
 namespace PlagueEngine.Editor.Controls
 {
-    partial class ObjectTree : UserControl
+    partial class ObjectTree : BeseEditorDataControl
     {
-        public delegate void SelectedObject(GameObjectInstanceData currentSelectedGameObject);
+        public delegate void SelectedObject(GameObjectInstance currentSelectedGameObject);
         public SelectedObject SelectedObjectCallback;
 
         private delegate void UpdaterDelegate();
-        private readonly EditorData _editorData;
 
-        public ObjectTree(EditorData editorData)
+        public ObjectTree()
         {
-            _editorData = editorData;
             InitializeComponent();
+        }
+
+        public override void SetEditorData(EditorData editorData)
+        {
+            base.SetEditorData(editorData);
             FillAllObjectsId();
         }
 
         public void FillAllObjectsId()
         {
-            if (_editorData != null &&  _editorData.Level != null && _editorData.Level.GameObjects != null)
+            if (_editorData != null && _editorData.Level != null && _editorData.Level.GameObjects != null)
             {
                 if (treeViewObjects.InvokeRequired)
                 {
@@ -30,7 +32,6 @@ namespace PlagueEngine.Editor.Controls
                 }
                 UpdateTreeView();
             }
-
         }
 
         private void UpdateTreeView()
@@ -55,7 +56,7 @@ namespace PlagueEngine.Editor.Controls
                                 var gameObjectTreeNode = new TreeNode
                                                                   {
                                                                       Tag = gameObject.ID,
-                                                                      Text =@"[" + String.Format("{0:0000}", gameObject.ID) +@"] " + gameObject.Name
+                                                                      Text = "[" + gameObject.ID + "] " + gameObject.Name
                                                                   };
                                 gameObjectClassTreeNode.Nodes.Add(gameObjectTreeNode);
                             }
@@ -64,22 +65,21 @@ namespace PlagueEngine.Editor.Controls
                     treeViewObjects.Nodes.Add(gameObjectClassTreeNode);
                 }
             }
-
-            
             treeViewObjects.Sort();
             treeViewObjects.ResumeLayout();
         }
 
         private void TreeViewObjectsAfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Parent == null) return;
-            var result = e.Node.Text.Split(']');
-            if (result.Length <= 0) return;
-            int id;
-            if (!int.TryParse(result[0].Substring(1, result[0].Length - 1), out id)) return;
+            GameObjectInstance gameObject = null;
+
+            if (e.Node.Parent != null)
+            {
+                gameObject = _editorData.Level.GameObjects[(int)e.Node.Tag];
+            }
             if (SelectedObjectCallback != null)
             {
-                SelectedObjectCallback(_editorData.Level.GameObjects[id].GetData());
+                SelectedObjectCallback(gameObject);
             }
         }
     }

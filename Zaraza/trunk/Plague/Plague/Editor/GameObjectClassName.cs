@@ -2,7 +2,7 @@
 
 namespace PlagueEngine.Editor
 {
-    class GameObjectClassName
+    public class GameObjectClassName
     {
         public string ClassName;
         public Type ClassType;
@@ -13,6 +13,7 @@ namespace PlagueEngine.Editor
 
         public GameObjectClassName()
         { }
+
         public GameObjectClassName(string className, Type classType, Type dataClassType, bool canBeCreated)
         {
             ClassName = className;

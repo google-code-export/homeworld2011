@@ -1,45 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 using PlagueEngine.EventsSystem;
 
-
 /************************************************************************************/
 /// PlagueEngine
 /************************************************************************************/
+
 namespace PlagueEngine
 {
-
     /********************************************************************************/
     /// Events Historian
     /********************************************************************************/
-    class EventsHistorian : EventsSniffer
-    {
 
+    internal class EventsHistorian : EventsSniffer
+    {
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private Queue<String> events    = new Queue<String>();
-        private uint          capacity  = 0;
+        private Queue<String> events = new Queue<String>();
+        private uint capacity = 0;
         /****************************************************************************/
-
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
+
         public EventsHistorian(uint capacity)
         {
             this.capacity = capacity;
             SubscribeAll();
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// On Sniffed Event
         /****************************************************************************/
+
         public override void OnSniffedEvent(EventsSender sender, IEventsReceiver receiver, EventArgs e)
         {
             StringBuilder builder = new StringBuilder();
@@ -49,7 +48,7 @@ namespace PlagueEngine
             builder.Append(": ");
 
             builder.Append("Sender: ");
-            builder.Append(sender.ToString());
+            builder.Append(sender == null ? "null" : sender.ToString());
             builder.Append(";");
 
             if (receiver == null)
@@ -77,32 +76,34 @@ namespace PlagueEngine
                 events.Dequeue();
             }
 
-            #if DEBUG
-                Diagnostics.PushLog(builder.ToString());
-            #endif
+#if DEBUG
+            Diagnostics.PushLog(builder.ToString());
+#endif
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Flush
         /****************************************************************************/
+
         public void Flush()
-        { 
+        {
             StringBuilder builder = new StringBuilder();
 
-            foreach(String eventData in events)
+            foreach (String eventData in events)
             {
-                builder.AppendLine(eventData);                   
+                builder.AppendLine(eventData);
             }
-            #if DEBUG
-                Diagnostics.PushLog(builder.ToString());
-            #endif
+#if DEBUG
+            Diagnostics.PushLog(builder.ToString());
+#endif
         }
+
         /****************************************************************************/
-
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 }
+
 /************************************************************************************/

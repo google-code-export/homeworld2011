@@ -105,7 +105,7 @@
             // DefinitionCount
             // 
             this.DefinitionCount.DataPropertyName = "Count";
-            this.DefinitionCount.HeaderText = "Definition Count";
+            this.DefinitionCount.HeaderText = "Objects";
             this.DefinitionCount.MinimumWidth = 150;
             this.DefinitionCount.Name = "DefinitionCount";
             this.DefinitionCount.ReadOnly = true;

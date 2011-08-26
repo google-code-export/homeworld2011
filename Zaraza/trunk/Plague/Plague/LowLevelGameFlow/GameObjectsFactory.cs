@@ -1,108 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using System.Reflection;
-
-using PlagueEngine.Rendering;
-using PlagueEngine.Input;
-using PlagueEngine.Physics;
-using PlagueEngine.LowLevelGameFlow.GameObjects;
-using PlagueEngine.GUI;
-using PlagueEngine.Particles;
-using PlagueEngine.HighLevelGameFlow;
-
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Graphics;
-using PlagueEngine.Rendering.Components;
+using PlagueEngine.GUI;
+using PlagueEngine.HighLevelGameFlow;
+using PlagueEngine.Input;
+using PlagueEngine.LowLevelGameFlow.GameObjects;
+using PlagueEngine.Particles;
+using PlagueEngine.Physics;
+using PlagueEngine.Rendering;
 
 /************************************************************************************/
 // PlagueEngine.LowLevelGameFlow
 /************************************************************************************/
-namespace PlagueEngine.LowLevelGameFlow
-{   
 
+namespace PlagueEngine.LowLevelGameFlow
+{
     /********************************************************************************/
     // Game Objects Factory
-    /********************************************************************************/    
-    class GameObjectsFactory
-    {
+    /********************************************************************************/
 
+    internal class GameObjectsFactory
+    {
         /****************************************************************************/
         // Fields
         /****************************************************************************/
-        private RenderingComponentsFactory               _renderingComponentsFactory;
-        private InputComponentsFactory                   _inputComponentsFactory;
-        private PhysicsComponentFactory                  _physicsComponentFactory;
-        private GUIComponentsFactory                     _guiComponentsFactory;
-        private ParticleFactory                          _particleFactory;
+        private RenderingComponentsFactory _renderingComponentsFactory;
+        private InputComponentsFactory _inputComponentsFactory;
+        private PhysicsComponentFactory _physicsComponentFactory;
+        private GUIComponentsFactory _guiComponentsFactory;
+        private ParticleFactory _particleFactory;
 
         private Dictionary<String, GameObjectDefinition> _gameObjectsDefinitions;
         private Game _game;
         private readonly Level _level;
         /****************************************************************************/
 
-
         /****************************************************************************/
         // Game Objects
         /****************************************************************************/
         private readonly Dictionary<int, GameObjectInstance> _gameObjects;
-        private readonly List<GameObjectInstance> _updatableObjects;        
+        private readonly List<GameObjectInstance> _updatableObjects;
 
         public Dictionary<int, KeyValuePair<GameObjectInstance, GameObjectInstanceData>> WaitingRoom { get; set; }
+
         public bool ProcessWaitingRoom;
         public int ProcessedObjects;
         /****************************************************************************/
-        
-        
+
         /****************************************************************************/
         // Constructor
         /****************************************************************************/
+
         public GameObjectsFactory(Dictionary<int, GameObjectInstance> gameObjects,
                                   List<GameObjectInstance> updatableObjects,
                                   Level level)
         {
-            _gameObjects             = gameObjects;
-            _updatableObjects        = updatableObjects;
-            _level              = level;
+            _gameObjects = gameObjects;
+            _updatableObjects = updatableObjects;
+            _level = level;
 
             GameObjectInstance.Factory = this;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Init
         /****************************************************************************/
-        public void Init(RenderingComponentsFactory               renderingComponentsFactory,
-                         InputComponentsFactory                   inputComponentsFactory,
-                         GUIComponentsFactory                     guiComponentsFactory,
+
+        public void Init(RenderingComponentsFactory renderingComponentsFactory,
+                         InputComponentsFactory inputComponentsFactory,
+                         GUIComponentsFactory guiComponentsFactory,
                          Dictionary<String, GameObjectDefinition> gameObjectsDefinitions,
-                         PhysicsComponentFactory                  physicsComponentFactory,
-                         ParticleFactory                          particleFactory,
-                         Game                                     game)
+                         PhysicsComponentFactory physicsComponentFactory,
+                         ParticleFactory particleFactory,
+                         Game game)
         {
             _renderingComponentsFactory = renderingComponentsFactory;
-            _inputComponentsFactory     = inputComponentsFactory;
-            _guiComponentsFactory       = guiComponentsFactory;
-            _gameObjectsDefinitions     = gameObjectsDefinitions;
-            _physicsComponentFactory    = physicsComponentFactory;
-            _particleFactory            = particleFactory;
-            _game                       = game;
+            _inputComponentsFactory = inputComponentsFactory;
+            _guiComponentsFactory = guiComponentsFactory;
+            _gameObjectsDefinitions = gameObjectsDefinitions;
+            _physicsComponentFactory = physicsComponentFactory;
+            _particleFactory = particleFactory;
+            _game = game;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Game Object
         /****************************************************************************/
+
         public GameObjectInstance Create(GameObjectInstanceData data)
         {
             //if (data.Type.Equals(typeof(Inventory))) return null;
 
-            var result = !ProcessWaitingRoom ? (GameObjectInstance) Activator.CreateInstance(data.Type) : WaitingRoom[data.ID].Key;
+            var result = !ProcessWaitingRoom ? (GameObjectInstance)Activator.CreateInstance(data.Type) : WaitingRoom[data.ID].Key;
 
             if (!DefaultObjectInit(result, data)) return null;
 
@@ -119,7 +115,7 @@ namespace PlagueEngine.LowLevelGameFlow
             catch (Exception e)
             {
 #if DEBUG
-                Diagnostics.Fatal("There was an error when object "+ data.ID +" was creting: " + e.InnerException.Message);
+                Diagnostics.Fatal("There was an error when object " + data.ID + " was creting: " + e.InnerException.Message);
 #endif
                 return null;
             }
@@ -136,47 +132,49 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return result;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Default Object Init
         /****************************************************************************/
+
         private bool DefaultObjectInit(GameObjectInstance gameObject, GameObjectInstanceData data)
         {
             if (data.Owner != 0)
             {
                 var owner = GetObject(data.Owner);
-                
+
                 if (owner == null)
                 {
                     PushToWaitingRoom(gameObject, data);
                     return false;
                 }
 
-                gameObject.Init(data.ID, 
+                gameObject.Init(data.ID,
                                 data.Definition,
                                 data.World,
                                 GameObjectInstance.UintToStatus(data.Status),
                                 data.Name,
-                                owner, 
+                                owner,
                                 data.OwnerBone);
                 return true;
             }
 
-            gameObject.Init(data.ID, 
-                            data.Definition, 
-                            data.World, 
+            gameObject.Init(data.ID,
+                            data.Definition,
+                            data.World,
                             GameObjectInstance.UintToStatus(data.Status),
                             data.Name);
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Get Object
         /****************************************************************************/
+
         private GameObjectInstance GetObject(int id)
         {
             if (_gameObjects.ContainsKey(id)) return _gameObjects[id];
@@ -185,12 +183,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return null;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Push To Waiting Room
         /****************************************************************************/
+
         private void PushToWaitingRoom(GameObjectInstance gameObject, GameObjectInstanceData data)
         {
             if (ProcessWaitingRoom) return;
@@ -199,12 +198,13 @@ namespace PlagueEngine.LowLevelGameFlow
 #endif
             WaitingRoom.Add(data.ID, new KeyValuePair<GameObjectInstance, GameObjectInstanceData>(gameObject, data));
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Use Definition
         /****************************************************************************/
+
         private void UseDefinition(GameObjectInstanceData data)
         {
             if (String.IsNullOrEmpty(data.Definition)) return;
@@ -214,36 +214,38 @@ namespace PlagueEngine.LowLevelGameFlow
 
             foreach (var value in definition.Properties)
             {
-                data.GetType().InvokeMember(value.Key, 
-                                            BindingFlags.SetProperty, 
-                                            null, 
-                                            data, 
+                data.GetType().InvokeMember(value.Key,
+                                            BindingFlags.SetProperty,
+                                            null,
+                                            data,
                                             new[] { value.Value });
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Remove Game Object
         /****************************************************************************/
+
         public void RemoveGameObject(int id)
         {
             if (!_gameObjects.ContainsKey(id)) return;
             var go = _gameObjects[id];
-                
+
             if (go.RequiresUpdate) _updatableObjects.Remove(go);
 
             go.Dispose();
 
             _gameObjects.Remove(id);
         }
+
         /****************************************************************************/
-      
 
         /****************************************************************************/
         // Create Cylindrical Body Mesh
         /****************************************************************************/
+
         public bool CreateCylindricalBodyMesh(CylindricalBodyMesh result, CylindricalBodyMeshData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -273,59 +275,53 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         // Create Dialog Messages Manager
         /****************************************************************************/
+
         public bool CreateDialogMessagesManager(DialogMessagesManager result, DialogMessagesManagerData data)
         {
-
             result.Init(_renderingComponentsFactory.CreateFrontEndComponent(result, "MercenariesSet"),
                 _guiComponentsFactory.CreateLabelComponent(" ", (int)data.TextPosition.X, (int)data.TextPosition.Y),
-                new Rectangle(0,128,400,64),data.WindowPosition,data.windowHeight,data.windowWidth,
+                new Rectangle(0, 128, 400, 64), data.WindowPosition, data.windowHeight, data.windowWidth,
                 data.IconPosition);
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create InGameMenu
         /****************************************************************************/
+
         public bool CreateInGameMenu(InGameMenu result, InGameMenuData data)
         {
-
             result.Init(_renderingComponentsFactory.CreateFrontEndComponent(result, "MainMenuFrame"));
             return true;
         }
+
         /****************************************************************************/
-
-
-
-
 
         /****************************************************************************/
         // Create MovieClip
         /****************************************************************************/
+
         public bool CreateMovieClip(MovieClip result, MovieClipData data)
         {
-
             result.Init(_game.ContentManager.Load<Video>(data.videoName), data.videoName, _renderingComponentsFactory.CreateFrontEndComponent(result, null),
-                  _renderingComponentsFactory.CreateFrontEndComponent(result,"SplashScreen"));
+                  _renderingComponentsFactory.CreateFrontEndComponent(result, "SplashScreen"));
             return true;
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         // Create Cylindrical Body Mesh
         /****************************************************************************/
+
         public bool CreateCylindricalBodyMesh2(CylindricalBodyMesh2 result, CylindricalBodyMeshData2 data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -355,12 +351,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-        
 
         /****************************************************************************/
         // Create Spherical Body Mesh
         /****************************************************************************/
+
         public bool CreateSphericalBodyMesh(SphericalBodyMesh result, SphericalBodyMeshData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -389,37 +386,36 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Checker
         /****************************************************************************/
+
         public bool CreateChecker(Checker result, CheckerData data)
         {
-                result.Init(data.LevelName,
-                data.BoxWidth,
-                data.BoxHeight,
-                data.NumberOfBoxesInLength,
-                data.NumberOfBoxesInWidth,
-                data.DistanceBeetwenBoxes,
-                this,
-                data.BoxStartPosition,
-                data.FramesToTest);
+            result.Init(data.LevelName,
+            data.BoxWidth,
+            data.BoxHeight,
+            data.NumberOfBoxesInLength,
+            data.NumberOfBoxesInWidth,
+            data.DistanceBeetwenBoxes,
+            this,
+            data.BoxStartPosition,
+            data.FramesToTest);
 
             return true;
         }
+
         /****************************************************************************/
-
-
 
         /****************************************************************************/
         // CreateEndGameTrigerr
         /****************************************************************************/
+
         public bool CreateEndGameTrigerr(EndGameTrigerr result, EndGameTrigerrData data)
         {
-        
-
             result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
                                                                             data.Mass,
                                                                             data.Lenght,
@@ -437,14 +433,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
 
-
-
-        
         /****************************************************************************/
         // Create Square Body Mesh
         /****************************************************************************/
+
         public bool CreateSquareBodyMesh(SquareBodyMesh result, SquareBodyMeshData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -475,18 +470,15 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         // Create Checker Box
         /****************************************************************************/
+
         public bool CreateCheckerBox(CheckerBox result, CheckerBoxData data)
         {
-
-
             result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
                                                                             data.Mass,
                                                                             data.Width,
@@ -506,13 +498,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
 
         /****************************************************************************/
         // CreateBulldozer
         /****************************************************************************/
+
         public bool CreateBulldozer(Bulldozer result, BulldozerData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -540,7 +532,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                             data.SkinYaw,
                                                                             data.SkinPitch,
                                                                             data.SkinRoll),
-                                                                            
+
                                                                             data.ActivationRecievers,
                                                                             data.keyId,
                                                                             data.Description,
@@ -551,16 +543,15 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
 
         /****************************************************************************/
         // CreateDoors
         /****************************************************************************/
+
         public bool CreateDoors(Doors result, DoorsData data)
         {
-
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
 
             result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
@@ -591,20 +582,15 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.EnabledMesh,
                                                                        false));
 
-
-
-
-
             return true;
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         // CreateRadioBox
         /****************************************************************************/
+
         public bool CreateRadioBox(RadioBox result, RadioBoxData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -635,27 +621,18 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        instancingMode,
                                                                        data.EnabledMesh,
                                                                        false));
-                                                                            
-                
-                
-                
 
             return true;
         }
+
         /****************************************************************************/
-
-
-
-
-
-
 
         /****************************************************************************/
         // CreateBoomTriger
         /****************************************************************************/
+
         public bool CreateBoomTriger(BoomTriger result, BoomTrigerData data)
         {
-
             result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
                                                                             data.Mass,
                                                                             data.Lenght,
@@ -710,15 +687,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
-
-
 
         /****************************************************************************/
         // Create BuildingWithRoof
         /****************************************************************************/
+
         public bool CreateBuildingWithRoof(BuildingWithRoof result, BuildingWithRoofData data)
         {
             var instancingMode1 = Renderer.UIntToInstancingMode(data.InstancingMode1);
@@ -758,13 +733,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
 
         /****************************************************************************/
         // Create Static Mesh
         /****************************************************************************/
+
         public bool CreateStaticMesh(StaticMesh result, StaticMeshData data)
         {
             result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
@@ -777,14 +752,15 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         true));
             return true;
         }
+
         /****************************************************************************/
-        
 
         /****************************************************************************/
         // Create Free Camera
         /****************************************************************************/
+
         public bool CreateFreeCamera(FreeCamera result, FreeCameraData data)
-        {            
+        {
             result.Init(_renderingComponentsFactory.CreateCameraComponent(result,
                                                                          data.FoV,
                                                                          data.ZNear,
@@ -802,12 +778,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Linked Camera
         /****************************************************************************/
+
         public bool CreateLinkedCamera(LinkedCamera result, LinkedCameraData data)
         {
             var mercMan = GetObject(data.MercenariesManager);
@@ -824,7 +801,6 @@ namespace PlagueEngine.LowLevelGameFlow
 
                          _inputComponentsFactory.CreateKeyboardListenerComponent(result,
                                                                                 data.ActiveKeyListener),
-
 
                          _inputComponentsFactory.CreateMouseListenerComponent(result, data.ActiveMouseListener),
 
@@ -846,15 +822,16 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Cylindrical Skin Mesh
         /****************************************************************************/
+
         public bool CreateCylindricalSkinMesh(CylindricalSkinMesh result, CylindricalSkinMeshData data)
         {
-            result.Init(_renderingComponentsFactory.CreateMeshComponent( result,
+            result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
                                                                         data.Model,
                                                                         data.Diffuse,
                                                                         data.Specular,
@@ -877,12 +854,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Square Skin Mesh
         /****************************************************************************/
+
         public bool CreateSquareSkinMesh(SquareSkinMesh result, SquareSkinMeshData data)
         {
             result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
@@ -909,14 +887,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         // CreateSquareSkin
         /****************************************************************************/
+
         public bool CreateSquareSkin(SquareSkin result, SquareSkinData data)
         {
             result.Init(_physicsComponentFactory.CreateSquareBodyComponent(data.EnabledPhysics, result,
@@ -936,17 +913,16 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
-
 
         /****************************************************************************/
         // Create Spherical Skin Mesh
         /****************************************************************************/
+
         public bool CreateSphericalSkinMesh(SphericalSkinMesh result, SphericalSkinMeshData data)
         {
-            result.Init(_renderingComponentsFactory.CreateMeshComponent( result,
+            result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
                                                                         data.Model,
                                                                         data.Diffuse,
                                                                         data.Specular,
@@ -968,12 +944,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Terrain
         /****************************************************************************/
+
         public bool CreateTerrain(Terrain result, TerrainData data)
         {
             result.Init(_renderingComponentsFactory.CreateTerrainComponent(result,
@@ -1002,12 +979,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Background Terrain
         /****************************************************************************/
+
         public bool CreateBackgroundTerrain(BackgroundTerrain result, BackgroundTerrainData data)
         {
             result.Init(_renderingComponentsFactory.CreateTerrainComponent(result,
@@ -1025,12 +1003,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Sun Light
         /****************************************************************************/
+
         public bool CreateSunlight(Sunlight result, SunlightData data)
         {
             result.Init(_renderingComponentsFactory.CreateSunlightComponent(result,
@@ -1046,12 +1025,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Static Skinned Mesh
         /****************************************************************************/
+
         public bool CreateCreature(Creature result, CreatureData data)
         {
             result.Init(_renderingComponentsFactory.CreateSkinnedMeshComponent(result,
@@ -1086,7 +1066,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.SkinYaw,
                                                                           data.SkinPitch,
                                                                           data.SkinRoll),
-                        
+
                         data.RotationSpeed,
                         data.MovingSpeed,
                         data.DistancePrecision,
@@ -1096,8 +1076,8 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Menu Button
@@ -1118,14 +1098,16 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         // Create Menu Panel
         /****************************************************************************/
+
         public bool CreatePanel(Panel result, PanelData data)
         {
-            result.Init(_guiComponentsFactory.createPanelComponent( data.Vertical,
+            result.Init(_guiComponentsFactory.createPanelComponent(data.Vertical,
                                                                    data.Horizontal,
                                                                    data.Size));
             //TODO: sprawdzić, czy to już wszystko dla panelu.
             return true;
         }
+
         /****************************************************************************/
 
         /****************************************************************************/
@@ -1145,20 +1127,22 @@ namespace PlagueEngine.LowLevelGameFlow
         /****************************************************************************/
         // Create Menu Input
         /****************************************************************************/
+
         public bool CreateInput(GameObjects.Input result, InputData data)
         {
-            result.Init(_guiComponentsFactory.createInputComponent( data.Text,
+            result.Init(_guiComponentsFactory.createInputComponent(data.Text,
                                                                    data.Vertical,
                                                                    data.Horizontal,
                                                                    data.Size));
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Water Surface
         /****************************************************************************/
+
         public bool CreateWaterSurface(WaterSurface result, WaterSurfaceData data)
         {
             result.Init(_renderingComponentsFactory.CreateWaterSurfaceComponent(result,
@@ -1178,12 +1162,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Point Light
         /****************************************************************************/
+
         public bool CreatePointLight(PointLight result, PointLightData data)
         {
             result.Init(_renderingComponentsFactory.CreatePointLightComponent(result,
@@ -1198,12 +1183,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateGlowStick
         /****************************************************************************/
+
         public bool CreateGlowStick(GlowStick result, GlowStickData data)
         {
             result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
@@ -1228,7 +1214,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                                0,
                                                                                90,
                                                                                0),
-                        
+
                         _renderingComponentsFactory.CreatePointLightComponent(result,
                                                                              data.Enabled,
                                                                              data.Color,
@@ -1237,8 +1223,8 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                              data.Radius,
                                                                              data.LinearAttenuation,
                                                                              data.QuadraticAttenuation,
-                                                                             new Vector3(0,0.5f,0)),
-                        
+                                                                             new Vector3(0, 0.5f, 0)),
+
                         _renderingComponentsFactory.CreatePointLightComponent(result,
                                                                              data.Enabled,
                                                                              data.Color,
@@ -1278,16 +1264,17 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.EmitterTranslation,
                                                                         data.World,
                                                                         data.ParticlesEnabled,
-                                                                        data.Technique));                        
+                                                                        data.Technique));
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateSpotLight
         /****************************************************************************/
+
         public bool CreateSpotLight(SpotLight result, SpotLightData data)
         {
             result.Init(_renderingComponentsFactory.CreateSpotLightComponent(result,
@@ -1307,14 +1294,15 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateFlashlight
         /****************************************************************************/
+
         public bool CreateFlashlight(Flashlight result, FlashlightData data)
-        {           
+        {
             result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
                                                                        "Misc\\flashlight",
                                                                        "Misc\\flashlightdiff",
@@ -1338,7 +1326,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.SkinYaw,
                                                                         data.SkinPitch,
                                                                         data.SkinRoll),
- 
+
                         _renderingComponentsFactory.CreateSpotLightComponent(result,
                                                                             data.Enabled,
                                                                             data.Color,
@@ -1358,7 +1346,7 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.Description,
                         data.DescriptionWindowWidth,
                         data.DescriptionWindowHeight,
-                        _particleFactory.CreateParticleEmitterComponent( result,
+                        _particleFactory.CreateParticleEmitterComponent(result,
                                                                         data.BlendState,
                                                                         data.Duration,
                                                                         data.DurationRandomnes,
@@ -1394,20 +1382,19 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateMercenary
         /****************************************************************************/
+
         public bool CreateMercenary(Mercenary result, MercenaryData data)
         {
-
             var items = new Dictionary<StorableObject, ItemPosition>();
 
             if (data.Items != null)
             {
-
                 foreach (var itemData in data.Items)
                 {
                     var storable = GetObject(itemData[0]) as StorableObject;
@@ -1453,7 +1440,7 @@ namespace PlagueEngine.LowLevelGameFlow
                     PushToWaitingRoom(result, data);
                     return false;
                 }
-            }    
+            }
 
             result.Init(_renderingComponentsFactory.CreateSkinnedMeshComponent(result,
                                                                               data.Model,
@@ -1486,7 +1473,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                            data.SkinPitch,
                                                                            data.SkinRoll),
 
-                        _renderingComponentsFactory.CreateFrontEndComponent(result,"marker"),
+                        _renderingComponentsFactory.CreateFrontEndComponent(result, "marker"),
                         data.MarkerPosition,
                         data.RotationSpeed,
                         data.MovingSpeed,
@@ -1494,7 +1481,7 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.AnglePrecision,
                         data.Grip,
                         data.SideArmGrip,
-                        data.WeaponGrip,                        
+                        data.WeaponGrip,
                         data.MaxHP,
                         data.HP,
                         data.Icon,
@@ -1510,12 +1497,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateMercenariesManager
         /****************************************************************************/
+
         public bool CreateMercenariesManager(MercenariesManager result, MercenariesManagerData data)
         {
             LinkedCamera linkedCamera = null;
@@ -1530,9 +1518,9 @@ namespace PlagueEngine.LowLevelGameFlow
             }
 
             result.Init(linkedCamera,
-                        _inputComponentsFactory.CreateKeyboardListenerComponent(result,true),
-                        _inputComponentsFactory.CreateMouseListenerComponent(result,true),
-                        _renderingComponentsFactory.CreateFrontEndComponent(result,"MercenariesSet"),
+                        _inputComponentsFactory.CreateKeyboardListenerComponent(result, true),
+                        _inputComponentsFactory.CreateMouseListenerComponent(result, true),
+                        _renderingComponentsFactory.CreateFrontEndComponent(result, "MercenariesSet"),
                         _renderingComponentsFactory.CreateFogOfWarComponent(result,
                                                                             "spot",
                                                                             data.SpotSize,
@@ -1543,11 +1531,13 @@ namespace PlagueEngine.LowLevelGameFlow
             MercenaryActivationTrigger.MercenariesManager = result;
             return true;
         }
+
         /****************************************************************************/
 
         /****************************************************************************/
         // CreateMercenaryActivationTrigger
         /****************************************************************************/
+
         public bool CreateMercenaryActivationTrigger(MercenaryActivationTrigger result, MercenaryActivationTriggerData data)
         {
             List<Mercenary> tmp = new List<Mercenary>();
@@ -1577,7 +1567,6 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                       0,
                                                                       0));
 
-
             return true;
         }
 
@@ -1585,23 +1574,22 @@ namespace PlagueEngine.LowLevelGameFlow
 
         // CreateFadeInOut
         /****************************************************************************/
+
         public bool CreateFadeInOut(FadeInOut result, FadeInOutData data)
         {
             result.Init(_renderingComponentsFactory.CreateFrontEndComponent(result, "black"), data.Time,
-                _renderingComponentsFactory.CreateFrontEndComponent(result,"gameover"));
+                _renderingComponentsFactory.CreateFrontEndComponent(result, "gameover"));
             return true;
         }
-        /****************************************************************************/
-
-
-
 
         /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateMonologueTrigger
         /****************************************************************************/
+
         public bool CreateMonologueTrigger(MonologueTrigger result, MonologueTriggerData data)
         {
             result.Init(_physicsComponentFactory.CreateSphericalBodyComponent(true,
@@ -1622,11 +1610,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
 
         /****************************************************************************/
         // CreateDialogueTrigger
         /****************************************************************************/
+
         public bool CreateDialogueTrigger(DialogueTrigger result, DialogueTriggerData data)
         {
             List<Mercenary> tmp = new List<Mercenary>();
@@ -1673,46 +1663,49 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-        
+
         /****************************************************************************/
 
         // CreateGameController
         /****************************************************************************/
+
         public bool CreateGameController(GameController result, GameControllerData data)
         {
             result.Init(_game);
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateFirearm
         /****************************************************************************/
+
         public bool CreateFirearm(Firearm result, FirearmData data)
         {
             var accessories = new Firearm.AttachedAccessory[0];
-            
-            if(data.AvailableAccessories != null)
+
+            if (data.AvailableAccessories != null)
             {
                 accessories = new Firearm.AttachedAccessory[data.AvailableAccessories.Count];
 
-                for(var i = 0; i < accessories.Length; i++)
+                for (var i = 0; i < accessories.Length; i++)
                 {
-                    if(data.AvailableAccessories[i].AccessoryID != 0)
+                    if (data.AvailableAccessories[i].AccessoryID != 0)
                     {
                         var accessory = (Accessory)GetObject(data.AvailableAccessories[i].AccessoryID);
-                        if(accessory == null)
+                        if (accessory == null)
                         {
-                            PushToWaitingRoom(result,data);
+                            PushToWaitingRoom(result, data);
                             return false;
-                        }   
+                        }
                         accessories[i].Accessory = accessory;
                     }
                     else accessories[i].Accessory = null;
 
-                    accessories[i].Genre       = data.AvailableAccessories[i].Genre;
+                    accessories[i].Genre = data.AvailableAccessories[i].Genre;
                     accessories[i].Translation = data.AvailableAccessories[i].Translation;
                 }
             }
@@ -1733,7 +1726,7 @@ namespace PlagueEngine.LowLevelGameFlow
             {
                 PushToWaitingRoom(result, data);
                 return false;
-            }            
+            }
 
             result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
                                                                        data.Model,
@@ -1778,7 +1771,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                     data.TParticlesEnabled,
                                                                     data.TTechnique,
                                                                     data.TSpeed),
-                      accessories,                      
+                      accessories,
                       data.Icon,
                       data.SlotsIcon,
                       data.Description,
@@ -1787,8 +1780,8 @@ namespace PlagueEngine.LowLevelGameFlow
                       data.SideArm,
                       data.SelectiveFire,
                       data.SelectiveFireMode,
-                      
-                      _particleFactory.CreateParticleEmitterComponent( result,
+
+                      _particleFactory.CreateParticleEmitterComponent(result,
                                                                       data.BlendState,
                                                                       data.Duration,
                                                                       data.DurationRandomnes,
@@ -1836,24 +1829,15 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
-
-
-
-
-
-
-
 
         /****************************************************************************/
         // CreateParticleEmitter
         /****************************************************************************/
+
         public bool CreateParticleEmitter(ParticleEmitter result, ParticleEmitterData data)
         {
-
-
             result.Init(_particleFactory.CreateParticleEmitterComponent(result,
                                                                       data.BlendState,
                                                                       data.Duration,
@@ -1883,21 +1867,15 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
-
-
-
-
 
         /****************************************************************************/
         // CreateAreaParticleEmitter
         /****************************************************************************/
+
         public bool CreateAreaParticleEmitter(AreaParticleEmitter result, AreaParticleEmitterData data)
         {
-
-
             result.Init(_particleFactory.CreateAreaParticleEmitterComponent(result,
                                                                       data.BlendState,
                                                                       data.Duration,
@@ -1928,22 +1906,19 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
 
-
-
-
-
-        
         /****************************************************************************/
         // CreateActionSwitch
         /****************************************************************************/
+
         public bool CreateActionSwitch(ActionSwitch result, ActionSwitchData data)
         {
             var feedback = GetObject(data.Feedback);
-            if(feedback == null)
+            if (feedback == null)
             {
-                PushToWaitingRoom(result,data);
+                PushToWaitingRoom(result, data);
                 return false;
             }
 
@@ -1960,13 +1935,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
-
 
         /****************************************************************************/
         // CreateMainMenu
         /****************************************************************************/
+
         public bool CreateMainMenu(MainMenu result, MainMenuData data)
         {
             if (string.IsNullOrEmpty(data.creditswindowtext))
@@ -1997,7 +1972,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                    data.optionsheight),
                         data.optionstext,
                         data.optionstag,
-                        
+
                         _guiComponentsFactory.CreateButtonComponent(data.creditstext,
                                                                    data.creditstag,
                                                                    data.creditsx,
@@ -2006,7 +1981,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                    data.creditsheight),
                         data.creditstext,
                         data.creditstag,
-                        
+
                         _guiComponentsFactory.CreateButtonComponent(data.exittext,
                                                                    data.exittag,
                                                                    data.exitx,
@@ -2015,7 +1990,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                    data.exitheight),
                         data.exittext,
                         data.exittag,
-                        
+
                         _renderingComponentsFactory.CreateFrontEndComponent(result, "MainMenuWindow"),
                         data.windowx,
                         data.windowy,
@@ -2041,39 +2016,35 @@ namespace PlagueEngine.LowLevelGameFlow
                         data.optionswindowtext,
                         data.optionswindowtextx,
                         data.optionswindowtexty,
-                        _renderingComponentsFactory.CreateFrontEndComponent(result,"MainMenuFrame"),
-                        
-                        _renderingComponentsFactory.CreateFrontEndComponent(result,"SplashScreen"),
-                        
-                        _renderingComponentsFactory.CreateFrontEndComponent(result,"Logo"),
-                        data.logoX,data.logoY);
+                        _renderingComponentsFactory.CreateFrontEndComponent(result, "MainMenuFrame"),
 
+                        _renderingComponentsFactory.CreateFrontEndComponent(result, "SplashScreen"),
+
+                        _renderingComponentsFactory.CreateFrontEndComponent(result, "Logo"),
+                        data.logoX, data.logoY);
 
             return true;
         }
+
         /****************************************************************************/
 
-
-
-
-
-        
         /****************************************************************************/
         // CreateDescriptionWindow
         /****************************************************************************/
+
         public bool CreateDescriptionWindow(DescriptionWindow result, DescriptionWindowData data)
-        { 
+        {
             result.Init(_guiComponentsFactory.CreateWindowComponent(data.Title,
-                                                                   (_game.GraphicsDevice.PresentationParameters.BackBufferWidth/2)  - (data.Width/2) ,
-                                                                   (_game.GraphicsDevice.PresentationParameters.BackBufferHeight/2) - (data.Height/2),
+                                                                   (_game.GraphicsDevice.PresentationParameters.BackBufferWidth / 2) - (data.Width / 2),
+                                                                   (_game.GraphicsDevice.PresentationParameters.BackBufferHeight / 2) - (data.Height / 2),
                                                                    data.Width,
                                                                    data.Height,
                                                                    true),
                         _guiComponentsFactory.CreateButtonComponent("OK",
                                                                    "OK",
                                                                    2,
-                                                                   data.Height - 30, 
-                                                                   data.Width  - 4,
+                                                                   data.Height - 30,
+                                                                   data.Width - 4,
                                                                    30),
                         _guiComponentsFactory.CreateLabelComponent(data.Text,
                                                                   10,
@@ -2081,18 +2052,19 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateInventory
         /****************************************************************************/
+
         public bool CreateInventory(Inventory result, InventoryData data)
         {
-            Mercenary          merc        = (data.Mercenary          == 0 ? null : (Mercenary)         GetObject(data.Mercenary));
-            Mercenary          merc2       = (data.Mercenary2         == 0 ? null : (Mercenary)         GetObject(data.Mercenary2));
+            Mercenary merc = (data.Mercenary == 0 ? null : (Mercenary)GetObject(data.Mercenary));
+            Mercenary merc2 = (data.Mercenary2 == 0 ? null : (Mercenary)GetObject(data.Mercenary2));
             MercenariesManager mercManager = (data.MercenariesManager == 0 ? null : (MercenariesManager)GetObject(data.MercenariesManager));
-            Container          container   = (data.Container          == 0 ? null : (Container)         GetObject(data.Container));
+            Container container = (data.Container == 0 ? null : (Container)GetObject(data.Container));
 
             result.Init(_renderingComponentsFactory.CreateFrontEndComponent(result, "InventorySet"),
                         _inputComponentsFactory.CreateKeyboardListenerComponent(result, true),
@@ -2104,12 +2076,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
 
-        
         /****************************************************************************/
         // CreateCompass
         /****************************************************************************/
+
         public bool CreateCompass(Compass result, CompassData data)
         {
             var camera = (LinkedCamera)GetObject(data.LinkedCamera);
@@ -2127,20 +2100,19 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateContainer
         /****************************************************************************/
+
         public bool CreateContainer(Container result, ContainerData data)
         {
-
             var items = new Dictionary<StorableObject, ItemPosition>();
 
             if (data.Items != null)
             {
-
                 foreach (var itemData in data.Items)
                 {
                     var storable = GetObject(itemData[0]) as StorableObject;
@@ -2183,12 +2155,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateAmmoClip
         /****************************************************************************/
+
         public bool CreateAmmoClip(AmmoClip result, AmmoClipData data)
         {
             var ammunition = GetObject(GlobalGameObjects.Ammunition) as Ammunition;
@@ -2201,7 +2174,7 @@ namespace PlagueEngine.LowLevelGameFlow
 
             var content = new Stack<Bullet>(data.Capacity);
 
-            for(var i = 0; i < data.Capacity  && i < data.Content.Count; i++)
+            for (var i = 0; i < data.Capacity && i < data.Content.Count; i++)
             {
                 content.Push(data.Content.ElementAt(i));
             }
@@ -2236,12 +2209,12 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                           data.Translation,
                                                                           data.SkinYaw,
                                                                           data.SkinPitch,
-                                                                          data.SkinRoll),                      
+                                                                          data.SkinRoll),
                       data.Icon,
                       data.SlotsIcon,
                       data.Description,
                       data.DescriptionWindowWidth,
-                      data.DescriptionWindowHeight,                      
+                      data.DescriptionWindowHeight,
 
                       _particleFactory.CreateParticleEmitterComponent(result,
                                                                       data.BlendState,
@@ -2277,24 +2250,26 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateAmmunition
         /****************************************************************************/
+
         public bool CreateAmmunition(Ammunition result, AmmunitionData data)
         {
             result.Init(data.AmmunitionInfo);
-            
+
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateAmmoBox
         /****************************************************************************/
+
         public bool CreateAmmoBox(AmmoBox result, AmmoBoxData data)
         {
             var ammunition = GetObject(GlobalGameObjects.Ammunition) as Ammunition;
@@ -2307,14 +2282,14 @@ namespace PlagueEngine.LowLevelGameFlow
 
             AmmunitionInfo info;
             AmmunitionVersionInfo versionInfo;
-  
+
             try
             {
-                 var ammunitionInfoID = ammunition.NameToID[data.AmmunitionName];
-                 info = ammunition.AmmunitionData[ammunitionInfoID];
-                 versionInfo = ammunition.AmmunitionVersionData[ammunitionInfoID][data.Version];
+                var ammunitionInfoID = ammunition.NameToID[data.AmmunitionName];
+                info = ammunition.AmmunitionData[ammunitionInfoID];
+                versionInfo = ammunition.AmmunitionVersionData[ammunitionInfoID][data.Version];
             }
-            catch 
+            catch
             {
                 return false;
             }
@@ -2384,18 +2359,18 @@ namespace PlagueEngine.LowLevelGameFlow
             data.Description,
             data.DescriptionWindowWidth,
             data.DescriptionWindowHeight);
-                        
+
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Accessory
         /****************************************************************************/
+
         public bool CreateAccessory(Accessory result, AccessoryData data)
         {
-
             result.Init(_renderingComponentsFactory.CreateMeshComponent(result,
                                                                      data.Model,
                                                                      data.Diffuse,
@@ -2460,12 +2435,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create FlammableBarrel
         /****************************************************************************/
+
         public bool CreateFlammableBarrel(FlammableBarrel result, FlammableBarrelData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -2478,7 +2454,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        instancingMode,
                                                                        data.EnabledMesh,
                                                                        data.Static),
-             _physicsComponentFactory.CreateCylindricalBodyComponent( data.EnabledPhysics, result,
+             _physicsComponentFactory.CreateCylindricalBodyComponent(data.EnabledPhysics, result,
                                                                                 data.Mass,
                                                                                 data.Radius,
                                                                                 data.Lenght,
@@ -2529,16 +2505,15 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // Create Fire
         /****************************************************************************/
+
         public bool CreateFire(Fire result, FireData data)
         {
-
-
             result.Init(
                         _particleFactory.CreateParticleEmitterComponent(result,
                                                             data.BlendState,
@@ -2581,43 +2556,43 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateFireSelector
         /****************************************************************************/
+
         public bool CreateFireSelector(FireSelector result, FireSelectorData data)
         {
-
             result.Init(_renderingComponentsFactory.CreateFrontEndComponent(result, "selector"),
                         _inputComponentsFactory.CreateMouseListenerComponent(result, true),
                         (Firearm)GetObject(data.Firearm));
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateBloom
         /****************************************************************************/
+
         public bool CreateBloom(Bloom result, BloomData data)
         {
-
             result.Init(data.BloomIntensity, data.BaseIntensity, data.BloomSaturation, data.BaseSaturation, data.BloomThreshold);
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateDirection
         /****************************************************************************/
+
         public bool CreateDirection(Direction result, DirectionData data)
         {
-
             result.Init(_particleFactory.CreateParticleEmitterComponent(result,
                                                                        1,
                                                                        0.25f,
@@ -2648,14 +2623,15 @@ namespace PlagueEngine.LowLevelGameFlow
                     _inputComponentsFactory.CreateMouseListenerComponent(result, true),
                     GetObject(data.Feedback));
 
-
             return true;
         }
+
         /****************************************************************************/
 
         /****************************************************************************/
         /// CreateDirection
         /****************************************************************************/
+
         public bool CreateDeadBody(DeadBody result, DeadBodyData data)
         {
             var items = new Dictionary<StorableObject, ItemPosition>();
@@ -2700,9 +2676,11 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
         // CreatePainKillers
         /****************************************************************************/
+
         public bool CreatePainKillers(PainKillers result, PainKillersData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -2716,7 +2694,7 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                        data.EnabledMesh,
                                                                        data.Static),
 
-                        _physicsComponentFactory.CreateCylindricalBodyComponent( data.EnabledPhysics, result,
+                        _physicsComponentFactory.CreateCylindricalBodyComponent(data.EnabledPhysics, result,
                                                                                 data.Mass,
                                                                                 data.Radius,
                                                                                 data.Lenght,
@@ -2759,17 +2737,18 @@ namespace PlagueEngine.LowLevelGameFlow
                                                                         data.EmitterTranslation,
                                                                         data.World,
                                                                         data.ParticlesEnabled,
-                                                                        data.Technique),data.BleedingIntensity,data.Amount
+                                                                        data.Technique), data.BleedingIntensity, data.Amount
                                                                        );
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateMedKit
         /****************************************************************************/
+
         public bool CreateMedKit(MedKit result, MedKitData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -2832,12 +2811,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // CreateCylindricalStorableObject
         /****************************************************************************/
+
         public bool CreateCylindricalStorableObject(CylindricalStorableObject result, CylindricalStorableObjectData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -2899,12 +2879,13 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         // SquareStorableObject
         /****************************************************************************/
+
         public bool CreateSquareStorableObject(SquareStorableObject result, SquareStorableObjectData data)
         {
             var instancingMode = Renderer.UIntToInstancingMode(data.InstancingMode);
@@ -2967,10 +2948,11 @@ namespace PlagueEngine.LowLevelGameFlow
 
             return true;
         }
+
         /****************************************************************************/
-
     }
-    /********************************************************************************/    
 
+    /********************************************************************************/
 }
+
 /************************************************************************************/

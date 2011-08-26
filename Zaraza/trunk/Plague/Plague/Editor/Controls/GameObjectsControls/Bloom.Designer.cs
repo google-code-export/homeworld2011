@@ -1,6 +1,6 @@
-﻿namespace PlagueEngine.Editor.Controls
+﻿namespace PlagueEngine.Editor.Controls.GameObjectsControls
 {
-    partial class ObjectTree
+    partial class Bloom
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,31 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.treeViewObjects = new System.Windows.Forms.TreeView();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // treeViewObjects
+            // button1
             // 
-            this.treeViewObjects.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewObjects.Location = new System.Drawing.Point(0, 0);
-            this.treeViewObjects.Name = "treeViewObjects";
-            this.treeViewObjects.Size = new System.Drawing.Size(160, 170);
-            this.treeViewObjects.TabIndex = 0;
-            this.treeViewObjects.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewObjectsAfterSelect);
+            this.button1.Location = new System.Drawing.Point(139, 66);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // ObjectTree
+            // Bloom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.treeViewObjects);
-            this.Name = "ObjectTree";
-            this.Size = new System.Drawing.Size(160, 170);
+            this.Controls.Add(this.button1);
+            this.Name = "Bloom";
+            this.Size = new System.Drawing.Size(319, 150);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TreeView treeViewObjects;
+        private System.Windows.Forms.Button button1;
     }
 }

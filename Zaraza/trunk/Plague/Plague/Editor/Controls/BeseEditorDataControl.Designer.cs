@@ -1,6 +1,6 @@
 ﻿namespace PlagueEngine.Editor.Controls
 {
-    partial class ObjectTree
+    partial class BeseEditorDataControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,31 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.treeViewObjects = new System.Windows.Forms.TreeView();
             this.SuspendLayout();
             // 
-            // treeViewObjects
-            // 
-            this.treeViewObjects.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewObjects.Location = new System.Drawing.Point(0, 0);
-            this.treeViewObjects.Name = "treeViewObjects";
-            this.treeViewObjects.Size = new System.Drawing.Size(160, 170);
-            this.treeViewObjects.TabIndex = 0;
-            this.treeViewObjects.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewObjectsAfterSelect);
-            // 
-            // ObjectTree
+            // BeseEditorDataControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.treeViewObjects);
-            this.Name = "ObjectTree";
-            this.Size = new System.Drawing.Size(160, 170);
+            this.Name = "BeseEditorDataControl";
+            this.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.BeseEditorDataControl_ControlAdded);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TreeView treeViewObjects;
     }
 }

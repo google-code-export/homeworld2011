@@ -6,12 +6,12 @@ using PlagueEngine.Editor.MessageBoxs;
 
 namespace PlagueEngine.Editor.Controls
 {
-    partial class NewPropertyGridControl : UserControl
+    partial class NewGameObject : UserControl
     {
         private GameObjectDefinition _currentDefinition;
         private GameObjectClassName _currentClassName;
         private readonly EditorData _editorData;
-        public NewPropertyGridControl(EditorData editorData)
+        public NewGameObject(EditorData editorData)
         {
             _editorData = editorData;
             InitializeComponent();

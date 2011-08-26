@@ -1,64 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using System.Xml.Serialization;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-
-using PlagueEngine.Rendering;
-using PlagueEngine.LowLevelGameFlow;
+using System.Xml.Serialization;
+using Microsoft.Xna.Framework.Graphics;
 using PlagueEngine.HighLevelGameFlow;
+using PlagueEngine.LowLevelGameFlow;
 using PlagueEngine.LowLevelGameFlow.GameObjects;
+using PlagueEngine.Rendering;
 
 /************************************************************************************/
 /// PlagueEngine.Resources
-/************************************************************************************/ 
+/************************************************************************************/
 
 namespace PlagueEngine.Resources
 {
-
     /********************************************************************************/
     /// Content Manager
     /********************************************************************************/
-    class ContentManager : Microsoft.Xna.Framework.Content.ContentManager
-    {
 
+    internal class ContentManager : Microsoft.Xna.Framework.Content.ContentManager
+    {
         /****************************************************************************/
         /// Fields
         /****************************************************************************/
-        private List<String>    profiles        = new List<string>();
-        private String          currentProfile  = String.Empty;
+        private List<String> profiles = new List<string>();
+        private String currentProfile = String.Empty;
 
-        private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions = new Dictionary<string,GameObjectDefinition>();
+        private Dictionary<String, GameObjectDefinition> gameObjectsDefinitions = new Dictionary<string, GameObjectDefinition>();
         /****************************************************************************/
-        
 
-        /****************************************************************************/        
+        /****************************************************************************/
         /// Constants
-        /****************************************************************************/        
-        private const String defaultProfile     = "Default";
-        private const String defaultProfileFile = "DefaultProfile.txt";
-        private const String dataDirectory      = "Data";
-        private const String objectsDefinitions = "ObjectsDefinitions";
-        private const String levelsDirectory    = "Levels";
-        private const String textures           = "Textures";
-        private const String effects            = "Effects";
-        private const String models             = "Models";
         /****************************************************************************/
-
+        private const String defaultProfile = "Default";
+        private const String defaultProfileFile = "DefaultProfile.txt";
+        private const String dataDirectory = "Data";
+        private const String objectsDefinitions = "ObjectsDefinitions";
+        private const String levelsDirectory = "Levels";
+        private const String textures = "Textures";
+        private const String effects = "Effects";
+        private const String models = "Models";
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Constructor
         /****************************************************************************/
-        public ContentManager(Game game, String rootDirectory) : base(game.Services,rootDirectory)
+
+        public ContentManager(Game game, String rootDirectory)
+            : base(game.Services, rootDirectory)
         {
             game.Content = this;
             DetectProfiles();
             LoadDefaultProfile();
-            
+
             LoadGameObjectsDefinitions();
 
             //GameObjectDefinition god = new GameObjectDefinition();
@@ -79,25 +75,32 @@ namespace PlagueEngine.Resources
             OptionsMenu.contentManager = this;
             InGameMenu.contentManager = this;
         }
+
         /****************************************************************************/
 
+        public string LevelDirectory
+        {
+            get { return dataDirectory + "\\" + levelsDirectory + "\\"; }
+        }
 
         /****************************************************************************/
         /// Load
         /****************************************************************************/
+
         public override T Load<T>(string assetName)
         {
 #if DEBUG
-            Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length-1] + ": \t" + RootDirectory + "\\" + assetName);
-#endif         
-            return base.Load<T>(assetName);                     
+            Diagnostics.PushLog("Requesting load " + typeof(T).ToString().Split('.')[typeof(T).ToString().Split('.').Length - 1] + ": \t" + RootDirectory + "\\" + assetName);
+#endif
+            return base.Load<T>(assetName);
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Texture 2D
         /****************************************************************************/
+
         public Texture2D LoadTexture2D(string textureName)
         {
             if (String.IsNullOrEmpty(textureName)) return null;
@@ -106,48 +109,52 @@ namespace PlagueEngine.Resources
             result.Name = textureName;
             return result;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Effect
         /****************************************************************************/
+
         public Effect LoadEffect(string effectName)
         {
             Effect result = Load<Effect>(effects + '\\' + effectName);
             result.Name = effectName;
             return result;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Model
         /****************************************************************************/
+
         public PlagueEngineModel LoadModel(string modelName)
         {
             PlagueEngineModel result = Load<PlagueEngineModel>(models + '\\' + modelName);
             result.Name = modelName;
             return result;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Skinned Model
         /****************************************************************************/
+
         public PlagueEngineSkinnedModel LoadSkinnedModel(string modelName)
         {
             PlagueEngineSkinnedModel result = Load<PlagueEngineSkinnedModel>(models + '\\' + modelName);
             result.Name = modelName;
             return result;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Save Configuration
-        /****************************************************************************/        
+        /****************************************************************************/
+
         public void SaveConfiguration<T>(T configuration)
         {
 #if DEBUG
@@ -157,19 +164,20 @@ namespace PlagueEngine.Resources
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             TextWriter textWriter = null;
 
-            textWriter = new StreamWriter( "Profiles\\" + 
-                                           (currentProfile.Length > 0 ? currentProfile : defaultProfile) + 
+            textWriter = new StreamWriter("Profiles\\" +
+                                           (currentProfile.Length > 0 ? currentProfile : defaultProfile) +
                                            "\\" + typeof(T).ToString() + ".xml");
 
             serializer.Serialize(textWriter, configuration);
             textWriter.Close();
         }
-        /****************************************************************************/
-
 
         /****************************************************************************/
-        /// Load Configuration       
+
         /****************************************************************************/
+        /// Load Configuration
+        /****************************************************************************/
+
         public T LoadConfiguration<T>()
         {
 #if DEBUG
@@ -184,10 +192,10 @@ namespace PlagueEngine.Resources
                                (currentProfile.Length > 0 ? currentProfile : defaultProfile) +
                                "\\" + typeof(T).ToString() + ".xml");
             }
-            catch (System.IO.IOException e) 
+            catch (System.IO.IOException e)
             {
 #if DEBUG
-                Diagnostics.PushLog(LoggingLevel.ERROR,"Loading Configuration: " + typeof(T).ToString() + " failed.");
+                Diagnostics.PushLog(LoggingLevel.ERROR, "Loading Configuration: " + typeof(T).ToString() + " failed.");
 #endif
                 throw e;
             }
@@ -197,12 +205,13 @@ namespace PlagueEngine.Resources
 
             return configuration;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Detect Profiles
         /****************************************************************************/
+
         private void DetectProfiles()
         {
             if (Directory.GetDirectories(".", "Profiles").Length == 0)
@@ -224,14 +233,15 @@ namespace PlagueEngine.Resources
 
             String str = String.Empty;
             foreach (String profile in profiles) str += profile + "; ";
-            Diagnostics.PushLog("Decteted Profiles: " + str);        
+            Diagnostics.PushLog("Decteted Profiles: " + str);
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Level
         /****************************************************************************/
+
         public LevelData LoadLevel(String levelName)
         {
 #if DEBUG
@@ -248,22 +258,22 @@ namespace PlagueEngine.Resources
             catch (Exception e)
             {
 #if DEBUG
-                Diagnostics.Error("Exception while loading level: "+ e.Message);
+                Diagnostics.Error("Exception while loading level: " + e.Message);
 #endif
             }
-            
 
             stream.Close();
 
             return levelData;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Save Level
         /****************************************************************************/
-        public void SaveLevel(String levelName,LevelData levelData)
+
+        public void SaveLevel(String levelName, LevelData levelData)
         {
 #if DEBUG
             Diagnostics.PushLog("Saving level: " + levelName + ".");
@@ -275,12 +285,13 @@ namespace PlagueEngine.Resources
 
             stream.Close();
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// LoadGlobalGameObjectsData
         /****************************************************************************/
+
         public GlobalGameObjectsData LoadGlobalGameObjectsData()
         {
             Stream stream = new FileStream(dataDirectory + "\\globals.dat", System.IO.FileMode.Open);
@@ -292,12 +303,13 @@ namespace PlagueEngine.Resources
 
             return globalGameObjectsData;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// SaveGlobalGameObjectsData
         /****************************************************************************/
+
         public void SaveGlobalGameObjectsData(GlobalGameObjectsData globalGameObjectsData)
         {
             Stream stream = new FileStream(dataDirectory + "\\globals.dat", System.IO.FileMode.Create);
@@ -307,12 +319,13 @@ namespace PlagueEngine.Resources
 
             stream.Close();
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Profiles
         /****************************************************************************/
+
         public String[] Profiles
         {
             get
@@ -320,12 +333,13 @@ namespace PlagueEngine.Resources
                 return profiles.ToArray();
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Create Profile
         /****************************************************************************/
+
         public bool CreateProfile(String name)
         {
             if (profiles.Contains(name) || name.CompareTo(defaultProfile) == 0) return false;
@@ -336,12 +350,13 @@ namespace PlagueEngine.Resources
             profiles.Add(name);
             return true;
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Delete Profile
         /****************************************************************************/
+
         public void DeleteProfile(String name)
         {
             if (!profiles.Contains(name)) return;
@@ -351,12 +366,13 @@ namespace PlagueEngine.Resources
             Directory.Delete("Profiles\\" + name, true);
             profiles.Remove(name);
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Current Profile
         /****************************************************************************/
+
         public String CurrentProfile
         {
             get
@@ -369,12 +385,13 @@ namespace PlagueEngine.Resources
                 if (value.CompareTo(defaultProfile) != 0 && profiles.Contains(value)) currentProfile = value;
             }
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Default Profile
         /****************************************************************************/
+
         private void LoadDefaultProfile()
         {
 #if DEBUG
@@ -384,47 +401,49 @@ namespace PlagueEngine.Resources
             TextReader textReader = null;
             try
             {
-                 textReader = new StreamReader(defaultProfileFile);
+                textReader = new StreamReader(defaultProfileFile);
             }
             catch (System.IO.IOException)
-            {    
+            {
 #if DEBUG
                 Diagnostics.PushLog(LoggingLevel.WARN, "File: " + defaultProfileFile + " not found.");
 #endif
                 return;
             }
-            
+
             String profile = textReader.ReadLine();
             textReader.Close();
 
             if (profiles.Contains(profile)) currentProfile = profile;
 #if DEBUG
-            Diagnostics.PushLog("Profile : " + currentProfile);    
+            Diagnostics.PushLog("Profile : " + currentProfile);
 #endif
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Save Default Profile
         /****************************************************************************/
+
         public void SaveDefaultProfile()
         {
             if (currentProfile.Length == 0) return;
 #if DEBUG
 
-                Diagnostics.PushLog("Saving default profile: " + currentProfile);
+            Diagnostics.PushLog("Saving default profile: " + currentProfile);
 #endif
-                TextWriter textWriter = new StreamWriter(defaultProfileFile);
-                textWriter.WriteLine(currentProfile);
-                textWriter.Close();
+            TextWriter textWriter = new StreamWriter(defaultProfileFile);
+            textWriter.WriteLine(currentProfile);
+            textWriter.Close();
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Load Game Objects Definitions
         /****************************************************************************/
+
         public void LoadGameObjectsDefinitions()
         {
             List<GameObjectDefinitionData> temp = new List<GameObjectDefinitionData>();
@@ -468,20 +487,18 @@ namespace PlagueEngine.Resources
             }
 
             temp.Clear();
-
-
-
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Save Game Objects Definitions
         /****************************************************************************/
+
         public void SaveGameObjectsDefinitions()
         {
             List<GameObjectDefinitionData> temp = new List<GameObjectDefinitionData>();
-            
+
             foreach (GameObjectDefinition god in gameObjectsDefinitions.Values)
             {
                 temp.Add(god.GetData());
@@ -502,12 +519,13 @@ namespace PlagueEngine.Resources
 
             stream.Close();
         }
-        /****************************************************************************/
 
+        /****************************************************************************/
 
         /****************************************************************************/
         /// Game Objects Definitions
         /****************************************************************************/
+
         public Dictionary<String, GameObjectDefinition> GameObjectsDefinitions
         {
             get
@@ -515,10 +533,11 @@ namespace PlagueEngine.Resources
                 return gameObjectsDefinitions;
             }
         }
+
         /****************************************************************************/
-
     }
-    /********************************************************************************/
 
+    /********************************************************************************/
 }
+
 /************************************************************************************/
